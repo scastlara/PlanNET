@@ -7,10 +7,19 @@ For more information on this file, see
 https://docs.djangoproject.com/en/1.9/howto/deployment/wsgi/
 """
 
-import os
-
+import os, sys
 from django.core.wsgi import get_wsgi_application
+apache_configuration= os.path.dirname(__file__)
+project = os.path.dirname(apache_configuration)
+workspace = os.path.dirname(project)
+sys.path.append(workspace)
+sys.path.append(project)
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "PlaNET.settings")
 
-application = get_wsgi_application()
+# Add the path to 3rd party django application and to django itself.
+sys.path.append('/home/sergio/code/PlaNET')
+os.environ['DJANGO_SETTINGS_MODULE'] = 'mysite.apache.override'
+import django.core.handlers.wsgi
+application = django.core.handlers.wsgi.WSGIHandler()
+
+
