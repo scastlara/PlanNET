@@ -36,6 +36,7 @@ def query_node(symbol, database):
     node   = None
     symbol = symbol.replace(" ", "")
     if database == "Human":
+        symbol = symbol.upper()
         node = HumanNode(symbol, database)
     else:
         node = PredictedNode(symbol, database)
@@ -215,12 +216,12 @@ def gene_search(request):
             if database is None: # No database selected
                 search_error = 2
                 return render(request, 'NetExplorer/gene_search.html', {'res': nodes, 'search_error': search_error } )
-
             for genesymbol in symbols:
                 try:
                     search_node = query_node(genesymbol, database)
                     nodes.append(search_node)
                 except (NodeNotFound, IncorrectDatabase):
+                    print("ERROR")
                     # No search results...
                     search_error = 1
 
