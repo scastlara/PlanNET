@@ -94,8 +94,9 @@ def substitute_human_symbols(symbols, database):
                 symbol = symbol.upper()
                 human_node = HumanNode(symbol, "Human")
                 homologs   = human_node.get_homologs(database)
-                for hom in homologs:
-                    newsymbols.append(hom.prednode.symbol)
+                for db in homologs:
+                    for hom in homologs[db]:
+                        newsymbols.append(hom.prednode.symbol)
             except (NodeNotFound, IncorrectDatabase):
                 # Node is not a human node :_(
                 logging.info("Node is not a human node, try next symbol")
@@ -165,12 +166,14 @@ def get_card(request, symbol=None, database=None):
     try:
         card_node    = query_node(symbol, database)
         if database != "Human":
+            print("NOT HUMAN!!!!")
             card_node.get_domains()
             nodes, edges = card_node.get_graphelements()
             graph        = GraphCytoscape()
             graph.add_elements(nodes)
             graph.add_elements(edges)
         else:
+            print("HUMAN")
             homologs = card_node.get_homologs()
     except (NodeNotFound, IncorrectDatabase):
         return render(request, 'NetExplorer/404.html')
