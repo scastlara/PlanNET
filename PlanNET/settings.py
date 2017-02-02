@@ -67,17 +67,17 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # trailing slash.
 # Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
 #MEDIA_URL = ''
-MEDIA_URL = '/media/'
+MEDIA_URL = 'https://compgen.bio.ub.edu/PlanNET/media/'
 
 # Absolute path to the directory static files should be collected to.
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/home/media/media.lawrence.com/static/"
-STATIC_ROOT = '/static/'
+STATIC_ROOT = '/www/compgen/compgen.bio.ub.edu/doc/PlanNET/static/'
 
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
-STATIC_URL = '/static/'
+STATIC_URL = 'https://compgen.bio.ub.edu/PlanNET/static/'
 
 # Additional locations of static files
 STATICFILES_DIRS = (
