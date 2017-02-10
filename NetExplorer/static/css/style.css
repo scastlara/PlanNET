@@ -149,14 +149,15 @@
 }
 
 #pfam-line-table {
-    width: 800px;
+    width: 100%;
     font-size: 12px;
+    color: #777777;
 }
 
 .pfam-line-table-tr {
     margin-top: 8px;
     height: 20px;
-    width: 800px;
+    width: 100%;
 }
 
 .pfam-line-table-tr:hover {
@@ -165,12 +166,12 @@
 
 .pfam-line-table-td-line {
     height: 12px;
-    width: 700px;
+    width: 80%;
 }
 
 .pfam-line-table-td-name {
     height: 12px;
-    width: 100px;
+    width: 20%;
 }
 
 .small-searchpanel:hover {
@@ -408,7 +409,12 @@
 
 .domain-table {
     font-size: 12px;
+    width: 100%;
     color: #777777;
+}
+
+.domain-table td {
+    padding-left: 1%;
 }
 
 .int-table-class {
@@ -460,11 +466,10 @@
 
 #loading {
     display: none;
-    position: absolute;
-    top: 0%;
-    left: 0%;
-    width: 25%;
-    height: 25%;
+    margin-top: 0;
+    margin-left: 0;
+    width: auto;
+    z-index: 1000000;
 }
 
 #cyt-controls {
@@ -514,6 +519,10 @@
     top: 1%;
     position: relative;
     display: block;
+}
+
+.netexplorer-form {
+    width: 100%;
 }
 
 #controls-container {
@@ -685,26 +694,6 @@
 }
 
 
-/* DOES NOT WORK */
-#cyt-controls .info-tooltip .tooltip-inner {
-    text-align: left !important;
-    color: #777777 !important;
-    font-size: 14 !important;
-    background-color: white  !important;
-     max-width: 500px !important ;
-    /* If max-width does not work, try using width instead */
-    width: 300px !important;
-    padding: 10% !important;
-    opacity: 1 !important;
-    white-space: pre-line;
-    border-style: solid;
-    border-width: 2px;
-}
-
-#cyt-controls .info-tooltip .tooltip.in {
-  opacity: 1 !important;
-}
-
 .form-separator {
     height: 10px;
     border: 0;
@@ -739,6 +728,10 @@ input[type="file"] {
 }
 
 #dialog-confirm {
+    display: none;
+}
+
+#dialog-unconnected {
     display: none;
 }
 
@@ -1008,4 +1001,39 @@ input[type="file"] {
 #blast-results {
     font-size: 12px;
     color: #777777;
+}
+
+
+.ui-tooltip {
+    z-index: 10000000 !important;
+    white-space: pre-line !important;
+    min-width:130px;
+}
+
+.pfam-line-tooltip {
+    cursor: pointer;
+}
+.pfam-line-tooltip-subtitle {
+    font-size: 12px;
+    font-style: italic;
+}
+
+.pfam-line-tooltip:hover {
+    cursor: pointer;
+    opacity: 0.5;
+}
+
+.hom-table {
+    font-size: 12px;
+    color: #777777;
+}
+
+
+.pfam-line-table-td-scale {
+    margin-right: 0 !important;
+}
+
+.pfam-line-table-td-text {
+    text-align: center;
+    margin-right: 0 !important;
 }

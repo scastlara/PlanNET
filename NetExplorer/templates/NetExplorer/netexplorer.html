@@ -8,15 +8,14 @@
     <head>
         <link rel="stylesheet" href="{% static 'css/style.css' %}">
         <link rel="stylesheet" href="{% static 'css/footer.css' %}">
-        <link rel="stylesheet" href="{% static 'css/slider.css' %}">
         <link rel="stylesheet" href="{% static 'css/toggle-switch.css' %}">
         <link rel="stylesheet" href="{% static 'css/cytoscape.js-panzoom.css' %}">
         <link rel="stylesheet" href="{% static 'css/bootstrap-min.css' %}">
         <link rel="stylesheet" href="{% static 'css/bootstrap-switch.min.css' %}">
-        <link rel="stylesheet" href="{% static 'css/jquery-data-tables.css' %}">
+        <link rel="stylesheet" href="{% static 'css/slider.css' %}">
         <link rel="stylesheet" href="{% static 'css/jquery-ui.css' %}">
-        <link rel="stylesheet" href="{% static 'css/jquery-ui.structure.min.css' %}">
-        <link rel="stylesheet" href="{% static 'css/jquery-ui.theme.min.css' %}">
+        <link rel="stylesheet" href="{% static 'css/jquery-ui.structure-all.min.css' %}">
+        <link rel="stylesheet" href="{% static 'css/jquery-ui-all.theme.min.css' %}">
         <link rel="stylesheet" href="{% static 'css/bootstrap-select.min.css' %}">
         <link rel="shortcut icon" href="{% static 'Images/mini-logo.ico' %}">
         <title>PlanNET - Net Explorer</title>
@@ -132,7 +131,7 @@
 
                 <img class="app-icon-inside" id="cyt-explorer-icon" src="{% static 'Images/network-icon.png' %}"/>
                 <h2>Net Explorer</h2>
-                <a href="/">Back to PlanNET</a>
+                <a href="{% url index_view %}">Back to PlanNET</a>
 
 
 
@@ -141,13 +140,13 @@
                     <form id="add_node" class= "form" method="GET" action="{% url net_explorer %}">
                         {% csrf_token %}
                         <div class="form-group">
-                            <input type="text" class="form-control" name="genesymbol" placeholder="Enter Symbol">
+                            <input type="text" class="form-control netexplorer-form" name="genesymbol" placeholder="Enter Symbol">
 
-                            <select name="database" class="selectpicker">
+                            <select name="database" class="selectpicker" data-width="100%">
                                 <option value="" selected disabled>Select Database</option>
-                                <option value="Human">Human</option>
                                 <option value="Cthulhu">Cthulhu</option>
                                 <option value="Consolidated">Consolidated</option>
+                                <option value="Dresden">Dresden</option>
                             </select>
                             <button type="submit" value=" Send" class="btn btn-success" id="submit_add_node" ><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>Add</button>
                         </div>
@@ -204,16 +203,30 @@
         <div id="showconnections-container">
             <button id="show_connections" class="btn btn-default">
                 Show Connections
-            </button> <a data-toggle="tooltip" data-placement="bottom" title="
+            </button> <a class="info-tooltip" title="
                 This button will show all the interactions between the nodes displayed on the screen.
             "><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></a>
+            <br><br>
+            <!-- REMOVE UNCONNECTED  -->
+            <button id="remove-unconnected" class="btn btn-default">
+                Remove unconnected
+            </button> <a class="info-tooltip" title="
+                This button will remove all the nodes without a visible interaction (homology relationships included).
+            "><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></a>
+            <div id="dialog-unconnected" title="Delete Unconnected nodes?">
+                <p>
+                    <span class="ui-icon ui-icon-alert" style="float:left; margin:12px 12px 20px 0;"></span>
+                    All the nodes without a visible interaction will be removed. Are you sure you want to delete these nodes?
+                </p>
+            </div>
             <hr>
+
         </div>
 
 
             <!--- "On click" Behaviour -->
             <div id="on-click-container">
-                <h3>On Click <a  data-toggle="tooltip" data-placement="bottom"
+                <h3>On Click <a  class="info-tooltip"
                 title="
                     This option will determine what happens when you click on a node.
 
@@ -275,7 +288,7 @@
             </div>
 
             <div id="expression-container">
-                <h3>Show Expression Data <a class="info-tooltip" data-toggle="tooltip" data-placement="bottom" title="
+                <h3>Show Expression Data <a class="info-tooltip" title="
                     Select an expression data experiment to show the expression projected over the graph.
                     "><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></a>
                 </h3>
@@ -395,7 +408,6 @@
         <!-- SCRIPTS -->
         <script src="{% static 'js/jquery-min.js' %}"></script>
         <script src="{% static 'js/cytoscape.js' %}"></script>
-        <script src="{% static 'js/data-tables-min.js' %}"></script>
         <script src="{% static 'js/netexplorer-cytoscape-definition.js' %}"></script>
         <script src="{% static 'js/netexplorer-showhomologs.js' %}"></script>
         <script src="{% static 'js/get-card.js' %}"></script>
@@ -404,8 +416,9 @@
         <script src="{% static 'js/netexplorer-showconnections.js' %}"></script>
         <script src="{% static 'js/jquery_cookie.js' %}"></script>
         <script src="{% static 'js/bootstrap.min.js' %}"></script>
+        <script src="{% static 'js/jquery-ui-all.min.js' %}"></script>
         <script src="{% static 'js/bootstrap-select.min.js' %}"></script>
-        <script>$('[data-toggle="tooltip"]').tooltip();</script>
+        <!--<script>$('[data-toggle="tooltip"]').tooltip();</script>-->
         <script src="{% static 'js/cytoscape-panzoom.js' %}"></script>
         <script src="{% static 'js/card-overlay.js' %}"></script>
         <script src="{% static 'js/bootstrap-slider.js' %}"></script>
@@ -415,8 +428,18 @@
         <script src="{% static 'js/cytoscape-cola-min.js' %}"></script>
         <script src="{% static 'js/FileSaver.js' %}"></script>
         <script src="{% static 'js/bootstrap-switch.min.js' %}"></script>
-        <script src="{% static 'js/jquery-ui.min.js' %}"></script>
         <script src="{% static 'js/select-expression.js' %}"></script>
+
+        <script>
+            $( function() {
+                $( ".info-tooltip" ).tooltip({
+                    track: true,
+                    content: function(){
+                        return $(this).attr("title");
+                    }
+                });
+            } );
+        </script>
 
         <script>
         // Initialize slider to filter edges. Function to filter them is in cyto-netexplorer.js
@@ -437,14 +460,7 @@
 
         </script>
 
-        <script>
-        $(document).ready(function(){
-            $('.int-table').DataTable({
-                "order": [[ 1, "desc" ]]
-            });
 
-        });
-        </script>
 
 
 

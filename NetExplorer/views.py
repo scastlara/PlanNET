@@ -14,6 +14,7 @@ import textwrap
 import json
 import re
 import sys
+import logging
 
 # -----------------------
 # CONSTANTS
@@ -35,6 +36,7 @@ def query_node(symbol, database):
     node   = None
     symbol = symbol.replace(" ", "")
     if database == "Human":
+        symbol = symbol.upper()
         node = HumanNode(symbol, database)
     else:
         node = PredictedNode(symbol, database)
@@ -78,7 +80,8 @@ def substitute_human_symbols(symbols, database):
     """
     symbol_regexp = {
         "Cthulhu":      "cth1_",
-        "Consolidated": "OX_Smed"
+        "Consolidated": "OX_Smed",
+        "Dresden":      "dd_Smed",
     }
 
     newsymbols = list()
@@ -92,14 +95,15 @@ def substitute_human_symbols(symbols, database):
                 symbol = symbol.upper()
                 human_node = HumanNode(symbol, "Human")
                 homologs   = human_node.get_homologs(database)
-                for hom in homologs:
-                    newsymbols.append(hom.prednode.symbol)
+                for db in homologs:
+                    for hom in homologs[db]:
+                        newsymbols.append(hom.prednode.symbol)
             except (NodeNotFound, IncorrectDatabase):
                 # Node is not a human node :_(
-                print("Node is not a human node, try next symbol")
+                logging.info("Node is not a human node, try next symbol")
                 continue
 
-            print("%s does not match %s" %(symbol, symbol_regexp[database]))
+            logging.info("%s does not match %s" %(symbol, symbol_regexp[database]))
     return newsymbols
 
 
@@ -162,21 +166,31 @@ def get_card(request, symbol=None, database=None):
 
     try:
         card_node    = query_node(symbol, database)
-        card_node.get_domains()
-        nodes, edges = card_node.get_graphelements()
-        graph        = GraphCytoscape()
-        graph.add_elements(nodes)
-        graph.add_elements(edges)
-        print(card_node.domains_to_json())
+        if database != "Human":
+            print("NOT HUMAN!!!!")
+            card_node.get_domains()
+            nodes, edges = card_node.get_graphelements()
+            graph        = GraphCytoscape()
+            graph.add_elements(nodes)
+            graph.add_elements(edges)
+        else:
+            print("HUMAN")
+            homologs = card_node.get_homologs()
     except (NodeNotFound, IncorrectDatabase):
         return render(request, 'NetExplorer/404.html')
 
     if request.is_ajax():
-        response = {
-            'node'      : card_node,
-            'json_graph': graph.to_json(),
-            'domains'   : card_node.domains_to_json()
-        }
+        if database != "Human":
+            response = {
+                'node'      : card_node,
+                'json_graph': graph.to_json(),
+                'domains'   : card_node.domains_to_json()
+            }
+        else:
+            response = {
+                'node' : card_node,
+                'homologs': homologs
+            }
         return render(request, 'NetExplorer/gene_card.html', response)
     else:
         return render(request, 'NetExplorer/gene_card_fullscreen.html', { 'node': card_node })
@@ -202,12 +216,12 @@ def gene_search(request):
             if database is None: # No database selected
                 search_error = 2
                 return render(request, 'NetExplorer/gene_search.html', {'res': nodes, 'search_error': search_error } )
-
             for genesymbol in symbols:
                 try:
                     search_node = query_node(genesymbol, database)
                     nodes.append(search_node)
                 except (NodeNotFound, IncorrectDatabase):
+                    print("ERROR")
                     # No search results...
                     search_error = 1
 
@@ -232,7 +246,7 @@ def net_explorer(request):
         if "database" in request.GET:
             database     = request.GET['database']
         else:
-            print("NO DATABASE")
+            logging.info("NO DATABASE")
 
         symbols       = substitute_human_symbols(symbols, database)
         graphobject   = GraphCytoscape()
@@ -305,10 +319,10 @@ def upload_graph(request, json_text):
         try: # Check if JSON is a graph declaration
             json_graph[u'nodes']
         except KeyError:
-            print("Json is not a graph declaration (no nodes)")
+            logging.info("Json is not a graph declaration (no nodes)")
             return render(request, 'NetExplorer/netexplorer.html', {'json_err': True})
     except ValueError as err:
-        print("Not a valid Json File %s\n" % (err))
+        logging.info("Not a valid Json File %s\n" % (err))
         return render(request, 'NetExplorer/netexplorer.html', {'json_err': True})
 
     return render(request, 'NetExplorer/netexplorer.html', {'upload_json': graph_content, 'no_layout': no_layout})
@@ -329,11 +343,11 @@ def blast(request):
         database = request.POST['database'].lower()
         results = list()
         if request.FILES:
-            print("There is a file")
+            logging.info("There is a file")
             # Must check if FASTA
             fasta = request.FILES['fastafile'].read()
         else:
-            print("No-file")
+            logging.info("No-file")
             # Must check if FASTA/plain or otherwise not valid
             fasta = request.POST['fasta_plain']
 
@@ -389,7 +403,7 @@ def map_expression(request):
             node = query_node(node_id, database)
             expression[node_id] = node.get_expression(experiment, sample)
         json_data = json.dumps(expression)
-        print(json_data)
+        logging.info(json_data)
         return HttpResponse(json_data, content_type="application/json")
     else:
         return render(request, 'NetExplorer/404.html')

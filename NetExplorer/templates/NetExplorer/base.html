@@ -8,6 +8,9 @@
         <link rel="stylesheet" href="{% static 'css/bootstrap-min.css' %}">
         <link rel="stylesheet" href="{% static 'css/jquery-data-tables.css' %}">
         <link rel="stylesheet" href="{% static 'css/bootstrap-select.min.css' %}">
+        <link rel="stylesheet" href="{% static 'css/jquery-ui.css' %}">
+        <link rel="stylesheet" href="{% static 'css/jquery-ui.structure-all.min.css' %}">
+        <link rel="stylesheet" href="{% static 'css/jquery-ui-all.theme.min.css' %}">
         <link rel="shortcut icon" href="{% static 'Images/mini-logo.ico' %}">
         <title>PlanNET {% block title %} {% endblock title %}</title>
     </head>
@@ -16,15 +19,15 @@
         <div id="page-container">
             <div id="content">
                 <div id="logo-container">
-                    <a href="/"> <img id="logoheader" src="{% static 'Images/logo-new.png' %}"/> </a>
+                    <a href="{% url index_view %}"> <img id="logoheader" src="{% static 'Images/logo-new.png' %}"/> </a>
                 </div>
 
                 <nav class="navbar navbar-default">
                     <div class="container-fluid">
                         <ul class="nav navbar-nav">
-                            <li id="navbar-home"><a href="/">Home</a></li>
-                            <li id="navbar-tutorial"><a href="/tutorial">Tutorial</a></li>
-                            <li id="navbar-downloads"><a href="/downloads">Downloads</a></li>
+                            <li id="navbar-home"><a href="{% url index_view %}">Home</a></li>
+                            <li id="navbar-tutorial"><a href="{% url tutorial %}">Tutorial</a></li>
+                            <li id="navbar-downloads"><a href="{% url downloads %}">Downloads</a></li>
                             <li class="dropdown">
                                 <a class="dropdown-toggle" data-toggle="dropdown" href="#">Tools
                                     <span class="caret"></span>
@@ -36,7 +39,7 @@
                                     <li><a href="{% url path_finder %}">Pathway Finder</a></li>
                                 </ul>
                             </li>
-                            <li id="navbar-about"><a href="/about">About</a></li>
+                            <li id="navbar-about"><a href="{% url about %}">About</a></li>
                         </ul>
                     </div>
                 </nav>
@@ -83,12 +86,14 @@
     </div>
 
         <script src="{% static 'js/jquery-min.js' %}"></script>
-        <script src="{% static 'js/data-tables-min.js' %}"></script>
+        <script src="{% static 'js/jquery-data-tables-min.js' %}"></script>
         <script src="{% static 'js/bootstrap-min.js' %}"></script>
         <script src="{% static 'js/bootstrap-select.min.js' %}"></script>
         <script src="{% static 'js/back-to-top.js' %}"></script>
         <script src="{% static 'js/card-overlay.js' %}"></script>
         <script>$('[data-toggle="tooltip"]').tooltip({container:'body'});</script>
+        <script src="{% static 'js/jquery-ui-all.min.js' %}"></script>
+
 
         <!-- This function registers a "click event" on a small-searchpanel and
              sends to Django's view "get_card" the variables "symbol" and "database".
