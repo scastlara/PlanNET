@@ -17,7 +17,7 @@ sys.path.append(project)
 
 
 # Add the path to 3rd party django application and to django itself.
-sys.path.append('/home/sergio/code/PlaNET')
+sys.path.append('/home/sergio/code/PlanNET')
 os.environ['DJANGO_SETTINGS_MODULE'] = 'mysite.apache.override'
 import django.core.handlers.wsgi
 application = django.core.handlers.wsgi.WSGIHandler()
