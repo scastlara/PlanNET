@@ -161,7 +161,8 @@ class Node(object):
         query = PATH_QUERY % (self.database, plen, target.database, self.symbol, target.symbol)
         query += """RETURN DISTINCT p,
                     reduce(int_prob = 0.0, r IN relationships(p) | int_prob + toFloat(r.int_prob))/length(p) AS total_prob"""
-        results = graph.run(query).data()
+        results = graph.run(query)
+        results = results.data()
 
         if results:
             paths = list()
