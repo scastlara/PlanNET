@@ -11,7 +11,7 @@ from colour import Color
 import math
 
 graph     = Graph("http://127.0.0.1:7474/db/data/", password="5961")
-DATABASES = set(sorted(["Cthulhu", "Dresden", "Consolidated", "Newmark", "Graveley", "Illuminaplus"]))
+DATABASES = set(["Cthulhu", "Dresden", "Consolidated", "Newmark", "Graveley", "Illuminaplus"])
 
 
 # QUERIES
