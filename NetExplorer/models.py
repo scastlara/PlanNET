@@ -11,7 +11,7 @@ from colour import Color
 import math
 
 graph     = Graph("http://127.0.0.1:7474/db/data/", password="5961")
-DATABASES = set(["Cthulhu", "Dresden", "Consolidated"])
+DATABASES = set(sorted(["Cthulhu", "Dresden", "Consolidated", "Newmark", "Graveley", "Illuminaplus"]))
 
 
 # QUERIES
@@ -465,7 +465,7 @@ class PredictedNode(Node):
     """
     Class for planarian nodes.
     """
-    allowed_databases = set(["Cthulhu", "Consolidated", "Dresden"])
+    allowed_databases = DATABASES
 
     def __init__(self, symbol, database, sequence=None, orf=None, homolog=None, important=False):
         super(PredictedNode, self).__init__(symbol, database)
