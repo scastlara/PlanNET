@@ -1273,7 +1273,8 @@ input[type="file"] {
     bottom: 10px;
     position: absolute;
     z-index: 100;
-    width: 300px;
+    min-width: 300px;
+    max-width: 60%;
 }
 
 
