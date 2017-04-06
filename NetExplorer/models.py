@@ -48,6 +48,13 @@ GO_HUMAN_NODE_QUERY = """
 """
 
 # ------------------------------------------------------------------------------
+DOMAIN_NODES_QUERY = """
+    MATCH (n:%s)-[:HAS_DOMAIN]->(m:Pfam)
+    WHERE m.accession = "%s"
+    RETURN n.symbol as symbol
+"""
+
+# ------------------------------------------------------------------------------
 
 EXPERIMENT_QUERY = """
     MATCH (n:Experiment)
@@ -300,12 +307,26 @@ class Domain(object):
     """
     Class for Pfam domains.
     """
-    def __init__(self, accession, description, identifier, mlength):
+    def __init__(self, accession, description=None, identifier=None, mlength=None):
+        pfam_regexp = r'PF\d{5}'
+        if not re.match(pfam_regexp, accession):
+            raise NotPFAMAccession(accession)
         self.accession   = accession
         self.description = description
         self.identifier  = identifier
         self.mlength     = mlength
 
+    def get_nodes(self, database):
+        query = DOMAIN_NODES_QUERY % (database, self.accession)
+        results = graph.run(query)
+        results = results.data()
+        nodes = list()
+        if results:
+            for row in results:
+                nodes.append(row['symbol'])
+            return nodes
+        else:
+            raise NodeNotFound(self.accession, "Pfam-%s" % database)
 
 # ------------------------------------------------------------------------------
 class HasDomain(object):
@@ -857,7 +878,8 @@ class GeneOntology(object):
             else:
                 self.__query_go()
         else:
-            raise NotGOAccession(self.accession)
+            print(self.accession)
+            raise NotGOAccession(self)
 
     def __query_go(self):
         """
@@ -982,6 +1004,14 @@ class NotGOAccession(Exception):
         self.go = go_object
     def __str__(self):
         return "GO accession: %s is not an allowed GO accession (GO:\\d{7})" % (self.go.accession)
+
+# ------------------------------------------------------------------------------
+class NotPFAMAccession(Exception):
+    """Exception when PFAM accession provided to GO object is not a GO accession"""
+    def __init__(self, acc):
+        self.acc = acc
+    def __str__(self):
+        return "PFAM accession: %s is not an allowed PFAM accession (PFAM:\\d{7})" % (self.acc)
 
 # ------------------------------------------------------------------------------
 class NoHomologFound(Exception):

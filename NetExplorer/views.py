@@ -118,22 +118,38 @@ def substitute_human_symbols(symbols, database):
         "Newmark":      r"Contig\d+",
         "Illuminaplus": r"Gene_\d+_.+"
     }
+    go_regexp   = r"GO:\d{7}"
+    pfam_regexp = r'PF\d{5}'
     newsymbols = list()
 
     for symbol in symbols:
         symbol = symbol.replace(" ", "")
         symbol = symbol.replace("'", "")
         symbol = symbol.replace('"', '')
+        print(symbol)
         if re.match(symbol_regexp[database], symbol):
             newsymbols.append(symbol)
         else:
             wildcard_symbols = list()
-            try:
-                wildcard_symbols = GeneOntology(symbol, human=True).human_nodes
-            except (NotGOAccession, NodeNotFound):
-                # Symbol must be Human, could be wildcard
+            if (re.match(go_regexp, symbol)):
+                # GO
+                print("GO")
+                try:
+                    wildcard_symbols.extend(GeneOntology(symbol, human=True).human_nodes)
+                except (NodeNotFound):
+                    continue
+            elif (re.match(pfam_regexp, symbol)):
+                # PFAM
+                domain = Domain(accession=symbol)
+                print(domain.accession)
+                try:
+                    newsymbols.extend(domain.get_nodes(database))
+                except (NodeNotFound):
+                    continue
+                continue
+            else:
+                # MUST BE HUMAN
                 wildcard_symbols.extend( substitue_wildcards([symbol]) )
-            # Human node!
             print(wildcard_symbols)
             for final_symbol in wildcard_symbols:
                 try:
