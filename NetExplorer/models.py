@@ -11,8 +11,19 @@ from colour import Color
 import math
 import re
 
-graph     = Graph("http://127.0.0.1:7474/db/data/", password="5961")
-DATABASES = set(["Cthulhu", "Dresden", "Consolidated", "Newmark", "Graveley", "Illuminaplus", "Smed454"])
+GRAPH     = Graph("http://127.0.0.1:7474/db/data/", password="5961")
+DATABASES = set([
+    "Cthulhu",
+    "Dresden",
+    "Consolidated",
+    "Newmark",
+    "Graveley",
+    "Illuminaplus",
+    "Smed454",
+    "Adamidi",
+    "Blythe",
+    "Pearson",
+])
 
 
 # QUERIES
@@ -202,7 +213,7 @@ class Node(object):
             'score': Score of the given path.
         """
         query = PATH_QUERY % (self.database, plen, target.database, self.symbol, target.symbol)
-        results = graph.run(query)
+        results = GRAPH.run(query)
         results = results.data()
 
         if results:
@@ -243,7 +254,7 @@ class Node(object):
         """
         query = DOMAIN_QUERY % (self.database, self.symbol)
 
-        results = graph.run(query)
+        results = GRAPH.run(query)
         results = results.data()
 
         if results:
@@ -318,7 +329,7 @@ class Domain(object):
 
     def get_nodes(self, database):
         query = DOMAIN_NODES_QUERY % (database, self.accession)
-        results = graph.run(query)
+        results = GRAPH.run(query)
         results = results.data()
         nodes = list()
         if results:
@@ -375,7 +386,7 @@ class PredInteraction(object):
         """
         query = PREDINTERACTION_QUERY % (self.database, self.database, self.source_symbol, self.target.symbol)
 
-        results = graph.run(query)
+        results = GRAPH.run(query)
         results = results.data()
 
         if results:
@@ -423,7 +434,7 @@ class HumanNode(Node):
     def __query_node(self):
         query = HUMANNODE_QUERY % (self.database, self.symbol)
 
-        results = graph.run(query)
+        results = GRAPH.run(query)
         results = results.data()
         if results:
             for row in results:
@@ -447,7 +458,7 @@ class HumanNode(Node):
             homologs[database] = list()
             query = HOMOLOGS_QUERY % (database, self.symbol)
             logging.info(query)
-            results  = graph.run(query)
+            results  = GRAPH.run(query)
             results  = results.data()
             if results:
                 for row in results:
@@ -485,7 +496,7 @@ class WildCard(object):
 
     def get_symbols(self):
         query   = WILDCARD_QUERY % (self.database, self.search)
-        results = graph.run(query)
+        results = GRAPH.run(query)
         results = results.data()
         if results:
             list_of_symbols = list()
@@ -533,7 +544,7 @@ class PredictedNode(Node):
         "Gets node from neo4j and fills sequence, orf and length attributes."
         query = PREDNODE_QUERY % (self.database, self.symbol)
 
-        results = graph.run(query)
+        results = GRAPH.run(query)
         results = results.data()
 
         if results:
@@ -584,7 +595,7 @@ class PredictedNode(Node):
         Fills attribute neighbours, which will be a list of PredInteraction objects.
         """
         query = NEIGHBOURS_QUERY % (self.database, self.database, self.symbol)
-        results = graph.run(query)
+        results = GRAPH.run(query)
         results = results.data()
         if results:
             for row in results:
@@ -642,7 +653,7 @@ class PredictedNode(Node):
         """
         expression = None
         query = EXPRESSION_QUERY % (self.database, self.symbol, experiment.id, sample)
-        results = graph.run(query)
+        results = GRAPH.run(query)
         results = results.data()
         if results:
             for row in results:
@@ -694,7 +705,7 @@ class Experiment(object):
         ranges defined aswell as the reference.
         """
         query   = EXPERIMENT_QUERY % (self.id)
-        results = graph.run(query)
+        results = GRAPH.run(query)
         results = results.data()
         if results:
             self.maxexp    = results[0]["maxexp"]
@@ -844,7 +855,7 @@ class ExperimentList(object):
         self.samples   = dict()
         query   = ALL_EXPERIMENTS_QUERY
         # Add all the samples for each experiment
-        results = graph.run(query)
+        results = GRAPH.run(query)
         results = results.data()
         if results:
             for row in results:
@@ -886,7 +897,7 @@ class GeneOntology(object):
         Query DB and get domain
         """
         query   = GO_QUERY % self.accession
-        results = graph.run(query)
+        results = GRAPH.run(query)
         results = results.data()
         if results:
             self.domain = results[0]['domain']
@@ -907,7 +918,7 @@ class GeneOntology(object):
         Gets Human nodes symbols with annotated GO
         """
         query   = GO_HUMAN_NODE_QUERY % self.accession
-        results = graph.run(query)
+        results = GRAPH.run(query)
 
         results = results.data()
         if results:
