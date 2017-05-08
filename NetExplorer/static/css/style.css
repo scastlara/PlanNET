@@ -1474,7 +1474,14 @@ strong{
 }
 
 .tutorial-highlight-netexplorer {
-    background-color: #5CB85C;
+    background-color: #5CB85C !important;
+    color: white !important;
+    font-weight: bold;
+}
+
+.tutorial-highlight-pathfinder {
+    background-color: #EC971F !important;
+    color: white !important;
     font-weight: bold;
 }
 
@@ -1497,6 +1504,11 @@ strong{
     color: #777777;
 }
 
+.tutorial-flag {
+    height: 20px !important;
+    width: auto;
+    display: inline-block;
+}
 .glyphicon-home:hover {
     opacity: 0.7;
 }
@@ -1513,6 +1525,27 @@ strong{
     border-radius:4px;
 }
 
+kbd {
+    text-align: center;
+    height: 100px;
+}
+
 .app-title{
     color: #777777 !important;
+}
+
+.tutorial-float {
+    float: right !important;
+}
+
+.tutorial-btn {
+    display: inline-block;
+    text-align: center;
+    padding: 2px;
+    font-family: monospace;
+    font-size: 12px;
+    border-color: #cccccc;
+    border-width: 1;
+    border-style: solid;
+    border-radius:4px;
 }
