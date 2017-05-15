@@ -573,7 +573,6 @@ class PredictedNode(Node):
 
         results = GRAPH.run(query)
         results = results.data()
-        print("ONCE: %s" % self.symbol )
 
         if results:
             for row in results:
