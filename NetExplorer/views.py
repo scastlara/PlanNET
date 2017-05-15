@@ -445,7 +445,6 @@ def blast(request):
         with tempfile.NamedTemporaryFile() as temp:
             temp.write(fasta)
             temp.flush()
-
             # Run BLAST
             pipe = Popen([request.POST['type'], "-evalue", "1e-10", "-db", BLAST_DB_DIR + database , "-query", temp.name, '-outfmt', '6'], stdout=PIPE, stderr=STDOUT)
             stdout, stderr = pipe.communicate()
