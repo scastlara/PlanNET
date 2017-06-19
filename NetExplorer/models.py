@@ -315,7 +315,6 @@ class Node(object):
             json_data   = json.dumps(all_domains)
             return json_data
 
-
 # ------------------------------------------------------------------------------
 class Homology(object):
     """
@@ -437,6 +436,12 @@ class PredInteraction(object):
             element['data']['colorEDGE']   = "#CA6347"
 
         return element
+
+    def __hash__(self):
+        return hash((self.source_symbol, self.target.symbol, self.database, self.parameters['int_prob']))
+
+    def __eq__(self, other):
+        return (self.source_symbol, self.target.symbol, self.database, self.parameters['int_prob']) == (other.source_symbol, other.target.symbol, other.database, other.parameters['int_prob'])
 
 
 # ------------------------------------------------------------------------------
@@ -729,6 +734,12 @@ class PredictedNode(Node):
         else:
             self.gene_ontologies = list()
 
+    def __hash__(self):
+        return hash((self.symbol, self.database, self.important))
+
+    def __eq__(self, other):
+        return (self.symbol, self.database, self.important) == (other.symbol, other.database, other.important)
+
 
 # ------------------------------------------------------------------------------
 class Experiment(object):
@@ -816,8 +827,8 @@ class GraphCytoscape(object):
     Class for a graph object
     """
     def __init__(self):
-        self.nodes = list()
-        self.edges = list()
+        self.nodes = set()
+        self.edges = set()
 
     def add_elements(self, elements):
         """
@@ -826,9 +837,9 @@ class GraphCytoscape(object):
         """
         for element in elements:
             if isinstance(element, Node):
-                self.nodes.append( element )
+                self.nodes.add( element )
             elif isinstance(element, PredInteraction):
-                self.edges.append( element )
+                self.edges.add( element )
             else:
                 raise WrongGraphObject(element)
 
