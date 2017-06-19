@@ -5,7 +5,7 @@ $("#show_connections").on("click", function(){
 
     $.ajax({
         type: "GET",
-        url: "/show_connections",
+        url: "/PlanNET/show_connections",
         cache: true,
         data: {
             'nodes': elements.node_ids,
@@ -30,16 +30,10 @@ $("#show_connections").on("click", function(){
 
             // Show only edges above slider threshold
             var value = $('#sl1').val();
-            cy.filter(function(i, element){
-                if ( element.isEdge() ) {
-                    if( element.data("probability") >= value ){
-                        element.show();
-                        return true;
-                    }
-                    element.hide();
-                }
-                // Not an edge
-            });
+            var to_show_selector = "edge[probability>=" + value + "]";
+            var to_hide_selector = "edge[probability<" + value + "]";
+            cy.elements(to_show_selector).show();
+            cy.elements(to_hide_selector).hide();
             // Show or hide interactions depending on plen
             checkPlen($('input[name=show-plen]:checked').val(), cy);
         },
