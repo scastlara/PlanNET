@@ -9,6 +9,8 @@ from django.template    import RequestContext
 from NetExplorer.models import *
 from subprocess import Popen, PIPE, STDOUT
 from django.contrib.staticfiles.templatetags.staticfiles import static
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, login, logout
 import tempfile
 import textwrap
 import json
@@ -541,6 +543,31 @@ def about(request):
     View for about
     """
     return render(request, 'NetExplorer/about.html', {'databases': sorted(DATABASES)})
+
+# ------------------------------------------------------------------------------
+def register(request):
+    """
+    Registration view
+    """
+    if 'usr' in request.POST and 'pwd' in request.POST:
+        user = authenticate(username=request.POST['usr'], password=request.POST['pwd'])
+        if user is not None:
+            if user is not None:
+                # A backend authenticated the credentials
+                login(request, user)
+                return render(request, 'NetExplorer/index.html')
+            else:
+                # No backend authenticated the credentials
+                pass
+    return render(request, 'NetExplorer/login.html')
+
+
+def logout_view(request):
+    """
+    Logout view
+    """
+    logout(request)
+    return render(request, 'NetExplorer/index.html')
 
 # ------------------------------------------------------------------------------
 def handler404(request):
