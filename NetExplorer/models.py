@@ -14,7 +14,6 @@ import time
 
 GRAPH     = Graph("http://127.0.0.1:7474/db/data/", password="5961")
 DATABASES = set([
-    "Cthulhu",
     "Dresden",
     "Consolidated",
     "Newmark",
@@ -25,6 +24,11 @@ DATABASES = set([
     "Blythe",
     "Pearson",
 ])
+
+PRIVATE_DATABASES = set([
+    'Cthulhu'
+])
+
 
 
 # QUERIES
