@@ -1,4 +1,4 @@
-# PlaNET
+# PlanNET
 
 <img src="https://github.com/scastlara/PlaNet/blob/master/NetExplorer/static/Images/logo-new-version2.png" width="500">
 
