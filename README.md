@@ -11,6 +11,8 @@ Application to explore the different Schmidtea mediterranea predicted interactom
 
 At the [Computational Genomics Lab](https://compgen.bio.ub.edu) we have trained a Random Forest classifier to predict planarian protein-protein interactions by using homology inferences (see [link to the published paper](https://compgen.bio.ub.edu)).
 
+To see the code used to predict the planarian networks, go to this [repository](https://github.com/scastlara/PlanNET-software).
+
 > PlanNET was made using Django (https://www.djangoproject.com/), neo4j (https://neo4j.com/) and cytoscape js (http://js.cytoscape.org/).
 
 # Copyright
