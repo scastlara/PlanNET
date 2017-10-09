@@ -18,8 +18,8 @@ DATABASES = {
         'NAME': 'db_plannet',                      # Or path to database file if using sqlite3.
         'USER': 'wma',                      # Not used with sqlite3.
         'PASSWORD': 'k1k1cantava1aRANA',                  # Not used with sqlite3.
-        'HOST': '161.116.70.62',                      # Set to empty string for localhost. Not used with sqlite3.
-        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
+        'HOST': '192.168.0.2',                      # Set to empty string for localhost. Not used with sqlite3.
+        'PORT': '3306',                      # Set to empty string for default. Not used with sqlite3.
     }
 }
 
