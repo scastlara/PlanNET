@@ -348,7 +348,7 @@ def upload_graph(request, json_text):
 
     try: # Check if file is a valid JSON
         json_graph = json.loads(graph_content)
-        all_experiments = ExperimentList()
+        all_experiments = ExperimentList(request.user)
         try: # Check if JSON is a graph declaration
             json_graph[u'nodes']
         except KeyError:
