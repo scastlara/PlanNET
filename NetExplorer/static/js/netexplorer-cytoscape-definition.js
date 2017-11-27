@@ -88,6 +88,10 @@ var stylesheet = cytoscape.stylesheet()
         .css({
             'shape': 'octagon',
         })
+    .selector('node[database = "Gbrna"]')
+        .css({
+            'shape': 'diamond',
+        })
     .selector('node[database = "Human"]')
         .css({
             'width': 20,
