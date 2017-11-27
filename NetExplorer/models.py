@@ -26,6 +26,7 @@ DATABASES = set([
     "Adamidi",
     "Blythe",
     "Pearson",
+    "GBRNA",
 ])
 
 ALL_DATABASES = set([
@@ -39,6 +40,7 @@ ALL_DATABASES = set([
     "Blythe",
     "Pearson",
     'Cthulhu',
+    "GBRNA",
 ])
 
 
@@ -991,11 +993,12 @@ class GraphCytoscape(object):
         Takes a list of symbols and return the necessary GraphCytoscape with Human or PredictedNode objects
         """
         symbol_regexp = {
-            "Cthulhu":      r"cth1_",     "Consolidated": r"OX_Smed",
-            "Dresden":      r"dd_Smed",   "Graveley":     r"CUFF\.\d+\.\d+",
-            "Newmark":      r"Contig\d+", "Illuminaplus": r"Gene_\d+_.+",
-            "Adamidi":      r"contig\d+|isotig\d+", "Blythe":       r"AAA\.454ESTABI\.\d+",
-            "Pearson":      r"BPKG\d+", "Smed454":      r"90e_\d+|gnl\|UG\|Sme#S\d+/"
+            "Cthulhu": r"cth1_",               "Consolidated": r"OX_Smed",
+            "Dresden": r"dd_Smed",             "Graveley":     r"CUFF\.\d+\.\d+",
+            "Newmark": r"Contig\d+",           "Illuminaplus": r"Gene_\d+_.+",
+            "Adamidi": r"contig\d+|isotig\d+", "Blythe":       r"AAA\.454ESTABI\.\d+",
+            "Pearson": r"BPKG\d+",             "Smed454":      r"90e_\d+|gnl\|UG\|Sme#S\d+/",
+            "GBRNA":   r"\w{2}\d{6}\.\d/"
         }
         go_regexp   = r"GO:\d{7}"
         pfam_regexp = r'PF\d{5}'
