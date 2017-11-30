@@ -10,6 +10,7 @@ $(".cn-experiment-dropdown li a").click(function(){
   $(this).parents(".dropdown").find('.btn').val($(this).data('value'));
   alert("EXPERIMENT");
   $(".cn-exp-controls").show();
+  $(".cn-experiment-upload-btn").hide();
 });
 
 

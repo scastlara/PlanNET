@@ -1785,6 +1785,7 @@ kbd {
   height: 100%;
   padding: 2%;
   color: #777777;
+  text-align: center;
 }
 
 .cn-experiment {

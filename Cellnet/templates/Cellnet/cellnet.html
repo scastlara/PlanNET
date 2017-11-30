@@ -29,17 +29,22 @@
             </div>
             <img class="app-icon-inside" id="cyt-netexplorer-icon" src="{% static 'Images/cellnet-icon.png' %}"/>
             <div class="app-title"><h2 id="netexplorer-title">CellNet</h2></div>
+            <hr>
           </div>
+          <br>
           <!-- NETWORK -->
           <h3>Network</h3>
           <div class="btn btn-default cn-network-btn">
             <span class="glyphicon glyphicon-open" style="vertical-align: middle;"></span>
             Upload Graph
           </div>
-          <div class="btn btn-default netexplorer-view cn-network-btn" type="submit">
+          <a href="{% url net_explorer %}">
+            <div class="btn btn-default netexplorer-view cn-network-btn" type="submit">
               <img src="{% static 'Images/netexplorer-mini.png' %}" class="netexplorer-mini"/>
               Go to NetExplorer
-          </div>
+            </div>
+          </a>
+          <br><br>
           <!-- SELECT EXPERIMENT -->
           <h3>Select Experiment</h3>
           <div class="dropdown">
@@ -53,12 +58,20 @@
                 <li><a href="#">Exp 3</a></li>
               </ul>
           </div>
+          <span class="cn-experiment-upload-btn"><br>or<br></span>
+          <div class="btn btn-default cn-experiment-upload-btn">
+            <span class="glyphicon glyphicon-open" style="vertical-align: middle;"></span>
+            Upload Experiment
+          </div>
+
           <div class="cn-exp-controls">
             <div class="btn btn-default">
               <span class="glyphicon glyphicon-info-sign"></span>
               More About Experiment
             </div>
             <div class="cn-celltype-select">
+              <br>
+              <!-- Cell Type -->
               <h4>Select Cell Type</h4>
               <div class="dropdown">
                 <button class="btn btn-default dropdown-toggle cn-celltype" type="button" data-toggle="dropdown">
