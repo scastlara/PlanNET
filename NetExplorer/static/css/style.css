@@ -1783,7 +1783,8 @@ kbd {
 
 .cn-controls {
   height: 100%;
-  padding: 5%;
+  padding: 2%;
+  color: #777777;
 }
 
 .cn-experiment {
@@ -1813,4 +1814,8 @@ kbd {
 .cn-network-btn {
   width: 45%;
   padding: 10px;
+}
+
+.cnet-controls-header {
+  text-align: center;
 }
