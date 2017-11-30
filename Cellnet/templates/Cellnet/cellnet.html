@@ -1,0 +1,85 @@
+<html>
+    <meta charset="utf-8">
+    {% load staticfiles %}
+
+  <head>
+      <link rel="stylesheet" href="{% static 'css/style.css' %}">
+      <link rel="stylesheet" href="{% static 'css/bootstrap-min.css' %}">
+      <link rel="stylesheet" href="{% static 'css/jquery-ui.css' %}">
+      <link rel="stylesheet" href="{% static 'css/jquery-ui.structure-all.min.css' %}">
+      <link rel="stylesheet" href="{% static 'css/jquery-ui-all.theme.min.css' %}">
+      <title>PlanNET - CellNet</title>
+  </head>
+
+  <body>
+
+    <div class="cn-content">
+
+      <div class="row">
+        <div class="col-sm-9 cn-graph"></div>
+        <div class="col-sm-3 cn-controls">
+          <!-- CONTROLS -->
+
+          <!-- NETWORK -->
+          <h3>Network</h3>
+          <div class="btn btn-default cn-network-btn">
+            <span class="glyphicon glyphicon-open" style="vertical-align: middle;"></span>
+            Upload Graph
+          </div>
+          <div class="btn btn-default netexplorer-view cn-network-btn" type="submit">
+              <img src="{% static 'Images/netexplorer-mini.png' %}" class="netexplorer-mini"/>
+              Go to NetExplorer
+          </div>
+          <!-- SELECT EXPERIMENT -->
+          <h3>Select Experiment</h3>
+          <div class="dropdown">
+            <button class="btn btn-default dropdown-toggle cn-experiment" type="button" data-toggle="dropdown">
+              Experiment
+              <span class="caret"></span></button>
+              <ul class="dropdown-menu cn-experiment-dropdown">
+                <!-- This will be filled by Query -->
+                <li><a href="#">Exp 1</a></li>
+                <li><a href="#">Exp 2</a></li>
+                <li><a href="#">Exp 3</a></li>
+              </ul>
+          </div>
+          <div class="cn-exp-controls">
+            <div class="btn btn-default">
+              <span class="glyphicon glyphicon-info-sign"></span>
+              More About Experiment
+            </div>
+            <div class="cn-celltype-select">
+              <h4>Select Cell Type</h4>
+              <div class="dropdown">
+                <button class="btn btn-default dropdown-toggle cn-celltype" type="button" data-toggle="dropdown">
+                  Cell Type
+                  <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu cn-celltype-dropdown">
+                  <!-- This will be filled by Query -->
+                  <li><a href="#">NeoBlasts</a></li>
+                  <li><a href="#">Muscle</a></li>
+                  <li><a href="#">Neural</a></li>
+                </ul>
+              </div> <!-- dropdown -->
+            </div> <!-- cn-celltype-select-->
+
+
+          </div> <!-- cn-exp-controls -->
+
+
+
+        </div> <!-- cn-controls -->
+      </div> <!-- row -->
+    </div> <!-- cn-content -->
+
+
+
+
+    <script src="{% static 'js/jquery-min.js' %}"></script>
+    <script src="{% static 'js/cytoscape.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap-slider.js' %}"></script>
+    <script src="{% static 'js/cellnet.js' %}"></script>
+  </body>
+</html>
