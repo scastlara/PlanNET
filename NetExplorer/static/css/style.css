@@ -111,17 +111,21 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .row-app {
-    width: 100%;
+    width: 60%;
+    margin-left: 15% !important;
     margin-bottom: 1%;
 }
 
 .app-container {
     text-align: center;
     float: left;
-    height: 300;
+    height: 100%;
     width: 100%;
 }
 
+.rowcol {
+  height: 15%;
+}
 
 .app-button {
     position:relative;
@@ -162,6 +166,27 @@ h1, h2, h3, h4, h5, h6 {
 
 .btn-blast {
     background-color: #a265c2;
+    color: white;
+}
+
+
+.panel-cellnet {
+    border-color: #FDD4D4 !important;
+    border-style: solid !important;
+}
+
+.panel-cellnet .panel-heading {
+    background-color: #FDD4D4 !important;
+    border-color: #FDD4D4 !important;
+}
+
+.btn-cellnet:hover {
+    background-color: #d94848;
+    color: white !important;
+}
+
+.btn-cellnet {
+    background-color: #FA5556;
     color: white;
 }
 
