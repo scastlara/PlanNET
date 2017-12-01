@@ -15,6 +15,12 @@ To see the code used to predict the planarian networks, go to this [repository](
 
 > PlanNET was made using Django (https://www.djangoproject.com/), neo4j (https://neo4j.com/) and cytoscape js (http://js.cytoscape.org/).
 
+# Cite
+```
+S Castillo-Lara, J F Abril
+PlanNET: homology-based predicted interactome for multiple planarian transcriptomes
+Bioinformatics, AOP Nov 24th, 2017, 10.1093/bioinformatics/btx738
+```
 # Copyright
 ```
 PlanNET web application to explore the interactomes of Schmidtea mediterranea.
