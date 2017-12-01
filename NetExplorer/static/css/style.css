@@ -324,6 +324,13 @@ h1, h2, h3, h4, h5, h6 {
     color: #777777;
 }
 
+.card-overlay-netcell-uploadgraph {
+  height: 40% !important;
+  width: 50% !important;
+  right: 25% !important;
+  top: 30% !important;
+}
+
 .close-overlay, #click {
     cursor:
     pointer;
@@ -338,6 +345,12 @@ h1, h2, h3, h4, h5, h6 {
     -webkit-box-shadow: 10px 0px 27px 0px rgba(0,0,0,0.15);
     -moz-box-shadow: 10px 0px 27px 0px rgba(0,0,0,0.15);
     box-shadow: 10px 0px 27px 0px rgba(0,0,0,0.15);
+}
+
+.button-container-netcell {
+  background-color: #FDD4D4 !important;
+  right: 25% !important;
+  top: 30% !important;
 }
 
 .close-overlay {
@@ -1844,4 +1857,8 @@ kbd {
 
 .cnet-controls-header {
   text-align: center;
+}
+
+.upload-container {
+  width: 60%;
 }

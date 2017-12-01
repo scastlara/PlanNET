@@ -34,7 +34,7 @@
           <br>
           <!-- NETWORK -->
           <h3>Network</h3>
-          <div class="btn btn-default cn-network-btn">
+          <div id="cn-upload-graph" class="btn btn-default cn-network-btn">
             <span class="glyphicon glyphicon-open" style="vertical-align: middle;"></span>
             Upload Graph
           </div>
@@ -95,6 +95,41 @@
         </div> <!-- cn-controls -->
       </div> <!-- row -->
     </div> <!-- cn-content -->
+    <div id="button-container" class="button-container-netcell">
+        <div class="close-overlay" title="Close card">
+            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+        </div>
+    </div>
+    <div class="card-overlay card-overlay-netcell-uploadgraph" id="card-overlay">
+      <h4>Upload Graph to NetCell</h4>
+      <p>
+        Upload your own pathway in any of the formats below:
+      </p>
+      <hr><br>
+      <div class="upload-container">
+        <div class="row">
+          <div class="col-sm-4">
+            <div class="btn btn-default">
+              <span class="glyphicon glyphicon-open" style="vertical-align: middle;"></span>
+              JSON
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <div class="btn btn-default">
+              <span class="glyphicon glyphicon-open" style="vertical-align: middle;"></span>
+              TABULAR
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <div class="btn btn-default">
+              <span class="glyphicon glyphicon-open" style="vertical-align: middle;"></span>
+              Graphviz (DOT)
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
 
 
 
@@ -105,6 +140,7 @@
     <script src="{% static 'js/jquery-ui-all.min.js' %}"></script>
     <script src="{% static 'js/bootstrap-slider.js' %}"></script>
     <script src="{% static 'js/netcell.js' %}"></script>
+    <script src="{% static 'js/card-overlay.js' %}"></script>
     <script>
         $( function() {
             $( ".info-tooltip" ).tooltip({
@@ -114,6 +150,17 @@
                 }
             });
         } );
+
+        $("#cn-upload-graph").on("click", function(event){
+          // Show upload dialog
+          // Show the hidden div
+          $('[id="card-overlay"]').slideToggle(450);
+          $('.close-overlay').slideToggle(450);
+          return false;
+          //$('.full-screen-card').slideToggle(450);
+
+        });
     </script>
+
   </body>
 </html>
