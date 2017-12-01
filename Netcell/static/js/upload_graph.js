@@ -15,25 +15,35 @@ function handleFileSelect(evt) {
   var format = "";
   console.log(evt);
 
-  // Check format
-  if (evt.target.id == "files-json") {
-    format = "json";
-  } else if (evt.target.id == "files-tbl") {
-    format = "tbl";
-  } else if (evt.target.id == "files-dot") {
-    format = "dot";
-  }
-  alert(format);
+  // Read file
   var reader = new FileReader();
   reader.onload = function(){
-    var text = reader.result;
-    alert(text);
-  };
-  reader.readAsText(file);
+    textfile = reader.result;
+    alert(textfile);
+    // Check format
+    if (evt.target.id == "files-json") {
+      format = "json";
+      // Check file is correct
+      // Add graph to cytoscape
+    } else if (evt.target.id == "files-tbl") {
+      format = "tbl";
+      // tblToJson(textfile)
+      // Add graph to cytoscape
+    } else if (evt.target.id == "files-dot") {
+      format = "dot";
+      // dotToJson(textfile)
+      // Add graph to cytoscape
+    }
+    alert(format);
+    //alert(textfile);
 
-  // Close overlay
-  $('[id="card-overlay"]').slideToggle(450);
-  $('.close-overlay').slideToggle(450);
+    // Close overlay
+    $('[id="card-overlay"]').slideToggle(450);
+    $('.close-overlay').slideToggle(450);
+
+  };
+
+  reader.readAsText(file);
 
 }
 
