@@ -109,22 +109,23 @@
       <div class="upload-container">
         <div class="row">
           <div class="col-sm-4">
-            <div class="btn btn-default">
+            <label class="btn btn-default">
               <span class="glyphicon glyphicon-open" style="vertical-align: middle;"></span>
-              JSON
-            </div>
+              JSON <input type="file" id="files-json" name="files[]" style="display:none;"/>
+            </label>
+
           </div>
           <div class="col-sm-4">
-            <div class="btn btn-default">
+            <label class="btn btn-default">
               <span class="glyphicon glyphicon-open" style="vertical-align: middle;"></span>
-              TABULAR
-            </div>
+              Tabular <input type="file" id="files-tbl" name="files[]" style="display:none;"/>
+            </label>
           </div>
           <div class="col-sm-4">
-            <div class="btn btn-default">
+            <label class="btn btn-default">
               <span class="glyphicon glyphicon-open" style="vertical-align: middle;"></span>
-              Graphviz (DOT)
-            </div>
+              Graphviz (dot) <input type="file" id="files-dot" name="files[]" style="display:none;"/>
+            </label>
           </div>
         </div>
       </div>
@@ -141,6 +142,7 @@
     <script src="{% static 'js/bootstrap-slider.js' %}"></script>
     <script src="{% static 'js/netcell.js' %}"></script>
     <script src="{% static 'js/card-overlay.js' %}"></script>
+    <script src="{% static 'js/upload_graph.js' %}"></script>
     <script>
         $( function() {
             $( ".info-tooltip" ).tooltip({
