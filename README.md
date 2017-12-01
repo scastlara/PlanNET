@@ -9,7 +9,7 @@ v0.1.0
 # Description
 Application to explore the different Schmidtea mediterranea predicted interactomes. Available at [compgen.bio.ub.edu/PlanNET](https://compgen.bio.ub.edu/PlanNET).
 
-At the [Computational Genomics Lab](https://compgen.bio.ub.edu) we have trained a Random Forest classifier to predict planarian protein-protein interactions by using homology inferences (see [link to the published paper](https://compgen.bio.ub.edu)).
+At the [Computational Genomics Lab](https://compgen.bio.ub.edu) we have trained a Random Forest classifier to predict planarian protein-protein interactions by using homology inferences (see [link to the published paper](https://academic.oup.com/bioinformatics/advance-article/doi/10.1093/bioinformatics/btx738/4657068)).
 
 To see the code used to predict the planarian networks, go to this [repository](https://github.com/scastlara/PlanNET-software).
 
