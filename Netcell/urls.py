@@ -4,5 +4,5 @@ from django.contrib import admin
 
 admin.autodiscover()
 urlpatterns = [
-    url(r'^cellnet', views.cellnet, name="cellnet"),
+    url(r'^netcell', views.netcell, name="netcell"),
 ]

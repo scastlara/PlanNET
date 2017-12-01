@@ -170,22 +170,22 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 
-.panel-cellnet {
+.panel-netcell {
     border-color: #FDD4D4 !important;
     border-style: solid !important;
 }
 
-.panel-cellnet .panel-heading {
+.panel-netcell .panel-heading {
     background-color: #FDD4D4 !important;
     border-color: #FDD4D4 !important;
 }
 
-.btn-cellnet:hover {
+.btn-netcell:hover {
     background-color: #d94848;
     color: white !important;
 }
 
-.btn-cellnet {
+.btn-netcell {
     background-color: #FA5556;
     color: white;
 }

@@ -6,9 +6,9 @@ from django.http        import HttpResponse
 from django.template    import RequestContext
 
 
-def cellnet(request):
+def netcell(request):
     '''
-    Main view for Cellnet
+    Main view for Netcell
     '''
 
-    return render(request, 'Cellnet/cellnet.html')
+    return render(request, 'Netcell/netcell.html')

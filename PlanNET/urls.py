@@ -23,5 +23,5 @@ handler404 = "NetExplorer.views.handler404"
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^', include('NetExplorer.urls')),
-    url(r'^', include('Cellnet.urls')),
+    url(r'^', include('Netcell.urls')),
 ]

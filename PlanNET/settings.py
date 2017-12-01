@@ -122,8 +122,8 @@ WSGI_APPLICATION = 'PlanNET.wsgi.application'
 TEMPLATE_DIRS = (
     BASE_DIR + "NetExplorer/templates",
     BASE_DIR + "NetExplorer/templates/NetExplorer",
-    BASE_DIR + "Cellnet/templates/Cellnet",
-    BASE_DIR + "Cellnet/templates",
+    BASE_DIR + "Netcell/templates/Netcell",
+    BASE_DIR + "Netcell/templates",
     BASE_DIR + "templates"
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
@@ -139,7 +139,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'NetExplorer',
-    'Cellnet',
+    'Netcell',
     # Uncomment the next line to enable the admin:
     # 'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:

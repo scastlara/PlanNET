@@ -8,7 +8,7 @@
       <link rel="stylesheet" href="{% static 'css/jquery-ui.css' %}">
       <link rel="stylesheet" href="{% static 'css/jquery-ui.structure-all.min.css' %}">
       <link rel="stylesheet" href="{% static 'css/jquery-ui-all.theme.min.css' %}">
-      <title>PlanNET - CellNet</title>
+      <title>PlanNET - NetCell</title>
   </head>
 
   <body>
@@ -24,11 +24,11 @@
                 <a href="{% url index_view %}" class="info-tooltip"
                 title="Back to PlanNET"><span class="glyphicon glyphicon-home"></span></a>
                 <hr>
-                <a target="_blank" href="{% url tutorial %}#cellnet" class="info-tooltip"
+                <a target="_blank" href="{% url tutorial %}#netcell" class="info-tooltip"
                 title="Go to Tutorial"><span class="glyphicon glyphicon-question-sign"></span></a>
             </div>
-            <img class="app-icon-inside" id="cyt-netexplorer-icon" src="{% static 'Images/cellnet-icon.png' %}"/>
-            <div class="app-title"><h2 id="netexplorer-title">CellNet</h2></div>
+            <img class="app-icon-inside" id="cyt-netexplorer-icon" src="{% static 'Images/netcell-icon.png' %}"/>
+            <div class="app-title"><h2 id="netexplorer-title">NetCell</h2></div>
             <hr>
           </div>
           <br>
@@ -104,7 +104,7 @@
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
     <script src="{% static 'js/jquery-ui-all.min.js' %}"></script>
     <script src="{% static 'js/bootstrap-slider.js' %}"></script>
-    <script src="{% static 'js/cellnet.js' %}"></script>
+    <script src="{% static 'js/netcell.js' %}"></script>
     <script>
         $( function() {
             $( ".info-tooltip" ).tooltip({
