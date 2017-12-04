@@ -331,6 +331,13 @@ h1, h2, h3, h4, h5, h6 {
   top: 30% !important;
 }
 
+.card-overlay-netcell-uploadexperiment {
+  height: 80% !important;
+  width: 60% !important;
+  right: 20% !important;
+  top: 10% !important;
+}
+
 .close-overlay, #click {
     cursor:
     pointer;
@@ -347,10 +354,16 @@ h1, h2, h3, h4, h5, h6 {
     box-shadow: 10px 0px 27px 0px rgba(0,0,0,0.15);
 }
 
-.button-container-netcell {
+.button-container-netcell-uploadgraph {
   background-color: #FDD4D4 !important;
   right: 25% !important;
   top: 30% !important;
+}
+
+.button-container-netcell-uploadexperiment {
+  background-color: #FDD4D4 !important;
+  right: 20% !important;
+  top: 10% !important;
 }
 
 .close-overlay {
@@ -1808,7 +1821,7 @@ kbd {
 }
 
 
-/* CELLNET */
+/* NETCELL */
 .cn-content {
   width: 100%;
   height: 100%;

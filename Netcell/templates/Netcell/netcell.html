@@ -59,7 +59,7 @@
               </ul>
           </div>
           <span class="cn-experiment-upload-btn"><br>or<br></span>
-          <div class="btn btn-default cn-experiment-upload-btn">
+          <div id="cn-upload-experiment" class="btn btn-default cn-experiment-upload-btn">
             <span class="glyphicon glyphicon-open" style="vertical-align: middle;"></span>
             Upload Experiment
           </div>
@@ -95,8 +95,10 @@
         </div> <!-- cn-controls -->
       </div> <!-- row -->
     </div> <!-- cn-content -->
-    <div id="button-container" class="button-container-netcell">
-        <div class="close-overlay" title="Close card">
+
+    <!-- UPLOAD GRAPH OVERLAY -->
+    <div id="button-container" class="button-container-netcell-uploadgraph">
+        <div class="close-overlay close-overlay-uploadgraph" title="Close card">
             <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
         </div>
     </div>
@@ -130,16 +132,63 @@
         </div>
       </div>
 
-      <div id="dialog-error" title="Error">
-          <p>
-              <span class="ui-icon ui-icon-alert" style="float:left; margin:12px 12px 20px 0;"></span>
-              <span id="error-content"> </span>
-          </p>
+
+    </div>
+
+    <!-- UPLOAD EXPERIMENT CONTAINER -->
+    <div id="button-container" class="button-container-netcell-uploadexperiment">
+        <div class="close-overlay close-overlay-uploadexperiment" title="Close card">
+            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+        </div>
+    </div>
+    <div class="card-overlay card-overlay-netcell-uploadexperiment" id="card-overlay">
+      <h2>Upload SC Experiment to NetCell</h2>
+      <p>
+        Upload your own Single Cell Experiment in any of the formats below:
+      </p>
+      <hr><br>
+      <div class="upload-container">
+        <div class="row">
+          <h3>Tabular Files</h3>
+          <div class="col-sm-6">
+            <h4>Cell expression</h4>
+            <label class="btn btn-default">
+              <span class="glyphicon glyphicon-open" style="vertical-align: middle;"></span>
+              Upload <input type="file" id="files-cellexp" name="files[]" style="display:none;"/>
+            </label>
+          </div>
+          <div class="col-sm-6">
+            <h4>Cell Clustering</h4>
+            <label class="btn btn-default">
+              <span class="glyphicon glyphicon-open" style="vertical-align: middle;"></span>
+              Upload <input type="file" id="files-cellclust" name="files[]" style="display:none;"/>
+            </label>
+          </div>
+        </div>
+        <br><hr><br>
+        <div class="row">
+          <h3>SCE Object (RData)</h3>
+          <div class="col-sm-6">
+            <label class="btn btn-default">
+              <span class="glyphicon glyphicon-open" style="vertical-align: middle;"></span>
+              Upload <input type="file" id="files-sce" name="files[]" style="display:none;"/>
+            </label>
+          </div>
+        </div>
       </div>
+
+
     </div>
 
 
 
+
+    <div id="dialog-error" title="Error">
+        <p>
+            <span class="ui-icon ui-icon-alert" style="float:left; margin:12px 12px 20px 0;"></span>
+            <span id="error-content"> </span>
+        </p>
+    </div>
 
     <script src="{% static 'js/jquery-min.js' %}"></script>
     <script src="{% static 'js/cytoscape.js' %}"></script>
@@ -149,7 +198,6 @@
     <script src="{% static 'js/bootstrap-slider.js' %}"></script>
     <script src="{% static 'js/netcell.js' %}"></script>
     <script src="{% static 'js/card-overlay.js' %}"></script>
-    <script src="{% static 'js/upload_graph.js' %}"></script>
     <script>
         $( function() {
             $( ".info-tooltip" ).tooltip({
@@ -159,16 +207,6 @@
                 }
             });
         } );
-
-        $("#cn-upload-graph").on("click", function(event){
-          // Show upload dialog
-          // Show the hidden div
-          $('[id="card-overlay"]').slideToggle(450);
-          $('.close-overlay').slideToggle(450);
-          return false;
-          //$('.full-screen-card').slideToggle(450);
-
-        });
     </script>
 
   </body>
