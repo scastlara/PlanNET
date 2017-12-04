@@ -20,7 +20,7 @@ function handleFileSelect(evt) {
         addJsonToCy(graphelements);
       }
       catch (err) {
-        alert("ERROR");
+        displayError("Incorrect JSON file.");
         console.log(err);
       }
     } else if (evt.target.id == "files-tbl") {
@@ -43,6 +43,7 @@ function handleFileSelect(evt) {
 }
 
 
+
 /**
 * Add JSON Graph to Cytoscape
 **/
@@ -52,8 +53,7 @@ function addJsonToCy(graphelements) {
     cy.layout({'name': 'cose'});
   }
   catch(err) {
-    alert("ERROR");
-    alert(err);
+    displayError("Incorrect graph definition");
   }
 }
 
@@ -87,12 +87,10 @@ function tblToJsonTxt(text) {
       edges.push({'data': {'source': cols[0], 'probability': cols[2], 'target': cols[1]}});
     } else {
       // Error
-      alert("ERROR");
+      displayError("Incorrect tbl graph: More than 3 columns");
 
     }
   }
-  console.log(nodes);
-  console.log(edges);
   graphelements = {'nodes': nodes, 'edges': edges};
   return graphelements;
 }
@@ -100,7 +98,7 @@ function tblToJsonTxt(text) {
 /**
 * Converts dot graph string to JSON
 **/
-function tblToJson(text) {
+function dotToJson(text) {
 
 }
 

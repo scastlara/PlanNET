@@ -23,3 +23,18 @@ $(".cn-celltype-dropdown li a").click(function(){
   $(this).parents(".dropdown").find('.btn').val($(this).data('value'));
   alert("CELLTYPE");
 });
+
+
+$( function() {
+  $( "#dialog-error" ).dialog({
+    autoOpen: false,
+  });
+});
+
+/**
+* Display Error dialog with message
+**/
+function displayError(message) {
+  $( "#error-content" ).html(message);
+  $( "#dialog-error" ).dialog("open");
+}
