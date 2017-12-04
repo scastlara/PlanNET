@@ -187,3 +187,113 @@ $("#cn-upload-experiment").on("click", function(event){
   $('.close-overlay-uploadexperiment').slideToggle(450);
   return false;
 });
+
+
+/**
+* Listener for Experiment upload
+**/
+var cellexp   = "";
+var cellclust = "";
+var cellorder = "";
+var sce       = "";
+function handleExpUpload(evt) {
+  var files = evt.target.files; // FileList object
+  var file = files[0];
+  var reader = new FileReader();
+  console.log(files);
+  reader.onload = function(){
+    // Check format
+    if (evt.target.id == "files-cellexp") {
+      // Cell Expression File
+      textfile = reader.result;
+      cellexp = textfile;
+      cellexp = cellexp.split("\n");
+      cellorder = cellexp[0].split("\t"); // Save cell order in exp file
+      // initialize expression array
+      var expression = [];
+      for (var i = 0; i < cellorder.length - 1; i++) {
+        expression[i] = [];
+      }
+      for (var j = 1; j < cellexp.length; j++) {
+        col = cellexp[j].split("\t");
+        col = col.slice(1);
+        for (var val = 0; val < col.length; val++) {
+          expression[val].push(col[val]);
+        }
+      }
+
+      cellexp = expression;
+      console.log(expression);
+      // Change green tick
+      $("#files-cellexp-ok").show();
+      $("#files-cellexp-notok").hide();
+      $("#files-sce-ok").hide();
+      if (! cellclust) {
+        $("#files-cellclust-notok").show();
+      } else {
+        $('#uploadexperiment-send').removeClass("disabled");
+      }
+    } else if (evt.target.id == "files-cellclust") {
+      // Cell Clustering
+      textfile = reader.result;
+      cellclust = textfile;
+      // Change green tick
+      $("#files-cellclust-ok").show();
+      $("#files-cellclust-notok").hide();
+      $("#files-sce-ok").hide();
+      if (! cellexp) {
+        $("#files-cellexp-notok").show();
+      } else {
+        $('#uploadexperiment-send').removeClass("disabled");
+      }
+    } else if (evt.target.id == "files-sce") {
+      // SCE object
+      sce = file;
+      // Change green tick
+    }
+
+  };
+  reader.readAsText(file);
+}
+
+/**
+*  Compute tSNE and plot
+**/
+$('#uploadexperiment-send').on("click", function(){
+  console.log(cellexp);
+  var opt = {};
+  opt.epsilon = 10; // epsilon is learning rate (10 = default)
+  opt.perplexity = 30; // roughly how many neighbors each point influences (30 = default)
+  opt.dim = 2; // dimensionality of the embedding (2 = default)
+  var tsne = new tsnejs.tSNE(opt); // create a tSNE instance
+  // Compute PCA of array through AJAX call
+  $.ajax({
+    type: "POST",
+    url: "/pca",
+    data: {
+      'type'      : 'POST',
+      'csrfmiddlewaretoken': csrf_token,
+      'cellexp': cellexp
+    },
+    success: function(data) {
+      console.log(data);
+    }
+  });
+
+  tsne.initDataRaw(cellexp);
+  for(var k = 0; k < 500; k++) {
+    tsne.step(); // every time you call this, solution gets better
+  }
+  var Y = tsne.getSolution();
+  console.log(Y);
+  alert("YEP");
+});
+
+/**
+* Add listener for Experiment files
+**/
+$(function(){
+  document.querySelector("#files-cellexp").addEventListener('change',handleExpUpload, false);
+  document.querySelector("#files-cellclust").addEventListener('change',handleExpUpload, false);
+  document.querySelector("#files-sce").addEventListener('change',handleExpUpload, false);
+});

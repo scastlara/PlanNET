@@ -1875,3 +1875,31 @@ kbd {
 .upload-container {
   width: 60%;
 }
+
+#files-cellexp-notok {
+  display: none;
+  color: red;
+}
+#files-cellexp-ok {
+  display: none;
+  color: green;
+}
+
+#files-cellclust-notok {
+  display: none;
+  color: red;
+}
+#files-cellclust-ok {
+  display: none;
+  color: green;
+}
+
+#files-sce-notok {
+  display: none;
+  color: red;
+}
+
+#files-sce-ok {
+  display: none;
+  color: green;
+}
