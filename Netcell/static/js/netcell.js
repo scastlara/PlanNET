@@ -326,7 +326,7 @@ $(function(){
 /**
 * Creates array of traces depending on "group" categorical variable
 **/
-function changeTraces(xpoints, ypoints, groups) {
+function changeTraces(xpoints, ypoints, celllabels, groups) {
   var traces = [];
   var categories = [];
   for (var i = 0; i < groups.length; i += 1) {
@@ -334,12 +334,14 @@ function changeTraces(xpoints, ypoints, groups) {
       traces.push({x: [],
         y: [],
         mode: 'markers',
-        name: groups[i]
+        name: groups[i],
+        text: []
       });
       categories.push(groups[i]);
     } else {
       traces[categories.indexOf(groups[i])].x.push(xpoints[i]);
       traces[categories.indexOf(groups[i])].y.push(ypoints[i]);
+      traces[categories.indexOf(groups[i])].text.push(celllabels[i]);
     }
   }
   console.log(traces);
@@ -407,7 +409,7 @@ $("#plot-btn").on("click", function(){
         name: 'Team A',
         text: celllabels,
       };*/
-      var traces = changeTraces(xCoords, yCoords, cellclust);
+      var traces = changeTraces(xCoords, yCoords, celllabels, cellclust);
       //ar dataplot = [trace1]
       Plotly.newPlot('tsne-plot', traces);
       //console.log(celllabels);
