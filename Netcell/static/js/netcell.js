@@ -12,6 +12,8 @@ $(".cn-experiment-dropdown li a").click(function(){
   $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="caret"></span>');
   $(this).parents(".dropdown").find('.btn').val($(this).data('value'));
   alert("EXPERIMENT");
+  $(".exp-name-label").html($(this).text());
+  $("#exp-name-label").show()
   $(".cn-exp-controls").show();
   $(".cn-experiment-upload-btn").hide();
 });
@@ -261,11 +263,24 @@ function handleExpUpload(evt) {
 **/
 $('#uploadexperiment-send').on("click", function(){
   console.log(cellexp);
+  // Change displayed name of experiment
+  var exp_name = $('#exp-name').val();
+  if (! exp_name) {
+    exp_name = "Experiment #1";
+  }
+  $(".exp-name-label").html(exp_name);
+  $('.card-overlay').hide();
+  $('.close-overlay').hide();
+  $("#exp-name-label").show();
+  $(".cn-exp-controls").show();
+  $(".cn-experiment-upload-btn").hide();
+  /* Options for tSNE
   var opt = {};
   opt.epsilon = 10; // epsilon is learning rate (10 = default)
   opt.perplexity = 30; // roughly how many neighbors each point influences (30 = default)
   opt.dim = 2; // dimensionality of the embedding (2 = default)
   var tsne = new tsnejs.tSNE(opt); // create a tSNE instance
+  */
   // Compute PCA of array through AJAX call
   $.ajax({
     type: "POST",
@@ -280,13 +295,17 @@ $('#uploadexperiment-send').on("click", function(){
     }
   });
 
-  tsne.initDataRaw(cellexp);
+  /*tsne.initDataRaw(cellexp);
   for(var k = 0; k < 500; k++) {
     tsne.step(); // every time you call this, solution gets better
   }
   var Y = tsne.getSolution();
   console.log(Y);
-  alert("YEP");
+  */
+
+  //$(".cn-experiment-dropdown").val("Custom Experiment").change();
+  //$(".cn-experiment-dropdown").addClass("disabled");
+  //alert("YEP");
 });
 
 /**
@@ -297,3 +316,29 @@ $(function(){
   document.querySelector("#files-cellclust").addEventListener('change',handleExpUpload, false);
   document.querySelector("#files-sce").addEventListener('change',handleExpUpload, false);
 });
+
+
+/**
+*-----------------------------------------------------------------------------
+* ABOUT EXPERIMENT
+**/
+/**
+* About Experiment
+**/
+$("#aboutexp-btn").on("click", function(event){
+  // Close previous overlays
+  $('.card-overlay').hide(450);
+  $('.close-overlay').hide(450);
+
+  // Open overlay
+  $('.card-overlay-netcell-aboutexp').slideToggle(450);
+  $('.close-overlay-aboutexp').slideToggle(450);
+  return false;
+});
+
+
+/**
+* Slider for ReducedDims and perplexity
+**/
+$('#reducedDims').slider();
+$('#perplexity').slider();

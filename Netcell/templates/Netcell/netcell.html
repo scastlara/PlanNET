@@ -8,6 +8,7 @@
       <link rel="stylesheet" href="{% static 'css/jquery-ui.css' %}">
       <link rel="stylesheet" href="{% static 'css/jquery-ui.structure-all.min.css' %}">
       <link rel="stylesheet" href="{% static 'css/jquery-ui-all.theme.min.css' %}">
+      <link rel="stylesheet" href="{% static 'css/slider.css' %}">
       <title>PlanNET - NetCell</title>
       <script>
         var csrf_token = '{{ csrf_token }}';
@@ -17,6 +18,7 @@
   <body>
 
     <div class="cn-content">
+      <div id="exp-name-label" class="exp-name-label">EXP1</div>
 
       <div class="row">
         <div id="cyt" class="col-sm-9 cn-graph"></div>
@@ -55,7 +57,7 @@
               Experiment
               <span class="caret"></span></button>
               <ul class="dropdown-menu cn-experiment-dropdown">
-                <!-- This will be filled by Query -->
+                <!-- This will be filled by Django Query -->
                 <li><a href="#">Exp 1</a></li>
                 <li><a href="#">Exp 2</a></li>
                 <li><a href="#">Exp 3</a></li>
@@ -68,7 +70,7 @@
           </div>
 
           <div class="cn-exp-controls">
-            <div class="btn btn-default">
+            <div id="aboutexp-btn" class="btn btn-default">
               <span class="glyphicon glyphicon-info-sign"></span>
               More About Experiment
             </div>
@@ -152,6 +154,14 @@
       <hr><br>
       <div class="upload-container">
         <div class="row">
+          <h3>Experiment name</h3>
+          <div class="col-sm-5">
+            <input type="text" class="form-control" id="exp-name" placeholder="Experiment #1">
+          </div>
+        </div>
+
+        <hr><br>
+        <div class="row">
           <h3>Tabular Files</h3>
           <div class="col-sm-6">
             <h4>Cell expression</h4>
@@ -190,13 +200,61 @@
         <div class="col-sm-10">
         </div>
         <div class="col-sm-2 uploadexperiment-send-div">
-          <div id="uploadexperiment-send" class="btn btn-success disabled">Send</div>
+          <div id="uploadexperiment-send" class="btn btn-success disabled">Upload</div>
         </div>
       </div>
 
     </div>
 
 
+    <!-- MORE ABOUT EXPERIMENT CONTAINER -->
+    <div id="button-container" class="button-container-netcell-aboutexp">
+        <div class="close-overlay close-overlay-aboutexp" title="Close card">
+            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+        </div>
+    </div>
+    <div class="card-overlay card-overlay-netcell-aboutexp" id="card-overlay">
+      <h2><span class="exp-name-label">Exp1</span></h2>
+      <p>
+        Select parameters for clustering visualization:
+      </p>
+      <hr>
+      <div class="row row-eq-height">
+        <div class="col-sm-6">
+          <div class="reducedDims-container">
+            <h4> PCA dimensions </h4>
+            <input
+                type="text"
+                class="span2"
+                id="reducedDims"
+                data-slider-value="50"
+                data-slider-min="0"
+                data-slider-max="100"
+                data-slider-step="25"
+            >
+
+          </div>
+
+          <div class="perplexity-container">
+            <h4> Perplexity </h4>
+            <input
+                type="text"
+                class="span2"
+                id="perplexity"
+                data-slider-value="10"
+                data-slider-min="0"
+                data-slider-max="100"
+                data-slider-step="10"
+            >
+          </div>
+        </div>
+        <div class="col-sm-6 plot-btn-container">
+          <div id="plot-btn" class="btn btn-netcell">Plot</div>
+        </div>
+
+      </div>
+
+    </div>
 
 
     <div id="dialog-error" title="Error">
@@ -209,8 +267,8 @@
     <script src="{% static 'js/jquery-min.js' %}"></script>
     <script src="{% static 'js/cytoscape.js' %}"></script>
     <script src="{% static 'js/netcell-cytoscape-definition.js' %}"></script>
-    <script src="{% static 'js/bootstrap.min.js' %}"></script>
     <script src="{% static 'js/jquery-ui-all.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
     <script src="{% static 'js/bootstrap-slider.js' %}"></script>
     <script src="{% static 'js/netcell.js' %}"></script>
     <script src="{% static 'js/card-overlay.js' %}"></script>

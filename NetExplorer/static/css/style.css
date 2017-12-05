@@ -359,6 +359,9 @@ h1, h2, h3, h4, h5, h6 {
   right: 25% !important;
   top: 30% !important;
 }
+.button-container-netcell-aboutexp{
+  background-color: #FDD4D4 !important;
+}
 
 .button-container-netcell-uploadexperiment {
   background-color: #FDD4D4 !important;
@@ -1862,7 +1865,9 @@ kbd {
   width: 90%;
 }
 
-
+.dropdown-menu {
+  z-index: 1000000;
+}
 .cn-network-btn {
   width: 45%;
   padding: 10px;
@@ -1907,3 +1912,48 @@ kbd {
 #uploadexperiment-send {
   width: 100px;
 }
+
+#exp-name-label {
+  display: none;
+  position: fixed;
+  background-color: white;
+  border: 1px solid #777777;
+  border-radius: 5px;
+  text-align: center;
+  color: #777777;
+  top: 20px;
+  left: 22.5%;
+  width: 30%;
+  height: 45px;
+  line-height: 45px;
+  z-index: 2;
+}
+
+.reducedDims-container {
+  width: 100%;
+}
+
+.perplexity-container {
+  width: 100%;
+}
+
+.slider.slider-horizontal{
+  width:100% !important; /* sample value - set it as you like*/
+}
+
+.card-overlay-netcell-aboutexp .slider-handle {
+    background-color: red !important;
+    background-image: linear-gradient(to bottom, #FDD4D4, #d9534f) !important;
+}
+
+.plot-btn-container {
+  display: flex;
+  align-items: center;
+}
+
+ #plot-btn {
+   width: 70%;
+   height: 5%;
+   margin-left: 15%;
+
+ }
