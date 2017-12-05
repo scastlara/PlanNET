@@ -196,7 +196,7 @@ $("#cn-upload-experiment").on("click", function(event){
 **/
 var cellexp   = "";
 var cellclust = "";
-var cellorder = "";
+var celllabels = "";
 var sce       = "";
 function handleExpUpload(evt) {
   var files = evt.target.files; // FileList object
@@ -210,10 +210,13 @@ function handleExpUpload(evt) {
       textfile = reader.result;
       cellexp = textfile;
       cellexp = cellexp.split("\n");
-      cellorder = cellexp[0].split("\t"); // Save cell order in exp file
+      celllabels = cellexp[0].split("\t"); // Save cell order in exp file
+      if (! celllabels[0]) {
+        celllabels = celllabels.slice(1); /// Remove first blank element
+      }
       // initialize expression array
       var expression = [];
-      for (var i = 0; i < cellorder.length - 1; i++) {
+      for (var i = 0; i < celllabels.length; i++) {
         expression[i] = [];
       }
       for (var j = 1; j < cellexp.length; j++) {
@@ -239,6 +242,15 @@ function handleExpUpload(evt) {
       // Cell Clustering
       textfile = reader.result;
       cellclust = textfile;
+      cellclust = cellclust.split("\n");
+      var clusters = [];
+      for (var cl = 0; cl < cellclust.length; cl++) {
+        var cluster = cellclust[cl].split(/[ \t]+/);
+        console.log(cluster);
+        cluster = cluster[1]; // Select second col
+        clusters.push(cluster);
+      }
+      cellclust = clusters;
       // Change green tick
       $("#files-cellclust-ok").show();
       $("#files-cellclust-notok").hide();
@@ -310,6 +322,30 @@ $(function(){
 *-----------------------------------------------------------------------------
 * ABOUT EXPERIMENT
 **/
+
+/**
+* Creates array of traces depending on "group" categorical variable
+**/
+function changeTraces(xpoints, ypoints, groups) {
+  var traces = [];
+  var categories = [];
+  for (var i = 0; i < groups.length; i += 1) {
+    if (categories.indexOf(groups[i]) === -1) {
+      traces.push({x: [],
+        y: [],
+        mode: 'markers',
+        name: groups[i]
+      });
+      categories.push(groups[i]);
+    } else {
+      traces[categories.indexOf(groups[i])].x.push(xpoints[i]);
+      traces[categories.indexOf(groups[i])].y.push(ypoints[i]);
+    }
+  }
+  console.log(traces);
+  return traces;
+}
+
 /**
 * About Experiment
 **/
@@ -329,14 +365,23 @@ $("#aboutexp-btn").on("click", function(event){
 * Slider for ReducedDims and perplexity
 **/
 $('#reducedDims').slider();
+$('#reducedDims').slider('setValue', 25);
 $('#perplexity').slider();
+$('#perplexity').slider('setValue', 10);
 
 /**
 * Plot button send
 **/
 $("#plot-btn").on("click", function(){
   alert("plotting");
-
+  var reducedDims = $('#reducedDims').val();
+  var perplexity  = $('#perplexity').val();
+  if (! reducedDims) {
+    reducedDims = 25; // Default
+  }
+  if (! perplexity) {
+    perplexity = 10; // Default
+  }
   // Compute PCA of array through AJAX call
   //jObject = JSON.stringify(cellexp);
   $.ajax({
@@ -346,13 +391,27 @@ $("#plot-btn").on("click", function(){
       'type'      : 'POST',
       'csrfmiddlewaretoken': csrf_token,
       'cellexp[]': cellexp,
-      'reducedDims': $('#reducedDims').val(),
-      'perplexity' : $('#perplexity').val()
+      'reducedDims': reducedDims,
+      'perplexity' : perplexity
 
     },
     success: function(data) {
-      console.log(JSON.parse(data.tsne_coords));
-      console.log(data);
+      var xCoords = JSON.parse(data.x);
+      var yCoords = JSON.parse(data.y);
+      /*
+      var trace1 = {
+        x: xCoords,
+        y: yCoords,
+        mode: 'markers',
+        type: 'scatter',
+        name: 'Team A',
+        text: celllabels,
+      };*/
+      var traces = changeTraces(xCoords, yCoords, cellclust);
+      //ar dataplot = [trace1]
+      Plotly.newPlot('tsne-plot', traces);
+      //console.log(celllabels);
+      //console.log(data);
     }
   });
 });
