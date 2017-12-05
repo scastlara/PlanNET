@@ -281,19 +281,7 @@ $('#uploadexperiment-send').on("click", function(){
   opt.dim = 2; // dimensionality of the embedding (2 = default)
   var tsne = new tsnejs.tSNE(opt); // create a tSNE instance
   */
-  // Compute PCA of array through AJAX call
-  $.ajax({
-    type: "POST",
-    url: "/pca",
-    data: {
-      'type'      : 'POST',
-      'csrfmiddlewaretoken': csrf_token,
-      'cellexp': cellexp
-    },
-    success: function(data) {
-      console.log(data);
-    }
-  });
+
 
   /*tsne.initDataRaw(cellexp);
   for(var k = 0; k < 500; k++) {
@@ -342,3 +330,23 @@ $("#aboutexp-btn").on("click", function(event){
 **/
 $('#reducedDims').slider();
 $('#perplexity').slider();
+
+/**
+* Plot button send
+**/
+$("#plot-btn").on("click", function(){
+  alert("plotting");
+  // Compute PCA of array through AJAX call
+  $.ajax({
+    type: "POST",
+    url: "/pca",
+    data: {
+      'type'      : 'POST',
+      'csrfmiddlewaretoken': csrf_token,
+      'cellexp': cellexp
+    },
+    success: function(data) {
+      console.log(data);
+    }
+  });
+});

@@ -1957,3 +1957,15 @@ kbd {
    margin-left: 15%;
 
  }
+
+ #tsne-plot {
+   width: 65%;
+   height: 65%;
+   margin-left: 17.5%;
+   background-color: red;
+ }
+
+.tsne-plot-container {
+  display: flex;
+  align-items: center;
+}
