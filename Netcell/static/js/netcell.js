@@ -336,16 +336,22 @@ $('#perplexity').slider();
 **/
 $("#plot-btn").on("click", function(){
   alert("plotting");
+
   // Compute PCA of array through AJAX call
+  //jObject = JSON.stringify(cellexp);
   $.ajax({
     type: "POST",
     url: "/pca",
     data: {
       'type'      : 'POST',
       'csrfmiddlewaretoken': csrf_token,
-      'cellexp': cellexp
+      'cellexp[]': cellexp,
+      'reducedDims': $('#reducedDims').val(),
+      'perplexity' : $('#perplexity').val()
+
     },
     success: function(data) {
+      console.log(JSON.parse(data.tsne_coords));
       console.log(data);
     }
   });

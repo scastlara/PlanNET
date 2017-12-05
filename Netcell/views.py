@@ -32,10 +32,31 @@ def netcellpca(request):
     '''
     if request.is_ajax():
         # Perform PCA
-        
+        dims = int(request.POST['reducedDims'])
+        perp = int(request.POST['perplexity'])
+        cellexp = request.POST.getlist('cellexp[]')
+        cellexp = [[float(number) for number in group.split(",")] for group in cellexp]
+        print(cellexp)
+        print(dims)
+        print(len(cellexp[0]))
+        if dims < len(cellexp[0]):
+            # Dimensions smaller than sample dimensions (num of genes)
+            # Perform pca
+            pca = PCA(n_components=dims)
+            pca.fit(cellexp)
+            cellexp = pca.transform(cellexp)
+        else:
+            # Don't do pca
+            pass
+
+        # Perform tSNE
+        tsne = TSNE(n_components=2, perplexity=perp)
+        tsne_coords = tsne.fit_transform(cellexp)
+        tsne_coords = json.dumps(tsne_coords.tolist())
+
+        # Build JSON response
         response_data = {}
-        response_data['result'] = 'error'
-        response_data['message'] = 'Some error message'
+        response_data['tsne_coords'] = tsne_coords
         return HttpResponse(json.dumps(response_data), mimetype="application/json")
     else:
         return HttpResponse("ups", mimetype="application/json")
