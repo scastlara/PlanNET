@@ -611,7 +611,6 @@ h1, h2, h3, h4, h5, h6 {
 
 
 .gene_logo {
-    display: inline-block;
     width: 60px;
     height: 30px;
     float: left;
@@ -799,14 +798,12 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .slider-symbol-minus{
-    display: inline-block;
     float: left;
     text-align: center;
     font-weight: bold;
     margin-left: 20%;
 }
 .slider-symbol-plus{
-    display: inline-block;
     float: right;
     text-align: center;
     font-weight: bold;
@@ -891,7 +888,6 @@ h1, h2, h3, h4, h5, h6 {
 
 #map-expression-dialog-send {
     float: right;
-    display: inline-block;
     margin-top: 200px;
     bottom: 0;
     margin-right: 20px;
@@ -1443,15 +1439,6 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 
-
-.pick-color-select-fromcolor {
-
-}
-
-.pick-color-select-tocolor {
-
-}
-
 .pick-color-select-bluestart {
     background-color: #f7f8ff;
     border: solid 1px #777777;
@@ -1962,7 +1949,6 @@ kbd {
    width: 65%;
    height: 65%;
    margin-left: 17.5%;
-   background-color: red;
  }
 
 .tsne-plot-container {

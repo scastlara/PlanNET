@@ -194,10 +194,11 @@ $("#cn-upload-experiment").on("click", function(event){
 /**
 * Listener for Experiment upload
 **/
-var cellexp   = "";
-var cellclust = "";
+var cellexp    = "";
+var cellclust  = "";
 var celllabels = "";
-var sce       = "";
+var formData   = "";
+var sce        = "";
 function handleExpUpload(evt) {
   var files = evt.target.files; // FileList object
   var file = files[0];
@@ -228,7 +229,6 @@ function handleExpUpload(evt) {
       }
 
       cellexp = expression;
-      console.log(expression);
       // Change green tick
       $("#files-cellexp-ok").show();
       $("#files-cellexp-notok").hide();
@@ -263,7 +263,12 @@ function handleExpUpload(evt) {
     } else if (evt.target.id == "files-sce") {
       // SCE object
       sce = file;
+      formData = new FormData();
+      formData.append('scefile', file);
+      formData.append('csrfmiddlewaretoken', csrf_token);
       // Change green tick
+      $("#files-sce-ok").show();
+      $('#uploadexperiment-send').removeClass("disabled");
     }
 
   };
@@ -271,21 +276,39 @@ function handleExpUpload(evt) {
 }
 
 /**
-*  Compute tSNE and plot
+*  Upload experiment
 **/
 $('#uploadexperiment-send').on("click", function(){
-  console.log(cellexp);
-  // Change displayed name of experiment
-  var exp_name = $('#exp-name').val();
-  if (! exp_name) {
-    exp_name = "Experiment #1";
+  if (! $(this).hasClass("disabled") ) {
+    // Change displayed name of experiment
+    var exp_name = $('#exp-name').val();
+    if (! exp_name) {
+      exp_name = "Experiment #1";
+    }
+    // Check if upload experiment was done via TSV files or RDS
+    // Prioritize RDS
+    if (formData) {
+      $.ajax({
+          url : '/upload_sce',
+          type : 'POST',
+          data : formData,
+          processData: false,  // tell jQuery not to process the data
+          contentType: false,  // tell jQuery not to set contentType
+          success : function(data) {
+            cellexp = data.cellexp;
+            cellclust = data.cellclust;
+            celllabels = data.celllabels;
+          }
+      });
+    }
+    $(".exp-name-label").html(exp_name);
+    $('.card-overlay').hide();
+    $('.close-overlay').hide();
+    $("#exp-name-label").show();
+    $(".cn-exp-controls").show();
+    $(".cn-experiment-upload-btn").hide();
   }
-  $(".exp-name-label").html(exp_name);
-  $('.card-overlay').hide();
-  $('.close-overlay').hide();
-  $("#exp-name-label").show();
-  $(".cn-exp-controls").show();
-  $(".cn-experiment-upload-btn").hide();
+
   /* Options for tSNE
   var opt = {};
   opt.epsilon = 10; // epsilon is learning rate (10 = default)
