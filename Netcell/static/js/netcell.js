@@ -354,7 +354,12 @@ function changeTraces(xpoints, ypoints, celllabels, groups) {
   var categories = [];
   for (var i = 0; i < groups.length; i += 1) {
     if (categories.indexOf(groups[i]) === -1) {
-      traces.push({x: [],
+      if (groups[i] == -1) {
+        // Skip clusters named "-1"
+        continue;
+      }
+      traces.push({
+        x: [],
         y: [],
         mode: 'markers',
         name: groups[i],
