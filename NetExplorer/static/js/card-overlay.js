@@ -19,17 +19,6 @@ $(document).keyup(function(e) {
     }
 });
 
-
-$('html').click(function() {
-    $('.card-overlay').hide(250);
-    $('.close-overlay').hide();
-    $('.full-screen-card').hide();
- });
-
- $('.card-overlay').click(function(event){
-     event.stopPropagation();
-});
-
  $('.close-overlay').click(function(event){
      event.stopPropagation();
  });
