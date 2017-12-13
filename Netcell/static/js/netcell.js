@@ -196,6 +196,7 @@ $("#cn-upload-experiment").on("click", function(event){
 **/
 var cellexp    = "";
 var cellclust  = "";
+var cellconditions = "";
 var celllabels = "";
 var formData   = "";
 var sce        = "";
@@ -233,7 +234,7 @@ function handleExpUpload(evt) {
       $("#files-cellexp-ok").show();
       $("#files-cellexp-notok").hide();
       $("#files-sce-ok").hide();
-      if (! cellclust) {
+      if (! cellconditions) {
         $("#files-cellclust-notok").show();
       } else {
         $('#uploadexperiment-send').removeClass("disabled");
@@ -241,16 +242,19 @@ function handleExpUpload(evt) {
     } else if (evt.target.id == "files-cellclust") {
       // Cell Clustering
       textfile = reader.result;
-      cellclust = textfile;
-      cellclust = cellclust.split("\n");
+      cellconditions = textfile;
+      cellconditions = cellconditions.split("\n");
       var clusters = [];
-      for (var cl = 0; cl < cellclust.length; cl++) {
-        var cluster = cellclust[cl].split(/[ \t]+/);
-        console.log(cluster);
-        cluster = cluster[1]; // Select second col
-        clusters.push(cluster);
+      var conditions = []
+      for (var cl = 0; cl < cellconditions.length; cl++) {
+        var clusterlist = cellconditions[cl].split(/[ \t]+/);
+        console.log(clusterlist);
+          // We can have more conditions/batches
+          // Can store up to 3 conditions
+          // Must do a warning
+        conditions.push(clusterlist.slice(1));
       }
-      cellclust = clusters;
+      cellconditions = conditions;
       // Change green tick
       $("#files-cellclust-ok").show();
       $("#files-cellclust-notok").hide();
@@ -301,6 +305,20 @@ $('#uploadexperiment-send').on("click", function(){
           }
       });
     }
+
+    // Add options to color-by dropdown menu
+    for (var condidx = 0; condidx < cellconditions[0].length; condidx++) {
+
+      var opthtml = "";
+      if (condidx == 0) {
+        opthtml = '<li><a href="#">' + "Clusters" + '</a></li>'
+      } else {
+        opthtml = '<li><a href="#">Condition_' + condidx + '</a></li>'
+      }
+      $('#cn-colorby-dropdown').append(opthtml);
+    }
+    addColorBy();
+    $('.dropdown-toggle').dropdown();
     $(".exp-name-label").html(exp_name);
     $('.card-overlay').hide();
     $('.close-overlay').hide();
@@ -309,26 +327,6 @@ $('#uploadexperiment-send').on("click", function(){
     $(".cn-experiment-upload-btn").hide();
   }
 
-  /* Options for tSNE
-  var opt = {};
-  opt.epsilon = 10; // epsilon is learning rate (10 = default)
-  opt.perplexity = 30; // roughly how many neighbors each point influences (30 = default)
-  opt.dim = 2; // dimensionality of the embedding (2 = default)
-  var tsne = new tsnejs.tSNE(opt); // create a tSNE instance
-  */
-
-
-  /*tsne.initDataRaw(cellexp);
-  for(var k = 0; k < 500; k++) {
-    tsne.step(); // every time you call this, solution gets better
-  }
-  var Y = tsne.getSolution();
-  console.log(Y);
-  */
-
-  //$(".cn-experiment-dropdown").val("Custom Experiment").change();
-  //$(".cn-experiment-dropdown").addClass("disabled");
-  //alert("YEP");
 });
 
 /**
@@ -349,12 +347,12 @@ $(function(){
 /**
 * Creates array of traces depending on "group" categorical variable
 **/
-function changeTraces(xpoints, ypoints, celllabels, groups) {
+function changeTraces(xpoints, ypoints, celllabels, groups, condIdx) {
   var traces = [];
   var categories = [];
   for (var i = 0; i < groups.length; i += 1) {
-    if (categories.indexOf(groups[i]) === -1) {
-      if (groups[i] == -1) {
+    if (categories.indexOf(groups[i][condIdx]) === -1) {
+      if (groups[i][condIdx] == -1) {
         // Skip clusters named "-1"
         continue;
       }
@@ -362,14 +360,14 @@ function changeTraces(xpoints, ypoints, celllabels, groups) {
         x: [],
         y: [],
         mode: 'markers',
-        name: groups[i],
+        name: groups[i][condIdx],
         text: []
       });
-      categories.push(groups[i]);
+      categories.push(groups[i][condIdx]);
     } else {
-      traces[categories.indexOf(groups[i])].x.push(xpoints[i]);
-      traces[categories.indexOf(groups[i])].y.push(ypoints[i]);
-      traces[categories.indexOf(groups[i])].text.push(celllabels[i]);
+      traces[categories.indexOf(groups[i][condIdx])].x.push(xpoints[i]);
+      traces[categories.indexOf(groups[i][condIdx])].y.push(ypoints[i]);
+      traces[categories.indexOf(groups[i][condIdx])].text.push(celllabels[i]);
     }
   }
   console.log(traces);
@@ -389,6 +387,24 @@ $("#aboutexp-btn").on("click", function(event){
   $('.close-overlay-aboutexp').slideToggle(450);
   return false;
 });
+
+/*
+ * Add Controls for Dropdown ColorBy
+ */
+ var colorby = 0; // index of colorby=condIdx
+function addColorBy () {
+   $(".cn-colorby-dropdown li a").click(function(){
+     $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="caret"></span>');
+     $(this).parents(".dropdown").find('.btn').val($(this).data('value'));
+     if ($(this).text() == "Clusters") {
+       colorby = 0;
+     } else {
+       colorby = $(this).text();
+       colorby = colorby.replace('Condition\_', '');
+     }
+     alert(colorby);
+   });
+}
 
 
 /**
@@ -437,7 +453,8 @@ $("#plot-btn").on("click", function(){
         name: 'Team A',
         text: celllabels,
       };*/
-      var traces = changeTraces(xCoords, yCoords, celllabels, cellclust);
+      condIdx = colorby;
+      var traces = changeTraces(xCoords, yCoords, celllabels, cellconditions, condIdx);
       //ar dataplot = [trace1]
       Plotly.newPlot('tsne-plot', traces);
       //console.log(celllabels);
