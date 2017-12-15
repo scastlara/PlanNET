@@ -482,7 +482,7 @@ $("#plot-btn").on("click", function(){
   function plotByGene(xCoords, yCoords, celllabels, selGene) {
     var colorDim = [];
     var geneIdx = genelabels.indexOf(selGene);
-    if (! geneIdx) {
+    if (geneIdx == -1) {
       displayError("Can't find Gene.");
       return;
     }
@@ -502,6 +502,8 @@ $("#plot-btn").on("click", function(){
     }
     console.log(trace);
     Plotly.newPlot('tsne-plot', [trace]);
+    $(".colored-by .colored-by-text").html(selGene);
+    $(".colored-by").show();
   }
 
 
