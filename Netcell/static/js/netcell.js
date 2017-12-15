@@ -198,6 +198,7 @@ var cellexp    = "";
 var cellclust  = "";
 var cellconditions = "";
 var celllabels = "";
+var genelabels = "";
 var formData   = "";
 var sce        = "";
 var cond_names = [];
@@ -346,16 +347,20 @@ $('#uploadexperiment-send').on("click", function(){
           processData: false,  // tell jQuery not to process the data
           contentType: false,  // tell jQuery not to set contentType
           success : function(data) {
-            alert("success");
-            cellexp = data.cellexp;
-            cellconditions = data.cellconditions;
-            celllabels = data.celllabels;
-            addColorByOpts();
-            addColorBy();
-            handleDivsExperiment();
+            if (data.error) {
+              displayError(data.error);
+            } else {
+              cellexp = data.cellexp;
+              cellconditions = data.cellconditions;
+              celllabels = data.celllabels;
+              genelabels = data.genelabels;
+              addColorByOpts();
+              addColorBy();
+              handleDivsExperiment();
+            }
           },
           error: function(result) {
-            alert("Error");
+            displayError("Can't read RDS file.");
           }
       });
     } else {
@@ -413,6 +418,9 @@ function changeTraces(xpoints, ypoints, celllabels, groups, condIdx) {
       traces[categories.indexOf(groups[i][condIdx])].text.push(celllabels[i]);
     }
   }
+  traces.sort(function(a,b) {
+    return a.name - b.name;
+  })
   console.log(traces);
   return traces;
 }
@@ -439,9 +447,7 @@ function addColorBy () {
    $(".cn-colorby-dropdown li a").click(function(){
      $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="caret"></span>');
      $(this).parents(".dropdown").find('.btn').val($(this).data('value'));
-     alert($(this).text());
      colorby = cond_names.indexOf($(this).text())
-     alert(colorby);
    });
 }
 
@@ -458,7 +464,47 @@ $('#perplexity').slider('setValue', 10);
 * Plot button send
 **/
 $("#plot-btn").on("click", function(){
-  alert("plotting");
+
+  /**
+  * Color plot by Cluster or Condition
+  **/
+  function plotByClust(xCoords, yCoords, celllabels, cellconditions) {
+    condIdx = colorby;
+    var traces = changeTraces(xCoords, yCoords, celllabels, cellconditions, condIdx);
+    Plotly.newPlot('tsne-plot', traces);
+    $(".colored-by .colored-by-text").html(cond_names[colorby]);
+    $(".colored-by").show();
+  }
+
+  /**
+  * Color plot by gene expression
+  **/
+  function plotByGene(xCoords, yCoords, celllabels, selGene) {
+    var colorDim = [];
+    var geneIdx = genelabels.indexOf(selGene);
+    if (! geneIdx) {
+      displayError("Can't find Gene.");
+      return;
+    }
+
+    for (var cellidx = 0; cellidx < cellexp.length; cellidx++) {
+      colorDim.push(cellexp[cellidx][geneIdx]);
+    }
+    var trace = {
+        x: xCoords,
+        y: yCoords,
+        mode: 'markers',
+        marker: {
+          size: 5,
+          color: colorDim
+        },
+        text: celllabels
+    }
+    console.log(trace);
+    Plotly.newPlot('tsne-plot', [trace]);
+  }
+
+
   var reducedDims = $('#reducedDims').val();
   var perplexity  = $('#perplexity').val();
   if (! reducedDims) {
@@ -483,21 +529,19 @@ $("#plot-btn").on("click", function(){
     success: function(data) {
       var xCoords = JSON.parse(data.x);
       var yCoords = JSON.parse(data.y);
-      /*
-      var trace1 = {
-        x: xCoords,
-        y: yCoords,
-        mode: 'markers',
-        type: 'scatter',
-        name: 'Team A',
-        text: celllabels,
-      };*/
-      condIdx = colorby;
-      var traces = changeTraces(xCoords, yCoords, celllabels, cellconditions, condIdx);
-      //ar dataplot = [trace1]
-      Plotly.newPlot('tsne-plot', traces);
-      //console.log(celllabels);
-      //console.log(data);
+
+      // Must add check for gene
+      var selGene = $("#genename").val();
+
+      if (!selGene) {
+        plotByClust(xCoords, yCoords, celllabels, cellconditions);
+      } else {
+        plotByGene(xCoords, yCoords, celllabels, selGene);
+      }
+
+    },
+    error: function(data) {
+      displayError("Can't plot SC experiment.")
     }
   });
 });

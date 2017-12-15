@@ -106,9 +106,11 @@ def sce_to_json(request):
         expression = list()
         cellconditions = list()
         celllabels = list()
+        genelabels = list()
 
         # Get clusters and celllabels
         celllabels = list(colnames(sce))
+        genelabels = list(rownames(sce))
         try:
             for conidx in xrange(0,len(conditions_names)):
                 fact = dollar(sce, conditions_names[conidx])
@@ -135,6 +137,7 @@ def sce_to_json(request):
             'cellexp': expression,
             'celllabels': celllabels,
             'cellconditions': cellconditions,
+            'genelabels': genelabels,
             'error': error
         })
 

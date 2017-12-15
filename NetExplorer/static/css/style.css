@@ -1946,12 +1946,18 @@ kbd {
  }
 
  #tsne-plot {
-   width: 65%;
-   height: 65%;
-   margin-left: 17.5%;
+   width: 75%;
+   height: 85%;
+   margin-left: 12.5%;
  }
 
 .tsne-plot-container {
   display: flex;
   align-items: center;
+}
+
+
+.colored-by {
+  display: none;
+  text-align: center;
 }

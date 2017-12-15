@@ -254,8 +254,9 @@
                 data-slider-step="1"
             >
           </div>
-
+          <hr>
           <h3>Color by:</h3>
+          <h4>Cluster/Condition</h4>
           <div class="dropdown">
             <button class="btn btn-default dropdown-toggle cn-celltype" type="button" data-toggle="dropdown">
               Color by:
@@ -266,16 +267,26 @@
 
             </ul>
           </div> <!-- dropdown -->
+          <h4>Gene Expression</h4>
+          <input type="text" placeholder="gene name" class="form-control" id="genename">
         </div>
         <div class="col-sm-6 plot-btn-container">
+          <!--EMPTY-->
+        </div>
+      </div>
+
+      <div class="row row-eq-height">
+        <div class="col-sm-6"></div>
+        <div class="col-sm-6">
           <div id="plot-btn" class="btn btn-netcell">Plot</div>
         </div>
-
       </div>
       <br><hr>
       <div class="tsne-plot-container">
         <div id="tsne-plot"></div>
       </div>
+      <hr>
+      <div class="colored-by"><h4>Colored by: <span class="colored-by-text"></span></h4></div>
 
     </div>
 
@@ -296,7 +307,7 @@
     <script src="{% static 'js/netcell.js' %}"></script>
     <script src="{% static 'js/card-overlay.js' %}"></script>
     <script src="{% static 'js/plotly-latest.min.js' %}"></script>
-    <script src="{% static 'js/tsne.js' %}"></script>
+    <script src="{% static 'js/tinygradient.min.js' %}"></script>
     <script>
         $( function() {
             $( ".info-tooltip" ).tooltip({
