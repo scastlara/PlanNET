@@ -359,6 +359,11 @@ $('#uploadexperiment-send').on("click", function(){
           }
       });
     } else {
+      cond_names.push("clusters");
+      for (var icond = 0; icond < cellconditions[0].length; icond++) {
+        var icond_name = icond + 1;
+        cond_names.push("Condition_" + icond_name);
+      }
       addColorByOpts();
       addColorBy();
       handleDivsExperiment();
