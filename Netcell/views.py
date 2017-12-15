@@ -9,6 +9,7 @@ import tempfile
 import os
 from rpy2 import robjects
 from rpy2.robjects.packages import importr
+import random
 
 
 def netcell(request):
@@ -52,7 +53,8 @@ def netcellpca(request):
             pass
 
         # Perform tSNE
-        tsne = TSNE(n_components=2, perplexity=perp)
+        random.seed(42)
+        tsne = TSNE(n_components=2, perplexity=perp,random_state=2)
         tsne_coords = tsne.fit_transform(cellexp)
         x, y = [], []
         for el in tsne_coords:
@@ -79,6 +81,11 @@ def sce_to_json(request):
         # Write temp file with SingleCellExperiment RDS
         error = None
         scefile = request.FILES.get("scefile")
+        conditions_names = request.POST['conditions_names']
+        print(conditions_names)
+        conditions_names = [ cond for cond in conditions_names.split(",") if cond ]
+        print(conditions_names)
+
         tup = tempfile.mkstemp()    # make a tmp file
         f = os.fdopen(tup[0], 'w')  # open the tmp file for writing
         f.write(scefile.read())     # write the tmp file
@@ -97,17 +104,22 @@ def sce_to_json(request):
         colnames = base.__dict__["colnames"]
         rownames = base.__dict__["rownames"]
         expression = list()
-        clusters = list()
+        cellconditions = list()
         celllabels = list()
 
         # Get clusters and celllabels
+        celllabels = list(colnames(sce))
         try:
-            fact = dollar(sce, "clusters")
-            clusters = list(fact)
-            celllabels = list(colnames(sce))
-        except Exception:
+            for conidx in xrange(0,len(conditions_names)):
+                fact = dollar(sce, conditions_names[conidx])
+                fact = robjects.FactorVector(fact)
+                for cellidx in xrange(0,len(celllabels)):
+                    if cellidx >= len(cellconditions):
+                        cellconditions.append(list())
+                    #print(fact.levels[fact[cellidx] - 1])
+                    cellconditions[cellidx].append(fact.levels[fact[cellidx] - 1])
+        except Exception as err:
             error = "SCE object should have 'clusters' slot with a List"
-
         # Get expression
         try:
             assays = robjects.r("assays")
@@ -122,7 +134,7 @@ def sce_to_json(request):
         response = json.dumps({
             'cellexp': expression,
             'celllabels': celllabels,
-            'cellclust': clusters,
+            'cellconditions': cellconditions,
             'error': error
         })
 

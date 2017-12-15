@@ -200,6 +200,8 @@ var cellconditions = "";
 var celllabels = "";
 var formData   = "";
 var sce        = "";
+var cond_names = [];
+
 function handleExpUpload(evt) {
   var files = evt.target.files; // FileList object
   var file = files[0];
@@ -267,6 +269,9 @@ function handleExpUpload(evt) {
     } else if (evt.target.id == "files-sce") {
       // SCE object
       sce = file;
+
+
+      console.log(cond_names)
       formData = new FormData();
       formData.append('scefile', file);
       formData.append('csrfmiddlewaretoken', csrf_token);
@@ -289,9 +294,51 @@ $('#uploadexperiment-send').on("click", function(){
     if (! exp_name) {
       exp_name = "Experiment #1";
     }
+
+
+    /*
+     * Show and hides the necessary divs when an experiment is uploaded
+     */
+    function handleDivsExperiment() {
+      $('.dropdown-toggle').dropdown();
+      $(".exp-name-label").html(exp_name);
+      $('.card-overlay').hide();
+      $('.close-overlay').hide();
+      $("#exp-name-label").show();
+      $(".cn-exp-controls").show();
+      $(".cn-experiment-upload-btn").hide();
+    }
+
+    /*
+     * Adds the ColorBy options to the dropdown of AboutExperiment
+     */
+    function addColorByOpts () {
+      for (var condidx = 0; condidx < cellconditions[0].length; condidx++) {
+        var opthtml = "";
+        opthtml = '<li><a href="#">' + cond_names[condidx] + '</a></li>'
+        $('#cn-colorby-dropdown').append(opthtml);
+      }
+    }
+
     // Check if upload experiment was done via TSV files or RDS
     // Prioritize RDS
     if (formData) {
+      alert("we have a file");
+      if (!$('#cluster-name').val()) {
+        cond_names.push("clusters");
+      } else {
+        cond_names.push($('#cluster-name').val());
+      }
+
+      if ($('#cond1-name').val()) {
+        cond_names.push($('#cond1-name').val());
+      }
+
+      if ($('#cond2-name').val()) {
+        cond_names.push($('#cond2-name').val());
+      }
+      formData.append('conditions_names', cond_names);
+
       $.ajax({
           url : '/upload_sce',
           type : 'POST',
@@ -299,32 +346,23 @@ $('#uploadexperiment-send').on("click", function(){
           processData: false,  // tell jQuery not to process the data
           contentType: false,  // tell jQuery not to set contentType
           success : function(data) {
+            alert("success");
             cellexp = data.cellexp;
-            cellclust = data.cellclust;
+            cellconditions = data.cellconditions;
             celllabels = data.celllabels;
+            addColorByOpts();
+            addColorBy();
+            handleDivsExperiment();
+          },
+          error: function(result) {
+            alert("Error");
           }
       });
+    } else {
+      addColorByOpts();
+      addColorBy();
+      handleDivsExperiment();
     }
-
-    // Add options to color-by dropdown menu
-    for (var condidx = 0; condidx < cellconditions[0].length; condidx++) {
-
-      var opthtml = "";
-      if (condidx == 0) {
-        opthtml = '<li><a href="#">' + "Clusters" + '</a></li>'
-      } else {
-        opthtml = '<li><a href="#">Condition_' + condidx + '</a></li>'
-      }
-      $('#cn-colorby-dropdown').append(opthtml);
-    }
-    addColorBy();
-    $('.dropdown-toggle').dropdown();
-    $(".exp-name-label").html(exp_name);
-    $('.card-overlay').hide();
-    $('.close-overlay').hide();
-    $("#exp-name-label").show();
-    $(".cn-exp-controls").show();
-    $(".cn-experiment-upload-btn").hide();
   }
 
 });
@@ -391,17 +429,13 @@ $("#aboutexp-btn").on("click", function(event){
 /*
  * Add Controls for Dropdown ColorBy
  */
- var colorby = 0; // index of colorby=condIdx
+var colorby = 0; // index of colorby=condIdx
 function addColorBy () {
    $(".cn-colorby-dropdown li a").click(function(){
      $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="caret"></span>');
      $(this).parents(".dropdown").find('.btn').val($(this).data('value'));
-     if ($(this).text() == "Clusters") {
-       colorby = 0;
-     } else {
-       colorby = $(this).text();
-       colorby = colorby.replace('Condition\_', '');
-     }
+     alert($(this).text());
+     colorby = cond_names.indexOf($(this).text())
      alert(colorby);
    });
 }
