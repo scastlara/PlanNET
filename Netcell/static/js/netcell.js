@@ -535,7 +535,7 @@ $("#plot-btn").on("click", function(){
       // Must add check for gene
       var selGene = $("#genename").val();
 
-      if (!selGene) {
+      if (! selGene) {
         plotByClust(xCoords, yCoords, celllabels, cellconditions);
       } else {
         plotByGene(xCoords, yCoords, celllabels, selGene);
