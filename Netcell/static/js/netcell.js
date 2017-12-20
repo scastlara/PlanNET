@@ -319,21 +319,35 @@ $('#uploadexperiment-send').on("click", function(){
       }
     }
 
+
     /*
      * Adds cluster options to dropdown
      */
-    function addClusterOpts () {
-      var allclusters = [];
+    function addConditionOpts () {
+      var allconditions = [];
       for (var i = 0; i < cellconditions.length; i++) {
-        allclusters.push(cellconditions[i][0]);
+        for (var cidx = 0; cidx < cellconditions[i].length; cidx++) {
+          if (allconditions.length <= cidx) {
+            allconditions.push([]);
+          }
+          allconditions[cidx].push(cellconditions[i][cidx]);
+        }
       }
-      allclusters = new Set(allclusters.sort());
-      allclusters = Array.from(allclusters);
 
-      for (var clustidx = 0; clustidx < allclusters.length; clustidx++) {
+      for (cond in allconditions) {
+        $(".cn-condition-dropdown-container" + cond).show();
+        allconditions[cond] = new Set(allconditions[cond].sort());
+        allconditions[cond] = Array.from(allconditions[cond]);
+        $(".condition-name" + cond).html(cond_names[cond]);
+      }
+
+      for (var clustidx = 0; clustidx < allconditions.length; clustidx++) {
         var opthtml = "";
-        opthtml = '<li><a href="#">' + allclusters[clustidx] + '</a></li>'
-        $('#celltype-dropdown-ul').append(opthtml);
+        for (cond in allconditions[clustidx]) {
+          opthtml = '<li><a href="#">' + allconditions[clustidx][cond] + '</a></li>'
+          var dropselector = "#dropdown-ul-condition" + clustidx;
+          $(dropselector).append(opthtml);
+        }
 
       }
         addCellTypeListener();
@@ -373,7 +387,7 @@ $('#uploadexperiment-send').on("click", function(){
               celllabels = data.celllabels;
               genelabels = data.genelabels;
               addColorByOpts();
-              addClusterOpts();
+              addConditionOpts();
               addColorBy();
               handleDivsExperiment();
             }
@@ -389,6 +403,7 @@ $('#uploadexperiment-send').on("click", function(){
         cond_names.push("Condition_" + icond_name);
       }
       addColorByOpts();
+      addConditionOpts();
       addColorBy();
       handleDivsExperiment();
     }
