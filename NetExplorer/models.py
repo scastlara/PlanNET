@@ -99,10 +99,18 @@ GO_HUMAN_GET_GO_QUERY = """
     RETURN n.accession as accession, n.domain as domain ORDER BY n.domain
 """
 
+
 # ------------------------------------------------------------------------------
 DOMAIN_NODES_QUERY = """
     MATCH (n:%s)-[:HAS_DOMAIN]->(m:Pfam)
     WHERE m.accession = "%s"
+    RETURN n.symbol as symbol
+"""
+
+# ------------------------------------------------------------------------------
+DOMAIN_NODES_QUERY_FUZZY = """
+    MATCH (n:%s)-[:HAS_DOMAIN]->(m:Pfam)
+    WHERE m.accession =~ "%s"
     RETURN n.symbol as symbol
 """
 
@@ -381,9 +389,19 @@ class Domain(object):
         self.mlength     = mlength
 
     def get_nodes(self, database):
-        query = DOMAIN_NODES_QUERY % (database, self.accession)
+        query = "";
+        if not re.match(r'PF\d{5}\.', self.accession):
+            # Fuzzy pfam accession (no number)
+            acc_regex = self.accession + ".*"
+            print(acc_regex)
+            query = DOMAIN_NODES_QUERY_FUZZY % (database, acc_regex)
+            print(query)
+        else:
+            query = DOMAIN_NODES_QUERY % (database, self.accession)
+
         results = GRAPH.run(query)
         results = results.data()
+        print(results)
         nodes = list()
         if results:
             for row in results:
