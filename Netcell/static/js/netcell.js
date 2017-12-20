@@ -335,7 +335,9 @@ $('#uploadexperiment-send').on("click", function(){
       }
 
       for (cond in allconditions) {
-        $(".cn-condition-dropdown-container" + cond).show();
+        var selector = ".cn-condition-dropdown-container" + cond;
+        console.log(selector);
+        $(selector).show();
         allconditions[cond] = new Set(allconditions[cond].sort());
         allconditions[cond] = Array.from(allconditions[cond]);
         $(".condition-name" + cond).html(cond_names[cond]);

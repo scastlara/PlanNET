@@ -1961,3 +1961,6 @@ kbd {
   display: none;
   text-align: center;
 }
+.cn-condition-dropdown-container {
+  display: none;
+}
