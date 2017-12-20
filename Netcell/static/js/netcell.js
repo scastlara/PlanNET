@@ -23,11 +23,13 @@ $(".cn-experiment-dropdown li a").click(function(){
 * Changes text of dropdown when select
 * Changes Visualization
 **/
-$(".cn-celltype-dropdown li a").click(function(){
-  $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="caret"></span>');
-  $(this).parents(".dropdown").find('.btn').val($(this).data('value'));
-  alert("CELLTYPE");
-});
+function addCellTypeListener() {
+  $(".cn-celltype-dropdown li a").click(function(){
+    $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="caret"></span>');
+    $(this).parents(".dropdown").find('.btn').val($(this).data('value'));
+    alert("CELLTYPE");
+  });
+}
 
 
 $( function() {
@@ -88,7 +90,6 @@ function handleFileSelect(evt) {
       }
       catch (err) {
         displayError("Incorrect JSON file.");
-        console.log(err);
       }
     } else if (evt.target.id == "files-tbl") {
       graphelements = tblToJsonTxt(textfile);
@@ -207,7 +208,6 @@ function handleExpUpload(evt) {
   var files = evt.target.files; // FileList object
   var file = files[0];
   var reader = new FileReader();
-  console.log(files);
   reader.onload = function(){
     // Check format
     if (evt.target.id == "files-cellexp") {
@@ -251,7 +251,6 @@ function handleExpUpload(evt) {
       var conditions = []
       for (var cl = 0; cl < cellconditions.length; cl++) {
         var clusterlist = cellconditions[cl].split(/[ \t]+/);
-        console.log(clusterlist);
           // We can have more conditions/batches
           // Can store up to 3 conditions
           // Must do a warning
@@ -272,7 +271,6 @@ function handleExpUpload(evt) {
       sce = file;
 
 
-      console.log(cond_names)
       formData = new FormData();
       formData.append('scefile', file);
       formData.append('csrfmiddlewaretoken', csrf_token);
@@ -321,6 +319,26 @@ $('#uploadexperiment-send').on("click", function(){
       }
     }
 
+    /*
+     * Adds cluster options to dropdown
+     */
+    function addClusterOpts () {
+      var allclusters = [];
+      for (var i = 0; i < cellconditions.length; i++) {
+        allclusters.push(cellconditions[i][0]);
+      }
+      allclusters = new Set(allclusters.sort());
+      allclusters = Array.from(allclusters);
+
+      for (var clustidx = 0; clustidx < allclusters.length; clustidx++) {
+        var opthtml = "";
+        opthtml = '<li><a href="#">' + allclusters[clustidx] + '</a></li>'
+        $('#celltype-dropdown-ul').append(opthtml);
+
+      }
+        addCellTypeListener();
+    }
+
     // Check if upload experiment was done via TSV files or RDS
     // Prioritize RDS
     if (formData) {
@@ -355,6 +373,7 @@ $('#uploadexperiment-send').on("click", function(){
               celllabels = data.celllabels;
               genelabels = data.genelabels;
               addColorByOpts();
+              addClusterOpts();
               addColorBy();
               handleDivsExperiment();
             }
@@ -421,7 +440,6 @@ function changeTraces(xpoints, ypoints, celllabels, groups, condIdx) {
   traces.sort(function(a,b) {
     return a.name - b.name;
   })
-  console.log(traces);
   return traces;
 }
 
@@ -500,7 +518,6 @@ $("#plot-btn").on("click", function(){
         },
         text: celllabels
     }
-    console.log(trace);
     Plotly.newPlot('tsne-plot', [trace]);
     $(".colored-by .colored-by-text").html(selGene);
     $(".colored-by").show();
