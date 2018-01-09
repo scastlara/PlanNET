@@ -393,19 +393,16 @@ class Domain(object):
         if not re.match(r'PF\d{5}\.', self.accession):
             # Fuzzy pfam accession (no number)
             acc_regex = self.accession + ".*"
-            print(acc_regex)
             query = DOMAIN_NODES_QUERY_FUZZY % (database, acc_regex)
-            print(query)
         else:
             query = DOMAIN_NODES_QUERY % (database, self.accession)
 
         results = GRAPH.run(query)
         results = results.data()
-        print(results)
         nodes = list()
         if results:
             for row in results:
-                nodes.append( PredictedNode(row['symbol'], database, query=False) )
+                nodes.append(PredictedNode(row['symbol'], database, query=False))
             return nodes
         else:
             raise NodeNotFound(self.accession, "Pfam-%s" % database)
@@ -764,15 +761,16 @@ class PredictedNode(Node):
             self.get_neighbours()
         nodes.append(self)
         added_elements.add(self.symbol)
-        for interaction in self.neighbours:
-            if including and interaction.target.symbol not in including:
-                continue
-            if interaction.target.symbol not in added_elements:
-                added_elements.add(interaction.target.symbol)
-                nodes.append( interaction.target )
-            if (interaction.target.symbol, self.symbol) not in added_elements:
-                added_elements.add((self.symbol, interaction.target.symbol))
-                edges.append( interaction )
+        if self.neighbours:
+            for interaction in self.neighbours:
+                if including and interaction.target.symbol not in including:
+                    continue
+                if interaction.target.symbol not in added_elements:
+                    added_elements.add(interaction.target.symbol)
+                    nodes.append( interaction.target )
+                if (interaction.target.symbol, self.symbol) not in added_elements:
+                    added_elements.add((self.symbol, interaction.target.symbol))
+                    edges.append( interaction )
         return nodes, edges
 
     def get_geneontology(self):
