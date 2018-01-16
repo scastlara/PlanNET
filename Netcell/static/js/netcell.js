@@ -380,6 +380,9 @@ $('#uploadexperiment-send').on("click", function(){
           data : formData,
           processData: false,  // tell jQuery not to process the data
           contentType: false,  // tell jQuery not to set contentType
+          beforeSend: function() {
+            $('#loading').show();
+          },
           success : function(data) {
             if (data.error) {
               displayError(data.error);
@@ -393,9 +396,11 @@ $('#uploadexperiment-send').on("click", function(){
               addColorBy();
               handleDivsExperiment();
             }
+            $("#loading").hide();
           },
           error: function(result) {
             displayError("Can't read RDS file.");
+            $("#loading").hide();
           }
       });
     } else {
