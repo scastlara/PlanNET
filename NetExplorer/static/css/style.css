@@ -644,7 +644,7 @@ h1, h2, h3, h4, h5, h6 {
 #loading {
     position: fixed;
     display: none;
-    margin-top: 50px;
+    margin-top: 100px;
     right: 25%;
     width: 150px;
     z-index: 10000000000;
