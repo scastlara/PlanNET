@@ -98,10 +98,14 @@ def sce_to_json(request):
             for conidx in xrange(0, len(conditions_names)):
                 fact = dollar(sce, conditions_names[conidx])
                 fact = robjects.FactorVector(fact)
-                for cellidx in xrange(0, len(celllabels)):
-                    if cellidx >= len(cellconditions):
-                        cellconditions.append(list())
-                    cellconditions[cellidx].append(fact.levels[fact[cellidx] - 1])
+                if fact.levels:
+                    for cellidx in xrange(0, len(celllabels)):
+                        if cellidx >= len(cellconditions):
+                            cellconditions.append(list())
+                        cellconditions[cellidx].append(fact.levels[fact[cellidx] - 1])
+                else:
+                    # Factor has no levels, does not exist
+                    error = "Factor %s does not exist in RDS object." % conditions_names[conidx]
         except Exception as err:
             error = "SCE object should have 'clusters' slot with a List"
         # Get expression
