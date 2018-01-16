@@ -19,19 +19,6 @@ def netcell(request):
     return render(request, 'Netcell/netcell.html')
 
 
-'''
-def tsneplot(request):
-    View for making a TSNE plot
-    if request.is_ajax():
-        # Go on
-        pass
-    else:
-        pass
-
-    return HttpResponse("", content_type="application/json")
-'''
-
-
 def netcellpca(request):
     '''
     Computes PCA of expression array of arrays
@@ -48,13 +35,11 @@ def netcellpca(request):
             pca = PCA(n_components=dims)
             pca.fit(cellexp)
             cellexp = pca.transform(cellexp)
-        else:
-            # Don't do pca
-            pass
+        # Else: Don't do pca
 
         # Perform tSNE
         random.seed(42)
-        tsne = TSNE(n_components=2, perplexity=perp,random_state=2)
+        tsne = TSNE(n_components=2, perplexity=perp, random_state=2)
         tsne_coords = tsne.fit_transform(cellexp)
         x, y = [], []
         for el in tsne_coords:
@@ -82,9 +67,7 @@ def sce_to_json(request):
         error = None
         scefile = request.FILES.get("scefile")
         conditions_names = request.POST['conditions_names']
-        print(conditions_names)
         conditions_names = [ cond for cond in conditions_names.split(",") if cond ]
-        print(conditions_names)
 
         tup = tempfile.mkstemp()    # make a tmp file
         f = os.fdopen(tup[0], 'w')  # open the tmp file for writing
@@ -112,13 +95,12 @@ def sce_to_json(request):
         celllabels = list(colnames(sce))
         genelabels = list(rownames(sce))
         try:
-            for conidx in xrange(0,len(conditions_names)):
+            for conidx in xrange(0, len(conditions_names)):
                 fact = dollar(sce, conditions_names[conidx])
                 fact = robjects.FactorVector(fact)
-                for cellidx in xrange(0,len(celllabels)):
+                for cellidx in xrange(0, len(celllabels)):
                     if cellidx >= len(cellconditions):
                         cellconditions.append(list())
-                    #print(fact.levels[fact[cellidx] - 1])
                     cellconditions[cellidx].append(fact.levels[fact[cellidx] - 1])
         except Exception as err:
             error = "SCE object should have 'clusters' slot with a List"

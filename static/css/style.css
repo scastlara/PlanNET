@@ -111,8 +111,9 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .row-app {
-    width: 100%;
-    margin-bottom: 1%;
+  width: 90%;
+  margin-left: 5% !important;
+  margin-bottom: 1%;
 }
 
 .app-container {
