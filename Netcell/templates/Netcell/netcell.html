@@ -19,7 +19,12 @@
 
     <div class="cn-content">
       <div id="loading"><img class="loading-img" src="{% static 'Images/loading-pathfinder.gif' %}"/><img src="{% static 'Images/loading-background.png' %}" class="loading-background"/></div>
-      <div id="exp-name-label" class="exp-name-label">EXP1</div>
+      <div id="exp-label-container">
+        <div id="exp-name-label" class="exp-name-label">
+          EXP1
+        </div>
+        <div class="btn" id="delete-exp"><span class="glyphicon glyphicon-trash"></span></div>
+      </div>
 
       <div class="row">
         <div id="cyt" class="col-sm-9 cn-graph"></div>

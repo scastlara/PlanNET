@@ -1901,7 +1901,7 @@ kbd {
   width: 100px;
 }
 
-#exp-name-label {
+#exp-label-container {
   display: none;
   position: fixed;
   background-color: white;
@@ -1915,6 +1915,14 @@ kbd {
   height: 45px;
   line-height: 45px;
   z-index: 2;
+}
+
+#delete-exp {
+  display: inline-block;
+}
+
+#exp-name-label {
+    display: inline-block;
 }
 
 .reducedDims-container {

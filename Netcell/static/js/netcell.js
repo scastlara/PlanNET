@@ -283,6 +283,31 @@ function handleExpUpload(evt) {
   reader.readAsText(file);
 }
 
+
+
+
+/*
+ * Show and hides the necessary divs when an experiment is uploaded or deleted
+ */
+function handleDivsExperiment(show, exp_name) {
+  if (show) {
+    $('.dropdown-toggle').dropdown();
+    $(".exp-name-label").html(exp_name);
+    $('.card-overlay').hide();
+    $('.close-overlay').hide();
+    $("#exp-label-container").show();
+    $(".cn-exp-controls").show();
+    $(".cn-experiment-upload-btn").hide();
+  } else {
+    $("#exp-label-container").hide();
+    $(".cn-exp-controls").hide();
+    $(".cn-experiment-upload-btn").show();
+  }
+}
+
+
+
+
 /**
 *  Upload experiment
 **/
@@ -295,18 +320,7 @@ $('#uploadexperiment-send').on("click", function(){
     }
 
 
-    /*
-     * Show and hides the necessary divs when an experiment is uploaded
-     */
-    function handleDivsExperiment() {
-      $('.dropdown-toggle').dropdown();
-      $(".exp-name-label").html(exp_name);
-      $('.card-overlay').hide();
-      $('.close-overlay').hide();
-      $("#exp-name-label").show();
-      $(".cn-exp-controls").show();
-      $(".cn-experiment-upload-btn").hide();
-    }
+
 
     /*
      * Adds the ColorBy options to the dropdown of AboutExperiment
@@ -394,7 +408,7 @@ $('#uploadexperiment-send').on("click", function(){
               addColorByOpts();
               addConditionOpts();
               addColorBy();
-              handleDivsExperiment();
+              handleDivsExperiment(true, exp_name);
             }
             $("#loading").hide();
           },
@@ -412,7 +426,7 @@ $('#uploadexperiment-send').on("click", function(){
       addColorByOpts();
       addConditionOpts();
       addColorBy();
-      handleDivsExperiment();
+      handleDivsExperiment(true, exp_name);
     }
   }
 
@@ -427,6 +441,22 @@ $(function(){
   document.querySelector("#files-sce").addEventListener('change',handleExpUpload, false);
 });
 
+/**
+* Delete EXPERIMENT
+**/
+$("#delete-exp").on("click", function() {
+  alert("Delete");
+  handleDivsExperiment(false);
+  cellexp    = "";
+  cellclust  = "";
+  cellconditions = "";
+  celllabels = "";
+  genelabels = "";
+  formData   = "";
+  sce        = "";
+  cond_names = [];
+
+})
 
 /**
 *-----------------------------------------------------------------------------
