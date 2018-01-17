@@ -298,10 +298,13 @@ function handleDivsExperiment(show, exp_name) {
     $("#exp-label-container").show();
     $(".cn-exp-controls").show();
     $(".cn-experiment-upload-btn").hide();
+    $("#search-cell").show();
   } else {
     $("#exp-label-container").hide();
     $(".cn-exp-controls").hide();
     $(".cn-experiment-upload-btn").show();
+    $("#search-cell").hide();
+    $(".upload-tick").hide();
   }
 }
 

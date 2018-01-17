@@ -1920,7 +1920,9 @@ kbd {
 #delete-exp {
   display: inline-block;
 }
-
+.delete-exp-icon {
+  font-size: 20px !important;
+}
 #exp-name-label {
     display: inline-block;
 }
@@ -1972,4 +1974,19 @@ kbd {
 }
 .cn-condition-dropdown-container {
   display: none;
+}
+
+#search-cell {
+  display: none;
+  position: fixed;
+  background-color: white;
+  text-align: center;
+  color: #777777;
+  bottom: 20px;
+  left: 22.5%;
+  width: 30%;
+  height: 45px;
+  line-height: 45px;
+  z-index: 2;
+
 }
