@@ -305,6 +305,10 @@ function handleDivsExperiment(show, exp_name) {
     $(".cn-experiment-upload-btn").show();
     $("#search-cell").hide();
     $(".upload-tick").hide();
+
+    $(".cn-condition-dropdown-container0").hide();
+    $(".cn-condition-dropdown-container1").hide();
+    $(".cn-condition-dropdown-container2").hide();
   }
 }
 
@@ -353,7 +357,6 @@ $('#uploadexperiment-send').on("click", function(){
 
       for (cond in allconditions) {
         var selector = ".cn-condition-dropdown-container" + cond;
-        console.log(selector);
         $(selector).show();
         allconditions[cond] = new Set(allconditions[cond].sort());
         allconditions[cond] = Array.from(allconditions[cond]);
@@ -362,12 +365,13 @@ $('#uploadexperiment-send').on("click", function(){
 
       for (var clustidx = 0; clustidx < allconditions.length; clustidx++) {
         var opthtml = "";
+        var dropselector = "#dropdown-condition" + clustidx;
         for (cond in allconditions[clustidx]) {
-          opthtml = '<li><a href="#">' + allconditions[clustidx][cond] + '</a></li>'
-          var dropselector = "#dropdown-ul-condition" + clustidx;
+          opthtml = '<option>' + allconditions[clustidx][cond] + '</option>';
           $(dropselector).append(opthtml);
         }
-
+        // Refresh the Dropdown
+        $(dropselector).selectpicker("refresh");
       }
         addCellTypeListener();
     }
@@ -375,7 +379,6 @@ $('#uploadexperiment-send').on("click", function(){
     // Check if upload experiment was done via TSV files or RDS
     // Prioritize RDS
     if (formData) {
-      alert("we have a file");
       if (!$('#cluster-name').val()) {
         cond_names.push("clusters");
       } else {
@@ -448,17 +451,23 @@ $(function(){
 * Delete EXPERIMENT
 **/
 $("#delete-exp").on("click", function() {
-  alert("Delete");
   handleDivsExperiment(false);
   cellexp    = "";
   cellclust  = "";
   cellconditions = "";
+  allconditions  = "";
   celllabels = "";
   genelabels = "";
   formData   = "";
   sce        = "";
   cond_names = [];
-
+  // Delete dropdown options
+  $("#dropdown-condition0").html("");
+  $("#dropdown-condition0").selectpicker("refresh");
+  $("#dropdown-condition1").html("");
+  $("#dropdown-condition1").selectpicker("refresh");
+  $("#dropdown-condition2").html("");
+  $("#dropdown-condition2").selectpicker("refresh");
 })
 
 /**

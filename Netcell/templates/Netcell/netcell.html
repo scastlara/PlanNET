@@ -9,6 +9,7 @@
       <link rel="stylesheet" href="{% static 'css/jquery-ui.structure-all.min.css' %}">
       <link rel="stylesheet" href="{% static 'css/jquery-ui-all.theme.min.css' %}">
       <link rel="stylesheet" href="{% static 'css/slider.css' %}">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
       <title>PlanNET - NetCell</title>
       <script>
         var csrf_token = '{{ csrf_token }}';
@@ -83,43 +84,44 @@
           </div>
 
           <div class="cn-exp-controls">
+
+            <!-- ABOUT EXPERIMENT BUTTON -->
             <div id="aboutexp-btn" class="btn btn-default">
               <span class="glyphicon glyphicon-info-sign"></span>
               More About Experiment
             </div>
+
+            <!-- DROPDOWNS FOR CONDITIONS IN GRAPH -->
             <div class="cn-celltype-select">
 
+              <!-- CONDITION0 (clusters-->
               <div class="dropdown cn-condition-dropdown-container cn-condition-dropdown-container0">
                 <h4><span class="condition-name0"></span></h4>
-
-                  <button class="btn btn-default dropdown-toggle cn-celltype" type="button" data-toggle="dropdown">
-                    <span class="condition-name0"></span>
-                  </button>
-                  <ul id="dropdown-ul-condition0"  class="dropdown-menu cn-celltype-dropdown">
-                    <!-- This will be filled by Query -->
-                  </ul>
-
+                <select id ="dropdown-condition0" class="selectpicker" multiple>
+                  <!-- This will be filled by jQuery -->
+                </select>
+                <hr>
               </div>
+
+              <!-- CONDITION1 -->
               <div class="dropdown cn-condition-dropdown-container cn-condition-dropdown-container1">
                 <h4><span class="condition-name1"></span></h4>
-                  <button class="btn btn-default dropdown-toggle cn-celltype" type="button" data-toggle="dropdown">
-                    <span class="condition-name1"></span>
-                  </button>
-                  <ul id="dropdown-ul-condition1"  class="dropdown-menu cn-celltype-dropdown">
-                    <!-- This will be filled by Query -->
-                  </ul>
+                <select id ="dropdown-condition1" class="selectpicker" multiple>
+                  <!-- This will be filled by jQuery -->
+                </select>
+                <hr>
               </div>
+
+              <!-- CONDITION2 -->
               <div class="dropdown cn-condition-dropdown-container cn-condition-dropdown-container2">
                 <h4><span class="condition-name2"></span></h4>
-                  <button class="btn btn-default dropdown-toggle cn-celltype" type="button" data-toggle="dropdown">
-                    <span class="condition-name2"></span>
-                  </button>
-                  <ul id="dropdown-ul-condition2"  class="dropdown-menu cn-celltype-dropdown">
-                    <!-- This will be filled by Query -->
-                  </ul>
+                <select id ="dropdown-condition2" class="selectpicker" multiple>
+                  <!-- This will be filled by jQuery -->
+                </select>
+                <hr>
               </div>
+
               <br>
-              <!-- Cell Type -->
 
             </div> <!-- cn-celltype-select-->
 
@@ -335,6 +337,7 @@
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
     <script src="{% static 'js/jquery-ui-all.min.js' %}"></script>
     <script src="{% static 'js/bootstrap-slider.js' %}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script>
     <script src="{% static 'js/netcell.js' %}"></script>
     <script src="{% static 'js/card-overlay.js' %}"></script>
     <script src="{% static 'js/plotly-latest.min.js' %}"></script>
