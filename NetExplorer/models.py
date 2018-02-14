@@ -225,6 +225,13 @@ DOMAIN_QUERY = """
 """
 
 # ------------------------------------------------------------------------------
+OFFSYMBOL_QUERY = """
+    MATCH (n:OFF_SYMBOL)<-[r]-(m:%s)
+    WHERE n.symbol = '%s'
+    RETURN m.symbol AS symbol
+"""
+
+# ------------------------------------------------------------------------------
 HOMOLOGS_QUERY = """
     MATCH (n:Human)-[r:HOMOLOG_OF]-(m)
     WHERE  n.symbol = "%s"
@@ -875,6 +882,24 @@ class Experiment(object):
 
 
 # ------------------------------------------------------------------------------
+class OfficialSymbol(object):
+    '''
+    Class for Planarian official symbol
+    '''
+    def __init__(self, symbol):
+        self.symbol = symbol
+
+    def get_predictednode(self, database):
+        query   = OFFSYMBOL_QUERY % (database, self.symbol)
+        results = GRAPH.run(query)
+        results = results.data()
+        if results:
+            return results[0]['symbol']
+        else:
+            raise NodeNotFound(self.symbol, "OFF_SYMBOL")
+
+
+# ------------------------------------------------------------------------------
 class GraphCytoscape(object):
     """
     Class for a graph object
@@ -1015,6 +1040,7 @@ class GraphCytoscape(object):
         }
         go_regexp   = r"GO:\d{7}"
         pfam_regexp = r'PF\d{5}'
+        offsymbol_regexp = r'Smed_.+'
         newnodes = list()
         for symbol in symbols:
             symbol = symbol.replace(" ", "")
@@ -1029,7 +1055,15 @@ class GraphCytoscape(object):
                 except NodeNotFound:
                     continue
             else:
-                if (re.match(go_regexp, symbol)):
+                if (re.match(offsymbol_regexp, symbol)):
+                    # Planarian Official symbol
+                    try:
+                        offsymbol = OfficialSymbol(symbol)
+                        prednodesym = offsymbol.get_predictednode(database)
+                        self.add_node( PredictedNode(prednodesym, database) )
+                    except NodeNotFound:
+                        continue
+                elif (re.match(go_regexp, symbol)):
                     # GO
                     try:
                         newnodes.extend(GeneOntology(symbol, human=True).human_nodes)
