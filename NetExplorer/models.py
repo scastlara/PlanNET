@@ -76,6 +76,13 @@ GET_CONNECTIONS_QUERY = """
            r.molfun_nto  AS molfun_nto,
            m.symbol      AS msymbol
 """
+
+GET_OFF_SYMBOL = """
+    MATCH (n:%s)-->(m:OFF_SYMBOL)
+    WHERE n.symbol = '%s'
+    RETURN m.symbol as offsymbol
+"""
+
 # ------------------------------------------------------------------------------
 GO_QUERY = """
     MATCH (n:Go)
@@ -608,20 +615,38 @@ class PredictedNode(Node):
     """
     allowed_databases = ALL_DATABASES
 
-    def __init__(self, symbol, database, sequence=None, orf=None, homolog=None, important=False, degree=None, query=True):
+    def __init__(self, symbol, database,
+                 sequence=None, off_symbol=None,
+                 orf=None, homolog=None, important=False,
+                 degree=None, query=True):
         super(PredictedNode, self).__init__(symbol, database)
-        self.sequence        = sequence
-        self.orf             = orf
-        self.homolog         = homolog
-        self.important       = important
-        self.degree          = degree
-        self.gccont          = None
-        self.length          = None
-        self.orflength       = None
+        self.sequence = sequence
+        self.orf = orf
+        self.homolog = homolog
+        self.important = important
+        self.degree = degree
+        self.gccont = None
+        self.length = None
+        self.orflength = None
         self.gene_ontologies = list()
+        self.off_symbol = off_symbol
+        self.get_off_symbol()
 
         if sequence is None and query is True:
             self.__query_node()
+
+    def get_off_symbol(self):
+        '''
+        Gets official symbol if possible
+        '''
+        if self.off_symbol is None:
+            query = GET_OFF_SYMBOL % (self.database, self.symbol)
+            results = GRAPH.run(query)
+            results = results.data()
+            if results:
+                self.off_symbol = results[0]['offsymbol']
+            else:
+                self.off_symbol = None
 
     def get_summary(self):
         '''
@@ -1060,7 +1085,7 @@ class GraphCytoscape(object):
                     try:
                         offsymbol = OfficialSymbol(symbol)
                         prednodesym = offsymbol.get_predictednode(database)
-                        self.add_node( PredictedNode(prednodesym, database) )
+                        self.add_node(PredictedNode(prednodesym, database, off_symbol=symbol))
                     except NodeNotFound:
                         continue
                 elif (re.match(go_regexp, symbol)):

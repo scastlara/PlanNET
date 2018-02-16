@@ -24,6 +24,7 @@
         </div>
         <div class="card-title">
             <h1>{{ node.symbol }}</h1>
+
         </div>
 
                 {% if node.database == "Human" %}
@@ -82,6 +83,9 @@
 
                 {% else %}
                 <!--PREDICTED NODE CARD -->
+                {% if node.off_symbol %}
+                    <h3><span class="bg-success"><b>{{node.off_symbol}}</b></span></h3>
+                {% endif %}
                     <h2>Sequence information</h2>
                     <hr>
 

@@ -75,6 +75,11 @@
 
                 <div class="panel-heading">
                     <div class="symbol-small-searchpanel">
+
+                        {% if node.off_symbol %}
+                            <span class="bg-success"><b>{{node.off_symbol}}</b></span> - 
+                        {% endif %}
+
                         {{ node.symbol }}
                     </div>
                     <div class="database-small-searchpanel">
