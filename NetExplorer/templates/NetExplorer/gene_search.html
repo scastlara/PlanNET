@@ -60,6 +60,20 @@
     <br>
     <br>
 
+    {% if valid_query %}
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <h4>Query Parameters:</h4>
+            </div>
+            <div class="panel-body">
+                <ul>
+                    <li><b>Symbols:</b> {{symbols}}</li>
+                    <li><b>Database:</b> {{database}}</li>
+                </ul>
+            </div>
+        </div>
+        <br><br>
+    {% endif %}
     <!-- SEARCH RESULTS -->
     {% if res %}
 
@@ -77,7 +91,7 @@
                     <div class="symbol-small-searchpanel">
 
                         {% if node.off_symbol %}
-                            <span class="bg-success"><b>{{node.off_symbol}}</b></span> - 
+                            <span class="bg-success"><b>{{node.off_symbol}}</b></span> -
                         {% endif %}
 
                         {{ node.symbol }}
