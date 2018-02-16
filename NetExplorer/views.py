@@ -174,15 +174,16 @@ def get_card(request, symbol=None, database=None):
         database  = request.GET['targetDB']
 
     try:
-        card_node    = query_node(symbol, database)
+        card_node = query_node(symbol, database)
         if database != "Human":
             card_node.get_neighbours()
             card_node.get_domains()
             card_node.get_geneontology()
             nodes, edges = card_node.get_graphelements()
-            graph        = GraphCytoscape()
+            graph = GraphCytoscape()
             graph.add_elements(nodes)
             graph.add_elements(edges)
+            print(card_node.off_symbol)
         else:
             homologs = card_node.get_homologs()
     except (NodeNotFound, IncorrectDatabase):
