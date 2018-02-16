@@ -183,7 +183,6 @@ def get_card(request, symbol=None, database=None):
             graph = GraphCytoscape()
             graph.add_elements(nodes)
             graph.add_elements(edges)
-            print(card_node.off_symbol)
         else:
             homologs = card_node.get_homologs()
     except (NodeNotFound, IncorrectDatabase):
@@ -210,35 +209,45 @@ def get_card(request, symbol=None, database=None):
 def gene_search(request):
     '''
     This is the text-based database search function.
+    response:
+        - symbols
+        - database
+        - databases
+        - search_error
+        - res
+        - valid_query
     '''
+    response = dict()
+    response['databases'] = get_databases(request)
+    response['valid_query'] = False
     if request.method == "GET" and "genesymbol" in request.GET:
-
         # Get Form input
-        symbols      = request.GET['genesymbol']
-        database     = None
+        symbols = request.GET['genesymbol']
+        database = None
         if "database" in request.GET and request.GET['database']:
             database = request.GET['database']
-        nodes        = list()
-        search_error = False
-
-        if symbol_is_empty(symbols) is False: # If there is a search term
+        nodes = list()
+        response['search_error'] = 0
+        response['symbols'] = symbols
+        response['database'] = database
+        if symbol_is_empty(symbols) is False:
+            # If there is a search term
             symbols = symbols.split(",")
-            if database is None: # No database selected
-                search_error = 2
-                return render(request, 'NetExplorer/gene_search.html', {'res': nodes, 'search_error': search_error, 'databases': get_databases(request) } )
+            if database is None:
+                # No database selected
+                response['search_error'] = 2
+                response['res'] = nodes
+            else:
+                # Valid search (symbols + database)
+                response['valid_query'] = True
+                nodes_graph = GraphCytoscape()
+                nodes_graph.new_nodes(symbols, database)
+                if not nodes_graph:
+                    response['search_error'] = 1
+                else:
+                    response['res'] = nodes_graph.nodes
 
-            nodes_graph = GraphCytoscape()
-            nodes_graph.new_nodes(symbols, database)
-            if not nodes_graph:
-                search_error = 1
-                return render(request,'NetExplorer/gene_search.html', {'search_error': search_error, 'databases': get_databases(request) } )
-
-            return render(request, 'NetExplorer/gene_search.html', {'res': nodes_graph.nodes, 'search_error': search_error, 'databases': get_databases(request) } )
-
-        # Render when user enters the page
-        return render(request, 'NetExplorer/gene_search.html', {'databases': get_databases(request) })
-    else:
-        return render(request, 'NetExplorer/gene_search.html', {'databases': get_databases(request) })
+    return render(request, 'NetExplorer/gene_search.html', response)
 
 
 # ------------------------------------------------------------------------------
