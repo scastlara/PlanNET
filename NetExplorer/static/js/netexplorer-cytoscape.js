@@ -4,6 +4,7 @@
 
 $(document).ready(function(){
 
+defaultSliderValue = 0.7;
 
 // UPLOADING A JSON
     if (upload_json) {
@@ -21,7 +22,7 @@ $(document).ready(function(){
     }
 
 // set initial value of slider
-$('#sl1').slider('setValue', 0.6);
+$('#sl1').slider('setValue', defaultSliderValue);
 
 // --------------------------
 // CHANGE LAYOUT CONTROLS
@@ -47,7 +48,7 @@ $('#sl1').slider('setValue', 0.6);
     $('#show-plen input').change(function() {
         var confvalue = $('#sl1').val();
         if (! confvalue) {
-            confvalue = 0.6
+            confvalue = defaultSliderValue
         }
         checkPlen($('input[name=show-plen]:checked').val(), cy, confvalue);
     });
@@ -62,7 +63,6 @@ $('#sl1').slider('setValue', 0.6);
         $(dataArray).each(function(i, field){
             dataObj[field.name] = field.value;
         });
-        console.log(dataObj);
         addNode(dataObj.genesymbol, dataObj.database, dataObj.type , cy);
         e.preventDefault(); // avoid to execute the actual submit of the form.
     });
@@ -260,7 +260,7 @@ $('#sl1').slider('setValue', 0.6);
                 "Delete nodes": function() {
                     var slider_value = $('#sl1').val();
                     if (! slider_value) {
-                        slider_value = 0.6;
+                        slider_value = defaultSliderValue;
                     }
                     $( this ).dialog( "close" );
                     cy.filter(function(i, element){
