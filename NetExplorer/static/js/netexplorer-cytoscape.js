@@ -85,7 +85,7 @@ $('#sl1').slider('setValue', 0.6);
             getCard(card_data);
         } else if (behaviour == "expand" && node.data("database") != "Human") {
             $("#expand-node-degree").html(node.data("degree"));
-                node.data("colorNODE", '#449D44');
+                node.data("colorNODE", '#6785d0');
                 addNode(card_data.target, card_data.targetDB, "node", cy);
         } else if (behaviour == "delete") {
             $( "#dialog-delete-node" ).dialog({

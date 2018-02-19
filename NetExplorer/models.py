@@ -706,7 +706,7 @@ class PredictedNode(Node):
         if self.degree is not None:
             element['data']['degree']   = self.degree
         if self.important:
-            element['data']['colorNODE'] = "#449D44"
+            element['data']['colorNODE'] = "#6785d0"
         else:
             element['data']['colorNODE'] = "#404040"
         return element

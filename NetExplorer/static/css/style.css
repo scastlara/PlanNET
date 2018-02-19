@@ -1767,3 +1767,17 @@ kbd {
   background: #f0ad4e;
   color: #fff;
 }
+
+#search-netexplorer {
+  position: fixed;
+  background-color: white;
+  text-align: center;
+  color: #777777;
+  bottom: 10px;
+  left: 30%;
+  width: 30%;
+  height: 45px;
+  line-height: 45px;
+  z-index: 10;
+
+}
