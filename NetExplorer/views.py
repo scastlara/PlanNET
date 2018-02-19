@@ -277,6 +277,7 @@ def net_explorer(request):
                 for node in nodes_to_search:
                     try:
                         node.get_neighbours()
+                        node.important = True
                         nodes, edges = node.get_graphelements()
                         graphobject.add_elements(nodes)
                         graphobject.add_elements(edges)
@@ -286,7 +287,8 @@ def net_explorer(request):
             if graphobject.is_empty():
                 return HttpResponse(status=404)
             else:
-                graphobject.define_important(set(symbols))
+                print(set(symbols))
+                #graphobject.define_important(set(symbols))
                 json_data = graphobject.to_json()
                 return HttpResponse(json_data, content_type="application/json")
         else:
