@@ -1782,3 +1782,17 @@ kbd {
   z-index: 10;
 
 }
+
+#genename-graph {
+    height: 40px !important;
+}
+
+#search-netexplorer-btn {
+    height: 40px !important;
+    margin-top: -5px;
+}
+
+#removesearch {
+    height: 40px !important;
+    margin-top: -5px;
+}
