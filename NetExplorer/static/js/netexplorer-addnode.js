@@ -17,6 +17,9 @@ function loadJsonGraph(data, cyobj) {
 
     // Show only edges above slider threshold
     var value = $('#sl1').val();
+    if (! value) {
+        value = defaultSliderValue;
+    }
     var to_show_selector = "edge[probability>=" + value + "]";
     var to_hide_selector = "edge[probability<" + value + "]";
     cyobj.elements(to_show_selector).show();
