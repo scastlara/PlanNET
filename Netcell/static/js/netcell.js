@@ -254,7 +254,9 @@ function handleExpUpload(evt) {
           // We can have more conditions/batches
           // Can store up to 3 conditions
           // Must do a warning
-        conditions.push(clusterlist.slice(1));
+        if (clusterlist.slice(1).length) {
+            conditions.push(clusterlist.slice(1));
+        }
       }
       cellconditions = conditions;
       // Change green tick
@@ -481,6 +483,7 @@ $("#delete-exp").on("click", function() {
 function changeTraces(xpoints, ypoints, celllabels, groups, condIdx) {
   var traces = [];
   var categories = [];
+  console.log(groups);
   for (var i = 0; i < groups.length; i += 1) {
     if (categories.indexOf(groups[i][condIdx]) === -1) {
       if (groups[i][condIdx] == -1) {
@@ -495,6 +498,9 @@ function changeTraces(xpoints, ypoints, celllabels, groups, condIdx) {
         text: []
       });
       categories.push(groups[i][condIdx]);
+      traces[categories.indexOf(groups[i][condIdx])].x.push(xpoints[i]);
+      traces[categories.indexOf(groups[i][condIdx])].y.push(ypoints[i]);
+      traces[categories.indexOf(groups[i][condIdx])].text.push(celllabels[i]);
     } else {
       traces[categories.indexOf(groups[i][condIdx])].x.push(xpoints[i]);
       traces[categories.indexOf(groups[i][condIdx])].y.push(ypoints[i]);
@@ -503,7 +509,7 @@ function changeTraces(xpoints, ypoints, celllabels, groups, condIdx) {
   }
   traces.sort(function(a,b) {
     return a.name - b.name;
-  })
+  });
   return traces;
 }
 
@@ -612,7 +618,6 @@ $("#plot-btn").on("click", function(){
     success: function(data) {
       var xCoords = JSON.parse(data.x);
       var yCoords = JSON.parse(data.y);
-
       // Must add check for gene
       var selGene = $("#genename").val();
 

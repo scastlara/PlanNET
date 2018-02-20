@@ -59,10 +59,12 @@
           <br>
           <!-- NETWORK -->
           <h3>Network</h3>
-          <div id="cn-upload-graph" class="btn btn-default cn-network-btn">
-            <span class="glyphicon glyphicon-open" style="vertical-align: middle;"></span>
-            Upload Graph
-          </div>
+          <a class="info-tooltip" title="Upload a gene/protein network">
+              <div id="cn-upload-graph" class="btn btn-default cn-network-btn">
+                <span class="glyphicon glyphicon-open" style="vertical-align: middle;"></span>
+                Upload Graph
+              </div>
+          </a>
           <a href="{% url net_explorer %}">
             <div class="btn btn-default netexplorer-view cn-network-btn" type="submit">
               <img src="{% static 'Images/netexplorer-mini.png' %}" class="netexplorer-mini"/>
@@ -84,10 +86,12 @@
               </ul>
           </div>
           <span class="cn-experiment-upload-btn"><br>or<br></span>
-          <div id="cn-upload-experiment" class="btn btn-default cn-experiment-upload-btn">
-            <span class="glyphicon glyphicon-open" style="vertical-align: middle;"></span>
-            Upload Experiment
-          </div>
+          <a class="info-tooltip" title="Upload a Single Cell Experiment manually">
+              <div id="cn-upload-experiment" class="btn btn-default cn-experiment-upload-btn">
+                <span class="glyphicon glyphicon-open" style="vertical-align: middle;"></span>
+                Upload Experiment
+              </div>
+          </a>
 
           <div class="cn-exp-controls">
 
@@ -201,7 +205,69 @@
 
         <hr><br>
         <div class="row">
-          <h3>Tabular Files</h3>
+          <h3>
+              Tabular Files
+              <a class="info-tooltip" title="
+                Upload two files with the Single Cell experiment Data.
+                <ul>
+                 <li> Cell Expression file: Genes on rows, cells on columns, expression on cells.</li>
+
+                        e.g:
+                        <table>
+                            <tr>
+                                <td> &nbsp;  </td>
+                                <td> &nbsp;&nbsp;  </td>
+                                <td>c1</td>
+                                <td> &nbsp;&nbsp;  </td>
+                                <td>c2</td>
+                                <td> &nbsp;&nbsp;  </td>
+                            </tr>
+                            <tr>
+                                <td>g1</td>
+                                <td> &nbsp;&nbsp;  </td>
+                                <td>10</td>
+                                <td> &nbsp;&nbsp;  </td>
+                                <td>35</td>
+                            </tr>
+                            <tr>
+                                <td>g1</td>
+                                <td> &nbsp;&nbsp;  </td>
+                                <td>0</td>
+                                <td> &nbsp;&nbsp;  </td>
+                                <td>12</td>
+                            </tr>
+                            <tr>
+                                <td>...</td>
+                            </tr>
+                        </table>
+                        <br>
+                 <li>Cell Clustering file: Cells on rows, each column a condition for said cells.</li>
+
+                         e.g:
+                         <table>
+                             <tr>
+                                 <td>c1</td>
+                                 <td> &nbsp;&nbsp;  </td>
+                                 <td>clust1</td>
+                                 <td> &nbsp;&nbsp;  </td>
+                                 <td>cond1-A</td>
+                             </tr>
+                             <tr>
+                                 <td>c2</td>
+                                 <td> &nbsp;&nbsp;  </td>
+                                 <td>clust3</td>
+                                 <td> &nbsp;&nbsp;  </td>
+                                 <td>cond1-B</td>
+                             </tr>
+                             <tr>
+                                 <td>...</td>
+                             </tr>
+                         </table>
+                </ul>
+              ">
+                <span class="glyphicon glyphicon-info-sign"></span>
+              </a>
+          </h3>
           <div class="col-sm-6">
             <h4>Cell Expression</h4>
             <label class="btn btn-default">
