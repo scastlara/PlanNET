@@ -22,6 +22,21 @@ var stylesheet = cytoscape.stylesheet()
             'shape': 'star',
             'border-color': "#404040"
         })
+    .selector('.semihidden0')
+        .css({
+            'background-color': "#dedede",
+            'color': "#dedede"
+        })
+    .selector('.semihidden1')
+        .css({
+            'background-color': "#dedede",
+            'color': "#dedede"
+        })
+    .selector('.semihidden2')
+        .css({
+            'background-color': "#dedede",
+            'color': "#dedede"
+        })
     .selector('edge')
         .css({
             'content': 'data(probability)',

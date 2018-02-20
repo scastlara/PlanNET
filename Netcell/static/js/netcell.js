@@ -19,18 +19,78 @@ $(".cn-experiment-dropdown li a").click(function(){
 });
 
 
+/** ShowByCondition
+* Changes the visualization to show only the genes expressed in the selected conditions
+**/
+function showByCondition(cond, condIdx){
+    var condlist = cond.val();
+    if (! condlist) {
+        cy.nodes().removeClass("semihidden" + condIdx);
+    } else {
+        var validCells = [];
+        var validCellsBool = [];
+        var validGenes = []
+        var validGeneLabels = [];
+        for (var i = 0; i< condlist.length; i++) {
+            validCells.push([]);
+        }
+        for (var i = 0; i < genelabels.length; i++) {
+            validGenes.push([]);
+            for (var j = 0; j< condlist.length; j++) {
+                validGenes[i].push(false);
+            }
+
+        }
+
+        for (var i = 0; i < cellconditions.length; i++) {
+            if ( condlist.indexOf(cellconditions[i][condIdx]) !== -1 ) {
+                validCells[condlist.indexOf(cellconditions[i][condIdx])].push(i);
+            }
+        }
+
+        // Iterate through each requested condition
+        for (var vcondidx = 0; vcondidx < validCells.length; vcondidx++) {
+            // Iterate through each cell in valid condition
+            for (var cidx = 0; cidx < validCells[vcondidx].length; cidx++) {
+                var validCell = validCells[vcondidx][cidx];
+                //console.log(validCell);
+                // Iterate through each gene
+                for (var gidx = 0; gidx < genelabels.length; gidx++) {
+                    var geneExp = cellexp[validCell][gidx];
+                    if (geneExp > 0) {
+                        validGenes[gidx][vcondidx] = true;
+                    }
+
+                }
+            }
+        }
+
+        // Get names of valid Genes
+        for (var gidx = 0; gidx < validGenes.length; gidx++) {
+            if (validGenes[gidx].every(Boolean)) {
+                validGeneLabels.push(genelabels[gidx]);
+            }
+        }
+        console.log(validGeneLabels);
+        cy.nodes().removeClass("semihidden" + condIdx);
+        cy.nodes().filter(function( iele, ele ){
+            return validGeneLabels.indexOf(ele.data("name")) === -1
+        }).addClass("semihidden" + condIdx);
+        //cy.nodes().filter( function(ele) {
+        //    return validGeneLabels.indexOf(ele.data("name")) !== -1
+        //}).addClass("highlighted");
+    }
+}
+
 /** Select CellType
 * Changes text of dropdown when select
 * Changes Visualization
 **/
 function addCellTypeListener() {
-  $(".cn-celltype-dropdown li a").click(function(){
-    $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="caret"></span>');
-    $(this).parents(".dropdown").find('.btn').val($(this).data('value'));
-    alert("CELLTYPE");
-  });
-}
-
+    $("#dropdown-condition0").on("change", function() {showByCondition($("#dropdown-condition0"), 0)});
+    $("#dropdown-condition1").on("change", function() {showByCondition($("#dropdown-condition1"), 1)});
+    $("#dropdown-condition2").on("change", function() {showByCondition($("#dropdown-condition2"), 2)});
+};
 
 $( function() {
   $( "#dialog-error" ).dialog({
@@ -221,11 +281,15 @@ function handleExpUpload(evt) {
       }
       // initialize expression array
       var expression = [];
+      var glabels    = [];
       for (var i = 0; i < celllabels.length; i++) {
         expression[i] = [];
       }
       for (var j = 1; j < cellexp.length; j++) {
         col = cellexp[j].split("\t");
+        if (col[0]) {
+            glabels.push(col[0]);
+        }
         col = col.slice(1);
         for (var val = 0; val < col.length; val++) {
           expression[val].push(col[val]);
@@ -233,6 +297,8 @@ function handleExpUpload(evt) {
       }
 
       cellexp = expression;
+      genelabels = glabels;
+
       // Change green tick
       $("#files-cellexp-ok").show();
       $("#files-cellexp-notok").hide();
