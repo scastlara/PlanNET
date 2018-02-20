@@ -536,6 +536,12 @@ $("#delete-exp").on("click", function() {
   $("#dropdown-condition1").selectpicker("refresh");
   $("#dropdown-condition2").html("");
   $("#dropdown-condition2").selectpicker("refresh");
+
+  if (cy.nodes()){
+      cy.nodes().removeClass("semihidden0");
+      cy.nodes().removeClass("semihidden1");
+      cy.nodes().removeClass("semihidden2");
+  }
 })
 
 /**
