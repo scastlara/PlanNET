@@ -1976,18 +1976,17 @@ kbd {
   display: none;
 }
 
-#search-cell {
-  display: none;
+#search-netexplorer {
   position: fixed;
   background-color: white;
   text-align: center;
   color: #777777;
-  bottom: 20px;
-  left: 22.5%;
+  bottom: 10px;
+  left: 30%;
   width: 30%;
   height: 45px;
   line-height: 45px;
-  z-index: 2;
+  z-index: 10;
 
 }
 

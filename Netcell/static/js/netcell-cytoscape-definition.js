@@ -16,6 +16,12 @@ var stylesheet = cytoscape.stylesheet()
             "border-width": 2,
             "min-zoomed-font-size": 6,
         })
+    .selector('.highlighted')
+        .css({
+            'background-color': '#F9FFBD',
+            'shape': 'star',
+            'border-color': "#404040"
+        })
     .selector('edge')
         .css({
             'content': 'data(probability)',
