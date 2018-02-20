@@ -71,7 +71,6 @@ function showByCondition(cond, condIdx){
                 validGeneLabels.push(genelabels[gidx]);
             }
         }
-        console.log(validGeneLabels);
         cy.nodes().removeClass("semihidden" + condIdx);
         cy.nodes().filter(function( iele, ele ){
             return validGeneLabels.indexOf(ele.data("name")) === -1

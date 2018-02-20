@@ -113,9 +113,10 @@ def sce_to_json(request):
             assays = robjects.r("assays")
             expdata = dollar(assays(sce), "logcounts")
             expdata = expdata.transpose()
-            for cellidx in range(1, len(celllabels)):
+            for cellidx in range(1, len(celllabels) + 1):
                 expression.append([expdata.rx(cellidx, i)[0]
                                    for i in range(1, len(rownames(sce) + 1))])
+            print(len(expression))
         except Exception:
             error = "Could not retrieve '$logcounts' from SCE object"
 
