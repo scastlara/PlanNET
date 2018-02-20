@@ -1989,6 +1989,18 @@ kbd {
   z-index: 10;
 
 }
+#search-netcell {
+  position: fixed;
+  background-color: white;
+  text-align: center;
+  color: #777777;
+  bottom: 10px;
+  left: 22.5%;
+  width: 30%;
+  height: 45px;
+  line-height: 45px;
+  z-index: 10;
+}
 
 #genename-graph {
     height: 40px !important;
