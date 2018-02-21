@@ -93,10 +93,11 @@
 
             </div>
           </div>
+
+          {% if user.is_authenticated %}
             <div class="row row-app">
               <div class="col-sm-3"> </div>
               <div class="col-sm-6 rowcol">
-
                   <div class="panel panel-netcell app-container" >
                       <div class="panel-heading">
                           NetCell
@@ -111,11 +112,10 @@
                           <p>Visualize Single-Cell expression experiments on pathways.</p>
                       </div>
                   </div>
-
-
               </div>
               <div class="col-sm-3"> </div>
             </div>
+            {% endif %}
 
 
 <!--

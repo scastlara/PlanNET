@@ -10,8 +10,10 @@ import os
 from rpy2 import robjects
 from rpy2.robjects.packages import importr
 import random
+from django.contrib.auth.decorators import login_required
 
 
+@login_required
 def netcell(request):
     '''
     Main view for Netcell
