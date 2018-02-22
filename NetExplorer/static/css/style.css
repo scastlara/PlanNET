@@ -1796,3 +1796,10 @@ kbd {
     height: 40px !important;
     margin-top: -5px;
 }
+
+.user-in-controls {
+    padding-right: 15px;
+    text-align: right;
+    right: 5px;
+    margin-top: 15px;
+}
