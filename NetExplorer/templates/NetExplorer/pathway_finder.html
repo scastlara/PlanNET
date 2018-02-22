@@ -217,6 +217,11 @@
 
         <!-- FORM -->
         <div id="pfind-form">
+            <div class="user-in-controls">
+                {% if user.is_authenticated %}
+                    <a href="{% url account %}"><span class="glyphicon glyphicon-user"></span> {{ user.username }}</a>
+                {% endif %}
+            </div>
             <div id="pfind-form-header">
                 <div class="back-div">
                     <a href="{% url index_view %}" class="info-tooltip"
