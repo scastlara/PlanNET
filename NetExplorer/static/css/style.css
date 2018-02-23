@@ -360,6 +360,12 @@ h1, h2, h3, h4, h5, h6 {
   right: 25% !important;
   top: 30% !important;
 }
+.button-container-netcell-genelist {
+  background-color: #FDD4D4 !important;
+}
+.button-container-netcell-celllist {
+  background-color: #FDD4D4 !important;
+}
 .button-container-netcell-aboutexp{
   background-color: #FDD4D4 !important;
 }
@@ -2014,4 +2020,19 @@ kbd {
 #removesearch {
     height: 40px !important;
     margin-top: -5px;
+}
+
+.exp-btns {
+    text-align: left !important;
+    min-width: 195px;
+}
+
+#genelist-table {
+    font-size: 12px;
+    color: #777777;
+}
+
+#celllist-table {
+    font-size: 12px;
+    color: #777777;
 }

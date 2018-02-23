@@ -12,10 +12,11 @@ $(".cn-experiment-dropdown li a").click(function(){
   $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="caret"></span>');
   $(this).parents(".dropdown").find('.btn').val($(this).data('value'));
   alert("EXPERIMENT");
-  $(".exp-name-label").html($(this).text());
-  $("#exp-name-label").show()
-  $(".cn-exp-controls").show();
-  $(".cn-experiment-upload-btn").hide();
+  handleDivsExperiment(true);
+  //$(".exp-name-label").html($(this).text());
+  //$("#exp-name-label").show()
+  //$(".cn-exp-controls").show();
+  //$(".cn-experiment-upload-btn").hide();
 });
 
 
@@ -366,13 +367,14 @@ function handleDivsExperiment(show, exp_name) {
     $(".cn-exp-controls").show();
     $(".cn-experiment-upload-btn").hide();
     $("#search-cell").show();
+    $(".exp-upload-or-select").hide();
   } else {
     $("#exp-label-container").hide();
     $(".cn-exp-controls").hide();
     $(".cn-experiment-upload-btn").show();
     $("#search-cell").hide();
     $(".upload-tick").hide();
-
+    $(".exp-upload-or-select").show();
     $(".cn-condition-dropdown-container0").hide();
     $(".cn-condition-dropdown-container1").hide();
     $(".cn-condition-dropdown-container2").hide();
@@ -393,8 +395,35 @@ $('#uploadexperiment-send').on("click", function(){
       exp_name = "Experiment #1";
     }
 
+    /*
+     * Writes Genelist of experiment
+     */
+     function fillGeneList() {
+         var t = $("#genelist-table").DataTable();
+         t.rows().remove();
+         for (var label in genelabels) {
+            t.row.add([
+                genelabels[label],
+                "-"
+            ]).draw(false);
+         }
+         t.draw();
+     }
 
-
+     /*
+     * Writes Celllist of experiment
+     */
+     function fillCellList() {
+         var t = $("#celllist-table").DataTable();
+         t.rows().remove();
+         for (var label in celllabels) {
+            t.row.add([
+                celllabels[label],
+                "-"
+            ]).draw(false);
+         }
+         t.draw();
+     }
 
     /*
      * Adds the ColorBy options to the dropdown of AboutExperiment
@@ -406,7 +435,6 @@ $('#uploadexperiment-send').on("click", function(){
         $('#cn-colorby-dropdown').append(opthtml);
       }
     }
-
 
     /*
      * Adds cluster options to dropdown
@@ -481,6 +509,8 @@ $('#uploadexperiment-send').on("click", function(){
               addColorByOpts();
               addConditionOpts();
               addColorBy();
+              fillGeneList();
+              fillCellList();
               handleDivsExperiment(true, exp_name);
             }
             $("#loading").hide();
@@ -499,6 +529,8 @@ $('#uploadexperiment-send').on("click", function(){
       addColorByOpts();
       addConditionOpts();
       addColorBy();
+      fillGeneList();
+      fillCellList();
       handleDivsExperiment(true, exp_name);
     }
   }
@@ -703,4 +735,31 @@ $("#plot-btn").on("click", function(){
       displayError("Can't plot SC experiment.")
     }
   });
+});
+
+
+/*
+ * Gene List Overlay
+ */
+$("#gene-list-btn").on("click", function() {
+    // Close previous overlays
+    $('.card-overlay').hide(450);
+    $('.close-overlay').hide(450);
+
+    // Open overlay
+    $('.card-overlay-netcell-genelist').slideToggle(450);
+    $('.close-overlay-genelist').slideToggle(450);
+});
+
+/*
+ * Cell List Overlay
+ */
+$("#cell-list-btn").on("click", function() {
+    // Close previous overlays
+    $('.card-overlay').hide(450);
+    $('.close-overlay').hide(450);
+
+    // Open overlay
+    $('.card-overlay-netcell-celllist').slideToggle(450);
+    $('.close-overlay-celllist').slideToggle(450);
 });

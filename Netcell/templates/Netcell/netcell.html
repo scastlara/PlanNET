@@ -10,6 +10,7 @@
       <link rel="stylesheet" href="{% static 'css/jquery-ui-all.theme.min.css' %}">
       <link rel="stylesheet" href="{% static 'css/slider.css' %}">
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
+      <link rel="stylesheet" href="{% static 'css/jquery-data-tables.css' %}">
       <title>PlanNET - NetCell</title>
       <script>
         var csrf_token = '{{ csrf_token }}';
@@ -73,37 +74,51 @@
           </a>
           <br><br>
           <!-- SELECT EXPERIMENT -->
-          <h3>Select Experiment</h3>
-          <div class="dropdown">
-            <button class="btn btn-default dropdown-toggle cn-experiment" type="button" data-toggle="dropdown">
-              Experiment
-              <span class="caret"></span></button>
-              <ul class="dropdown-menu cn-experiment-dropdown">
-                <!-- This will be filled by Django Query -->
-                <li><a href="#">Exp 1</a></li>
-                <li><a href="#">Exp 2</a></li>
-                <li><a href="#">Exp 3</a></li>
-              </ul>
-          </div>
-          <span class="cn-experiment-upload-btn"><br>or<br></span>
-          <a class="info-tooltip" title="Upload a Single Cell Experiment manually">
-              <div id="cn-upload-experiment" class="btn btn-default cn-experiment-upload-btn">
-                <span class="glyphicon glyphicon-open" style="vertical-align: middle;"></span>
-                Upload Experiment
+
+          <div class="exp-upload-or-select">
+              <hr>
+              <h3>Select Experiment</h3>
+              <div class="dropdown">
+                <button class="btn btn-default dropdown-toggle cn-experiment" type="button" data-toggle="dropdown">
+                  Experiment
+                  <span class="caret"></span></button>
+                  <ul class="dropdown-menu cn-experiment-dropdown">
+                    <!-- This will be filled by Django Query -->
+                    <li><a href="#">Exp 1</a></li>
+                    <li><a href="#">Exp 2</a></li>
+                    <li><a href="#">Exp 3</a></li>
+                  </ul>
               </div>
-          </a>
+              <span class="cn-experiment-upload-btn"><br>or<br></span>
+              <a class="info-tooltip" title="Upload a Single Cell Experiment manually">
+                  <div id="cn-upload-experiment" class="btn btn-default cn-experiment-upload-btn">
+                    <span class="glyphicon glyphicon-open" style="vertical-align: middle;"></span>
+                    Upload Experiment
+                  </div>
+              </a>
+          </div>
 
           <div class="cn-exp-controls">
-
+              <hr>
+              <h3>Experiment information</h3>
             <!-- ABOUT EXPERIMENT BUTTON -->
-            <div id="aboutexp-btn" class="btn btn-default">
+            <div id="aboutexp-btn" class="btn btn-default exp-btns">
               <span class="glyphicon glyphicon-info-sign"></span>
               More About Experiment
-            </div>
+          </div><br>
+            <div id="gene-list-btn" class="btn btn-default exp-btns">
+                <span class="glyphicon glyphicon-info-sign"></span>
+                Gene List
+            </div><br>
+            <div id="cell-list-btn" class="btn btn-default exp-btns">
+                <span class="glyphicon glyphicon-info-sign"></span>
+                Cell List
+            </div><br>
 
             <!-- DROPDOWNS FOR CONDITIONS IN GRAPH -->
             <div class="cn-celltype-select">
-
+              <hr>
+              <h3>Filter Graph</h3>
               <!-- CONDITION0 (clusters-->
               <div class="dropdown cn-condition-dropdown-container cn-condition-dropdown-container0">
                 <h4><span class="condition-name0"></span></h4>
@@ -403,6 +418,39 @@
         </p>
     </div>
 
+    <!-- GENELIST OVERLAY -->
+    <div id="button-container" class="button-container-netcell-genelist">
+        <div class="close-overlay close-overlay-genelist" title="Close card">
+            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+        </div>
+    </div>
+    <div class="card-overlay card-overlay-netcell-genelist" id="card-overlay">
+      <h4>Gene List</h4>
+      <hr><br>
+        <table id="genelist-table">
+            <thead>
+                <th>Symbol</th>
+                <th>Official Symbol</th>
+            </thead>
+        </table>
+    </div>
+
+    <!-- CELLLIST OVERLAY -->
+    <div id="button-container" class="button-container-netcell-celllist">
+        <div class="close-overlay close-overlay-celllist" title="Close card">
+            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+        </div>
+    </div>
+    <div class="card-overlay card-overlay-netcell-celllist" id="card-overlay">
+      <h4>Cell List</h4>
+      <hr><br>
+      <table id="celllist-table">
+          <thead>
+              <th>Cell Id</th>
+          </thead>
+      </table>
+    </div>
+
     <script src="{% static 'js/jquery-min.js' %}"></script>
     <script src="{% static 'js/cytoscape.js' %}"></script>
     <script src="{% static 'js/netcell-cytoscape-definition.js' %}"></script>
@@ -415,6 +463,8 @@
     <script src="{% static 'js/card-overlay.js' %}"></script>
     <script src="{% static 'js/plotly-latest.min.js' %}"></script>
     <script src="{% static 'js/tinygradient.min.js' %}"></script>
+    <script src="{% static 'js/jquery-data-tables-min.js' %}"></script>
+
     <script>
         $( function() {
             $( ".info-tooltip" ).tooltip({
