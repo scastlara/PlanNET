@@ -31,6 +31,7 @@ def netcellpca(request):
         perp = int(request.POST['perplexity'])
         cellexp = request.POST.getlist('cellexp[]')
         cellexp = [[float(number) for number in group.split(",")] for group in cellexp]
+        # Must apply filter to 500 most variable Genes HERE
         if dims < len(cellexp[0]):
             # Dimensions smaller than sample dimensions (num of genes)
             # Perform pca

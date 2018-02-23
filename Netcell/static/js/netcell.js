@@ -407,7 +407,6 @@ function handleDivsExperiment(show, exp_name) {
      t.column(0).visible(true); // make first column always visible
      for (var condIdx in cond_names) {
          var theIdx = parseInt(condIdx) +  1;
-         console.log(theIdx);
          var column = t.column(theIdx);
          column.visible(true);
          $("#th-condition" + condIdx).html(cond_names[condIdx]);
@@ -602,7 +601,6 @@ $("#delete-exp").on("click", function() {
 function changeTraces(xpoints, ypoints, celllabels, groups, condIdx) {
   var traces = [];
   var categories = [];
-  console.log(groups);
   for (var i = 0; i < groups.length; i += 1) {
     if (categories.indexOf(groups[i][condIdx]) === -1) {
       if (groups[i][condIdx] == -1) {
@@ -734,6 +732,9 @@ $("#plot-btn").on("click", function(){
       'perplexity' : perplexity
 
     },
+    beforeSend: function() {
+      $('#loading').show();
+    },
     success: function(data) {
       var xCoords = JSON.parse(data.x);
       var yCoords = JSON.parse(data.y);
@@ -746,9 +747,11 @@ $("#plot-btn").on("click", function(){
         plotByGene(xCoords, yCoords, celllabels, selGene);
       }
 
+      $('#loading').hide();
     },
     error: function(data) {
-      displayError("Can't plot SC experiment.")
+      displayError("Can't plot SC experiment.");
+      $('#loading').hide();
     }
   });
 });
