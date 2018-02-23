@@ -382,6 +382,52 @@ function handleDivsExperiment(show, exp_name) {
 }
 
 
+/*
+ * Writes Genelist of experiment
+ */
+ function fillGeneList() {
+     var t = $("#genelist-table").DataTable();
+     t.rows().remove();
+     for (var label in genelabels) {
+        t.row.add([
+            genelabels[label],
+            "-"
+        ]).draw(false);
+     }
+     t.draw();
+ }
+
+ /*
+ * Writes Celllist of experiment
+ */
+ function fillCellList() {
+     var t = $("#celllist-table").DataTable({"bAutoWidth": false});
+     t.rows().remove();
+     t.columns().visible(false);
+     t.column(0).visible(true); // make first column always visible
+     for (var condIdx in cond_names) {
+         var theIdx = parseInt(condIdx) +  1;
+         console.log(theIdx);
+         var column = t.column(theIdx);
+         column.visible(true);
+         $("#th-condition" + condIdx).html(cond_names[condIdx]);
+     }
+     for (var label in celllabels) {
+        var data = [celllabels[label]];
+        var conditions = cellconditions[label];
+        data = data.concat(conditions);
+        // Adding missing column data to avoid Error
+        // 4 = Number of Columns in Table
+        if (data.length < 4) {
+            var missing = 4 - data.length;
+            for (var i = 1; i <= missing; i++) {
+                data.push("-");
+            }
+        }
+        t.row.add(data).draw(false);
+     }
+     t.draw();
+ }
 
 
 /**
@@ -394,36 +440,6 @@ $('#uploadexperiment-send').on("click", function(){
     if (! exp_name) {
       exp_name = "Experiment #1";
     }
-
-    /*
-     * Writes Genelist of experiment
-     */
-     function fillGeneList() {
-         var t = $("#genelist-table").DataTable();
-         t.rows().remove();
-         for (var label in genelabels) {
-            t.row.add([
-                genelabels[label],
-                "-"
-            ]).draw(false);
-         }
-         t.draw();
-     }
-
-     /*
-     * Writes Celllist of experiment
-     */
-     function fillCellList() {
-         var t = $("#celllist-table").DataTable();
-         t.rows().remove();
-         for (var label in celllabels) {
-            t.row.add([
-                celllabels[label],
-                "-"
-            ]).draw(false);
-         }
-         t.draw();
-     }
 
     /*
      * Adds the ColorBy options to the dropdown of AboutExperiment
