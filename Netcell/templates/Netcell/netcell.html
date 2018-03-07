@@ -18,20 +18,20 @@
   </head>
 
   <body>
-      <!-- SEARCH BAR -->
-      <div id="search-netcell">
-          <div class="input-group">
-              <input type="text" id="genename-graph" class="form-control" placeholder="Search Gene" name="search">
-              <div class="input-group-btn">
-                  <a class="info-tooltip" title="Search and highlight gene on graph">
-                      <button id="search-netexplorer-btn" class="btn btn-default" type="submit"><i class="glyphicon glyphicon-search"></i></button>
-                  </a>
-                  <a class="info-tooltip" title="Remove highlight">
-                      <button id="removesearch" class="btn btn-default"> <span class="glyphicon glyphicon-remove"></span></button>
-                  </a>
-              </div>
-          </div>
+    <!-- SEARCH BAR -->
+    <div id="search-netcell">
+      <div class="input-group">
+        <input type="text" id="genename-graph" class="form-control" placeholder="Search Gene" name="search">
+        <div class="input-group-btn">
+          <a class="info-tooltip" title="Search and highlight gene on graph">
+            <button id="search-netexplorer-btn" class="btn btn-default" type="submit"><i class="glyphicon glyphicon-search"></i></button>
+          </a>
+          <a class="info-tooltip" title="Remove highlight">
+            <button id="removesearch" class="btn btn-default"> <span class="glyphicon glyphicon-remove"></span></button>
+          </a>
+        </div>
       </div>
+    </div>
 
     <div class="cn-content">
       <div id="loading"><img class="loading-img" src="{% static 'Images/loading-pathfinder.gif' %}"/><img src="{% static 'Images/loading-background.png' %}" class="loading-background"/></div>
@@ -47,11 +47,11 @@
           <!-- CONTROLS -->
           <div class="cnet-controls-header">
             <div class="back-div">
-                <a href="{% url index_view %}" class="info-tooltip"
-                title="Back to PlanNET"><span class="glyphicon glyphicon-home"></span></a>
-                <hr>
-                <a target="_blank" href="{% url tutorial %}#netcell" class="info-tooltip"
-                title="Go to Tutorial"><span class="glyphicon glyphicon-question-sign"></span></a>
+              <a href="{% url index_view %}" class="info-tooltip"
+              title="Back to PlanNET"><span class="glyphicon glyphicon-home"></span></a>
+              <hr>
+              <a target="_blank" href="{% url tutorial %}#netcell" class="info-tooltip"
+              title="Go to Tutorial"><span class="glyphicon glyphicon-question-sign"></span></a>
             </div>
             <img class="app-icon-inside" id="cyt-netexplorer-icon" src="{% static 'Images/netcell-icon.png' %}"/>
             <div class="app-title"><h2 id="netexplorer-title">NetCell</h2></div>
@@ -61,10 +61,10 @@
           <!-- NETWORK -->
           <h3>Network</h3>
           <a class="info-tooltip" title="Upload a gene/protein network">
-              <div id="cn-upload-graph" class="btn btn-default cn-network-btn">
-                <span class="glyphicon glyphicon-open" style="vertical-align: middle;"></span>
-                Upload Graph
-              </div>
+            <div id="cn-upload-graph" class="btn btn-default cn-network-btn">
+              <span class="glyphicon glyphicon-open" style="vertical-align: middle;"></span>
+              Upload Graph
+            </div>
           </a>
           <a href="{% url net_explorer %}">
             <div class="btn btn-default netexplorer-view cn-network-btn" type="submit">
@@ -76,390 +76,390 @@
           <!-- SELECT EXPERIMENT -->
 
           <div class="exp-upload-or-select">
-              <hr>
-              <h3>Select Experiment</h3>
-              <div class="dropdown">
-                <button class="btn btn-default dropdown-toggle cn-experiment" type="button" data-toggle="dropdown">
-                  Experiment
-                  <span class="caret"></span></button>
-                  <ul class="dropdown-menu cn-experiment-dropdown">
-                    <!-- This will be filled by Django Query -->
-                    <li><a href="#">Exp 1</a></li>
-                    <li><a href="#">Exp 2</a></li>
-                    <li><a href="#">Exp 3</a></li>
-                  </ul>
+            <hr>
+            <h3>Select Experiment</h3>
+            <div class="dropdown">
+              <button class="btn btn-default dropdown-toggle cn-experiment" type="button" data-toggle="dropdown">
+                Experiment
+                <span class="caret"></span></button>
+                <ul class="dropdown-menu cn-experiment-dropdown">
+                  <!-- This will be filled by Django Query -->
+                  <li><a href="#">Exp 1</a></li>
+                  <li><a href="#">Exp 2</a></li>
+                  <li><a href="#">Exp 3</a></li>
+                </ul>
               </div>
               <span class="cn-experiment-upload-btn"><br>or<br></span>
               <a class="info-tooltip" title="Upload a Single Cell Experiment manually">
-                  <div id="cn-upload-experiment" class="btn btn-default cn-experiment-upload-btn">
-                    <span class="glyphicon glyphicon-open" style="vertical-align: middle;"></span>
-                    Upload Experiment
-                  </div>
+                <div id="cn-upload-experiment" class="btn btn-default cn-experiment-upload-btn">
+                  <span class="glyphicon glyphicon-open" style="vertical-align: middle;"></span>
+                  Upload Experiment
+                </div>
               </a>
-          </div>
+            </div>
 
-          <div class="cn-exp-controls">
+            <div class="cn-exp-controls">
               <hr>
               <h3>Experiment information</h3>
-            <!-- ABOUT EXPERIMENT BUTTON -->
-            <div id="aboutexp-btn" class="btn btn-default exp-btns">
-              <span class="glyphicon glyphicon-info-sign"></span>
-              tSNE Plot
-          </div><br>
-            <div id="gene-list-btn" class="btn btn-default exp-btns">
+              <!-- ABOUT EXPERIMENT BUTTON -->
+              <div id="aboutexp-btn" class="btn btn-default exp-btns">
+                <span class="glyphicon glyphicon-info-sign"></span>
+                tSNE Plot
+              </div><br>
+              <div id="gene-list-btn" class="btn btn-default exp-btns">
                 <span class="glyphicon glyphicon-info-sign"></span>
                 Gene List
-            </div><br>
-            <div id="cell-list-btn" class="btn btn-default exp-btns">
+              </div><br>
+              <div id="cell-list-btn" class="btn btn-default exp-btns">
                 <span class="glyphicon glyphicon-info-sign"></span>
                 Cell List
-            </div><br>
+              </div><br>
 
-            <!-- DROPDOWNS FOR CONDITIONS IN GRAPH -->
-            <div class="cn-celltype-select">
-              <hr>
-              <h3>Filter Graph</h3>
-              <!-- CONDITION0 (clusters-->
-              <div class="dropdown cn-condition-dropdown-container cn-condition-dropdown-container0">
-                <h4><span class="condition-name0"></span></h4>
-                <select id ="dropdown-condition0" class="selectpicker" multiple>
-                  <!-- This will be filled by jQuery -->
-                </select>
+              <!-- DROPDOWNS FOR CONDITIONS IN GRAPH -->
+              <div class="cn-celltype-select">
                 <hr>
-              </div>
+                <h3>Filter Graph</h3>
+                <!-- CONDITION0 (clusters-->
+                <div class="dropdown cn-condition-dropdown-container cn-condition-dropdown-container0">
+                  <h4><span class="condition-name0"></span></h4>
+                  <select id ="dropdown-condition0" class="selectpicker" multiple>
+                    <!-- This will be filled by jQuery -->
+                  </select>
+                  <hr>
+                </div>
 
-              <!-- CONDITION1 -->
-              <div class="dropdown cn-condition-dropdown-container cn-condition-dropdown-container1">
-                <h4><span class="condition-name1"></span></h4>
-                <select id ="dropdown-condition1" class="selectpicker" multiple>
-                  <!-- This will be filled by jQuery -->
-                </select>
-                <hr>
-              </div>
+                <!-- CONDITION1 -->
+                <div class="dropdown cn-condition-dropdown-container cn-condition-dropdown-container1">
+                  <h4><span class="condition-name1"></span></h4>
+                  <select id ="dropdown-condition1" class="selectpicker" multiple>
+                    <!-- This will be filled by jQuery -->
+                  </select>
+                  <hr>
+                </div>
 
-              <!-- CONDITION2 -->
-              <div class="dropdown cn-condition-dropdown-container cn-condition-dropdown-container2">
-                <h4><span class="condition-name2"></span></h4>
-                <select id ="dropdown-condition2" class="selectpicker" multiple>
-                  <!-- This will be filled by jQuery -->
-                </select>
-                <hr>
-              </div>
+                <!-- CONDITION2 -->
+                <div class="dropdown cn-condition-dropdown-container cn-condition-dropdown-container2">
+                  <h4><span class="condition-name2"></span></h4>
+                  <select id ="dropdown-condition2" class="selectpicker" multiple>
+                    <!-- This will be filled by jQuery -->
+                  </select>
+                  <hr>
+                </div>
 
-              <br>
+                <br>
 
-            </div> <!-- cn-celltype-select-->
-
-
-          </div> <!-- cn-exp-controls -->
+              </div> <!-- cn-celltype-select-->
 
 
+            </div> <!-- cn-exp-controls -->
 
-        </div> <!-- cn-controls -->
-      </div> <!-- row -->
-    </div> <!-- cn-content -->
 
-    <!-- UPLOAD GRAPH OVERLAY -->
-    <div id="button-container" class="button-container-netcell-uploadgraph">
+
+          </div> <!-- cn-controls -->
+        </div> <!-- row -->
+      </div> <!-- cn-content -->
+
+      <!-- UPLOAD GRAPH OVERLAY -->
+      <div id="button-container" class="button-container-netcell-uploadgraph">
         <div class="close-overlay close-overlay-uploadgraph" title="Close card">
-            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-        </div>
-    </div>
-    <div class="card-overlay card-overlay-netcell-uploadgraph" id="card-overlay">
-      <h4>Upload Graph to NetCell</h4>
-      <p>
-        Upload your own pathway in any of the formats below:
-      </p>
-      <hr><br>
-      <div class="upload-container">
-        <div class="row">
-          <div class="col-sm-4">
-            <label class="btn btn-default">
-              <span class="glyphicon glyphicon-open" style="vertical-align: middle;"></span>
-              JSON <input type="file" id="files-json" name="files[]" style="display:none;"/>
-            </label>
-
-          </div>
-          <div class="col-sm-4">
-            <label class="btn btn-default">
-              <span class="glyphicon glyphicon-open" style="vertical-align: middle;"></span>
-              Tabular <input type="file" id="files-tbl" name="files[]" style="display:none;"/>
-            </label>
-          </div>
-          <div class="col-sm-4">
-            <label class="btn btn-default">
-              <span class="glyphicon glyphicon-open" style="vertical-align: middle;"></span>
-              Graphviz (dot) <input type="file" id="files-dot" name="files[]" style="display:none;"/>
-            </label>
-          </div>
+          <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
         </div>
       </div>
+      <div class="card-overlay card-overlay-netcell-uploadgraph" id="card-overlay">
+        <h4>Upload Graph to NetCell</h4>
+        <p>
+          Upload your own pathway in any of the formats below:
+        </p>
+        <hr><br>
+        <div class="upload-container">
+          <div class="row">
+            <div class="col-sm-4">
+              <label class="btn btn-default">
+                <span class="glyphicon glyphicon-open" style="vertical-align: middle;"></span>
+                JSON <input type="file" id="files-json" name="files[]" style="display:none;"/>
+              </label>
 
-
-    </div>
-
-    <!-- UPLOAD EXPERIMENT CONTAINER -->
-    <div id="button-container" class="button-container-netcell-uploadexperiment">
-        <div class="close-overlay close-overlay-uploadexperiment" title="Close card">
-            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-        </div>
-    </div>
-    <div class="card-overlay card-overlay-netcell-uploadexperiment" id="card-overlay">
-      <h2>Upload SC Experiment to NetCell</h2>
-      <p>
-        Upload your own Single Cell Experiment in any of the formats below:
-      </p>
-      <hr><br>
-      <div class="upload-container">
-        <div class="row">
-          <h3>Experiment name</h3>
-          <div class="col-sm-5">
-            <input type="text" class="form-control" id="exp-name" placeholder="Experiment #1">
+            </div>
+            <div class="col-sm-4">
+              <label class="btn btn-default">
+                <span class="glyphicon glyphicon-open" style="vertical-align: middle;"></span>
+                Tabular <input type="file" id="files-tbl" name="files[]" style="display:none;"/>
+              </label>
+            </div>
+            <div class="col-sm-4">
+              <label class="btn btn-default">
+                <span class="glyphicon glyphicon-open" style="vertical-align: middle;"></span>
+                Graphviz (dot) <input type="file" id="files-dot" name="files[]" style="display:none;"/>
+              </label>
+            </div>
           </div>
         </div>
 
+
+      </div>
+
+      <!-- UPLOAD EXPERIMENT CONTAINER -->
+      <div id="button-container" class="button-container-netcell-uploadexperiment">
+        <div class="close-overlay close-overlay-uploadexperiment" title="Close card">
+          <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+        </div>
+      </div>
+      <div class="card-overlay card-overlay-netcell-uploadexperiment" id="card-overlay">
+        <h2>Upload SC Experiment to NetCell</h2>
+        <p>
+          Upload your own Single Cell Experiment in any of the formats below:
+        </p>
         <hr><br>
-        <div class="row">
-          <h3>
+        <div class="upload-container">
+          <div class="row">
+            <h3>Experiment name</h3>
+            <div class="col-sm-5">
+              <input type="text" class="form-control" id="exp-name" placeholder="Experiment #1">
+            </div>
+          </div>
+
+          <hr><br>
+          <div class="row">
+            <h3>
               Tabular Files
               <a class="info-tooltip" title="
-                Upload two files with the Single Cell experiment Data.
-                <ul>
-                 <li> Cell Expression file: Genes on rows, cells on columns, expression on cells.</li>
+              Upload two files with the Single Cell experiment Data.
+              <ul>
+               <li> Cell Expression file: Genes on rows, cells on columns, expression on cells.</li>
 
-                        e.g:
-                        <table>
-                            <tr>
-                                <td> &nbsp;  </td>
-                                <td> &nbsp;&nbsp;  </td>
-                                <td>c1</td>
-                                <td> &nbsp;&nbsp;  </td>
-                                <td>c2</td>
-                                <td> &nbsp;&nbsp;  </td>
-                            </tr>
-                            <tr>
-                                <td>g1</td>
-                                <td> &nbsp;&nbsp;  </td>
-                                <td>10</td>
-                                <td> &nbsp;&nbsp;  </td>
-                                <td>35</td>
-                            </tr>
-                            <tr>
-                                <td>g1</td>
-                                <td> &nbsp;&nbsp;  </td>
-                                <td>0</td>
-                                <td> &nbsp;&nbsp;  </td>
-                                <td>12</td>
-                            </tr>
-                            <tr>
-                                <td>...</td>
-                            </tr>
-                        </table>
-                        <br>
-                 <li>Cell Clustering/Conditions file: Cells on rows, each column a condition for said cells.</li>
+               e.g:
+               <table>
+                <tr>
+                  <td> &nbsp;  </td>
+                  <td> &nbsp;&nbsp;  </td>
+                  <td>c1</td>
+                  <td> &nbsp;&nbsp;  </td>
+                  <td>c2</td>
+                  <td> &nbsp;&nbsp;  </td>
+                </tr>
+                <tr>
+                  <td>g1</td>
+                  <td> &nbsp;&nbsp;  </td>
+                  <td>10</td>
+                  <td> &nbsp;&nbsp;  </td>
+                  <td>35</td>
+                </tr>
+                <tr>
+                  <td>g1</td>
+                  <td> &nbsp;&nbsp;  </td>
+                  <td>0</td>
+                  <td> &nbsp;&nbsp;  </td>
+                  <td>12</td>
+                </tr>
+                <tr>
+                  <td>...</td>
+                </tr>
+              </table>
+              <br>
+              <li>Cell Clustering/Conditions file: Cells on rows, each column a condition for said cells.</li>
 
-                         e.g:
-                         <table>
-                              <tr>
-                                 <td>CellId</td>
-                                 <td> &nbsp;&nbsp;  </td>
-                                 <td>Cluster</td>
-                                 <td> &nbsp;&nbsp;  </td>
-                                 <td>Condition1</td>
-                             </tr>
-                             <tr>
-                                 <td>c1</td>
-                                 <td> &nbsp;&nbsp;  </td>
-                                 <td>clust1</td>
-                                 <td> &nbsp;&nbsp;  </td>
-                                 <td>cond1-A</td>
-                             </tr>
-                             <tr>
-                                 <td>c2</td>
-                                 <td> &nbsp;&nbsp;  </td>
-                                 <td>clust3</td>
-                                 <td> &nbsp;&nbsp;  </td>
-                                 <td>cond1-B</td>
-                             </tr>
-                             <tr>
-                                 <td>...</td>
-                             </tr>
-                         </table>
-                </ul>
-              ">
-                <span class="glyphicon glyphicon-info-sign"></span>
-              </a>
-          </h3>
-          <div class="col-sm-6">
-            <h4>Cell Expression</h4>
-            <label class="btn btn-default">
-              <span class="glyphicon glyphicon-open" style="vertical-align: middle;"></span>
-              Upload <input type="file" id="files-cellexp" name="files[]" style="display:none;"/>
-            </label>
-            <span id="files-cellexp-ok" class="upload-tick glyphicon glyphicon-ok"></span>
-            <span id="files-cellexp-notok" class="upload-tick glyphicon glyphicon-remove"></span>
-          </div>
-          <div class="col-sm-6">
-            <h4>Cell Clustering</h4>
-            <label class="btn btn-default">
-              <span class="glyphicon glyphicon-open" style="vertical-align: middle;"></span>
-              Upload <input type="file" id="files-cellclust" name="files[]" style="display:none;"/>
-            </label>
-            <span id="files-cellclust-ok" class="upload-tick glyphicon glyphicon-ok"></span>
-            <span id="files-cellclust-notok" class="upload-tick glyphicon glyphicon-remove"></span>
-          </div>
-        </div>
-        <br><hr><br>
-        <div class="row">
-          <h3>SCE Object (RDS)</h3>
-          <div class="col-sm-6">
-            <label class="btn btn-default">
-              <span class="glyphicon glyphicon-open" style="vertical-align: middle;"></span>
-              Upload <input type="file" id="files-sce" name="files[]" style="display:none;"/>
-            </label>
-            <span id="files-sce-ok" class="upload-tick glyphicon glyphicon-ok"></span>
-            <span id="files-sce-notok" class="upload-tick glyphicon glyphicon-remove"></span>
-
-          </div>
-          <div class="col-sm-6">
-            <h5>ColData condition names</h5>
-            <input type="text" placeholder="clusters" class="form-control" id="cluster-name">
-            <input type="text" placeholder="cond1" class="form-control" id="cond1-name">
-            <input type="text" placeholder="cond2" class="form-control" id="cond2-name">
-          </div>
-        </div>
+              e.g:
+              <table>
+                <tr>
+                 <td>CellId</td>
+                 <td> &nbsp;&nbsp;  </td>
+                 <td>Cluster</td>
+                 <td> &nbsp;&nbsp;  </td>
+                 <td>Condition1</td>
+               </tr>
+               <tr>
+                 <td>c1</td>
+                 <td> &nbsp;&nbsp;  </td>
+                 <td>clust1</td>
+                 <td> &nbsp;&nbsp;  </td>
+                 <td>cond1-A</td>
+               </tr>
+               <tr>
+                 <td>c2</td>
+                 <td> &nbsp;&nbsp;  </td>
+                 <td>clust3</td>
+                 <td> &nbsp;&nbsp;  </td>
+                 <td>cond1-B</td>
+               </tr>
+               <tr>
+                 <td>...</td>
+               </tr>
+             </table>
+           </ul>
+           ">
+           <span class="glyphicon glyphicon-info-sign"></span>
+         </a>
+       </h3>
+       <div class="col-sm-6">
+        <h4>Cell Expression</h4>
+        <label class="btn btn-default">
+          <span class="glyphicon glyphicon-open" style="vertical-align: middle;"></span>
+          Upload <input type="file" id="files-cellexp" name="files[]" style="display:none;"/>
+        </label>
+        <span id="files-cellexp-ok" class="upload-tick glyphicon glyphicon-ok"></span>
+        <span id="files-cellexp-notok" class="upload-tick glyphicon glyphicon-remove"></span>
       </div>
-
-      <div class="row">
-        <div class="col-sm-10">
-        </div>
-        <div class="col-sm-2 uploadexperiment-send-div">
-          <div id="uploadexperiment-send" class="btn btn-success disabled">Upload</div>
-        </div>
+      <div class="col-sm-6">
+        <h4>Cell Clustering</h4>
+        <label class="btn btn-default">
+          <span class="glyphicon glyphicon-open" style="vertical-align: middle;"></span>
+          Upload <input type="file" id="files-cellclust" name="files[]" style="display:none;"/>
+        </label>
+        <span id="files-cellclust-ok" class="upload-tick glyphicon glyphicon-ok"></span>
+        <span id="files-cellclust-notok" class="upload-tick glyphicon glyphicon-remove"></span>
       </div>
-
     </div>
+    <br><hr><br>
+    <div class="row">
+      <h3>SCE Object (RDS)</h3>
+      <div class="col-sm-6">
+        <label class="btn btn-default">
+          <span class="glyphicon glyphicon-open" style="vertical-align: middle;"></span>
+          Upload <input type="file" id="files-sce" name="files[]" style="display:none;"/>
+        </label>
+        <span id="files-sce-ok" class="upload-tick glyphicon glyphicon-ok"></span>
+        <span id="files-sce-notok" class="upload-tick glyphicon glyphicon-remove"></span>
 
-
-    <!-- MORE ABOUT EXPERIMENT CONTAINER -->
-    <div id="button-container" class="button-container-netcell-aboutexp">
-        <div class="close-overlay close-overlay-aboutexp" title="Close card">
-            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-        </div>
+      </div>
+      <div class="col-sm-6">
+        <h5>ColData condition names</h5>
+        <input type="text" placeholder="clusters" class="form-control" id="cluster-name">
+        <input type="text" placeholder="cond1" class="form-control" id="cond1-name">
+        <input type="text" placeholder="cond2" class="form-control" id="cond2-name">
+      </div>
     </div>
-    <div class="card-overlay card-overlay-netcell-aboutexp" id="card-overlay">
-      <h2><span class="exp-name-label">Exp1</span></h2>
-      <p>
-        Select parameters for clustering visualization:
-      </p>
-      <hr>
-      <div class="row row-eq-height">
-        <div class="col-sm-6">
-          <div class="reducedDims-container">
-            <h4> PCA dimensions </h4>
-            <input
-                type="text"
-                class="span2"
-                id="reducedDims"
-                data-slider-value="50"
-                data-slider-min="0"
-                data-slider-max="100"
-                data-slider-step="1"
-            >
+  </div>
 
-          </div>
+  <div class="row">
+    <div class="col-sm-10">
+    </div>
+    <div class="col-sm-2 uploadexperiment-send-div">
+      <div id="uploadexperiment-send" class="btn btn-success disabled">Upload</div>
+    </div>
+  </div>
 
-          <div class="perplexity-container">
-            <h4> Perplexity </h4>
-            <input
-                type="text"
-                class="span2"
-                id="perplexity"
-                data-slider-value="10"
-                data-slider-min="0"
-                data-slider-max="100"
-                data-slider-step="1"
-            >
-          </div>
-          <hr>
-          <h3>Color by:</h3>
-          <h4>Cluster/Condition</h4>
-          <div class="dropdown">
-            <button class="btn btn-default dropdown-toggle cn-celltype" type="button" data-toggle="dropdown">
-              Color by:
-              <span class="caret"></span>
-            </button>
-            <ul id="cn-colorby-dropdown" class="dropdown-menu cn-colorby-dropdown">
-              <!-- This will be filled by Query -->
+</div>
 
-            </ul>
-          </div> <!-- dropdown -->
-          <h4>Gene Expression</h4>
-          <input type="text" placeholder="gene name" class="form-control" id="genename">
-        </div>
-        <div class="col-sm-6 plot-btn-container">
-          <!--EMPTY-->
-        </div>
+
+<!-- MORE ABOUT EXPERIMENT CONTAINER -->
+<div id="button-container" class="button-container-netcell-aboutexp">
+  <div class="close-overlay close-overlay-aboutexp" title="Close card">
+    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+  </div>
+</div>
+<div class="card-overlay card-overlay-netcell-aboutexp" id="card-overlay">
+  <h2><span class="exp-name-label">Exp1</span></h2>
+  <p>
+    Select parameters for clustering visualization:
+  </p>
+  <hr>
+  <div class="row row-eq-height">
+    <div class="col-sm-6">
+      <div class="reducedDims-container">
+        <h4> PCA dimensions </h4>
+        <input
+        type="text"
+        class="span2"
+        id="reducedDims"
+        data-slider-value="50"
+        data-slider-min="0"
+        data-slider-max="100"
+        data-slider-step="1"
+        >
+
       </div>
 
-      <div class="row row-eq-height">
-        <div class="col-sm-6"></div>
-        <div class="col-sm-6">
-          <div id="plot-btn" class="btn btn-netcell">Plot</div>
-        </div>
-      </div>
-      <br><hr>
-      <div class="tsne-plot-container">
-        <div id="tsne-plot"></div>
+      <div class="perplexity-container">
+        <h4> Perplexity </h4>
+        <input
+        type="text"
+        class="span2"
+        id="perplexity"
+        data-slider-value="10"
+        data-slider-min="0"
+        data-slider-max="100"
+        data-slider-step="1"
+        >
       </div>
       <hr>
-      <div class="colored-by"><h4>Colored by: <span class="colored-by-text"></span></h4></div>
+      <h3>Color by:</h3>
+      <h4>Cluster/Condition</h4>
+      <div class="dropdown">
+        <button class="btn btn-default dropdown-toggle cn-celltype" type="button" data-toggle="dropdown">
+          Color by:
+          <span class="caret"></span>
+        </button>
+        <ul id="cn-colorby-dropdown" class="dropdown-menu cn-colorby-dropdown">
+          <!-- This will be filled by Query -->
 
+        </ul>
+      </div> <!-- dropdown -->
+      <h4>Gene Expression</h4>
+      <input type="text" placeholder="gene name" class="form-control" id="genename">
     </div>
+    <div class="col-sm-6 limit-genes-container">
+      <h4>Filter Genes</h4>
+
+      Select most variable genes only: 
+      <br>
+      <input id="limit-genes" class="limit-genes" type="number" name="quantity" min="100" max="1000" value="500">
+      <br>
+      <div id="plot-btn" class="btn btn-netcell">Plot</div>
+    </div>
+  </div>
+
+  <br><hr>
+  <div class="tsne-plot-container">
+    <div id="tsne-plot"></div>
+  </div>
+  <hr>
+  <div class="colored-by"><h4>Colored by: <span class="colored-by-text"></span></h4></div>
+
+</div>
 
 
-    <div id="dialog-error" title="Error">
-        <p>
-            <span class="ui-icon ui-icon-alert" style="float:left; margin:12px 12px 20px 0;"></span>
-            <span id="error-content"> </span>
-        </p>
-    </div>
+<div id="dialog-error" title="Error">
+  <p>
+    <span class="ui-icon ui-icon-alert" style="float:left; margin:12px 12px 20px 0;"></span>
+    <span id="error-content"> </span>
+  </p>
+</div>
 
-    <!-- GENELIST OVERLAY -->
-    <div id="button-container" class="button-container-netcell-genelist">
-        <div class="close-overlay close-overlay-genelist" title="Close card">
-            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-        </div>
-    </div>
-    <div class="card-overlay card-overlay-netcell-genelist" id="card-overlay">
-      <h2>Gene List</h2>
-      <hr><br>
-        <table id="genelist-table">
-            <thead>
-                <th>Symbol</th>
-                <th>Official Symbol</th>
-            </thead>
-        </table>
-    </div>
+<!-- GENELIST OVERLAY -->
+<div id="button-container" class="button-container-netcell-genelist">
+  <div class="close-overlay close-overlay-genelist" title="Close card">
+    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+  </div>
+</div>
+<div class="card-overlay card-overlay-netcell-genelist" id="card-overlay">
+  <h2>Gene List</h2>
+  <hr><br>
+  <table id="genelist-table">
+    <thead>
+      <th>Symbol</th>
+      <th>Official Symbol</th>
+    </thead>
+  </table>
+</div>
 
-    <!-- CELLLIST OVERLAY -->
-    <div id="button-container" class="button-container-netcell-celllist">
-        <div class="close-overlay close-overlay-celllist" title="Close card">
-            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-        </div>
-    </div>
-    <div class="card-overlay card-overlay-netcell-celllist" id="card-overlay">
-      <h2>Cell List</h2>
-      <hr><br>
-      <table id="celllist-table">
-          <thead>
-              <th>Cell Id</th>
-              <th id="th-condition0">Condition-1</th>
-              <th id="th-condition1">Condition-2</th>
-              <th id="th-condition2">Condition-3</th>
-          </thead>
-      </table>
-    </div>
+<!-- CELLLIST OVERLAY -->
+<div id="button-container" class="button-container-netcell-celllist">
+  <div class="close-overlay close-overlay-celllist" title="Close card">
+    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+  </div>
+</div>
+<div class="card-overlay card-overlay-netcell-celllist" id="card-overlay">
+  <h2>Cell List</h2>
+  <hr><br>
+  <table id="celllist-table">
+    <thead>
+      <th>Cell Id</th>
+      <th id="th-condition0">Condition-1</th>
+      <th id="th-condition1">Condition-2</th>
+      <th id="th-condition2">Condition-3</th>
+    </thead>
+  </table>
+</div>
 
     <script src="{% static 'js/jquery-min.js' %}"></script>
     <script src="{% static 'js/cytoscape.js' %}"></script>

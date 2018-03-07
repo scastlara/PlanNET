@@ -683,6 +683,9 @@ $("#plot-btn").on("click", function(){
     $(".colored-by").show();
   }
 
+
+
+
   /**
   * Color plot by gene expression
   **/
@@ -712,15 +715,73 @@ $("#plot-btn").on("click", function(){
     $(".colored-by").show();
   }
 
+  /**
+  * Compute Variance per gene
+  **/
+  function filterByVar(expr, n) {
+
+    function sortbyVariance(a, b) {
+      if (a[0] === b[0]) {
+          return 0;
+      }
+      else {
+          return (a[0] > b[0]) ? -1 : 1;
+      }
+    }
+
+    // Transpose the matrix
+    var means = expr[0].map(function(col, i){
+      return expr.map(function(row){
+          return row[i];
+      });
+    });
+
+    var vars    = [];
+    for (var i = 0; i < means.length ; i++) {
+      var sum = means[i].reduce(function(a, b) { return a + b; }, 0);
+      var mean = sum / means.length;
+      var varsums = [];
+      for (var j = 0; j < means[i].length ; j++) {
+        varsums[j] = Math.pow(means[i][j] - mean, 2);
+        //tmpvars[i] = ;
+      }
+      vars[i] = []
+      vars[i][0] = varsums.reduce(function(a, b) { return a + b; }, 0);
+      vars[i][0] = Math.sqrt(vars[i] / (means[i].length - 1));
+      vars[i][1] = means[i];
+    }
+    vars.sort(sortbyVariance);
+    vars = vars.slice(0, limitgenes);
+    for (var i = 0; i < vars.length; i++) {
+      vars[i] = vars[i][1];
+    }
+    var tr = vars[0].map(function(col, i){
+      return vars.map(function(row){
+          return row[i];
+      });
+    });
+    return(tr);
+  }
+
 
   var reducedDims = $('#reducedDims').val();
   var perplexity  = $('#perplexity').val();
+  var limitgenes  = $('#limit-genes').val();
+  if (limitgenes > 1000) {
+    limitgenes = 1000;
+  } else if (limitgenes < 100) {
+    limitgenes = 100;
+  }
   if (! reducedDims) {
     reducedDims = 25; // Default
   }
   if (! perplexity) {
     perplexity = 10; // Default
   }
+
+  // Filter cellexp variable to contain only limitgenes
+  var cellexpSubset = filterByVar(cellexp, limitgenes);
+
   // Compute PCA of array through AJAX call
   //jObject = JSON.stringify(cellexp);
   $.ajax({
@@ -729,7 +790,7 @@ $("#plot-btn").on("click", function(){
     data: {
       'type'      : 'POST',
       'csrfmiddlewaretoken': csrf_token,
-      'cellexp[]': cellexp,
+      'cellexp[]': cellexpSubset,
       'reducedDims': reducedDims,
       'perplexity' : perplexity
 

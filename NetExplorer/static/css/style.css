@@ -1956,10 +1956,14 @@ kbd {
 }
 
  #plot-btn {
-   width: 70%;
-   height: 5%;
-   margin-left: 15%;
-
+   display: inline-block;
+   margin-top: 100px;
+   width: 200px;
+   height: 80px;
+   text-align: center;
+   vertical-align: center;
+   font-size: 30px;
+   line-height: 70px;
  }
 
  #tsne-plot {
@@ -2035,4 +2039,17 @@ kbd {
 #celllist-table {
     font-size: 12px;
     color: #777777;
+}
+
+
+.limit-genes-container {
+    text-align: center;
+}
+
+.limit-genes {
+    margin-top: 20px;
+    width: 100px;
+    font-size: 25px;
+    text-align: center;
+    height: 40px;
 }
