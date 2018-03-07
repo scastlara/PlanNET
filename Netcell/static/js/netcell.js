@@ -315,7 +315,9 @@ function handleExpUpload(evt) {
       cellconditions = cellconditions.split("\n");
       var clusters = [];
       var conditions = []
-      for (var cl = 0; cl < cellconditions.length; cl++) {
+      cond_names = cellconditions[0].split(/[ \t]+/);
+      cond_names = cond_names.slice(1); // skip first element of header (cell names)
+      for (var cl = 1; cl < cellconditions.length; cl++) {
         var clusterlist = cellconditions[cl].split(/[ \t]+/);
           // We can have more conditions/batches
           // Can store up to 3 conditions
@@ -536,11 +538,11 @@ $('#uploadexperiment-send').on("click", function(){
           }
       });
     } else {
-      cond_names.push("clusters");
-      for (var icond = 0; icond < cellconditions[0].length; icond++) {
-        var icond_name = icond + 1;
-        cond_names.push("Condition_" + icond_name);
-      }
+      //cond_names.push("clusters");
+      //for (var icond = 0; icond < cellconditions[0].length; icond++) {
+      //  var icond_name = icond + 1;
+      //  cond_names.push("Condition_" + icond_name);
+      //}
       addColorByOpts();
       addConditionOpts();
       addColorBy();
