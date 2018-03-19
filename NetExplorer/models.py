@@ -120,7 +120,13 @@ EXPERIMENT_QUERY = """
 # ------------------------------------------------------------------------------
 ALL_EXPERIMENTS_QUERY = """
     MATCH (n:Experiment)-[r]-(m)
-    RETURN distinct keys(r) as samples, n.id as identifier, n.url as url, toInt(n.private) as private, n.reference as reference, collect(distinct labels(m)) as datasets
+    RETURN 
+        distinct keys(r) as samples, 
+        n.id as identifier, 
+        n.url as url, 
+        toInt(n.private) as private, 
+        n.reference as reference, 
+        collect(distinct labels(m)) as datasets
 """
 
 # ------------------------------------------------------------------------------
