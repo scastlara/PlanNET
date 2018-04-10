@@ -12,6 +12,7 @@ import math
 import re
 import time
 from django.db import connection
+import requests
 
 GRAPH     = Graph("http://127.0.0.1:7474/db/data/", password="5961")
 DATABASES = set([
@@ -240,6 +241,22 @@ OFFSYMBOL_QUERY = """
 
 # ------------------------------------------------------------------------------
 HOMOLOGS_QUERY = """
+    MATCH (n:Human)-[r:HOMOLOG_OF]-(m:%s)
+    WHERE  n.symbol = "%s"
+    RETURN n.symbol  AS human,
+        m.symbol     AS homolog,
+        r.blast_cov  AS blast_cov,
+        r.blast_eval AS blast_eval,
+        r.nog_brh    AS nog_brh,
+        r.pfam_sc    AS pfam_sc,
+        r.nog_eval   AS nog_eval,
+        r.blast_brh  AS blast_brh,
+        r.pfam_brh   AS pfam_brh,
+        labels(m)    AS database
+"""
+
+# ------------------------------------------------------------------------------
+HOMOLOGS_QUERY_ALL = """
     MATCH (n:Human)-[r:HOMOLOG_OF]-(m)
     WHERE  n.symbol = "%s"
     RETURN n.symbol  AS human,
@@ -253,6 +270,7 @@ HOMOLOGS_QUERY = """
         r.pfam_brh   AS pfam_brh,
         labels(m)    AS database
 """
+
 
 # NEO4J CLASSES
 # ------------------------------------------------------------------------------
@@ -547,16 +565,18 @@ class HumanNode(Node):
         # Initialize homologs dictionary
         homologs         = dict()
         database_to_look = set()
+        query_to_use = HOMOLOGS_QUERY
         if database == "ALL":
             database_to_look = set(DATABASES)
+            query_to_use = HOMOLOGS_QUERY_ALL % (self.symbol)
         else:
             database_to_look = set([database])
+            query_to_use = HOMOLOGS_QUERY % (database, self.symbol)
         for db in database_to_look:
             homologs[db] = list()
 
         # Get the homologs
-        query = HOMOLOGS_QUERY % (self.symbol)
-        results  = GRAPH.run(query)
+        results  = GRAPH.run(query_to_use)
         results  = results.data()
         if results:
             for row in results:
@@ -1211,6 +1231,41 @@ class ExperimentList(object):
             final_str += "Experiment: %s\n\tsamples: %s\n\tdatasets: %s\n" % (exp, ",".join(self.samples[exp]), ",".join(self.datasets[exp]))
         return final_str
 
+
+# ------------------------------------------------------------------------------
+class KeggPathway(object):
+    '''
+    Class for KeggPathways
+    '''
+    def __init__(self, symbol, database):
+        self.symbol = symbol
+        self.database = database
+        self.kegg_url = "http://togows.dbcls.jp/entry/pathway/%s/genes.json" % symbol
+        self.graphelements = self.connect_to_kegg()
+
+    def connect_to_kegg(self):
+        '''
+        Connects to KEGG and extracts the elements of the pathway
+        '''
+        r = requests.get(self.kegg_url)
+        if r.status_code == 200:
+            if r.json():
+                gene_list = [gene.split(";")[0] for gene in r.json()[0].values()]
+                graphelements = GraphCytoscape()
+                graphelements.new_nodes(gene_list, self.database)
+                graphelements.get_connections()
+                return graphelements
+            else:
+                return GraphCytoscape()
+        else:
+            return GraphCytoscape()
+
+    def is_empty(self):
+        '''
+        Checks if the KeggPathway is empty
+        '''
+        return self.graphelements.is_empty()
+                
 # ------------------------------------------------------------------------------
 class GeneOntology(object):
     """
