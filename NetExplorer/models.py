@@ -87,21 +87,21 @@ GET_OFF_SYMBOL = """
 GO_QUERY = """
     MATCH (n:Go)
     WHERE n.accession = "%s"
-    RETURN n.domain as domain
+    RETURN n.domain as domain, n.name as name
 """
 
 # ------------------------------------------------------------------------------
 GO_HUMAN_NODE_QUERY = """
     MATCH (n:Go)-[:HAS_GO]-(m:Human)
     WHERE n.accession = "%s"
-    RETURN n.domain as domain, m.symbol as symbol
+    RETURN n.domain as domain, n.name as name, m.symbol as symbol
 """
 
 # ------------------------------------------------------------------------------
 GO_HUMAN_GET_GO_QUERY = """
     MATCH (n:Go)-[:HAS_GO]-(m:Human)
     WHERE m.symbol = "%s"
-    RETURN n.accession as accession, n.domain as domain ORDER BY n.domain
+    RETURN n.accession as accession, n.domain as domain, n.name as name ORDER BY n.domain
 """
 
 
@@ -814,7 +814,7 @@ class PredictedNode(Node):
         if results:
             for row in results:
                 self.gene_ontologies.append(
-                    GeneOntology(accession=row['accession'], domain=row['domain'], query=False)
+                    GeneOntology(accession=row['accession'], domain=row['domain'], name=row['name'], query=False)
                 )
         else:
             self.gene_ontologies = list()
@@ -1216,9 +1216,10 @@ class GeneOntology(object):
     """
     Class for GeneOntology nodes
     """
-    def __init__(self, accession, domain=None, human=False, query=True):
-        self.accession   = accession
-        self.domain      = domain
+    def __init__(self, accession, domain=None, name=None, human=False, query=True):
+        self.accession = accession
+        self.domain = domain
+        self.name = name
         self.human_nodes = list()
         self.go_regexp = r"GO:\d{7}"
         if query is True:
@@ -1240,6 +1241,7 @@ class GeneOntology(object):
         results = results.data()
         if results:
             self.domain = results[0]['domain']
+            self.name   = results[0]['name']
         else:
             raise NodeNotFound(self.accession, "Go")
 

@@ -208,7 +208,9 @@
                                             <a href="http://amigo.geneontology.org/amigo/term/{{ go.accession }}" target="_blank">{{ go.accession }}
                                             </a>
                                         </td>
-                                        <td>{{ go.domain }}</td>   </tr>
+                                        <td><span class="{{ go.domain }}">{{ go.domain }}</span></td>   
+                                        <td>{{ go.name }}</td>
+                                    </tr>
                                 {% endfor %}
                                 </table>
                             </div>

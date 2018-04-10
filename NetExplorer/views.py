@@ -177,7 +177,10 @@ def get_card(request, symbol=None, database=None):
         if database != "Human":
             card_node.get_neighbours()
             card_node.get_domains()
-            card_node.get_geneontology()
+            try:
+                card_node.get_geneontology()
+            except Exception as err:
+                print(err)
             nodes, edges = card_node.get_graphelements()
             graph = GraphCytoscape()
             graph.add_elements(nodes)

@@ -188,6 +188,10 @@ h1, h2, h3, h4, h5, h6 {
     color: #777777;
 }
 
+.molecular_function { background-color: #D5A0E4; padding: 2px; color:white; }
+.cellular_component { background-color: #9DB9E6; padding: 2px; color:white; }
+.biological_process { background-color: #D7A070; padding: 2px; color:white; }
+
 .tutorial-icon-link:hover {
     color: #777777;
     opacity: 0.8;
@@ -332,7 +336,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .gene-ontology-div {
     overflow-y: scroll;
-    height: 20%;
+    height: 40%;
 }
 
 .full-screen-card {
@@ -436,7 +440,7 @@ h1, h2, h3, h4, h5, h6 {
     background-color: #F7F7F7;
     padding: 5%;
     overflow-y: scroll;
-    max-height: 20%;
+    max-height: 30%;
 }
 
 .download-fasta {
