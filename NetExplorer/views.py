@@ -178,10 +178,7 @@ def get_card(request, symbol=None, database=None):
         if database != "Human":
             card_node.get_neighbours()
             card_node.get_domains()
-            try:
-                card_node.get_geneontology()
-            except Exception as err:
-                print(err)
+            card_node.get_geneontology()
             nodes, edges = card_node.get_graphelements()
             graph = GraphCytoscape()
             graph.add_elements(nodes)
@@ -249,7 +246,6 @@ def gene_search(request):
                     response['search_error'] = 1
                 else:
                     response['res'] = nodes_graph.nodes
-
     return render(request, 'NetExplorer/gene_search.html', response)
 
 
@@ -258,61 +254,42 @@ def net_explorer(request):
     '''
     This is the cytoscape graph-based search function.
     '''
-    if request.method == "GET" and "genesymbol" in request.GET and request.is_ajax():
+    if request.method == "GET" and request.is_ajax():
+        # CHECK IF FORM IS OK
+        if (not "genesymbol" in request.GET or
+            not "database" in request.GET or
+            symbol_is_empty(request.GET['genesymbol'])):
+            return HttpResponse(status=400)
         symbols  = request.GET['genesymbol']
-        if symbol_is_empty(symbols):
-            return HttpResponse(status=400)
         symbols  = symbols.split(",")
-        database = None
+        database = request.GET['database']
 
-        if "database" in request.GET:
-            database     = request.GET['database']
-        else:
-            logging.info("ERROR: No database in net_explorer")
-            return HttpResponse(status=400)
-
+        # ADDING NODES USING CONTIG_IDS, PROTEIN SYMBOLS, GO CODES OR PFAM IDENTIFIERS
         if request.GET['type'] == "node":
-            # ADDING NODES USING CONTIG_IDS, PROTEIN SYMBOLS, GO CODES OR PFAM IDENTIFIERS
             graphobject = GraphCytoscape()
             graphobject.new_nodes(symbols, database)
             # Clone the list of nodes to search for interactions
             nodes_to_search = list(graphobject.nodes)
-            if database is not None:
-                for node in nodes_to_search:
-                    try:
-                        node.get_neighbours()
-                        node.important = True
-                        nodes, edges = node.get_graphelements()
-                        graphobject.add_elements(nodes)
-                        graphobject.add_elements(edges)
-                    except (NodeNotFound, IncorrectDatabase) as err:
-                        logging.info("ERROR: NodeNotFound or IncorrectDatabase in net_e")
-                        continue
+            for node in nodes_to_search:
+                try:
+                    node.get_neighbours()
+                    node.important = True
+                    nodes, edges = node.get_graphelements()
+                    graphobject.add_elements(nodes)
+                    graphobject.add_elements(edges)
+                except (NodeNotFound, IncorrectDatabase) as err:
+                    continue
             if graphobject.is_empty():
                 return HttpResponse(status=404)
             else:
-                print(set(symbols))
-                #graphobject.define_important(set(symbols))
                 json_data = graphobject.to_json()
                 return HttpResponse(json_data, content_type="application/json")
+        # ADDING A PATHWAY USING KEGG CODES
         else:
-            # ADDING A PATHWAY USING KEGG CODES
-            kegg_url = "http://togows.dbcls.jp/entry/pathway/%s/genes.json" % symbols[0]
-            # Try to connect to the web and extract its contents
-            r = requests.get(kegg_url)
-            if r.status_code == 200: # Success
-                if r.json():
-                    gene_list = [gene.split(";")[0] for gene in r.json()[0].values()]
-                    graphelements = GraphCytoscape()
-                    graphelements.new_nodes(gene_list, database)
-                    graphelements.get_connections()
-                    if graphelements:
-                        return HttpResponse(graphelements, content_type="application/json")
-                    else:
-                        return HttpResponse(status=404)
-                else: # Empty json
-                    return HttpResponse(status=404)
-            else: # Something went wrong
+            kegg = KeggPathway(symbol=symbols[0], database=database)
+            if not kegg.is_empty():
+                return HttpResponse(kegg.graphelements, content_type="application/json")
+            else:
                 return HttpResponse(status=404)
     elif request.method == "POST":
         json_text = None
