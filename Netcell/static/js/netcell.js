@@ -25,6 +25,7 @@ $(".cn-experiment-dropdown li a").click(function(){
 **/
 function showByCondition(cond, condIdx){
     var condlist = cond.val();
+    var meanCutoff = $("#gfiltermean").val();
     if (! condlist) {
         cy.nodes().removeClass("semihidden" + condIdx);
     } else {
@@ -51,18 +52,23 @@ function showByCondition(cond, condIdx){
 
         // Iterate through each requested condition
         for (var vcondidx = 0; vcondidx < validCells.length; vcondidx++) {
-            // Iterate through each cell in valid condition
-            for (var cidx = 0; cidx < validCells[vcondidx].length; cidx++) {
-                var validCell = validCells[vcondidx][cidx];
-                //console.log(validCell);
-                // Iterate through each gene
-                for (var gidx = 0; gidx < genelabels.length; gidx++) {
-                    var geneExp = cellexp[validCell][gidx];
-                    if (geneExp > 0) {
-                        validGenes[gidx][vcondidx] = true;
-                    }
-
-                }
+            // Iterate through each gene
+            for (var gidx = 0; gidx < genelabels.length; gidx++) {
+              var geneExp = 0;
+              var numcell = 0;
+              var meanCondition = 0;
+              // Iterate through all cells in requested condition
+              for (var cidx = 0; cidx < validCells[vcondidx].length; cidx++) {
+                var currCell = validCells[vcondidx][cidx];
+                geneExp = geneExp + cellexp[currCell][gidx];
+                numcell = numcell + 1;
+              }
+              if (numcell) {
+                meanCondition = geneExp / numcell;
+              }
+              if (meanCondition > meanCutoff) {
+                 validGenes[gidx][vcondidx] = true;
+              }
             }
         }
 
@@ -72,13 +78,12 @@ function showByCondition(cond, condIdx){
                 validGeneLabels.push(genelabels[gidx]);
             }
         }
+
+        // Change graph visualization
         cy.nodes().removeClass("semihidden" + condIdx);
         cy.nodes().filter(function( iele, ele ){
             return validGeneLabels.indexOf(ele.data("name")) === -1
         }).addClass("semihidden" + condIdx);
-        //cy.nodes().filter( function(ele) {
-        //    return validGeneLabels.indexOf(ele.data("name")) !== -1
-        //}).addClass("highlighted");
     }
 }
 
@@ -87,9 +92,15 @@ function showByCondition(cond, condIdx){
 * Changes Visualization
 **/
 function addCellTypeListener() {
+    // Adding or removing a condition
     $("#dropdown-condition0").on("change", function() {showByCondition($("#dropdown-condition0"), 0)});
     $("#dropdown-condition1").on("change", function() {showByCondition($("#dropdown-condition1"), 1)});
     $("#dropdown-condition2").on("change", function() {showByCondition($("#dropdown-condition2"), 2)});
+
+    // Changing the mean expression cutoff value
+    $("#gfiltermean").on("change",         function() {showByCondition($("#dropdown-condition0"), 0)})
+    $("#gfiltermean").on("change",         function() {showByCondition($("#dropdown-condition1"), 1)})
+    $("#gfiltermean").on("change",         function() {showByCondition($("#dropdown-condition2"), 2)})
 };
 
 $( function() {

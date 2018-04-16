@@ -119,6 +119,20 @@
               <div class="cn-celltype-select">
                 <hr>
                 <h3>Filter Graph</h3>
+
+                <!-- Filter graph by Mean Expression on Condition -->
+                <h4>Mean Expression</h4>
+                <div class="row">
+                  <div class="col-sm-1 gfiltermean-container"></div>
+                  <div class="col-sm-8 gfiltermean-container">
+                    <input type="range" name="gfiltermean" id="gfiltermean" value="1" min="1" max="15" step="1" oninput="gfiltermeanOut.value = gfiltermean.value"/>
+                  </div>
+                  <div class="col-sm-2 gfiltermean-container">
+                    <output name="gfiltermeanOut" id="gfiltermeanOut">1</output>
+                  </div>
+                  <div class="col-sm-1 gfiltermean-container"></div>
+                </div>
+                
                 <!-- CONDITION0 (clusters-->
                 <div class="dropdown cn-condition-dropdown-container cn-condition-dropdown-container0">
                   <h4><span class="condition-name0"></span></h4>

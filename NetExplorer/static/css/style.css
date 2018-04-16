@@ -2053,3 +2053,13 @@ kbd {
     text-align: center;
     height: 40px;
 }
+
+#gfiltermean {
+    width: 280px;
+}
+
+.gfiltermean-container {
+    height: 20px !important;
+}
+
+#gfiltermeanOut { font-size: 18px; line-height: 20px; padding-top: 0px !important; }
