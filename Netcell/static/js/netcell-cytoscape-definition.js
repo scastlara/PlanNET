@@ -22,21 +22,6 @@ var stylesheet = cytoscape.stylesheet()
             'shape': 'star',
             'border-color': "#404040"
         })
-    .selector('.semihidden0')
-        .css({
-            'background-color': "#dedede",
-            'color': "#dedede"
-        })
-    .selector('.semihidden1')
-        .css({
-            'background-color': "#dedede",
-            'color': "#dedede"
-        })
-    .selector('.semihidden2')
-        .css({
-            'background-color': "#dedede",
-            'color': "#dedede"
-        })
     .selector('edge')
         .css({
             'content': 'data(probability)',
@@ -52,6 +37,27 @@ var stylesheet = cytoscape.stylesheet()
             'line-color': '#404040',
             'target-arrow-color': '#FFFFFF',
             "min-zoomed-font-size": 6,
+        })
+        .selector('.semihidden0')
+        .css({
+            'background-color': "#efefef",
+            'color': "#efefef",
+            'line-color': '#efefef',
+            'target-arrow-color': '#efefef'
+        })
+    .selector('.semihidden1')
+        .css({
+            'background-color': "#efefef",
+            'color': "#efefef",
+            'line-color': '#efefef',
+            'target-arrow-color': '#efefef'
+        })
+    .selector('.semihidden2')
+        .css({
+            'background-color': "#efefef",
+            'color': "#efefef",
+            'line-color': '#efefef',
+            'target-arrow-color': '#efefef'
 });
 
 

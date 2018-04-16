@@ -28,6 +28,7 @@ function showByCondition(cond, condIdx){
     var meanCutoff = $("#gfiltermean").val();
     if (! condlist) {
         cy.nodes().removeClass("semihidden" + condIdx);
+        cy.edges().removeClass("semihidden" + condIdx);
     } else {
         var validCells = [];
         var validCellsBool = [];
@@ -81,9 +82,13 @@ function showByCondition(cond, condIdx){
 
         // Change graph visualization
         cy.nodes().removeClass("semihidden" + condIdx);
+        cy.edges().removeClass("semihidden" + condIdx);
         cy.nodes().filter(function( iele, ele ){
             return validGeneLabels.indexOf(ele.data("name")) === -1
         }).addClass("semihidden" + condIdx);
+        cy.nodes().filter(function( iele, ele ){
+            return validGeneLabels.indexOf(ele.data("name")) === -1
+        }).connectedEdges().addClass("semihidden" + condIdx);
     }
 }
 
