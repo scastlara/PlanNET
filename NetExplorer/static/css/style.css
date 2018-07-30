@@ -54,7 +54,7 @@ h1, h2, h3, h4, h5, h6 {
     display: inline-block;
     margin-bottom: 5px;
     margin-top: 5px;
-    opacity: 0.75;
+    opacity: 0.70;
 }
 
 .bg-official {
@@ -112,6 +112,27 @@ h1, h2, h3, h4, h5, h6 {
 .navbar {
     margin-top: 0 !important;
 }
+
+
+.navbar-plannet{ 
+    background-color: white !important;
+}
+
+
+.navbar-plannet .navbar-nav>li>a {
+    color: #AAA;
+}
+.navbar-plannet .navbar-nav>li.active>a {
+    color: #444
+}
+.navbar-plannet { 
+    border: 1px solid #EBEBEB !important;
+    font-size: 16px;
+
+
+}
+
+
 
 /* PANELS */
 
@@ -294,23 +315,24 @@ h1, h2, h3, h4, h5, h6 {
 .card-overlay {
     display: none;
     height: 90%;
-    width: 64%;
+    width: 54%;
     position: fixed;
     text-align: left;
     top: 30px;
-    right: 18%;
+    right: 28%;
     z-index: 80;
     background: white;
-    padding-left: 5%;
-    padding-top: 5%;
-    padding-right: 5%;
-    padding-bottom: 5%;
+    padding-left: 80px;
+    padding-top: 40px;
+    padding-right: 80px;
+    padding-bottom: 40px;
     overflow: scroll;
     overflow-y: scroll;
     -webkit-box-shadow: 0px 0px 180px 120px rgba(0,0,0,0.75);
     -moz-box-shadow: 0px 0px 180px 120px rgba(0,0,0,0.75);
     box-shadow: 0px 0px 180px 120px rgba(0,0,0,0.75);
     color: #777777;
+    font-size: 12px;
 }
 
 .close-overlay, #click {
@@ -318,10 +340,15 @@ h1, h2, h3, h4, h5, h6 {
     pointer;
 }
 
+
+.card-overlay h1 { font-size: 28px; }
+.card-overlay h2 { font-size: 22px; }
+.card-overlay h3 { font-size: 20px; }
+
 #button-container {
     position: fixed;
     top: 30px;
-    right: 18%;
+    right: 28%;
     z-index: 100;
     background-color: #D9EDF7;
     -webkit-box-shadow: 10px 0px 27px 0px rgba(0,0,0,0.15);
@@ -403,18 +430,16 @@ h1, h2, h3, h4, h5, h6 {
     text-align: center;
     background-color: #D9EDF7;
     width: 100%;
-    height: 8%;
-    min-height: 65px;
+    height: 45px;
     display: table;
 }
 
 .card-subtitle {
     text-align: center;
-    background-color: #F7F7F7;
+    background-color: white;
     margin-left: 35%;
     width: 30%;
-    height: 6%;
-    min-height: 65px;
+    height: 45px;
     display: table;
 }
 
@@ -422,6 +447,10 @@ h1, h2, h3, h4, h5, h6 {
     color: #777777;
     font-style: normal;
 }
+
+.card-overlay .glyphicon-tag { font-size: 18px; color: #5bc0de }
+.card-overlay h2 { margin-top: 40px; }
+.h2-sep { border-color: #D9EDF7; border-width: 2px; margin-top: 0}
 
 .card-subtitle h3 {
     display: table-cell;
@@ -448,13 +477,13 @@ h1, h2, h3, h4, h5, h6 {
 .sequence-container {
     word-wrap: break-word;
     background-color: #F7F7F7;
-    padding: 5%;
+    padding: 20px;
     overflow-y: scroll;
-    max-height: 30%;
+    max-height: 150px;
 }
 
 .download-fasta {
-    width: 50px;
+    width: 25px;
 }
 
 .download-fasta-wrapper:hover {

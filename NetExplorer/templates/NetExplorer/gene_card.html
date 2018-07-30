@@ -29,8 +29,8 @@
 
                 {% if node.database == "Human" %}
                 <!--HUMAN CARD -->
-                    <h2>Homologs</h2>
-                    <hr>
+                    <h2><span class="glyphicon glyphicon-tag"></span> Homologs</h2>
+                    <hr class="h2-sep">
                     {% for db, list  in homologs.items %}
                         <div class="panel panel-default">
                             <div class="panel-heading">{{ db }} </div>
@@ -86,8 +86,8 @@
                 {% if node.off_symbol %}
                     <h3><span class="bg-official"><b>{{node.off_symbol}}</b></span></h3>
                 {% endif %}
-                    <h2>Sequence information</h2>
-                    <hr>
+                    <h2><span class="glyphicon glyphicon-tag"></span> Sequence information</h2>
+                    <hr class="h2-sep">
 
                     <h3>Read sequence:</h3>
                     <a href="{% url get_fasta %}?genesymbol={{ node.symbol|urlencode }}&database={{ node.database }}&type=sequence">
@@ -114,8 +114,8 @@
                     </div>
 
                     {% if node.homolog %}
-                        <h2>Homolog</h2>
-                        <hr>
+                        <h2><span class="glyphicon glyphicon-tag"></span> Homolog</h2>
+                        <hr class="h2-sep">
                         <h4>
                             <strong>Symbol:</strong> <a
                             class="card-link"
@@ -218,8 +218,8 @@
                     {% endif %}
 
                     <br>
-                    <h2>Domains</h2>
-                    <hr>
+                    <h2><span class="glyphicon glyphicon-tag"></span> Domains</h2>
+                    <hr class="h2-sep">
                     {% if node.domains == None %}
                         No domains.
                     {% endif %}
@@ -231,8 +231,8 @@
                     <!-- INTERACTIONS -->
                     <div class="row row-eq-height interactions-title">
                         <div class="col-sm-10">
-                            <h2>Interactions</h2>
-                            <hr>
+                            <h2><span class="glyphicon glyphicon-tag"></span> Interactions</h2>
+                            <hr class="h2-sep">
                         </div>
                         <div class="col-sm-2">
                             <a href="#" class="view-on-netexplorer" data-toggle="tooltip" data-placement="top" title="View on NetExplorer">
