@@ -54,6 +54,7 @@ def get_databases(request):
             rows = cursor.fetchall()
             user_databases = set(DATABASES)
             user_databases.update([row[1] for row in rows])
+            print(user_databases)
             return sorted(user_databases)
         except Exception:
             return sorted(DATABASES)
@@ -219,6 +220,7 @@ def gene_search(request):
     '''
     response = dict()
     response['databases'] = get_databases(request)
+    print(response['databases'])
     response['valid_query'] = False
     if request.method == "GET" and "genesymbol" in request.GET:
         # Get Form input

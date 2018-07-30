@@ -50,14 +50,24 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .company-logo {
-    width: 60%;
+    width: 50%;
     display: inline-block;
     margin-bottom: 5px;
     margin-top: 5px;
+    opacity: 0.75;
+}
+
+.bg-official {
+    padding-left: 4px;
+    padding-right: 4px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    background-color: #c45ca2;
+    color: white;
 }
 
 .company-logo:hover {
-    opacity: 0.5;
+    opacity: 1;
 }
 
 .company-logo-container-parent {
@@ -69,7 +79,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .company-logo-container {
     margin: auto 5px;
-    margin-top: 50px;
+    margin-top: 25px;
 }
 
 .social-icon {
@@ -91,7 +101,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 #logoheader {
-    height: 220px;
+    height: 166px;
     margin-top: 1%;
 }
 
@@ -589,6 +599,15 @@ h1, h2, h3, h4, h5, h6 {
     height: 100%;
     width: 75%;
     float: left;
+}
+
+@media only screen and (max-width: 1220px) {
+    #cyt {
+        width: 60%;
+    }
+    #cyt-controls {
+        width: 40% !important;
+    }
 }
 
 #loading {
