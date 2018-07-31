@@ -53,7 +53,6 @@ def get_databases(request):
             rows = cursor.fetchall()
             user_databases = set(DATABASES)
             user_databases.update([row[1] for row in rows])
-            print(user_databases)
             return sorted(user_databases)
         except Exception:
             return sorted(DATABASES)
@@ -440,6 +439,7 @@ def map_expression(request):
         if comp_type == "two-sample":
             # We have to samples to compare
             sample = sample.split(":")
+            response['sample'] = sample
         else:
             sample = [sample]
 

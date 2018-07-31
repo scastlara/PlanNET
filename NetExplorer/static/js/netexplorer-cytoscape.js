@@ -123,7 +123,13 @@ $('#sl1').slider('setValue', defaultSliderValue);
 
     $('#sl1').slider().on('slideStop', function(ev){
         // Show only edges above slider threshold
-        var value = $('#sl1').val();
+        var value =ev.value;
+        $('#sl1').slider('setValue', value);
+        if (value < 0.7) {
+            $(".slider-handle").css('background-image', 'linear-gradient(to bottom, #E65353FF, #960A0AFF');
+        } else {
+            $(".slider-handle").css('background-image', 'linear-gradient(to bottom, #5CB85C, #2c682c)');
+        }
         filterByConfidence(value, cy, $('input[name=show-plen]:checked').val());
     });
 
