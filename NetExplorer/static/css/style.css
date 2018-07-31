@@ -920,7 +920,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .slider-handle {
     background-color: green !important;
-    background-image: linear-gradient(to bottom, #5CB85C, #2c682c) !important;
+    background-image: linear-gradient(to bottom, #5CB85C, #2c682c);
 }
 
 
@@ -1853,4 +1853,12 @@ kbd {
     text-align: right;
     right: 5px;
     margin-top: 15px;
+}
+
+
+.exp-name-gradient {
+    color:  #777777;
+    margin-top: 2px;
+    margin-bottom: 2px;
+    text-align: center;
 }
