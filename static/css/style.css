@@ -50,14 +50,24 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .company-logo {
-    width: 60%;
+    width: 50%;
     display: inline-block;
     margin-bottom: 5px;
     margin-top: 5px;
+    opacity: 0.70;
+}
+
+.bg-official {
+    padding-left: 4px;
+    padding-right: 4px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    background-color: #c45ca2;
+    color: white;
 }
 
 .company-logo:hover {
-    opacity: 0.5;
+    opacity: 1;
 }
 
 .company-logo-container-parent {
@@ -69,7 +79,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .company-logo-container {
     margin: auto 5px;
-    margin-top: 50px;
+    margin-top: 25px;
 }
 
 .social-icon {
@@ -91,7 +101,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 #logoheader {
-    height: 220px;
+    height: 166px;
     margin-top: 1%;
 }
 
@@ -102,6 +112,27 @@ h1, h2, h3, h4, h5, h6 {
 .navbar {
     margin-top: 0 !important;
 }
+
+
+.navbar-plannet{ 
+    background-color: white !important;
+}
+
+
+.navbar-plannet .navbar-nav>li>a {
+    color: #AAA;
+}
+.navbar-plannet .navbar-nav>li.active>a {
+    color: #444
+}
+.navbar-plannet { 
+    border: 1px solid #EBEBEB !important;
+    font-size: 16px;
+
+
+}
+
+
 
 /* PANELS */
 
@@ -187,6 +218,10 @@ h1, h2, h3, h4, h5, h6 {
 .tutorial-icon-link {
     color: #777777;
 }
+
+.molecular_function { background-color: #D5A0E4; padding: 2px; color:white; }
+.cellular_component { background-color: #9DB9E6; padding: 2px; color:white; }
+.biological_process { background-color: #D7A070; padding: 2px; color:white; }
 
 .tutorial-icon-link:hover {
     color: #777777;
@@ -280,23 +315,24 @@ h1, h2, h3, h4, h5, h6 {
 .card-overlay {
     display: none;
     height: 90%;
-    width: 64%;
+    width: 54%;
     position: fixed;
     text-align: left;
     top: 30px;
-    right: 18%;
+    right: 28%;
     z-index: 80;
     background: white;
-    padding-left: 5%;
-    padding-top: 5%;
-    padding-right: 5%;
-    padding-bottom: 5%;
+    padding-left: 80px;
+    padding-top: 40px;
+    padding-right: 80px;
+    padding-bottom: 40px;
     overflow: scroll;
     overflow-y: scroll;
     -webkit-box-shadow: 0px 0px 180px 120px rgba(0,0,0,0.75);
     -moz-box-shadow: 0px 0px 180px 120px rgba(0,0,0,0.75);
     box-shadow: 0px 0px 180px 120px rgba(0,0,0,0.75);
     color: #777777;
+    font-size: 12px;
 }
 
 .close-overlay, #click {
@@ -304,10 +340,15 @@ h1, h2, h3, h4, h5, h6 {
     pointer;
 }
 
+
+.card-overlay h1 { font-size: 28px; }
+.card-overlay h2 { font-size: 22px; }
+.card-overlay h3 { font-size: 20px; }
+
 #button-container {
     position: fixed;
     top: 30px;
-    right: 18%;
+    right: 28%;
     z-index: 100;
     background-color: #D9EDF7;
     -webkit-box-shadow: 10px 0px 27px 0px rgba(0,0,0,0.15);
@@ -332,7 +373,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .gene-ontology-div {
     overflow-y: scroll;
-    height: 20%;
+    height: 40%;
 }
 
 .full-screen-card {
@@ -389,18 +430,16 @@ h1, h2, h3, h4, h5, h6 {
     text-align: center;
     background-color: #D9EDF7;
     width: 100%;
-    height: 8%;
-    min-height: 65px;
+    height: 45px;
     display: table;
 }
 
 .card-subtitle {
     text-align: center;
-    background-color: #F7F7F7;
+    background-color: white;
     margin-left: 35%;
     width: 30%;
-    height: 6%;
-    min-height: 65px;
+    height: 45px;
     display: table;
 }
 
@@ -408,6 +447,10 @@ h1, h2, h3, h4, h5, h6 {
     color: #777777;
     font-style: normal;
 }
+
+.card-overlay .glyphicon-tag { font-size: 18px; color: #5bc0de }
+.card-overlay h2 { margin-top: 40px; }
+.h2-sep { border-color: #D9EDF7; border-width: 2px; margin-top: 0}
 
 .card-subtitle h3 {
     display: table-cell;
@@ -434,13 +477,13 @@ h1, h2, h3, h4, h5, h6 {
 .sequence-container {
     word-wrap: break-word;
     background-color: #F7F7F7;
-    padding: 5%;
+    padding: 20px;
     overflow-y: scroll;
-    max-height: 20%;
+    max-height: 150px;
 }
 
 .download-fasta {
-    width: 50px;
+    width: 25px;
 }
 
 .download-fasta-wrapper:hover {
@@ -585,6 +628,15 @@ h1, h2, h3, h4, h5, h6 {
     height: 100%;
     width: 75%;
     float: left;
+}
+
+@media only screen and (max-width: 1220px) {
+    #cyt {
+        width: 60%;
+    }
+    #cyt-controls {
+        width: 40% !important;
+    }
 }
 
 #loading {
@@ -868,7 +920,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .slider-handle {
     background-color: green !important;
-    background-image: linear-gradient(to bottom, #5CB85C, #2c682c) !important;
+    background-image: linear-gradient(to bottom, #5CB85C, #2c682c);
 }
 
 
@@ -1113,7 +1165,7 @@ input[type="file"] {
 
 #img404 {
     margin-top: 5%;
-    width: 40%;
+    width: 20%;
 }
 
 /* ABOUT */
@@ -1379,7 +1431,7 @@ input[type="file"] {
 
 
 .color-picker-container {
-    width: 50%;
+    width: 80%;
     height: auto;
 }
 
@@ -1455,7 +1507,7 @@ input[type="file"] {
 .pick-color-group {
     display: inline-block;
     opacity: 0.4;
-    width: 40%;
+    width: 25%;
 }
 .pick-color-group:hover {
     cursor: pointer;
@@ -1766,4 +1818,47 @@ kbd {
 .pagination>li.active>a {
   background: #f0ad4e;
   color: #fff;
+}
+
+#search-netexplorer {
+  position: fixed;
+  background-color: white;
+  text-align: center;
+  color: #777777;
+  bottom: 10px;
+  left: 30%;
+  width: 30%;
+  height: 45px;
+  line-height: 45px;
+  z-index: 10;
+
+}
+
+#genename-graph {
+    height: 40px !important;
+}
+
+#search-netexplorer-btn {
+    height: 40px !important;
+    margin-top: -5px;
+}
+
+#removesearch {
+    height: 40px !important;
+    margin-top: -5px;
+}
+
+.user-in-controls {
+    padding-right: 15px;
+    text-align: right;
+    right: 5px;
+    margin-top: 15px;
+}
+
+
+.exp-name-gradient {
+    color:  #777777;
+    margin-top: 2px;
+    margin-bottom: 2px;
+    text-align: center;
 }

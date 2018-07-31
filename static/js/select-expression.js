@@ -163,7 +163,6 @@ $("#map-expression-btn-submit").on("click", function(){
                 } else {
                     // At least one node has expression
                     // Change cytoscape node colors
-                    console.log(data);
                     var expression = jQuery.parseJSON(data.expression);
                     var experiment = jQuery.parseJSON(data.experiment);
                     $('#map-expression-dialog').slideToggle(250);
@@ -179,9 +178,11 @@ $("#map-expression-btn-submit").on("click", function(){
                     });
                     var gradient_html = "<div id='gradient-title'> <h4>" + experiment.id + "<h4>" +
                                             "<h6><i class='subtitle'>" + experiment.reference + "</i></h6>";
+                    
                     gradient_html += "<table id='color-gradient-table'>";
-                    console.log(data);
-                    console.log(experiment);
+                    if (data.type == "two-sample") {
+                        gradient_html += "<tr><td class='exp-name-gradient'>" + data.sample[1] + "</tr></td>"; 
+                    }
                     var sorted_keys = Object.keys(experiment.gradient).sort(function(a,b) { return b - a; } );
                     var previous = sorted_keys[0];
                     for (var bin in sorted_keys) {
@@ -196,6 +197,9 @@ $("#map-expression-btn-submit").on("click", function(){
                                          percentile + "</td></tr>";
 
                     }
+                    if (data.type == "two-sample") {
+                        gradient_html += "<tr><td class='exp-name-gradient'>" + data.sample[0] + "</tr></td>"; 
+                    }
                     gradient_html += `<tr>
                                         <td class='color-gradient-td-color-empty' bgcolor='white'>
                                             &nbsp
@@ -204,7 +208,9 @@ $("#map-expression-btn-submit").on("click", function(){
                                             &nbsp
                                         </td>
                                       </tr>
-                                      <tr>
+                                      `
+
+                    gradient_html += `<tr>
                                         <td class='color-gradient-td-color' bgcolor='#404040'>
                                             &nbsp
                                         </td>
@@ -214,6 +220,7 @@ $("#map-expression-btn-submit").on("click", function(){
                                       </tr>
                     `;
                     gradient_html += "</table></div>";
+                    
                     $('#color-gradient').html(gradient_html);
                     $('#color-gradient').hide();
                     $('#color-gradient').slideToggle(250);

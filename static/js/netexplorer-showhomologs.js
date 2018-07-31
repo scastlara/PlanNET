@@ -58,4 +58,3 @@ function checkHomologs(toggle, cyobj) {
         cyobj.remove( toRemove );
     }
 }
-
