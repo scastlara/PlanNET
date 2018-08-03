@@ -10,7 +10,7 @@
     <hr>
     <p>
         <strong>PlanNET</strong> is a web application that stores predicted <i>Schmidtea mediterranea</i> protein-protein interactions (ppi) projected over a Human ppi network.
-         Currently, PlanNET holds 460,663 human ppi, and 510,996 <i>Schmidtea mediterranea</i> interactions (predicted for 10 different transcriptomes).
+         Currently, PlanNET holds 273,203 human ppi, and 729,043 <i>Schmidtea mediterranea</i> interactions (predicted for 9 different transcriptomes).
     </p>
 
     <p>
@@ -34,19 +34,36 @@
         <li>BibTex:</li>
     </ul>
     <pre>
-        @article{doi:10.1093/bioinformatics/btx738,
+        @article{Castillo-Lara2018,
             author = {Castillo-Lara, S and Abril, J F},
-            title = {PlanNET: homology-based predicted interactome for multiple planarian transcriptomes},
+            title = {"PlanNET: homology-based predicted interactome for multiple planarian transcriptomes"},
             journal = {Bioinformatics},
             volume = {34},
             number = {6},
-            pages = {1016-1023},
+            pages = {1016--1023},
             year = {2018},
             doi = {10.1093/bioinformatics/btx738},
             URL = {http://dx.doi.org/10.1093/bioinformatics/btx738},
             eprint = {/oup/backfile/content_public/journal/bioinformatics/34/6/10.1093_bioinformatics_btx738/2/btx738.pdf}
         }
     </pre>
+
+    <br>
+    <hr>
+    <h3 id="update-notes">Update Notes</h3>
+    PlanNET has been updated from version 1.0 (published version at <a href="https://academic.oup.com/bioinformatics/article/34/6/1016/4657068" target="_blank">Bioinformatics</a>) to version 1.1.
+
+    These are the most important changes:
+
+    <ul class="update-notes-ul">
+        <li>In order to look for homologous proteins for each planarian transcript, we prioritized BLAST instead of EggNOG alignments.</li>
+        <li>The RandomForest classifier was refined by filtering the training dataset further, removing interactions not annotated as physical from BioGRID.</li>
+        <li>We selected a score cut-off of 0.7 for interactions, instead of the previously used 0.6 cut-off. The Filter Interactions slider in NetExplorer was updated: now it only shows interactions with a score higher than 0.7 by default, but the user can still select other cut-off values</li>
+        <li>PlanNET now holds 729,043 Schmidtea mediterranea interactions (up from 510,996).</li>
+        <li>The Smed454 dataset and Newmark dataset were temporarily removed because of disk size limitations. These will be uploaded in due time.</li>
+        <li>A manually curated list of identifiers for planarian transcripts was uploaded to PlanNET. Now users can search for these identifiers, which follow the form: "Smed_XXX". If a particular transcripts has a manually curated identifier, the identifier will appear in pink both in Gene Search and in the corresponding Gene Card.</li>
+        <li>Many quality of life improvements to the overall design of the website, including a search bar in NetExplorer.</li>
+    </ul>
 
 {% endblock content %}
 

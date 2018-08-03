@@ -1863,3 +1863,12 @@ kbd {
     margin-bottom: 2px;
     text-align: center;
 }
+
+.update-msg {
+    margin-top: -4%;
+    text-align: center;
+}
+
+.update-notes-ul li {
+    margin-top: 10px;
+}
