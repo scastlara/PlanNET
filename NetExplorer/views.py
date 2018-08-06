@@ -540,6 +540,7 @@ def downloader(request):
 
     identifiers = request.GET['identifiers']
     identifiers = re.split(r"[\n\r,;]+", identifiers)
+    identifiers = [ symbol.replace(" ", "") for symbol in identifiers ]
     if len(identifiers) > MAX_IDS:
         identifiers = identifiers[0:MAX_IDS]
     database = request.GET['database']

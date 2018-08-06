@@ -7,11 +7,11 @@
 
 {% block content %}
     
-    <h2>Sequence annotations</h2>
-    <p>Download PlanNET sequence annotations in bulk</p>
+    <h2>Data downloader</h2>
+    <p>Download PlanNET sequences and annotations in bulk</p>
 
     <form id="download-seqs" action="{% url downloader %}">
-        <label for="comment">Identifiers:</label>
+        <label for="comment">Identifiers (separated by commas):</label>
         <textarea class="form-control idtextarea" name="identifiers" cols="5" rows="5" id="identifiers"></textarea>
         <br>
         <select id="download-data" name="database" class="selectpicker" title="Database">
