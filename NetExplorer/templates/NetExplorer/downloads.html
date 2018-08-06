@@ -6,6 +6,34 @@
 
 
 {% block content %}
+    
+    <h2>Sequence annotations</h2>
+    <p>Download PlanNET sequence annotations in bulk</p>
+
+    <form id="download-seqs" action="{% url downloader %}">
+        <label for="comment">Identifiers:</label>
+        <textarea class="form-control idtextarea" name="identifiers" cols="5" rows="5" id="identifiers"></textarea>
+        <br>
+        <select id="download-data" name="database" class="selectpicker" title="Database">
+            {% for db in databases %}
+                <option value="{{ db }}">{{ db }}</option>
+            {% endfor %}
+        </select>
+        <br>
+        <br>
+        <select id="download-data" name="data" class="selectpicker" title="What to download">
+                <option value="contig">Contig Sequences (FASTA)</option>
+                <option value="orf">Open Reading Frames (FASTA)</option>
+                <option value="homology">Human homologs (CSV)</option>
+                <option value="pfam">PFAM domains (CSV)</option>
+                <option value="go">Gene Ontologies (CSV)</option>
+        </select>
+        <br><br>
+        <input type="submit" class="btn btn-info" value="Download">
+    </form>
+    <br>
+    <hr>
+    <br>
     <h2>Software</h2>
     <p>Download the software to predict the protein-protein interactions <a target="_blank" href="https://github.com/scastlara/PlanNET-software">here</a></p>
     <br>

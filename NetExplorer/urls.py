@@ -16,6 +16,7 @@ urlpatterns = [
     url(r'^tutorial', views.tutorial,             name="tutorial"),
     url(r'^show_connections', views.show_connections, name="show_connections"),
     url(r'^downloads', views.downloads, name="downloads"),
+    url(r'^downloader', views.downloader, name="downloader"),
     url(r'^about', views.about, name="about"),
     url(r'^datasets', views.datasets, name="datasets"),
     url(r'^login', views.register, name="login"),

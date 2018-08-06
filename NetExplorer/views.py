@@ -22,6 +22,9 @@ import math
 import time
 import requests
 import time
+import os
+
+
 # -----------------------
 # CONSTANTS
 # -----------------------
@@ -57,28 +60,6 @@ def get_databases(request):
         except Exception:
             return sorted(DATABASES)
 
-
-def query_node(symbol, database):
-    '''
-    This simple function takes a symbol and a database and tries to get it from
-    the DB
-    '''
-    node   = None
-    symbol = symbol.replace(" ", "")
-    symbol = symbol.replace("'", "")
-    symbol = symbol.replace('"', '')
-    symbol = symbol.replace("%7C", "|")
-        # Urls in django templates are double encoded for some reason
-        # Because we have identifiers with '|' symbols, they get encoded to %257, that gets decodeed
-        # to %7C. I have to re-decode it to '|'
-
-    if database == "Human":
-        symbol = symbol.upper()
-        node = HumanNode(symbol, database)
-    else:
-        node = PredictedNode(symbol, database)
-        node.get_summary()
-    return node
 
 # ------------------------------------------------------------------------------
 def symbol_is_empty(symbol):
@@ -218,7 +199,6 @@ def gene_search(request):
     '''
     response = dict()
     response['databases'] = get_databases(request)
-    print(response['databases'])
     response['valid_query'] = False
     if request.method == "GET" and "genesymbol" in request.GET:
         # Get Form input
@@ -546,6 +526,29 @@ def path_finder(request):
         return render(request, 'NetExplorer/pathway_finder.html', response)
 
 
+def downloader(request):
+    """
+    Handles the download of sequence and annotations
+    """
+    MAX_IDS = 10000
+    if 'identifiers' not in request.GET:
+        return render(request, 'NetExplorer/downloads.html')
+    if 'data' not in request.GET:
+        return render(request, 'NetExplorer/downloads.html')
+    if 'database' not in request.GET:
+        return render(request, 'NetExplorer/downloads.html')
+
+    identifiers = request.GET['identifiers']
+    identifiers = re.split(r"[\n\r,;]+", identifiers)
+    if len(identifiers) > MAX_IDS:
+        identifiers = identifiers[0:MAX_IDS]
+    database = request.GET['database']
+    data = request.GET['data']
+    dhandler = DownloadHandler()
+    file = dhandler.download_data(identifiers, database, data)
+    response = file.to_response()
+    return response
+
 # ------------------------------------------------------------------------------
 def tutorial(request):
     """
@@ -558,7 +561,9 @@ def downloads(request):
     """
     View for downloads
     """
-    return render(request, 'NetExplorer/downloads.html')
+    response = dict()
+    response['databases'] = get_databases(request)
+    return render(request, 'NetExplorer/downloads.html', response)
 
 # ------------------------------------------------------------------------------
 def datasets(request):

@@ -13,6 +13,11 @@ import re
 import time
 from django.db import connection
 import requests
+from wsgiref.util import FileWrapper
+import tempfile
+from django.http        import HttpResponse
+import os
+
 
 GRAPH     = Graph("http://127.0.0.1:7474/db/data/", password="5961")
 DATABASES = set([
@@ -270,6 +275,30 @@ HOMOLOGS_QUERY_ALL = """
         r.pfam_brh   AS pfam_brh,
         labels(m)    AS database
 """
+
+
+# UTILITIES
+def query_node(symbol, database):
+    '''
+    This simple function takes a symbol and a database and tries to get it from
+    the DB
+    '''
+    node   = None
+    symbol = symbol.replace(" ", "")
+    symbol = symbol.replace("'", "")
+    symbol = symbol.replace('"', '')
+    symbol = symbol.replace("%7C", "|")
+        # Urls in django templates are double encoded for some reason
+        # Because we have identifiers with '|' symbols, they get encoded to %257, that gets decodeed
+        # to %7C. I have to re-decode it to '|'
+
+    if database == "Human":
+        symbol = symbol.upper()
+        node = HumanNode(symbol, database)
+    else:
+        node = PredictedNode(symbol, database)
+        node.get_summary()
+    return node
 
 
 # NEO4J CLASSES
@@ -604,6 +633,135 @@ class HumanNode(Node):
         else:
             logging.info("NO HOMOLOGS")
             return None
+
+
+# ------------------------------------------------------------------------------
+class DownloadHandler(object):
+    '''
+    Class that handles downloadable files
+    '''
+    def _get_contig_data(node):
+        return (node.symbol, node.sequence, node.database)
+
+    def _get_orf_data(node):
+        return (node.symbol, node.orf, node.database)
+
+    def _get_homology_data(node):
+        return (node.symbol, node.homolog.human.symbol, 
+                node.homolog.blast_eval, node.homolog.blast_cov, 
+                node.homolog.nog_eval, node.homolog.pfam_sc)
+
+    def _get_pfam_data(node):
+        node.get_domains()
+        if node.domains:
+            domains = ";".join([ "%s:%s-%s"  % (dom.domain.accession, dom.s_start, dom.s_end) for dom in node.domains ])
+        else:
+            domains = "NA"
+        return (node.symbol, domains)
+
+    def _get_go_data(node):
+        node.get_geneontology()
+        gos = ";".join([ go.accession for go in node.gene_ontologies ])
+        return (node.symbol, gos)
+
+    data_from_node = {
+        'contig': _get_contig_data,
+        'orf': _get_orf_data,
+        'homology': _get_homology_data,
+        'pfam': _get_pfam_data,
+        'go': _get_go_data
+    }
+
+    def download_data(self, identifiers, database, data):
+        '''
+        Creates file object with the specified data for the
+        specified identifiers.
+        '''
+        fformat = 'csv'
+        if data == "contig" or data == "orf":
+            fformat = 'fasta'
+        file = ServedFile(self.get_filename(data), fformat, self.get_header(data))
+        for identifier in identifiers:
+            try:
+                node = query_node(identifier, database)
+                file.add_element(self.data_from_node[data](node))
+            except NodeNotFound:
+                continue
+        return file
+
+    def get_filename(self, data):
+        '''
+        Returns filename string
+        '''
+        if data == "contig" or data=="orf":
+            filename = "fasta.fa"
+        elif data == "homology":
+            filename = "homologs.csv"
+        elif data == "pfam":
+            filename = "domains.csv"
+        else:
+            filename = "gene_ontologies.csv"
+        return filename
+
+    def get_header(self, data):
+        '''
+        Returns header string
+        '''
+        if data == "homology":
+            header = "NAME,HUMAN,BLAST_EVALUE,BLAST_COVERAGE,EGGNOG_EVALUE,META_ALIGNMENT_SCORE\n"
+        else:
+            header = None
+        return header
+
+
+# ------------------------------------------------------------------------------
+class ServedFile(object):
+    '''
+    Class of served files for download
+    '''
+    def __init__(self, oname, fformat='csv', header=None):
+        self.oname = oname
+        self.fformat = fformat
+        self.header = header
+        self.filename = tempfile.NamedTemporaryFile()
+        self.elements = list()
+        self.written = False
+
+    def add_element(self, elem):
+        '''
+        Adds a register to the list of elements
+        '''
+        self.elements.append(elem)
+
+    def write(self, what=None):
+        '''
+        Writes to temp file
+        '''
+        with open(self.filename.name, "wb") as fh:
+            if self.header is not None:
+                fh.write(self.header)
+            for elem in self.elements:
+                if self.fformat == 'csv':
+                    fh.write( "%s\n" % ",".join(elem) )
+                elif self.fformat == 'fasta':
+                    formatseq = "".join(elem[1][i:i+64] + "\n" for i in xrange(0,len(elem[1]), 64)) 
+                    fh.write(">%s|%s\n%s" % (elem[0], elem[2], formatseq))
+                else:
+                    raise InvalidFormat(self.fformat)
+        self.written = True
+
+    def to_response(self, what=None):
+        '''
+        Creates a response object to be served to the user for download
+        '''
+        if self.written is False:
+            self.write(what)
+        wrapper = FileWrapper(file(self.filename.name))
+        response = HttpResponse(wrapper, content_type='text/plain')
+        response['Content-Disposition'] = 'attachment; filename=%s' % self.oname
+        response['Content-Length'] = os.path.getsize(self.filename.name)
+        return response
+
 
 # ------------------------------------------------------------------------------
 class WildCard(object):
@@ -1425,3 +1583,10 @@ class NoHomologFound(Exception):
         self.symbol = symbol
     def __str__(self):
         return "Homolog of %s not found in database." % (self.symbol)
+
+class InvalidFormat(Exception):
+    """Exception raised when format for ServedFile is invalid"""
+    def __init__(self, ffomat):
+        self.fformat = fformat
+    def __str__(self):
+        return "Invalid file format: %s ." % (self.fformat)
