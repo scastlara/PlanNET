@@ -526,25 +526,26 @@ def path_finder(request):
         return render(request, 'NetExplorer/pathway_finder.html', response)
 
 
+# ------------------------------------------------------------------------------
 def downloader(request):
     """
     Handles the download of sequence and annotations
     """
     MAX_IDS = 10000
-    if 'identifiers' not in request.GET:
+    if 'identifiers' not in request.POST:
         return render(request, 'NetExplorer/downloads.html')
-    if 'data' not in request.GET:
+    if 'data' not in request.POST:
         return render(request, 'NetExplorer/downloads.html')
-    if 'database' not in request.GET:
+    if 'database' not in request.POST:
         return render(request, 'NetExplorer/downloads.html')
 
-    identifiers = request.GET['identifiers']
+    identifiers = request.POST['identifiers']
     identifiers = re.split(r"[\n\r,;]+", identifiers)
     identifiers = [ symbol.replace(" ", "") for symbol in identifiers ]
-    if len(identifiers) > MAX_IDS:
+    if len(identifiers) > MAX_IDS and not request.user.is_authenticated():
         identifiers = identifiers[0:MAX_IDS]
-    database = request.GET['database']
-    data = request.GET['data']
+    database = request.POST['database']
+    data = request.POST['data']
     dhandler = DownloadHandler()
     file = dhandler.download_data(identifiers, database, data)
     response = file.to_response()
