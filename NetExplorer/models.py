@@ -19,7 +19,7 @@ from django.http        import HttpResponse
 import os
 
 
-GRAPH     = Graph("http://127.0.0.1:7474/db/data/", password="dummypassword")
+GRAPH     = Graph("http://127.0.0.1:7474/db/data/")
 DATABASES = set([
     "Dresden",
     "Consolidated",
