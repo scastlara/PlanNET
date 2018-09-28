@@ -29,6 +29,15 @@
 
                 {% if node.database == "Human" %}
                 <!--HUMAN CARD -->
+
+                    {% if node.summary != "NA" %}
+                        <h2><span class="glyphicon glyphicon-tag"></span> Summary</h2>
+                        <hr class="h2-sep">
+                        <p>{{ node.summary }}</p>
+                        <div class="pull-right"><i>{{ node.summary_source }}</i></div>
+                    {% endif %}
+
+
                     <h2><span class="glyphicon glyphicon-tag"></span> External links</h2>
                     <hr class="h2-sep">
                     <ul>

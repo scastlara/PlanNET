@@ -165,6 +165,7 @@ def get_card(request, symbol=None, database=None):
             graph.add_elements(edges)
         else:
             homologs = card_node.get_homologs()
+            card_node.get_summary()
     except (NodeNotFound, IncorrectDatabase):
         return render_to_response('NetExplorer/not_interactome.html')
 

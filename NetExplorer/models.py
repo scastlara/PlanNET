@@ -260,6 +260,7 @@ HOMOLOGS_QUERY = """
         labels(m)    AS database
 """
 
+
 # ------------------------------------------------------------------------------
 HOMOLOGS_QUERY_ALL = """
     MATCH (n:Human)-[r:HOMOLOG_OF]-(m)
@@ -274,6 +275,14 @@ HOMOLOGS_QUERY_ALL = """
         r.blast_brh  AS blast_brh,
         r.pfam_brh   AS pfam_brh,
         labels(m)    AS database
+"""
+
+# ------------------------------------------------------------------------------
+SUMMARY_QUERY = """
+    MATCH (n:Human)
+    WHERE n.symbol = "%s"
+    RETURN n.summary as summary,
+           n.summary_source as summary_source
 """
 
 
@@ -564,6 +573,8 @@ class HumanNode(Node):
         super(HumanNode, self).__init__(symbol, database)
         if query is True:
             self.__query_node()
+        self.summary = None
+        self.summary_source = None
 
     def __query_node(self):
         query = HUMANNODE_QUERY % (self.database, self.symbol)
@@ -585,6 +596,21 @@ class HumanNode(Node):
         element['data']['name']     = self.symbol
         element['data']['database'] = self.database
         return element
+
+    def get_summary(self):
+        """
+        Retrieves gene summary when available
+        """
+        query = SUMMARY_QUERY % (self.symbol)
+        results = GRAPH.run(query)
+        results = results.data()
+        if results:
+            self.summary = results[0]['summary']
+            self.summary_source = results[0]['summary_source']
+        else:
+            self.summary = "NA"
+            self.summary_source = "NA"
+        return self            
 
     def get_homologs(self, database="ALL"):
         """
