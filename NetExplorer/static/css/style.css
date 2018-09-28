@@ -568,8 +568,8 @@ h1, h2, h3, h4, h5, h6 {
     color: #777777;
     font-size: 12px;
     text-align: center;
-    width: 90%;
-    margin-left: 5%;
+    width: 95%;
+    margin-left: 2.5%;
     overflow-x: scroll;
 }
 
@@ -584,9 +584,11 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .int-table-class {
-    font-size: 12px;
+    font-size: 10px;
     color: #777777;
 }
+
+.int-table-class td { font-size: 12px; }
 
 .dataTables_filter label {
     color: #777777;

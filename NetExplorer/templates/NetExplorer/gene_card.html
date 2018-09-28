@@ -29,6 +29,23 @@
 
                 {% if node.database == "Human" %}
                 <!--HUMAN CARD -->
+                    <h2><span class="glyphicon glyphicon-tag"></span> External links</h2>
+                    <hr class="h2-sep">
+                    <ul>
+                        <li>
+                            <a target="_blank" title="Search on HGNC" href="http://www.genenames.org/cgi-bin/gene_search?search={{ node.symbol }}&submit=Submit">
+                                 Search on HGNC
+                            </a>
+                        </li>
+
+                        <li>
+                            <a target="_blank" title="Search on Uniprot" href="http://www.uniprot.org/uniprot/?query=gene%3A{{ node.symbol }}+AND+organism%3Ahuman&sort=score">
+                                Search on Uniprot
+                            </a>
+                        </li>
+                    </ul>
+
+
                     <h2><span class="glyphicon glyphicon-tag"></span> Homologs</h2>
                     <hr class="h2-sep">
                     {% for db, list  in homologs.items %}
@@ -253,6 +270,7 @@
                                 <tr>
                                 <th>Symbol</th>
                                 <th>Confidence</th>
+                                <th>Homolog</th>
                                 <th>Path Length</th>
                                 <th>Cellular Component NTO</th>
                                 <th>Molecular Function NTO</th>
@@ -271,6 +289,14 @@
                                     targetDB="{{ int.target.database }}">{{ int.target.symbol }}</a>
                                 </td>
                                 <td>{{ int.parameters.int_prob }}</td>
+                                <td><a
+                                    class="card-link"
+                                    current="{{ node.symbol|urlencode}}"
+                                    currentDB="{{ node.database }}"
+                                    target="{{ int.target.homolog.human.symbol }}"
+                                    targetDB="Human">{{ int.target.homolog.human.symbol }}
+                                    </a>
+                                </td>
                                 <td>{{ int.parameters.path_length }}</td>
                                 <td>{{ int.parameters.cellcom_nto }}</td>
                                 <td>{{ int.parameters.molfun_nto }}</td>
