@@ -54,6 +54,12 @@ $('#sl1').slider('setValue', 0.6);
 
 
 // --------------------------
+// CHANGE LABELS TOGGLE
+
+$('#change-labels input').change(function() { changeLabels(cy) });
+
+
+// --------------------------
 // ADD NODE FORM
     $("#add_node").submit(function(e) {
         var formObj = {};

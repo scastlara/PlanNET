@@ -107,6 +107,12 @@ var stylesheet = cytoscape.stylesheet()
             'height': 20,
             'shape': 'diamond',
             'background-color': '#6785d0',
+        })
+    .selector('.human-label')
+        .css({
+            'content': 'data(homolog)',
+            'color': '#6785D0'
+
         });
 
 

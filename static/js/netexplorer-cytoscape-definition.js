@@ -16,6 +16,10 @@ var stylesheet = cytoscape.stylesheet()
             "border-width": 2,
             "min-zoomed-font-size": 6,
         })
+    .selector('.important')
+        .css({
+            'border-color': '#6785d0',
+        })
     .selector('edge')
         .css({
             'content': 'data(probability)',
@@ -92,12 +96,23 @@ var stylesheet = cytoscape.stylesheet()
         .css({
             'shape': 'diamond',
         })
+    .selector('.highlighted')
+        .css({
+            'background-color': '#F9FFBD',
+            'shape': 'star'
+        })
     .selector('node[database = "Human"]')
         .css({
             'width': 20,
             'height': 20,
             'shape': 'diamond',
             'background-color': '#6785d0',
+        })
+    .selector('.human-label')
+        .css({
+            'content': 'data(homolog)',
+            'color': '#6785D0'
+
         });
 
 

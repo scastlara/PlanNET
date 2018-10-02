@@ -27,6 +27,7 @@ function loadJsonGraph(data, cyobj) {
     // Show or hide edges depending on plen
     checkPlen($('input[name=show-plen]:checked').val(), cyobj);
     countNodes(cyobj);
+    changeLabels(cyobj);
 }
 
 function addNode(symbol, database, type, cyobj) {

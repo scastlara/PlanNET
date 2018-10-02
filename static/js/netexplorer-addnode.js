@@ -23,6 +23,7 @@ function loadJsonGraph(data, cyobj) {
     cyobj.elements(to_hide_selector).hide();
     checkPlen($('input[name=show-plen]:checked').val(), cyobj);
     countNodes(cyobj);
+    changeLabels(cyobj);
 }
 
 function addNode(symbol, database, type, cyobj) {
