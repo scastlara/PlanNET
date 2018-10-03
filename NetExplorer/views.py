@@ -330,6 +330,14 @@ def upload_graph(request, json_text):
     except ValueError as err:
         logging.info("ERROR: Not a valid Json File %s in upload_graph\n" % (err))
         return render(request, 'NetExplorer/netexplorer.html', {'json_err': True,'databases': get_databases(request)})
+    
+    # Check if homologs are defined... 
+    # They are not if we are coming from Pathway Finder to save time.
+    if u'homolog' not in json_graph[u'nodes'][0][u'data']:
+        for node in json_graph[u'nodes']:
+            qnode = PredictedNode(node[u'data'][u'id'], node[u'data'][u'database'])
+            node[u'data'][u'homolog'] = str(qnode.homolog.human.symbol)
+        graph_content = json.dumps(json_graph)
     return render(request, 'NetExplorer/netexplorer.html', {'upload_json': graph_content, 'no_layout': no_layout,'databases': get_databases(request), 'experiments': all_experiments})
 
 
