@@ -667,35 +667,42 @@ class DownloadHandler(object):
     Class that handles downloadable files
     '''
     def _get_contig_data(node):
-        return (node.symbol, node.sequence, node.database)
+        return [(node.symbol, node.sequence, node.database)]
 
     def _get_orf_data(node):
-        return (node.symbol, node.orf, node.database)
+        return [(node.symbol, node.orf, node.database)]
 
     def _get_homology_data(node):
-        return (node.symbol, node.homolog.human.symbol, 
+        return [(node.symbol, node.homolog.human.symbol, 
                 node.homolog.blast_eval, node.homolog.blast_cov, 
-                node.homolog.nog_eval, node.homolog.pfam_sc)
+                node.homolog.nog_eval, node.homolog.pfam_sc)]
 
     def _get_pfam_data(node):
         node.get_domains()
         if node.domains:
-            domains = ";".join([ "%s:%s-%s"  % (dom.domain.accession, dom.s_start, dom.s_end) for dom in node.domains ])
+            domains = ";".join([ "%s:%s-%s"  % (str(dom.domain.accession), str(dom.s_start), str(dom.s_end)) for dom in node.domains ])
         else:
             domains = "NA"
-        return (node.symbol, domains)
+        return([(node.symbol, domains)])
 
     def _get_go_data(node):
         node.get_geneontology()
         gos = ";".join([ go.accession for go in node.gene_ontologies ])
-        return (node.symbol, gos)
+        return [(node.symbol, gos)]
+
+    def _get_interactions_data(node):
+        node.get_neighbours()
+        ints = [ ( node.symbol, interaction.target.symbol, str(interaction.parameters['int_prob']) ) 
+                 for interaction in node.neighbours ]
+        return(ints)
 
     data_from_node = {
         'contig': _get_contig_data,
         'orf': _get_orf_data,
         'homology': _get_homology_data,
         'pfam': _get_pfam_data,
-        'go': _get_go_data
+        'go': _get_go_data,
+        'interactions': _get_interactions_data
     }
 
     def download_data(self, identifiers, database, data):
@@ -710,7 +717,7 @@ class DownloadHandler(object):
         for identifier in identifiers:
             try:
                 node = query_node(identifier, database)
-                file.add_element(self.data_from_node[data](node))
+                file.add_elements(self.data_from_node[data](node))
             except NodeNotFound:
                 continue
         return file
@@ -725,6 +732,8 @@ class DownloadHandler(object):
             filename = "homologs.csv"
         elif data == "pfam":
             filename = "domains.csv"
+        elif data == "interactions":
+            filename = "interactions.csv"
         else:
             filename = "gene_ontologies.csv"
         return filename
@@ -753,11 +762,11 @@ class ServedFile(object):
         self.elements = list()
         self.written = False
 
-    def add_element(self, elem):
+    def add_elements(self, elem):
         '''
         Adds a register to the list of elements
         '''
-        self.elements.append(elem)
+        self.elements.extend(elem)
 
     def write(self, what=None):
         '''
