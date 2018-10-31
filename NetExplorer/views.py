@@ -285,6 +285,10 @@ def net_explorer(request):
 
 
 # ------------------------------------------------------------------------------
+def planexp(request):
+    return render(request, 'NetExplorer/planexp.html')
+
+# ------------------------------------------------------------------------------
 def show_connections(request):
     """
     View that handles an AJAX request and, given a list of identifiers, returns
