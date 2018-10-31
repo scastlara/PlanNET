@@ -82,6 +82,18 @@ h1, h2, h3, h4, h5, h6 {
     margin-top: 25px;
 }
 
+
+@media only screen and (max-width: 870px) {
+    .company-logo-container-parent {
+        display: none;
+    }
+
+    #logoheader {
+        height: 120px !important;
+    }
+
+}
+
 .social-icon {
     background-color: #2E3033;
     width: 35px;
@@ -154,20 +166,17 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 
-.app-button {
-    position:relative;
-    display: block;
-    margin: 0 auto;
-    margin-top: 4%;
-    margin-left: 2%;
-    width: 85px;
+.app-btn:hover {
+    background-color: #eee;
+
 }
 
 .app-icon {
-    margin-top: 7%;
-    margin-bottom: 5%;
+    margin-top: 25px;
+    margin-bottom: 15px;
     width: 180;
 }
+
 
 .app-icon-inside {
     position: relative;
@@ -184,6 +193,16 @@ h1, h2, h3, h4, h5, h6 {
 .panel-blast .panel-heading {
     background-color: #edd9f8 !important;
     border-color: #e7ccf6 !important;
+}
+
+.panel-planexp {
+    border-color: #FDD4D4 !important;
+    border-style: solid !important;
+}
+
+.panel-planexp .panel-heading {
+    background-color: #FDD4D4;
+    border-color: #FDD4D4;
 }
 
 .btn-blast:hover {
@@ -561,6 +580,8 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 /* END OF BACK TO TOP */
+
+
 
 
 /* DATA TABLE */
