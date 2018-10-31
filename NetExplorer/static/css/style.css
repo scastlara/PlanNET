@@ -154,8 +154,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .row-app {
-    width: 80%;
-    margin-left: 10% !important;
+    width: 100%;
     margin-bottom: 1%;
 }
 
@@ -167,31 +166,27 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .app-container.panel-success {
-    border-color: #449d44 !important;
+    border-color: #dff0d8 !important;
 }
 
 .app-container.panel-info {
-    border-color: #5bc0de !important;
-}
-
-.app-container.panel-success {
-    border-color: #dff0d8;
+    border-color: #d9edf7 !important;
 }
 
 .app-container.panel-warning {
-    border-color: #ec971f !important;
+    border-color: #ffe5c9 !important;
 }
 
 .app-container.panel-planexp {
-    border-color: #fa5556 !important;
+    border-color: #FDD4D4 !important;
 }
 
 .app-container.panel-blast {
-    border-color: #9051b1 !important;
+    border-color: #edd9f8 !important;
 }
 
 .app-container {
-    border: solid 2.5px !important;
+    border: solid 4px !important;
 }
 
 
@@ -869,7 +864,7 @@ h1, h2, h3, h4, h5, h6 {
 
 #add-node-container {
     width: 60%;
-    margin-top: 10%;
+    margin-top: 5%;
     margin-left: 20%;
 }
 
