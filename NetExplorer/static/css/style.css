@@ -163,31 +163,11 @@ h1, h2, h3, h4, h5, h6 {
     float: left;
     height: 300px;
     width: 100%;
+    background-color: #f4f4f4 !important;
+    border: solid 0px !important;
 }
 
-.app-container.panel-success {
-    border-color: #EBEBEB !important;
-}
 
-.app-container.panel-info {
-    border-color: #EBEBEB !important;
-}
-
-.app-container.panel-warning {
-    border-color: #EBEBEB !important;
-}
-
-.app-container.panel-planexp {
-    border-color: #EBEBEB !important;
-}
-
-.app-container.panel-blast {
-    border-color: #EBEBEB !important;
-}
-
-.app-container {
-    border: solid 2px !important;
-}
 
 .app-container .glyphicon-info-sign {
     font-size: 20px;
@@ -195,12 +175,15 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .app-btn:hover {
-    background-color: #eee;
+    background-color: #eee !important;
 }
-
+.app-btn:hover ~ .app-icon {
+    opacity: 0.85;
+}
 .app-btn {
     border: solid 2px #EBEBEB;
     margin-bottom: 25px;
+    background-color: white !important;
 }
 
 .app-btn:active {
