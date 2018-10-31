@@ -664,7 +664,9 @@ class HumanNode(Node):
 # ------------------------------------------------------------------------------
 class DownloadHandler(object):
     '''
-    Class that handles downloadable files
+    Class that handles downloadable files.
+    Methods get_*_data returns a list of tuples, each tuple being a line, and each
+    element of the tuple being a column.
     '''
     def _get_contig_data(node):
         return [(node.symbol, node.sequence, node.database)]
