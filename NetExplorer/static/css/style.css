@@ -161,38 +161,61 @@ h1, h2, h3, h4, h5, h6 {
 .app-container {
     text-align: center;
     float: left;
-    height: 250px;
+    height: 300px;
     width: 100%;
 }
 
 .app-container.panel-success {
-    border-color: #dff0d8 !important;
+    border-color: #EBEBEB !important;
 }
 
 .app-container.panel-info {
-    border-color: #d9edf7 !important;
+    border-color: #EBEBEB !important;
 }
 
 .app-container.panel-warning {
-    border-color: #ffe5c9 !important;
+    border-color: #EBEBEB !important;
 }
 
 .app-container.panel-planexp {
-    border-color: #FDD4D4 !important;
+    border-color: #EBEBEB !important;
 }
 
 .app-container.panel-blast {
-    border-color: #edd9f8 !important;
+    border-color: #EBEBEB !important;
 }
 
 .app-container {
-    border: solid 4px !important;
+    border: solid 2px !important;
 }
 
+.app-container .glyphicon-info-sign {
+    font-size: 20px;
+    cursor: pointer;
+}
 
 .app-btn:hover {
     background-color: #eee;
+}
 
+.app-btn {
+    border: solid 2px #EBEBEB;
+    margin-bottom: 25px;
+}
+
+.app-btn:active {
+    background-color: #e6e6e6;
+    border-color: #adadad;
+}
+
+.app-btn:focus {
+    background-color: #e6e6e6;
+    border-color: #8c8c8c;
+}
+
+.app-btn:hover {
+    background-color: #e6e6e6;
+    border-color: #adadad;
 }
 
 .app-icon {
