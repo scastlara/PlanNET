@@ -35,17 +35,17 @@
      guidetolerance="10"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:window-width="1680"
-     inkscape:window-height="986"
+     inkscape:window-width="1600"
+     inkscape:window-height="1163"
      id="namedview15711"
      showgrid="false"
-     inkscape:zoom="0.45216459"
-     inkscape:cx="230.78286"
-     inkscape:cy="439.32492"
-     inkscape:window-x="0"
-     inkscape:window-y="27"
+     inkscape:zoom="0.90432918"
+     inkscape:cx="373.12685"
+     inkscape:cy="316.55492"
+     inkscape:window-x="1680"
+     inkscape:window-y="0"
      inkscape:window-maximized="1"
-     inkscape:current-layer="svg15709" />
+     inkscape:current-layer="surface1016667" />
   <defs
      id="defs13076">
     <g
@@ -2912,61 +2912,6 @@
          x="190.534558"
          y="566.097656"
          id="use13968" />
-      <use
-         xlink:href="#glyph1-16"
-         x="192.268228"
-         y="566.097656"
-         id="use13970" />
-      <use
-         xlink:href="#glyph1-17"
-         x="196.427787"
-         y="566.097656"
-         id="use13972" />
-      <use
-         xlink:href="#glyph1-18"
-         x="200.587346"
-         y="566.097656"
-         id="use13974" />
-      <use
-         xlink:href="#glyph1-19"
-         x="205.089897"
-         y="566.097656"
-         id="use13976" />
-      <use
-         xlink:href="#glyph1-20"
-         x="209.592448"
-         y="566.097656"
-         id="use13978" />
-      <use
-         xlink:href="#glyph1-17"
-         x="214.094999"
-         y="566.097656"
-         id="use13980" />
-      <use
-         xlink:href="#glyph1-18"
-         x="218.254558"
-         y="566.097656"
-         id="use13982" />
-      <use
-         xlink:href="#glyph1-21"
-         x="222.757109"
-         y="566.097656"
-         id="use13984" />
-      <use
-         xlink:href="#glyph1-22"
-         x="224.833771"
-         y="566.097656"
-         id="use13986" />
-      <use
-         xlink:href="#glyph1-23"
-         x="228.301109"
-         y="566.097656"
-         id="use13988" />
-      <use
-         xlink:href="#glyph1-24"
-         x="231.768448"
-         y="566.097656"
-         id="use13990" />
     </g>
     <use
        xlink:href="#image914616"
@@ -7218,6 +7163,37 @@
          width="157.57536"
          id="rect16298-7"
          style="fill:none;fill-opacity:1;stroke:#ff5f7b;stroke-width:0.93750003;stroke-miterlimit:10;stroke-dasharray:5.62500018,5.62500018;stroke-dashoffset:0;stroke-opacity:1" />
+    </g>
+    <g
+       id="g2322"
+       transform="translate(-33.280175,-0.1466087)">
+      <use
+         transform="translate(-0.11455627,14.361648)"
+         height="100%"
+         width="100%"
+         id="use13932-3"
+         y="551.92578"
+         x="225.8877"
+         xlink:href="#glyph1-12"
+         style="fill:#000000;fill-opacity:1" />
+      <use
+         transform="translate(-0.11455627,14.361648)"
+         height="100%"
+         width="100%"
+         id="use13934-6"
+         y="551.92578"
+         x="227.62137"
+         xlink:href="#glyph1-13"
+         style="fill:#000000;fill-opacity:1" />
+      <use
+         transform="translate(-0.11455627,14.361648)"
+         height="100%"
+         width="100%"
+         id="use13936-7"
+         y="551.92578"
+         x="232.12392"
+         xlink:href="#glyph1-14"
+         style="fill:#000000;fill-opacity:1" />
     </g>
   </g>
 </svg>
