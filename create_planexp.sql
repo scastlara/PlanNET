@@ -61,7 +61,8 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `db_plannet`.`planexp_expression_absolute` (
   `id_experiment_expression` INT NOT NULL AUTO_INCREMENT,
   `id_experiment` INT NULL,
-  `id_condition-cell` INT NULL,
+  `id_condition` INT NULL,
+  `condition_type` INT NULL,
   `dataset` VARCHAR(45) NULL,
   `gene_symbol` VARCHAR(45) NULL,
   `expression_value` DOUBLE NULL,
