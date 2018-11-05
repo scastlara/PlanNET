@@ -79,6 +79,8 @@ CREATE TABLE IF NOT EXISTS `db_plannet`.`planexp_expression_relative` (
   `id_experiment` INT NULL,
   `condition1_id` INT NULL,
   `condition2_id` INT NULL,
+  `dataset` VARCHAR(45) NULL,
+  `gene_symbol` VARCHAR(45) NULL,
   `fold_change` FLOAT NULL,
   `pvalue` DOUBLE NULL,
   PRIMARY KEY (`id_experiment_expression_relative`))
