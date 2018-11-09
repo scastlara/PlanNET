@@ -31,31 +31,6 @@ MAX_CHAR_LENGTH = 25000
 # -----------------------
 # FUNCTIONS
 # -----------------------
-
-def get_databases(request):
-    '''
-    This function returns the databases allowed for the user to see
-    '''
-    if not request.user.is_authenticated():
-        return sorted(DATABASES)
-    else:
-        # User is logged in, get the allowed databases for the user
-        try:
-            cursor = connection.cursor()
-            cursor.execute('''
-                SELECT auth_user.username, user_db_permissions.database
-                FROM auth_user
-                INNER JOIN user_db_permissions ON auth_user.id=user_db_permissions.user_id
-                WHERE auth_user.username = %s;
-            ''', [request.user.username])
-            rows = cursor.fetchall()
-            user_databases = set(DATABASES)
-            user_databases.update([row[1] for row in rows])
-            return sorted(user_databases)
-        except Exception:
-            return sorted(DATABASES)
-
-
 # ------------------------------------------------------------------------------
 def symbol_is_empty(symbol):
     '''

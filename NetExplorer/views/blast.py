@@ -6,9 +6,9 @@ def blast(request):
     """
     if request.POST:
         if not request.POST['database']:
-            return render(request, 'NetExplorer/blast.html', {"error_msg": "No Database selected", 'databases': get_databases(request)})
+            return render(request, 'NetExplorer/blast.html', {"error_msg": "No Database selected", 'databases':  Dataset.get_allowed_datasets(request.user)})
         if "type" not in  request.POST or not request.POST['type']:
-            return render(request, 'NetExplorer/blast.html', {"error_msg": "No valid BLAST application selected",'databases': get_databases(request)})
+            return render(request, 'NetExplorer/blast.html', {"error_msg": "No valid BLAST application selected",'databases':  Dataset.get_allowed_datasets(request.user)})
 
         fasta = str()
         database = request.POST['database'].lower()
@@ -23,7 +23,7 @@ def blast(request):
             fasta = request.POST['fasta_plain']
 
         if not fasta:
-            return render(request, 'NetExplorer/blast.html', {"error_msg": "No query", 'databases': get_databases(request)})
+            return render(request, 'NetExplorer/blast.html', {"error_msg": "No query", 'databases': Dataset.get_allowed_datasets(request.user)})
 
         # Check length of sequence/number of sequences
         joined_sequences = list()
@@ -38,9 +38,9 @@ def blast(request):
         joined_sequences = "".join(joined_sequences)
 
         if numseq > MAX_NUMSEQ:
-            return render(request, 'NetExplorer/blast.html', {"error_msg": "Too many query sequences (> 50)", 'databases': get_databases(request)})
+            return render(request, 'NetExplorer/blast.html', {"error_msg": "Too many query sequences (> 50)", 'databases':  Dataset.get_allowed_datasets(request.user)})
         elif len(joined_sequences) >  MAX_CHAR_LENGTH:
-            return render(request, 'NetExplorer/blast.html', {"error_msg": "Query sequence too long (> 25,000 characters)", 'databases': get_databases(request)})
+            return render(request, 'NetExplorer/blast.html', {"error_msg": "Query sequence too long (> 25,000 characters)", 'databases':  Dataset.get_allowed_datasets(request.user)})
 
         # Create temp file with the sequences
         with tempfile.NamedTemporaryFile() as temp:
@@ -51,8 +51,8 @@ def blast(request):
             stdout, stderr = pipe.communicate()
             results = [ line.split("\t") for line in stdout.split("\n") if line ]
         if results:
-            return render(request, 'NetExplorer/blast.html', {'results': results, 'database': database.title(), 'databases': get_databases(request) })
+            return render(request, 'NetExplorer/blast.html', {'results': results, 'database': database.title(), 'databases':  Dataset.get_allowed_datasets(request.user) })
         else:
-            return render(request, 'NetExplorer/blast.html', {'results': results, 'noresults': True, 'database': database.title(), 'databases': get_databases(request) })
+            return render(request, 'NetExplorer/blast.html', {'results': results, 'noresults': True, 'database': database.title(), 'databases':  Dataset.get_allowed_datasets(request.user) })
     else:
-        return render(request, 'NetExplorer/blast.html',{'databases': get_databases(request)})
+        return render(request, 'NetExplorer/blast.html',{'databases':  Dataset.get_allowed_datasets(request.user)})
