@@ -73,7 +73,7 @@
                     <a class="info-tooltip legend-tooltip" title="
                     <h4>Legend<hr></h4>
                     <img class='legend-db' src='{% static 'Images/legend-Human.png' %}'/> Human<br>
-                    {% for db in databases %}<img class='legend-db' src='{% static 'Images/legend-' %}{{ db }}.png'/>{{ db }}<br>
+                    {% for db in databases %}<img class='legend-db' src='{% static 'Images/legend-' %}{{ db.name }}.png'/>{{ db.name }}<br>
                     {% endfor %}
                     <hr>
                     <img class='legend-db' src='{% static 'Images/legend-size.png' %}'/> Degree (No. of interactions)<br>
@@ -305,7 +305,7 @@
                             <select name="database" class="selectpicker" data-width="100%">
                                 <option value="" selected disabled>Select Database</option>
                                 {% for db in databases %}
-                                    <option value="{{ db }}">{{ db }}</option>
+                                    <option value="{{ db.name }}">{{ db.name }}</option>
                                 {% endfor %}
                             </select>
                             <br>

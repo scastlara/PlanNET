@@ -5,6 +5,7 @@ Models of PlanNet
 from __future__ import unicode_literals
 from django.db import models
 from py2neo import Graph
+from  django.contrib.auth.models import User
 import json
 import logging
 from colour import Color
@@ -1042,7 +1043,7 @@ class PredictedNode(Node):
 
 
 # ------------------------------------------------------------------------------
-class Experiment(object):
+class oldExperiment(object):
     """
     Class for gene expresssion experiments
     """
@@ -1394,7 +1395,7 @@ class ExperimentList(object):
                     if row['private'] == 1:
                         if row['identifier'] not in access_to:
                             continue
-                    self.experiments.add(Experiment( row['identifier'], url=row['url'], reference=row['reference'] ))
+                    self.experiments.add(oldExperiment( row['identifier'], url=row['url'], reference=row['reference'] ))
                     added_experiments.add(row['identifier'])
                 if row['identifier'] not in self.datasets:
                     self.datasets[ row['identifier'] ] = set()
@@ -1627,3 +1628,146 @@ class InvalidFormat(Exception):
         self.fformat = fformat
     def __str__(self):
         return "Invalid file format: %s ." % (self.fformat)
+
+
+
+
+# MODELS
+# ------------------------------------------------------------------------------
+class Dataset(models.Model):
+    name = models.CharField(max_length=50)
+    year = models.IntegerField(max_length=4)
+    citation = models.CharField(max_length=512)
+    url = models.URLField(max_length=200)
+    n_contigs = models.IntegerField(max_length=1000000)
+    n_ints = models.IntegerField(max_length=2000000)
+    identifier_regex = models.CharField(max_length=200)
+    public = models.BooleanField()
+
+    def is_symbol_valid(self, symbol):
+        '''
+        Checks if a given symbol belongs to database based on 
+        the symbol naming convention.
+        '''
+        if re.match(self.identifier_regex, symbol):
+            return True
+        else:
+            return False
+
+    @classmethod
+    def get_allowed_datasets(cls, user):
+        '''
+        Returns QuerySet of allowed datasets for a given user
+        '''
+        public_datasets = cls.objects.filter(public=True).order_by('-year')
+        if not user.is_authenticated():
+            # Return only public datasets
+            return public_datasets
+        else:
+            # user is authenticated, return allowed datasets
+            restricted_allowed = cls.objects.filter(userdatasetpermission__user=user).order_by('-year')
+            all_allowed = public_datasets | restricted_allowed
+            print(all_allowed)
+            return all_allowed
+    
+    def __unicode__(self):
+       return self.name
+
+
+# ------------------------------------------------------------------------------
+class UserDatasetPermission(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    dataset = models.ForeignKey(Dataset, on_delete=models.CASCADE)
+
+    def __unicode__(self):
+       return self.user.username + " [access to] " + self.dataset.name
+
+
+# ------------------------------------------------------------------------------
+class ExperimentType(models.Model):
+    exp_type = models.CharField(max_length=50)
+    description = models.TextField()
+
+
+# ------------------------------------------------------------------------------
+class Experiment(models.Model):
+    name = models.CharField(max_length=50)
+    description = models.TextField()
+    citation = models.CharField(max_length=512)
+    url = models.URLField(max_length=200)
+    exp_type = models.ForeignKey(ExperimentType, on_delete=models.CASCADE)
+    public = models.BooleanField()
+
+# ------------------------------------------------------------------------------
+class UserExperimentPermission(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    experiment = models.ForeignKey(Experiment, on_delete=models.CASCADE)
+
+
+# ------------------------------------------------------------------------------
+class ConditionType(models.Model):
+    '''
+    1 Batch (technical condition).
+    2 Experimental condition.
+    3 Cluster model.
+    4 Cell.
+    '''
+    name = models.CharField(max_length=50)
+    description = models.TextField()
+
+
+# ------------------------------------------------------------------------------
+class Condition(models.Model):
+    '''
+    Technical conditions, Experimental conditions, and Cells will be stored here.
+    '''
+    name = models.CharField(max_length=50)
+    experiment = models.ForeignKey(Experiment, on_delete=models.CASCADE)
+    cond_type = models.ForeignKey(ConditionType, on_delete=models.CASCADE)
+    defines_cell_type = models.BooleanField()
+    cell_type = models.CharField(max_length=50)
+
+
+# ------------------------------------------------------------------------------
+class ExpressionAbsolute(models.Model):
+    '''
+    This table will store the expression value for each condition (for a given experiment and a given gene). 
+    Keep in mind that a 'Condition' can be a Technical-Condition (0), Experimental-Condition (2), Cluster (3) or a Cell (4).
+    In the case of 0, 1, 2, and 3 the expression will be the MEAN expression for that gene in those samples.
+    In the case of 4 (a cell), the expression will be the actual expression in that particular cell. 
+    The cell will have an entry in the 'Condition' table, just like any condition, linking it to a particular experiment.
+    '''
+    experiment = models.ForeignKey(Experiment, on_delete=models.CASCADE)
+    condition = models.ForeignKey(Condition, on_delete=models.CASCADE)
+    cond_type = models.ForeignKey(ConditionType, on_delete=models.CASCADE)
+    dataset = models.ForeignKey(Dataset, on_delete=models.CASCADE)
+    gene_symbol = models.CharField(max_length=50)
+    expression_value = models.FloatField()
+    units = models.CharField(max_length=10)
+
+
+# ------------------------------------------------------------------------------
+class ExpressionRelative(models.Model):
+    experiment = models.ForeignKey(Experiment, on_delete=models.CASCADE)
+    condition1 = models.ForeignKey(Condition, on_delete=models.CASCADE, related_name='condition1_expressionrelative_set')
+    condition2 = models.ForeignKey(Condition, on_delete=models.CASCADE, related_name='condition1_expressionrelative_setsubcondition_')
+    cond_type = models.ForeignKey(ConditionType, on_delete=models.CASCADE)
+    dataset = models.ForeignKey(Dataset, on_delete=models.CASCADE)
+    gene_symbol = models.CharField(max_length=50)
+    fold_change = models.FloatField()
+    pvalue = models.FloatField()
+
+
+# ------------------------------------------------------------------------------
+class SubCondition(models.Model):
+    '''
+    Links a 'Condition' to other 'Conditions' of different types; 
+    VERY USEFUL FOR LINKING CELLS TO CONDITIONS OR CLUSTERS,
+    given that a cell will belong to one or several technical conditions, 
+    experimental conditions and to one cluster.
+    '''
+    experiment = models.ForeignKey(Experiment, on_delete=models.CASCADE)
+    condition1 = models.ForeignKey(Condition, on_delete=models.CASCADE, related_name='condition1_subcondition_set')
+    condition2 = models.ForeignKey(Condition, on_delete=models.CASCADE, related_name='condition2_subcondition_set')
+
+

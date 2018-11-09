@@ -199,7 +199,7 @@ def gene_search(request):
         - valid_query
     '''
     response = dict()
-    response['databases'] = get_databases(request)
+    response['databases'] = Dataset.get_allowed_datasets(request.user)
     response['valid_query'] = False
     if request.method == "GET" and "genesymbol" in request.GET:
         # Get Form input
@@ -279,9 +279,7 @@ def net_explorer(request):
         render_to_return = upload_graph(request, json_text)
         return render_to_return
     else:
-        # Get experiment data to put it on the Map Expression dialog Form
-        all_experiments = ExperimentList(request.user)
-        return render(request, 'NetExplorer/netexplorer.html', { 'experiments': all_experiments, 'databases': get_databases(request)} )
+        return render(request, 'NetExplorer/netexplorer.html', { 'experiments': ExperimentList(request.user), 'databases': Dataset.get_allowed_datasets(request.user)} )
 
 
 # ------------------------------------------------------------------------------
@@ -509,7 +507,7 @@ def path_finder(request):
         response['snode']     = request.GET['start']
         response['enode']     = request.GET['end']
         response["plen"]      = plen
-        response["databases"] = get_databases(request)
+        response["databases"] = Dataset.get_allowed_datasets(request.user)
 
         if graphelements:
             # We have graphelements to display (there are paths)
@@ -535,7 +533,7 @@ def path_finder(request):
     else:
         # Not a search
         response = dict()
-        response["databases"] = get_databases(request)
+        response["databases"] = Dataset.get_allowed_datasets(request.user)
         return render(request, 'NetExplorer/pathway_finder.html', response)
 
 
@@ -585,7 +583,8 @@ def datasets(request):
     """
     View for datasets
     """
-    return render(request, 'NetExplorer/datasets.html', {'databases': get_databases(request)})
+    datasets = Dataset.get_allowed_datasets(request.user)
+    return render(request, 'NetExplorer/datasets.html', {'databases': datasets})
 
 
 # ------------------------------------------------------------------------------
