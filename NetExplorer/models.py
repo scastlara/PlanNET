@@ -1688,6 +1688,9 @@ class ExperimentType(models.Model):
     exp_type = models.CharField(max_length=50)
     description = models.TextField()
 
+    def __unicode__(self):
+       return self.exp_type
+
 
 # ------------------------------------------------------------------------------
 class Experiment(models.Model):
@@ -1698,10 +1701,14 @@ class Experiment(models.Model):
     exp_type = models.ForeignKey(ExperimentType, on_delete=models.CASCADE)
     public = models.BooleanField()
 
+
 # ------------------------------------------------------------------------------
 class UserExperimentPermission(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     experiment = models.ForeignKey(Experiment, on_delete=models.CASCADE)
+
+    def __unicode__(self):
+       return self.user.username + " [access to] " + self.experiment.name
 
 
 # ------------------------------------------------------------------------------
@@ -1715,17 +1722,36 @@ class ConditionType(models.Model):
     name = models.CharField(max_length=50)
     description = models.TextField()
 
+    def __unicode__(self):
+       return self.name
+
 
 # ------------------------------------------------------------------------------
 class Condition(models.Model):
     '''
-    Technical conditions, Experimental conditions, and Cells will be stored here.
+    Technical conditions, Experimental conditions, Clusters, and Cells will be stored here.
     '''
     name = models.CharField(max_length=50)
     experiment = models.ForeignKey(Experiment, on_delete=models.CASCADE)
     cond_type = models.ForeignKey(ConditionType, on_delete=models.CASCADE)
     defines_cell_type = models.BooleanField()
     cell_type = models.CharField(max_length=50)
+
+    def __unicode__(self):
+       return self.name
+
+
+# ------------------------------------------------------------------------------
+class Sample(models.Model):
+    experiment = models.ForeignKey(Experiment, on_delete=models.CASCADE)
+    sample_name  = models.CharField(max_length=50)
+
+
+# ------------------------------------------------------------------------------
+class SampleCondition(models.Model):
+    experiment = models.ForeignKey(Experiment, on_delete=models.CASCADE)
+    sample = models.ForeignKey(Sample, on_delete=models.CASCADE)
+    condition = models.ForeignKey(Condition, on_delete=models.CASCADE)
 
 
 # ------------------------------------------------------------------------------
@@ -1738,8 +1764,7 @@ class ExpressionAbsolute(models.Model):
     The cell will have an entry in the 'Condition' table, just like any condition, linking it to a particular experiment.
     '''
     experiment = models.ForeignKey(Experiment, on_delete=models.CASCADE)
-    condition = models.ForeignKey(Condition, on_delete=models.CASCADE)
-    cond_type = models.ForeignKey(ConditionType, on_delete=models.CASCADE)
+    sample = models.ForeignKey(Sample, on_delete=models.CASCADE)
     dataset = models.ForeignKey(Dataset, on_delete=models.CASCADE)
     gene_symbol = models.CharField(max_length=50)
     expression_value = models.FloatField()
@@ -1756,18 +1781,4 @@ class ExpressionRelative(models.Model):
     gene_symbol = models.CharField(max_length=50)
     fold_change = models.FloatField()
     pvalue = models.FloatField()
-
-
-# ------------------------------------------------------------------------------
-class SubCondition(models.Model):
-    '''
-    Links a 'Condition' to other 'Conditions' of different types; 
-    VERY USEFUL FOR LINKING CELLS TO CONDITIONS OR CLUSTERS,
-    given that a cell will belong to one or several technical conditions, 
-    experimental conditions and to one cluster.
-    '''
-    experiment = models.ForeignKey(Experiment, on_delete=models.CASCADE)
-    condition1 = models.ForeignKey(Condition, on_delete=models.CASCADE, related_name='condition1_subcondition_set')
-    condition2 = models.ForeignKey(Condition, on_delete=models.CASCADE, related_name='condition2_subcondition_set')
-
 
