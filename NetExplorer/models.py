@@ -1748,6 +1748,9 @@ class Sample(models.Model):
     experiment = models.ForeignKey(Experiment, on_delete=models.CASCADE)
     sample_name  = models.CharField(max_length=50)
 
+    def __unicode__(self):
+       return self.sample_name + " - " + self.experiment.name
+
 
 # ------------------------------------------------------------------------------
 class SampleCondition(models.Model):
@@ -1755,6 +1758,8 @@ class SampleCondition(models.Model):
     sample = models.ForeignKey(Sample, on_delete=models.CASCADE)
     condition = models.ForeignKey(Condition, on_delete=models.CASCADE)
 
+    def __unicode__(self):
+       return self.experiment.name + " - " + self.sample.sample_name + " - " + self.condition.name
 
 # ------------------------------------------------------------------------------
 class ExpressionAbsolute(models.Model):
@@ -1772,6 +1777,13 @@ class ExpressionAbsolute(models.Model):
     expression_value = models.FloatField()
     units = models.CharField(max_length=10)
 
+    def __unicode__(self):
+        name_str = self.experiment.name + " - "
+        name_str += str(self.sample.sample_name) + " - "
+        name_str += self.gene_symbol + ": "
+        name_str += str(self.expression_value) + " "
+        name_str += self.units
+        return name_str
 
 # ------------------------------------------------------------------------------
 class ExpressionRelative(models.Model):
