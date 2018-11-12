@@ -1780,7 +1780,7 @@ class ExpressionAbsolute(models.Model):
     def __unicode__(self):
         name_str = self.experiment.name + " - "
         name_str += str(self.sample.sample_name) + " - "
-        name_str += self.gene_symbol + ": "
+        name_str += str(self.gene_symbol) + ": "
         name_str += str(self.expression_value) + " "
         name_str += self.units
         return name_str
@@ -1795,4 +1795,13 @@ class ExpressionRelative(models.Model):
     gene_symbol = models.CharField(max_length=50)
     fold_change = models.FloatField()
     pvalue = models.FloatField()
+
+    def __unicode__(self):
+        name_str = self.experiment.name + " - "
+        name_str += self.condition1.name + " vs "
+        name_str += self.condition2.name + " - "
+        name_str += str(self.gene_symbol) + ": "
+        name_str += str(self.fold_change) + " "
+        name_str += "(p=" + str(self.pvalue) + ")"
+        return name_str
 
