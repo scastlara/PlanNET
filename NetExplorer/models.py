@@ -1667,7 +1667,6 @@ class Dataset(models.Model):
             # user is authenticated, return allowed datasets
             restricted_allowed = cls.objects.filter(userdatasetpermission__user=user).order_by('-year')
             all_allowed = public_datasets | restricted_allowed
-            print(all_allowed)
             return all_allowed
     
     def __unicode__(self):
@@ -1701,6 +1700,9 @@ class Experiment(models.Model):
     exp_type = models.ForeignKey(ExperimentType, on_delete=models.CASCADE)
     public = models.BooleanField()
 
+    def __unicode__(self):
+       return self.name
+
 
 # ------------------------------------------------------------------------------
 class UserExperimentPermission(models.Model):
@@ -1716,8 +1718,7 @@ class ConditionType(models.Model):
     '''
     1 Batch (technical condition).
     2 Experimental condition.
-    3 Cluster model.
-    4 Cell.
+    3 Cluster.
     '''
     name = models.CharField(max_length=50)
     description = models.TextField()
@@ -1736,9 +1737,10 @@ class Condition(models.Model):
     cond_type = models.ForeignKey(ConditionType, on_delete=models.CASCADE)
     defines_cell_type = models.BooleanField()
     cell_type = models.CharField(max_length=50)
+    description = models.TextField()
 
     def __unicode__(self):
-       return self.name
+       return self.name + " - " + self.experiment.name
 
 
 # ------------------------------------------------------------------------------
