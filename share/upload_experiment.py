@@ -61,16 +61,28 @@ def get_options():
         '-d','--dataset',
         help='Dataset name', required=True
     )
+    parser.add_argument(
+        '-u','--user',
+        help='Mysql user', required=True
+    )
+    parser.add_argument(
+        '-p','--password',
+        help='Mysql password', required=True
+    )
+    parser.add_argument(
+        '-m','--mysql_db',
+        help='Mysql database', required=True
+    )
     
     options = parser.parse_args()
     return options
 
 #--------------------------------------------------------------------------------
-def connect_to_db():
+def connect_to_db(opts):
     db = MySQLdb.Connection(
-        user="mysql",
-        passwd="mysql",
-        db="db_plannet"
+        user=opts.user,
+        passwd=opts.password,
+        db=opts.mysql_db
     )
     return db
 
@@ -187,10 +199,10 @@ def upload_expression_relative(opts, experiment, dataset):
 # MAIN
 #--------------------------------------------------------------------------------
 opts = get_options()
-db = connect_to_db()
+db = connect_to_db(opts)
 cursor = db.cursor()
 experiment = get_experiment(opts, cursor)
 dataset = get_dataset(opts, cursor)
-#upload_expression_absolute(opts, experiment, dataset)
+upload_expression_absolute(opts, experiment, dataset)
 upload_expression_relative(opts, experiment, dataset)
 db.commit()
