@@ -1,13 +1,78 @@
 {% extends 'NetExplorer/base.html' %}
 {% load static %}
+{% load staticfiles %}
 
 {% block title %}- PlanExp{% endblock title %}
 
 
 
 {% block content %}
-    <h2>PlanExp</h2>
-    <hr>
+    <div class="panel panel-planexp">
+        <div class="panel-heading">
+            <div class="row row-eq-height">
+                <div class="col-sm-1 blast-icon-container">
+                    <img class="blast-icon-inside" src="{% static 'Images/planexp-icon-transparent.png' %}"/>
+                </div>
+                <div class="col-sm-11 blast-title">
+                    <h1>PlanExp</h1>
+                </div>
+            </div>
+        </div>
+        <div class="panel-body">
+            <!-- Select experiment card -->
+            <div class="planexp-card">
+                <div class="planexp-h1">Select Experiment:<hr class="planexp-rule"></div>
+                <form class= "form-inline" method="GET" action="#">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <select id="select-experiment" name="experiment" class="selectpicker" title="Select Experiment">
+                            <option value="" disabled selected>Select experiment</option>
+                            {% for exp in experiments %}
+                                <option value="{{ exp.name }}">{{ exp.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </form>
+            </div><!-- Select experiment card -->
+
+            <!-- Summary card -->
+            <div id="planexp-summary" class="planexp-card">
+                <h2 id="planexp-title">Experiment title</h2>
+                <hr class="planexp-rule">
+                
+                <div class="row">
+                    <div class="col-sm-12">
+                        <span id="planexp-experiment-type"> 
+                            <img id="RNA-Seq"     src="{% static 'Images/rna-seq_type.png' %}">
+                            <img id="Single-Cell" src="{% static 'Images/sc_type.png' %}">
+                        </span>
+                    </div>
+                    <div class="col-sm-12"><br></div>
+                    <div class="col-sm-12">
+                        <h4>Citation</h4>
+                        <div id="planexp-citation">
+                            Citation here.
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <h4>Description</h4>
+                        <div id="planexp-description">
+                            Description here.
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <h4>Conditions:</h4>
+                        <div id="planexp-conditions">
+                            <!-- Conditions here -->
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+
+        </div> <!-- Planexp panel body div -->
+    </div><!-- Planexp panel div -->
     
 
 {% endblock content %}
@@ -15,5 +80,5 @@
 
 
 {% block scripts %}
-    
+    <script src="{% static 'js/planexp.js' %}"></script>
 {% endblock scripts%}

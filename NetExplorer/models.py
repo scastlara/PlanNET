@@ -1700,6 +1700,43 @@ class Experiment(models.Model):
     exp_type = models.ForeignKey(ExperimentType, on_delete=models.CASCADE)
     public = models.BooleanField()
 
+    @classmethod
+    def get_allowed_experiments(cls, user):
+        '''
+        Returns QuerySet of allowed experiments for a given user
+        '''
+        public_experiments = cls.objects.filter(public=True).order_by('name')
+        if not user.is_authenticated():
+            # Return only public datasets
+            return public_experiments
+        else:
+            # user is authenticated, return allowed datasets
+            restricted_allowed = cls.objects.filter(userexperimentpermission__user=user).order_by('name')
+            all_allowed = public_experiments | restricted_allowed
+            return all_allowed
+
+    def to_json(self):
+        '''
+        Returns json string with info about experiment
+        '''
+        json_dict = {
+            'name': self.name,
+            'description': self.description,
+            'citation': self.citation,
+            'url': self.url,
+            'type': self.exp_type.exp_type
+        }
+        conditions = Condition.objects.filter(experiment__name=self.name)
+        json_dict['conditions'] = dict()
+        for cond in conditions:
+            if cond.cond_type.name not in json_dict['conditions']:
+                json_dict['conditions'][cond.cond_type.name] = list()
+            json_dict['conditions'][cond.cond_type.name].append( 
+                (cond.name, cond.defines_cell_type, cond.cell_type, cond.description) 
+            )
+        json_string = json.dumps(json_dict)
+        return json_string
+
     def __unicode__(self):
        return self.name
 
