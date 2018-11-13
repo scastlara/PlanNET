@@ -10,6 +10,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.db import connection
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core import serializers
+from statistics import stdev, mean
 import tempfile
 import textwrap
 import json
@@ -65,3 +66,13 @@ def get_shortest_paths(startnodes, endnodes, plen):
                     graphelements[numpath] = (graphelements[numpath].to_json, round(path.score, 2))
                     numpath += 1
     return graphelements, numpath
+
+
+def disambiguate_gene(gene_name, dataset):
+    gene_graph = GraphCytoscape()
+    try:
+        gene_graph.new_nodes([gene_name], dataset)
+        gene_symbol = list(gene_graph.nodes)[0].symbol
+    except Exception as err:
+        gene_symbol = gene_name
+    return gene_symbol

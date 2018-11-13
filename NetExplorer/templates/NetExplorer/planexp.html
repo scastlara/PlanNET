@@ -86,8 +86,12 @@
                 <div class="input-group gene-expression-search-container">
                     <input type="text" id="gene-expression-search" class="form-control" name="genesymbol" placeholder="Enter Gene Symbol">
                     <span class="input-group-btn">
-                        <button type="submit" value=" Send" class="btn btn-danger" id="submit">Plot expression</button>
+                        <button id="plot-expression-btn" type="submit" value=" Send" class="btn btn-danger" id="submit">Plot expression</button>
                     </span>
+                </div>
+
+                <div id="expression-plot-container">
+                    <div id="expression-plot"></div>
                 </div>
             </div>
             
@@ -99,6 +103,7 @@
     
     
     {% block scripts %}
+    <script src="{% static 'js/plotly-latest-min.js' %}"></script>
     <script src="{% static 'js/planexp.js' %}"></script>
     {% endblock scripts%}
     

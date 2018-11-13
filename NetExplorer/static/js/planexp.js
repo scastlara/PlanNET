@@ -114,7 +114,6 @@ getDatasets = function(expName, datasetSelect) {
             datasetSelect.html("");
             for (const i in data) {
                 datasetName = data[i].fields.name;
-                console.log(datasetName);
                 datasetSelect.append(datasetRow(datasetName));
             }
             datasetSelect.selectpicker("refresh");
@@ -157,7 +156,45 @@ experimentDGETable = function(expName, dataset, condition1, condition2, targetDi
 }
 
 
+/**
+ * plotGeneExpression
+ *   Summary:
+ *     Performs AJAX query to /plot_gene_expression, 
+ *     retrieving the JSON data to pass to Plotly
+ *   Arguments:
+ *     - Experiment name
+ *     - Dataset
+ *     - Gene name
+ *     - jQuery object of div to plot.
+ *   Returns:
+ *     - Nothing
+ */
+plotGeneExpression = function(expName, dataset, geneName, plotDivId) {
 
+    $.ajax({
+        type: "GET",
+        url: "/plot_gene_expression",
+        data: {
+            'experiment': expName,
+            'dataset'   : dataset,
+            'gene_name': geneName,
+            'csrfmiddlewaretoken': '{{ csrf_token }}'
+        },
+        success: function(data) {
+            if (data) {
+                $("#" + plotDivId).html("");
+                Plotly.newPlot(plotDivId, data);
+            } else {
+                $("#" + plotDivId).html("Gene Symbol not found");
+            }
+            
+        }
+    });
+}
+
+
+
+//----------------------------------------------------
 /* BUTTONS AND EVENTS */
 
 /**
@@ -175,7 +212,7 @@ $("#select-experiment").on("change", function() {
 
 
 /**
- * selectDataset
+ * Select Dataset
  *   Summary:
  *     Handles the selection of a given dataset.
  *     Will show the DGE table.
@@ -194,6 +231,13 @@ $("#select-dataset").on("change", function(){
 });
 
 
+
+/**
+ * Select Condition for DGE table
+ *   Summary:
+ *     Handles the selection of the conditions for the.
+ *     DGE table.
+ */
 $("select.dge-table-condition-selects").on("change", function(){
     var expName = $("#select-experiment").val();
     var condition1 = $("#planexp-dge-c1").val();
@@ -206,3 +250,20 @@ $("select.dge-table-condition-selects").on("change", function(){
     experimentDGETable(expName, dataset, condition1, condition2, $("#planexp-dge-table"));
 
 });
+
+/**
+ * Get Gene Expression Plot
+ *   Summary:
+ *     Plots gene expression 
+ */
+$("#plot-expression-btn").on("click", function() {
+    var expName = $("#select-experiment").val();
+    var geneName = $("#gene-expression-search").val();
+    var dataset = $("#select-dataset").val();
+
+    if (!geneName) {
+        $("#expression-plot").html("");
+        return;
+    }
+    plotGeneExpression(expName, dataset, geneName, "expression-plot");
+})

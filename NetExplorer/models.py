@@ -1543,6 +1543,55 @@ class Document(models.Model):
     docfile = models.FileField(upload_to='documents/%Y/%m/%d')
 
 
+# ------------------------------------------------------------------------------
+class PlotlyPlot(object):
+    """
+    Class for Plotly barplots
+    """
+    def __init__(self):
+        self.values = dict()
+        self.groups = list()
+        
+    def add_group(self, group):
+        self.groups.append(group)
+        self.values[group] = list()
+    
+    def add_value(self, value, group):
+        if group not in self.values:
+            self.add_group(group)
+        self.values[group].append(value)
+
+
+# ------------------------------------------------------------------------------
+class BarPlot(PlotlyPlot):
+    """
+    Class for Plotly bar plots.
+    Each bar (group) consists of only one value.
+    """
+    def __init__(self):
+        super(BarPlot, self).__init__()
+    
+    def plot(self):
+        x = list()
+        y = list()
+        for group in self.groups:
+            x.append(group)
+            y.append(self.values[group][0])
+        return [ {'x': x, 'y': y, 'type': 'bar'} ]
+
+
+# ------------------------------------------------------------------------------
+class ViolinPlot(PlotlyPlot):
+    """
+    Class for Plotly violinplots.
+    Each violin (group) is made of multiple values.
+    """
+    def __init__(self):
+        super(ViolinPlot, self).__init__()
+    
+    def plot(self):
+        pass
+
 # EXCEPTIONS
 # ------------------------------------------------------------------------------
 class IncorrectDatabase(Exception):
@@ -1831,6 +1880,8 @@ class ExpressionAbsolute(models.Model):
         name_str += str(self.expression_value) + " "
         name_str += self.units
         return name_str
+    
+
 
 # ------------------------------------------------------------------------------
 class ExpressionRelative(models.Model):
