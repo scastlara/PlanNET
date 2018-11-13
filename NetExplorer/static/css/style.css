@@ -1971,8 +1971,10 @@ kbd {
     background-color: #f4f4f4;
 }
 
+/*
 #RNA-Seq { display: none; }
 #Single-Cell { display: none; }
+*/
 
 .cond-type {
     display: inline-block;

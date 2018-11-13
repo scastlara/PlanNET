@@ -1,54 +1,54 @@
 /* PlanExp */
 
 
-
-experimentSummary = function(exp_name) {
-
-    conditionRow = function(cond_array) {
-        var cond_name         = cond_array[0];
-        var defines_cell_type = cond_array[1];
-        var cell_type         = cond_array[2];
-        var description       = cond_array[3];
-
-        var html_string = "<div class='cond-name'>" + "<b>" + cond_name + "</b>" + " - " + description + "</div>";
-        return html_string;
-
-    }
+/**
+ * experimentSummary
+ *   Summary:
+ *     Performs AJAX query to /experiment_summary, 
+ *     retrieving the HTML code of the summary and
+ *     putting it on the targetDiv (as well as making it
+ *     visible).
+ *   Arguments:
+ *     - Experiment name string
+ *     - JQuery object of div to put the summary
+ *   Returns:
+ *     - Nothing
+ *   
+ */
+experimentSummary = function(expName, targetDiv) {
 
     $.ajax({
         type: "GET",
-        url: "/get_experiment",
+        url: "/experiment_summary",
         data: {
-            'experiment'    : exp_name,
+            'experiment'    : expName,
             'csrfmiddlewaretoken': '{{ csrf_token }}'
         },
         success : function(data) {
-            $("#planexp-title").html(data.name);
-            var citation_html = '<a href="' + data.url + '" target="_blank">' +  data.citation + '</a>';
-            $("#planexp-citation").html(citation_html);
-            $("#planexp-description").html(data.description);
-            $('#planexp-experiment-type').append(data.type);
-
-            for (const cond_type in data.conditions) {
-                $("#planexp-conditions").append("<div class='cond-type'>" + cond_type + "</div>");
-                for (const condition in data.conditions[cond_type]) {
-                    var cond_array = data.conditions[cond_type][condition];
-                    var cond_html  = conditionRow(cond_array);
-
-                    $("#planexp-conditions").append(cond_html)
-
-                }
-            }
-            $('#' + data.type).show();
-            $("#planexp-summary").slideToggle(250);
+            targetDiv.html(data);
+            targetDiv.slideToggle(250);
         }
     });
     
 }
 
-selectExperiment = function(exp_name) {
+
+
+/**
+ * selectExperiment
+ *   Summary:
+ *     Handles the selection of a given experiment.
+ *     Performs all the actions necessary when that happens.
+ *   Arguments:
+ *     - Experiment name.
+ *     - JQuery object of div to put the summary.
+ *   Returns:
+ *     - Nothing
+ *   
+ */
+selectExperiment = function(expName, summaryDiv) {
     // Get Summary
-    experimentSummary(exp_name);
+    experimentSummary(expName, summaryDiv);
 
     // Get over/under-expressed table
 
@@ -60,4 +60,7 @@ selectExperiment = function(exp_name) {
 }
 
 /* BUTTONS AND EVENTS */
-$("#select-experiment").on("change", function() { selectExperiment($(this).val()) });
+$("#select-experiment")
+    .on("change", function() { 
+        selectExperiment($(this).val(), $("#planexp-summary")) 
+    });

@@ -18,4 +18,4 @@ from .tutorial import *
 from .upload_graph import *
 from .get_fasta import *
 from .get_card import *
-from .get_experiment import *
+from .experiment_summary import *
