@@ -2002,3 +2002,5 @@ kbd {
 }
 
 #select-dataset { display: none; }
+#planexp-gene-expression { display: none; }
+.gene-expression-search-container { width: 50%; }

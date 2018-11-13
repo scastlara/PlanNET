@@ -67,7 +67,7 @@ fillConditions = function(expName, conditionSelects) {
             'csrfmiddlewaretoken': '{{ csrf_token }}'
         },
         success: function(data) {
-            conditionSelects.html(); // clean previous HTML
+            conditionSelects.html(""); // clean previous HTML
             for (const condition in data) {
                 conditionName = data[condition].fields.name;
                 conditionSelects.append(conditionRow(conditionName));
@@ -111,7 +111,7 @@ getDatasets = function(expName, datasetSelect) {
             'csrfmiddlewaretoken': '{{ csrf_token }}'
         },
         success: function(data) {
-            datasetSelect.html();
+            datasetSelect.html("");
             for (const i in data) {
                 datasetName = data[i].fields.name;
                 console.log(datasetName);
@@ -182,7 +182,15 @@ $("#select-experiment").on("change", function() {
  */
 $("#select-dataset").on("change", function(){
     var dataset = $("#select-dataset").val();
+
+    // Empty DGE table and Deselect Conditions
+    $("#planexp-dge-table").html("");
+    $('#planexp-dge-c1').selectpicker('val', '');
+    $('#planexp-dge-c2').selectpicker('val', '');
+
+    // Show the necessary cards
     $("#planexp-dge-table-container").show(250);
+    $("#planexp-gene-expression").show(250);
 });
 
 
