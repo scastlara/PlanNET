@@ -1551,6 +1551,7 @@ class PlotlyPlot(object):
     def __init__(self):
         self.values = dict()
         self.groups = list()
+        self.title  = str() 
         
     def add_group(self, group):
         self.groups.append(group)
@@ -1560,6 +1561,9 @@ class PlotlyPlot(object):
         if group not in self.values:
             self.add_group(group)
         self.values[group].append(value)
+    
+    def add_title(self, title):
+        self.title = title
 
 
 # ------------------------------------------------------------------------------
@@ -1577,7 +1581,12 @@ class BarPlot(PlotlyPlot):
         for group in self.groups:
             x.append(group)
             y.append(self.values[group][0])
-        return [ {'x': x, 'y': y, 'type': 'bar'} ]
+        theplot = dict()
+        theplot['data'] = [ {'x': x, 'y': y, 'type': 'bar'} ]
+        theplot['layout'] = dict()
+        if self.title:
+            theplot['layout']['title'] = self.title
+        return theplot
 
 
 # ------------------------------------------------------------------------------
@@ -1591,6 +1600,9 @@ class ViolinPlot(PlotlyPlot):
     
     def plot(self):
         pass
+
+
+
 
 # EXCEPTIONS
 # ------------------------------------------------------------------------------

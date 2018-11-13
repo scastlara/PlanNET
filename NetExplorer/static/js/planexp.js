@@ -183,7 +183,7 @@ plotGeneExpression = function(expName, dataset, geneName, plotDivId) {
         success: function(data) {
             if (data) {
                 $("#" + plotDivId).html("");
-                Plotly.newPlot(plotDivId, data);
+                Plotly.newPlot(plotDivId, data.data, data.layout);
             } else {
                 $("#" + plotDivId).html("Gene Symbol not found");
             }

@@ -35,6 +35,7 @@ def plot_gene_expression(request):
                 # Only one sample/value per group -> BarPlot
                 if theplot is None:
                     theplot = BarPlot()
+                    theplot.add_title(gene_symbol)
                 expression = expression[0]['expression_value']
                 theplot.add_group(condition.name)
                 theplot.add_value(expression, condition.name)
