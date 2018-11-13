@@ -24,4 +24,7 @@ urlpatterns = [
     url(r'^logout', views.logout_view, name="logout"),
     url(r'^account', views.account_view, name="account"),
     url(r'^experiment_summary', views.experiment_summary, name="experiment_summary"),
+    url(r'^experiment_conditions', views.experiment_conditions, name="experiment_conditions"),
+    url(r'^experiment_dge_table', views.experiment_dge_table, name="experiment_dge_table"),
+    url(r'^experiment_dataset', views.experiment_dataset, name="experiment_dataset"),
 ]

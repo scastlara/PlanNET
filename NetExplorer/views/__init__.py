@@ -19,3 +19,6 @@ from .upload_graph import *
 from .get_fasta import *
 from .get_card import *
 from .experiment_summary import *
+from .experiment_conditions import *
+from .experiment_dge_table import *
+from .experiment_dataset import *

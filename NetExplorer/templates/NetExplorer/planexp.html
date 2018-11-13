@@ -7,6 +7,22 @@
 
 
 {% block content %}
+<!-- HIDDEN CARD OVERLAY -->
+    <div id="button-container">
+        <div class="close-overlay" title="Close card">
+            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+        </div>
+        <div class="full-screen-card" title="Open in new window">
+            <span class="glyphicon glyphicon-new-window" aria-hidden="true"></span>
+        </div>
+    </div>
+    <div id="card-overlay" class="card-overlay">
+        <div class="card-title">
+
+        </div>
+   </div>
+    
+    
     <div class="panel panel-planexp">
         <div class="panel-heading">
             <div class="row row-eq-height">
@@ -21,35 +37,57 @@
         <div class="panel-body">
             <!-- Select experiment card -->
             <div class="planexp-card">
-                <div class="planexp-h1">Select Experiment:<hr class="planexp-rule"></div>
+                <div class="planexp-h1">Select Experiment and Database:<hr class="planexp-rule"></div>
                 <form class= "form-inline" method="GET" action="#">
                     {% csrf_token %}
                     <div class="form-group">
                         <select id="select-experiment" name="experiment" class="selectpicker" title="Select Experiment">
                             <option value="" disabled selected>Select experiment</option>
                             {% for exp in experiments %}
-                                <option value="{{ exp.name }}">{{ exp.name }}</option>
+                            <option value="{{ exp.name }}">{{ exp.name }}</option>
                             {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <select id="select-dataset" name="dataset" class="selectpicker" title="Select dataset">
+                            <option value="" disabled selected>Select dataset</option>
                         </select>
                     </div>
                 </form>
             </div><!-- Select experiment card -->
-
+            
             <!-- Summary card -->
             <div id="planexp-summary" class="planexp-card">
                 
-
             </div>
-
-
+            
+            <!-- Differential expression table -->
+            <div id="planexp-dge-table-container" class="planexp-card">
+                <h2 id="planexp-title">Differentially expressed genes</h2>
+                <hr class="planexp-rule">
+                <div class="form-group planexp-condition-selects">
+                    <h4>Select conditions to compare</h4>
+                    <select id="planexp-dge-c1" name="condition1" class="selectpicker condition-select dge-table-condition-selects" title="Select Condition">
+                        <option value="" disabled selected>Select condition</option>
+                    </select>
+                    <select id="planexp-dge-c2" name="condition2" class="selectpicker condition-select dge-table-condition-selects" title="Select Condition">
+                        <option value="" disabled selected>Select condition</option>
+                    </select>
+                    
+                </div>
+                <div id="planexp-dge-table">
+                </div>
+            </div>
+            
         </div> <!-- Planexp panel body div -->
     </div><!-- Planexp panel div -->
     
-
-{% endblock content %}
-
-
-
-{% block scripts %}
+    {% endblock content %}
+    
+    
+    
+    {% block scripts %}
     <script src="{% static 'js/planexp.js' %}"></script>
-{% endblock scripts%}
+    {% endblock scripts%}
+    

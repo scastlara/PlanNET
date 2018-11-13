@@ -9,6 +9,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.db import connection
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.core import serializers
 import tempfile
 import textwrap
 import json

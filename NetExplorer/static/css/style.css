@@ -1990,3 +1990,15 @@ kbd {
     margin-left: 20px;
     margin-bottom: 10px;
 }
+
+#planexp-dge-table           { display: none; }
+#planexp-dge-table-container { display: none; }
+
+.planexp-condition-selects { text-align: center; }
+
+#dge-table {
+    color: #777777;
+    font-size: 12px;
+}
+
+#select-dataset { display: none; }

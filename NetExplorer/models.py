@@ -20,6 +20,8 @@ from django.http        import HttpResponse
 import os
 
 
+
+
 GRAPH     = Graph("http://127.0.0.1:7474/db/data/")
 DATABASES = set([
     "Dresden",
@@ -1739,6 +1741,14 @@ class Experiment(models.Model):
 
     def __unicode__(self):
        return self.name
+
+# ------------------------------------------------------------------------------
+class ExperimentDataset(models.Model):
+    dataset = models.ForeignKey(Dataset, on_delete=models.CASCADE)
+    experiment = models.ForeignKey(Experiment, on_delete=models.CASCADE)
+
+    def __unicode__(self):
+       return self.experiment.name + ' - ' + self.dataset.name
 
 
 # ------------------------------------------------------------------------------
