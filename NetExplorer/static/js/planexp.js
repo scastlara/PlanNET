@@ -149,7 +149,7 @@ experimentDGETable = function(expName, dataset, condition1, condition2, targetDi
         },
         success: function(data) {
             targetDiv.html(data);
-
+            targetDiv.hide();
             targetDiv.show(250);
         }
     });
