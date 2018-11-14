@@ -1957,7 +1957,7 @@ kbd {
 }
 
 #planexp-summary { display: none; }
-#planexp-citation { width: 100%; min-height: 80px; }
+#planexp-citation { width: 60%; min-height: 80px; margin-bottom: 10px; }
 #planexp-description { min-height: 80px; }
 #planexp-conditions  { min-height: 80px; }
 
@@ -2014,4 +2014,13 @@ kbd {
     height: 500px; 
     min-width: 500px; 
     background-color: #f4f4f4; 
+}
+
+#plot-genenotfound { 
+    display: none; 
+    margin: auto;
+    font-size: 18px;
+    padding: 8px;
+    width: 500px; 
+    background-color: #FDD4D4;
 }

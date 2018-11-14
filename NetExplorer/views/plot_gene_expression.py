@@ -27,7 +27,7 @@ def plot_gene_expression(request):
             samples = SampleCondition.objects.filter(condition=condition).values('sample')
             expression = ExpressionAbsolute.objects.filter(
                 experiment=experiment, dataset=dataset, 
-                sample__in=samples,    gene_symbol=gene_symbol).values('expression_value')
+                sample__in=samples,    gene_symbol=gene_symbol)
             if len(expression) > 1:
                 # Multiple samples/values per group -> ViolinPlot
                 theplot = ViolinPlot()
@@ -36,7 +36,8 @@ def plot_gene_expression(request):
                 if theplot is None:
                     theplot = BarPlot()
                     theplot.add_title(gene_symbol)
-                expression = expression[0]['expression_value']
+                    theplot.add_ylab(expression[0].units)
+                expression = expression[0].expression_value
                 theplot.add_group(condition.name)
                 theplot.add_value(expression, condition.name)
             else:

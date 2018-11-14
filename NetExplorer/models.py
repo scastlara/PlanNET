@@ -1552,6 +1552,7 @@ class PlotlyPlot(object):
         self.values = dict()
         self.groups = list()
         self.title  = str() 
+        self.ylab   = str()
         
     def add_group(self, group):
         self.groups.append(group)
@@ -1565,6 +1566,8 @@ class PlotlyPlot(object):
     def add_title(self, title):
         self.title = title
 
+    def add_ylab(self, ylab):
+        self.ylab = ylab
 
 # ------------------------------------------------------------------------------
 class BarPlot(PlotlyPlot):
@@ -1586,6 +1589,9 @@ class BarPlot(PlotlyPlot):
         theplot['layout'] = dict()
         if self.title:
             theplot['layout']['title'] = self.title
+        if self.ylab:
+            theplot['layout']['yaxis'] = dict()
+            theplot['layout']['yaxis']['title'] = self.ylab
         return theplot
 
 

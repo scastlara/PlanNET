@@ -182,10 +182,11 @@ plotGeneExpression = function(expName, dataset, geneName, plotDivId) {
         },
         success: function(data) {
             if (data) {
-                $("#" + plotDivId).html("");
+                $("#plot-genenotfound").hide();
                 Plotly.newPlot(plotDivId, data.data, data.layout);
             } else {
-                $("#" + plotDivId).html("Gene Symbol not found");
+                $("#plot-genenotfound").show(250);
+                $("#" + plotDivId).html("");
             }
             
         }
@@ -220,14 +221,18 @@ $("#select-experiment").on("change", function() {
 $("#select-dataset").on("change", function(){
     var dataset = $("#select-dataset").val();
 
-    // Empty DGE table and Deselect Conditions
+    // Empty DGE table + Gene Plot and Deselect Conditions
     $("#planexp-dge-table").html("");
     $('#planexp-dge-c1').selectpicker('val', '');
     $('#planexp-dge-c2').selectpicker('val', '');
+    $("#expression-plot").html("");
+    $("#plot-genenotfound").hide();
 
     // Show the necessary cards
     $("#planexp-dge-table-container").show(250);
     $("#planexp-gene-expression").show(250);
+
+    
 });
 
 
@@ -262,8 +267,9 @@ $("#plot-expression-btn").on("click", function() {
     var dataset = $("#select-dataset").val();
 
     if (!geneName) {
-        $("#expression-plot").html("");
+        $("#plot-genenotfound").show(250);
         return;
     }
+    $("#plot-genenotfound").hide();
     plotGeneExpression(expName, dataset, geneName, "expression-plot");
 })
