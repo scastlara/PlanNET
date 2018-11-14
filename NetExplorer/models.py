@@ -1546,28 +1546,58 @@ class Document(models.Model):
 # ------------------------------------------------------------------------------
 class PlotlyPlot(object):
     """
-    Class for Plotly barplots
+    Class for Plotly barplots.
+    traces = [
+        0 : {
+            group1: [ values ],
+            group2: [ values ],
+            ...
+        },
+        1 :
+            ...
+    ]
     """
     def __init__(self):
-        self.values = dict()
+        self.traces = list()
         self.groups = list()
-        self.title  = str() 
+        self.title  = str()
         self.ylab   = str()
-        
+        self.trace_names = list()
+
     def add_group(self, group):
-        self.groups.append(group)
-        self.values[group] = list()
-    
-    def add_value(self, value, group):
-        if group not in self.values:
+        if group not in self.groups:
+            self.groups.append(group)
+        
+        for trace in self.traces:
+            if group not in trace:
+                trace[group] = list()
+        
+        if not self.traces:
+            self.traces.append(dict())
+
+    def add_value(self, value, group, trace=0):
+        if group not in self.traces[trace]:
             self.add_group(group)
-        self.values[group].append(value)
-    
+        self.traces[trace][group].append(value)
+
+    def add_trace(self, trace_idx):
+        self.traces.append(dict())
+        # Clone groups from other traces
+        for group in self.traces[0].keys():
+            self.traces[trace_idx][group] = list()
+
+    def add_trace_name(self, trace_idx, name):
+        if len(self.trace_names) <= trace_idx:
+            self.trace_names.append(name)
+        else:
+            self.trace_names[trace_idx] = name
+
     def add_title(self, title):
         self.title = title
 
     def add_ylab(self, ylab):
         self.ylab = ylab
+
 
 # ------------------------------------------------------------------------------
 class BarPlot(PlotlyPlot):
@@ -1579,14 +1609,25 @@ class BarPlot(PlotlyPlot):
         super(BarPlot, self).__init__()
     
     def plot(self):
-        x = list()
-        y = list()
-        for group in self.groups:
-            x.append(group)
-            y.append(self.values[group][0])
         theplot = dict()
-        theplot['data'] = [ {'x': x, 'y': y, 'type': 'bar'} ]
+        theplot['data'] = list()
+        for trace_idx, trace in enumerate(self.traces):
+            trace_data = dict()
+            x = list()
+            y = list()
+            if len(self.trace_names) > trace_idx:
+                trace_data['name'] = self.trace_names[trace_idx]
+            for group in self.groups:
+                x.append(group)
+                y.append(trace[group][0])
+            trace_data['x'] = x
+            trace_data['y'] = y
+            trace_data['type'] = 'bar'
+            theplot['data'].append(trace_data)
         theplot['layout'] = dict()
+        if len(self.traces) > 1:
+            theplot['layout']['barmode'] = "group"
+        
         if self.title:
             theplot['layout']['title'] = self.title
         if self.ylab:
