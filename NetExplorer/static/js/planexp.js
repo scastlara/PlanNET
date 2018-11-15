@@ -26,7 +26,8 @@ experimentSummary = function(expName, targetDiv) {
         },
         success: function(data) {
             targetDiv.html(data);
-            targetDiv.slideToggle(250);
+            targetDiv.hide();
+            targetDiv.show(250);
         },
         error: function(data) {
             console.log(data.responseText);

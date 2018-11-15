@@ -102,7 +102,6 @@ def get_dataset(opts, cursor):
         cursor.execute("""SELECT id FROM NetExplorer_dataset 
                           WHERE name = %s""", (opts.dataset, ))
         r = cursor.fetchone()
-        print(r[0])
         return r[0]
     except TypeError:
         sys.stderr.write("Experiment %s does not exist in database!\n" % opts.dataset)
@@ -198,11 +197,24 @@ def upload_expression_relative(opts, experiment, dataset):
 
 # MAIN
 #--------------------------------------------------------------------------------
+sys.stderr.write("Reading options\n")
 opts = get_options()
+
+sys.stderr.write("Connecting to database.\n")
 db = connect_to_db(opts)
 cursor = db.cursor()
+
+sys.stderr.write("Getting experiment from database.\n")
 experiment = get_experiment(opts, cursor)
+
+sys.stderr.write("Getting Dataset from database\n")
 dataset = get_dataset(opts, cursor)
+
+sys.stderr.write("Uploading Absolute expression\n")
 upload_expression_absolute(opts, experiment, dataset)
+
+sys.stderr.write("Uploading relative expression\n")
 upload_expression_relative(opts, experiment, dataset)
+
+sys.stderr.write("Committing to database\n")
 db.commit()
