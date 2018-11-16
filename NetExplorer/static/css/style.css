@@ -2036,3 +2036,7 @@ kbd {
 .planexp-loading-img {
     width: 150px;
 }
+
+.input-grp-withlabel {
+    vertical-align: bottom !important;
+}

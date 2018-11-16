@@ -84,12 +84,19 @@
                 <h2 id="planexp-title">Gene Expression</h2>
                 <hr class="planexp-rule">
                 <div class="input-group gene-expression-search-container">
+                    <label for="genesymbol">Gene Symbol/s:</label>
                     <input type="text" id="gene-expression-search" class="form-control" name="genesymbol" placeholder="Enter Gene Symbols">
-                    <span class="input-group-btn">
+                    <span class="input-group-btn input-grp-withlabel">
                         <button id="plot-expression-btn" type="submit" value=" Send" class="btn btn-danger" id="submit">Plot expression</button>
                     </span>
                 </div>
+                <br>
+                <label for="gene-expression-ctype">Conditions:</label><br>
+                <select id="gene-expression-ctype" name="gene-expression-ctype" class="selectpicker ctype-select" title="Select Condition Type">
+                    <option value="Experimental" selected>Experimental</option>
+                </select>
 
+                <br>
                 <div id="expression-plot-container">
                     <div id="plot-genenotfound">
                         <span class="glyphicon glyphicon-warning-sign"></span>

@@ -82,6 +82,56 @@ fillConditions = function(expName, conditionSelects) {
 }
 
 
+
+/**
+ * fillCtypes
+ *   Summary:
+ *     Performs AJAX query to /experiment_condition_types,
+ *     retrieving the condition types for a given experiment.
+ *   Arguments:
+ *     - Experiment name string
+ *     - jQuery object of select objects to fill.
+ *   Returns:
+ *     - Nothing
+ */
+fillCtypes = function(expName, ctypeSelects) {
+
+    ctypeRow = function(conditionName) {
+        return "<option class='condition-option' value='" + 
+                conditionName + 
+                "'>" + 
+                conditionName + 
+                "</option>";
+    }
+
+    $.ajax({
+        type: "GET",
+        url: "/experiment_condition_types",
+        data: {
+            'experiment'    : expName,
+            'csrfmiddlewaretoken': '{{ csrf_token }}'
+        },
+        success: function(data) {
+            ctypeSelects.html(""); // clean previous HTML
+            var first = true;
+            for (const ctype in data) {
+                
+                ctypeName = data[ctype];
+                ctypeSelects.append(ctypeRow(ctypeName));
+                if (first) {
+                    $('.condition-option[value=' + ctypeName + ']').attr('selected', 'selected');
+                    first = false;
+                }
+            }
+
+            ctypeSelects.selectpicker('refresh');
+        },
+        error: function(data) {
+            console.log(data.responseText);
+        }
+    })
+}
+
 /**
  * experimentDGETable
  *   Summary:
@@ -170,7 +220,7 @@ experimentDGETable = function(expName, dataset, condition1, condition2, targetDi
  *   Returns:
  *     - Nothing
  */
-plotGeneExpression = function(expName, dataset, geneName, plotDivId) {
+plotGeneExpression = function(expName, dataset, geneName, ctype, plotDivId) {
     $("#expression-plot-loading").show();
     $("#" + plotDivId).html("");
     $.ajax({
@@ -179,7 +229,8 @@ plotGeneExpression = function(expName, dataset, geneName, plotDivId) {
         data: {
             'experiment': expName,
             'dataset'   : dataset,
-            'gene_name': geneName,
+            'gene_name' : geneName,
+            'ctype'     : ctype,
             'csrfmiddlewaretoken': '{{ csrf_token }}'
         },
         success: function(data) {
@@ -210,6 +261,7 @@ $("#select-experiment").on("change", function() {
     experimentSummary(expName, $("#planexp-summary"));
     getDatasets(expName, $("#select-dataset"));
     fillConditions(expName, $("select.condition-select"));
+    fillCtypes(expName, $("select.ctype-select"));
 
     // Hide on change 
     $("#planexp-dge-table-container").hide();
@@ -267,14 +319,15 @@ $("select.dge-table-condition-selects").on("change", function(){
  *     Plots gene expression 
  */
 $("#plot-expression-btn").on("click", function() {
-    var expName = $("#select-experiment").val();
+    var expName  = $("#select-experiment").val();
     var geneName = $("#gene-expression-search").val();
-    var dataset = $("#select-dataset").val();
+    var dataset  = $("#select-dataset").val();
+    var ctype    = $("#gene-expression-ctype").val();
 
     if (!geneName) {
         $("#plot-genenotfound").show(250);
         return;
     }
     $("#plot-genenotfound").hide();
-    plotGeneExpression(expName, dataset, geneName, "expression-plot");
+    plotGeneExpression(expName, dataset, geneName, ctype, "expression-plot");
 })

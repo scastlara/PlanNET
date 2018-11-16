@@ -20,6 +20,7 @@ from .get_fasta import *
 from .get_card import *
 from .experiment_summary import *
 from .experiment_conditions import *
+from .experiment_condition_types import *
 from .experiment_dge_table import *
 from .experiment_dataset import *
 from .plot_gene_expression import *

@@ -1619,6 +1619,7 @@ class BarPlot(PlotlyPlot):
                 trace_data['name'] = self.trace_names[trace_idx]
             for group in self.groups:
                 x.append(group)
+                
                 y.append(trace[group][0])
             trace_data['x'] = x
             trace_data['y'] = y
@@ -1683,7 +1684,7 @@ class ViolinPlot(PlotlyPlot):
                 values = self.traces[trace_idx][group]
                 values = self.jitter_and_round(values)
                 for value in values:
-                    x.append("c" + str(group))
+                    x.append(str(group))
                     y.append(value)
 
             trace_data['x'] = x

@@ -28,4 +28,5 @@ urlpatterns = [
     url(r'^experiment_dge_table', views.experiment_dge_table, name="experiment_dge_table"),
     url(r'^experiment_dataset', views.experiment_dataset, name="experiment_dataset"),
     url(r'^plot_gene_expression', views.plot_gene_expression, name="plot_gene_expression"),
+    url(r'^experiment_condition_types', views.experiment_condition_types, name="experiment_condition_types"),
 ]
