@@ -27,6 +27,38 @@ def do_barplot(experiment, dataset, conditions, gene_symbols):
             theplot.add_value(expression, condition.name, g_idx)
     return theplot
 
+
+def do_violin(experiment, dataset, conditions, gene_symbols):
+    '''
+    THE CHECK
+    dd_Smed_v6_7_0_1,dd_Smed_v6_702_0_1,dd_Smed_v6_659_0_1,dd_Smed_v6_920_0_1
+    '''
+    theplot = None
+    for g_idx, gene_symbol in enumerate(gene_symbols):
+        if theplot is None:
+            theplot = ViolinPlot()
+            theplot.add_trace_name(g_idx, gene_symbol)
+        else:
+            theplot.add_trace(g_idx)
+            theplot.add_trace_name(g_idx, gene_symbol)
+        
+        for condition in conditions:
+            samples = SampleCondition.objects.filter(condition=condition).values('sample')
+            expression = ExpressionAbsolute.objects.filter(
+                experiment=experiment, dataset=dataset, 
+                sample__in=samples,    gene_symbol=gene_symbol)
+            theplot.add_group(condition.name)
+            if expression:
+                for exp in expression:
+                    if exp.expression_value:
+                        theplot.add_value(exp.expression_value, condition.name, g_idx)
+                    else:
+                        theplot.add_value(0, condition.name, g_idx)
+            else:
+                expression = 0
+    return theplot
+
+
 def is_one_sample(experiment, conditions):
     '''
     Checks if there is only one sample per condition in experiment.
@@ -61,8 +93,11 @@ def plot_gene_expression(request):
             theplot = do_barplot(experiment, dataset, conditions, gene_symbols)
         else:
             # Do Violin plot
-            pass
-        
+            try:
+                conditions = Condition.objects.filter(experiment__name=exp_name, name__in= [ "1", "2", "3","4", "5", "6", "7"],cond_type=ConditionType.objects.get(name="Cluster",))
+                theplot = do_violin(experiment, dataset, conditions, gene_symbols)
+            except Exception as err:
+                print(err)
         if theplot is not None:
             response = theplot.plot()
         else:

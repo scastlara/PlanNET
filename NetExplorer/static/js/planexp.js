@@ -171,7 +171,8 @@ experimentDGETable = function(expName, dataset, condition1, condition2, targetDi
  *     - Nothing
  */
 plotGeneExpression = function(expName, dataset, geneName, plotDivId) {
-
+    $("#expression-plot-loading").show();
+    $("#" + plotDivId).html("");
     $.ajax({
         type: "GET",
         url: "/plot_gene_expression",
@@ -187,9 +188,8 @@ plotGeneExpression = function(expName, dataset, geneName, plotDivId) {
                 Plotly.newPlot(plotDivId, data.data, data.layout);
             } else {
                 $("#plot-genenotfound").show(250);
-                $("#" + plotDivId).html("");
             }
-            
+            $("#expression-plot-loading").hide();
         }
     });
 }
@@ -209,7 +209,11 @@ $("#select-experiment").on("change", function() {
     var expName = $(this).val();
     experimentSummary(expName, $("#planexp-summary"));
     getDatasets(expName, $("#select-dataset"));
-    fillConditions(expName, $("select.condition-select"))
+    fillConditions(expName, $("select.condition-select"));
+
+    // Hide on change 
+    $("#planexp-dge-table-container").hide();
+    $("#planexp-gene-expression").hide();
 });
 
 

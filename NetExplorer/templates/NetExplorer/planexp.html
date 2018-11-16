@@ -95,6 +95,9 @@
                         <span class="glyphicon glyphicon-warning-sign"></span>
                         Gene/Symbol not found
                     </div>
+                    <div id="expression-plot-loading">
+                            <img class="planexp-loading-img" src="{% static 'Images/loading-planexp.gif' %}"/>
+                    </div>
                     <div id="expression-plot">
                     </div>
                 </div>
@@ -108,7 +111,7 @@
     
     
     {% block scripts %}
-    <script src="{% static 'js/plotly-latest-min.js' %}"></script>
+    <script src="https://cdn.plot.ly/plotly-1.32.0.min.js"></script>
     <script src="{% static 'js/planexp.js' %}"></script>
     {% endblock scripts%}
     

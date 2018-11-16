@@ -2024,3 +2024,15 @@ kbd {
     width: 700px; 
     background-color: #FDD4D4;
 }
+
+#expression-plot-loading {
+    display: none;
+    position: absolute;
+    z-index: 2;
+    left: calc(50% - 75px);
+    margin-top: 175px;
+}
+
+.planexp-loading-img {
+    width: 150px;
+}

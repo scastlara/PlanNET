@@ -1641,12 +1641,63 @@ class ViolinPlot(PlotlyPlot):
     """
     Class for Plotly violinplots.
     Each violin (group) is made of multiple values.
+    Class for Plotly barplots.
+    traces = [
+        0 : {
+            group1: [ values ],
+            group2: [ values ],
+            ...
+        },
+        1 :
+            ...
+    ]
     """
     def __init__(self):
         super(ViolinPlot, self).__init__()
     
+
+    def jitter_and_round(self, values, jitter=0.01):
+        newvalues = list()
+        for idx, value in enumerate(values):
+            value = round(value, 3)
+            if idx % 2 == 0:
+                newvalues.append(value + jitter)
+            else:
+                newvalues.append(value - jitter)
+        return newvalues
+
+
     def plot(self):
-        pass
+        theplot = dict()
+        theplot['data'] = list()
+        for trace_idx, trace in enumerate(self.traces):
+            trace_data = dict()
+            trace_data['type'] = 'violin'
+            trace_data['box'] = {'visible': True}
+
+            x = list()
+            y = list()
+            if len(self.trace_names) > trace_idx:
+                trace_data['name'] = self.trace_names[trace_idx]
+            for group in sorted(self.traces[trace_idx]):
+                values = self.traces[trace_idx][group]
+                values = self.jitter_and_round(values)
+                for value in values:
+                    x.append("c" + str(group))
+                    y.append(value)
+
+            trace_data['x'] = x
+            trace_data['y'] = y
+            theplot['data'].append(trace_data)
+        theplot['layout'] = dict()
+        if len(self.traces) > 1:
+            theplot['layout']['violinmode'] = "group"
+        if self.title:
+            theplot['layout']['title'] = self.title
+        if self.ylab:
+            theplot['layout']['yaxis'] = dict()
+            theplot['layout']['yaxis']['title'] = self.ylab
+        return theplot
 
 
 
