@@ -102,7 +102,7 @@ def plot_gene_expression(request):
                 cond_type=ConditionType.objects.get(name=ctype))
             theplot = do_violin(experiment, dataset, conditions, gene_symbols, ctype)
 
-        if theplot is not None:
+        if theplot is not None and not theplot.is_empty():
             response = theplot.plot()
         else:
             response = None

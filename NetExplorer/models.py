@@ -1597,6 +1597,16 @@ class PlotlyPlot(object):
 
     def add_ylab(self, ylab):
         self.ylab = ylab
+    
+    def is_empty(self):
+        empty = True
+        for trace in self.traces:
+            for condition, expression in trace.iteritems():
+                if sum(expression):
+                    empty = False
+                    break
+        return empty
+                
 
 
 # ------------------------------------------------------------------------------

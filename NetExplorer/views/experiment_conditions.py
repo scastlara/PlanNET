@@ -11,8 +11,10 @@ def experiment_conditions(request):
             conditions = Condition.objects.filter(experiment__name=exp_name, cond_type__name=condition_type)
         else:
             conditions = Condition.objects.filter(experiment__name=exp_name)
-
-        serialized_conditions = serializers.serialize('json', conditions)
-        return HttpResponse(serialized_conditions, content_type="application/json")
+        
+        response = dict()
+        for cond in sorted(conditions):
+            response[cond.name] = cond.cond_type.name
+        return HttpResponse(json.dumps(response), content_type="application/json")
     else:
         return render(request, 'NetExplorer/404.html')

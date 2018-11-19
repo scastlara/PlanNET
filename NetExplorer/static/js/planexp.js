@@ -52,8 +52,10 @@ experimentSummary = function(expName, targetDiv) {
  */
 fillConditions = function(expName, conditionSelects) {
 
-    conditionRow = function(conditionName) {
-        return "<option class='condition-option' value='" + 
+    conditionRow = function(conditionName, ctype) {
+        return "<option class='condition-option " + 
+                ctype + "'" +
+                " value='" + 
                 conditionName + 
                 "'>" + 
                 conditionName + 
@@ -69,9 +71,12 @@ fillConditions = function(expName, conditionSelects) {
         },
         success: function(data) {
             conditionSelects.html(""); // clean previous HTML
-            for (const condition in data) {
-                conditionName = data[condition].fields.name;
-                conditionSelects.append(conditionRow(conditionName));
+            var keys = Object.keys(data);
+            keys.sort();
+            for(var i=0; i<keys.length; ++i){
+                var conditionName = keys[i];
+                var ctype = data[keys[i]];
+                conditionSelects.append(conditionRow(conditionName, ctype));
             }
             conditionSelects.selectpicker('refresh');
         },
@@ -246,6 +251,13 @@ plotGeneExpression = function(expName, dataset, geneName, ctype, plotDivId) {
 }
 
 
+showConditionTypes = function(selectDivClass, ctype) {
+    $("." + selectDivClass + " option").prop("selected", false);
+    $("." + selectDivClass + " option").hide();
+    $("." + selectDivClass + " " + "." + ctype).show();
+
+    $("." + selectDivClass).selectpicker("refresh");
+}
 
 //----------------------------------------------------
 /* BUTTONS AND EVENTS */
@@ -285,11 +297,13 @@ $("#select-dataset").on("change", function(){
     $("#expression-plot").html("");
     $("#plot-genenotfound").hide();
 
+    // Change DGE table ConditionType select
+    var ctype = $("#planexp-dge-ctype").val();
+    showConditionTypes("dge-table-condition-selects", ctype);
+
     // Show the necessary cards
     $("#planexp-dge-table-container").show(250);
     $("#planexp-gene-expression").show(250);
-
-    
 });
 
 
@@ -331,3 +345,9 @@ $("#plot-expression-btn").on("click", function() {
     $("#plot-genenotfound").hide();
     plotGeneExpression(expName, dataset, geneName, ctype, "expression-plot");
 })
+
+
+$("#planexp-dge-ctype").on("change", function(){
+    var ctype = $("#planexp-dge-ctype").val();
+    showConditionTypes("dge-table-condition-selects", ctype);
+});
