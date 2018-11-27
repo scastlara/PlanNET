@@ -1748,7 +1748,7 @@ class ScatterPlot(object):
             trace = self.traces[trace_name]
             trace_data = dict()
             if str(trace_name).isdigit():
-                trace_data['name'] = 'c' + str(trace.name)
+                trace_data['name'] = 'Cluster ' + str(trace.name)
             else:
                 trace_data['name'] = str(trace.name)
             trace_data['x'] = trace.x

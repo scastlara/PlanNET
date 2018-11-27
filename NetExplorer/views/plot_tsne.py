@@ -8,14 +8,14 @@ def do_tsne(experiment, dataset, conditions, gene_symbol, ctype, with_color):
     for condition in conditions:
         trace_name = condition.name
         if condition.defines_cell_type is True and condition.cell_type != "Unknown":
-            trace_name = condition.cell_type + " (c" + str(condition.name) + ")"
+            trace_name = condition.cell_type + " (Cluster " + str(condition.name) + ")"
         theplot.add_trace(trace_name)
         samples = Sample.objects.filter(experiment=experiment, samplecondition__condition=condition)
         cell_positions = CellPlotPosition.objects.filter(
             experiment=experiment, dataset=dataset, 
             sample__in=samples
         )
-        
+
         cell_order = list()
         for cell in cell_positions:
             theplot.add_x(trace_name, float(cell.x_position))
