@@ -24,3 +24,4 @@ from .experiment_condition_types import *
 from .experiment_dge_table import *
 from .experiment_dataset import *
 from .plot_gene_expression import *
+from .plot_tsne import *

@@ -7,7 +7,7 @@ def get_card(request, symbol=None, database=None):
     if request.method == 'GET' and request.is_ajax():
         symbol    = request.GET['target']
         database  = request.GET['targetDB']
-
+        print("AJAX")
     try:
         card_node = query_node(symbol, database)
         if database != "Human":
@@ -23,7 +23,6 @@ def get_card(request, symbol=None, database=None):
             card_node.get_summary()
     except (NodeNotFound, IncorrectDatabase):
         return render_to_response('NetExplorer/not_interactome.html')
-
     if database != "Human":
         response = {
             'node'      : card_node,

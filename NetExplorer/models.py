@@ -1544,9 +1544,9 @@ class Document(models.Model):
 
 
 # ------------------------------------------------------------------------------
-class PlotlyPlot(object):
+class GenExpPlot(object):
     """
-    Class for Plotly barplots.
+    Class for Plotly barplots and violins.
     traces = [
         0 : {
             group1: [ values ],
@@ -1559,14 +1559,17 @@ class PlotlyPlot(object):
     """
     def __init__(self):
         self.traces = list()
+        self.traces_set = set()
         self.groups = list()
+        self.groups_set = set()
         self.title  = str()
         self.ylab   = str()
         self.trace_names = list()
 
     def add_group(self, group):
-        if group not in self.groups:
+        if group not in self.groups_set:
             self.groups.append(group)
+            self.groups_set.add(group)
         
         for trace in self.traces:
             if group not in trace:
@@ -1610,7 +1613,7 @@ class PlotlyPlot(object):
 
 
 # ------------------------------------------------------------------------------
-class BarPlot(PlotlyPlot):
+class BarPlot(GenExpPlot):
     """
     Class for Plotly bar plots.
     Each bar (group) consists of only one value.
@@ -1648,7 +1651,7 @@ class BarPlot(PlotlyPlot):
 
 
 # ------------------------------------------------------------------------------
-class ViolinPlot(PlotlyPlot):
+class ViolinPlot(GenExpPlot):
     """
     Class for Plotly violinplots.
     Each violin (group) is made of multiple values.
@@ -1709,6 +1712,79 @@ class ViolinPlot(PlotlyPlot):
             theplot['layout']['yaxis'] = dict()
             theplot['layout']['yaxis']['title'] = self.ylab
         return theplot
+
+
+class ScatterPlot(object):
+    '''
+    Class for Plotly scatterplots
+    '''
+    def __init__(self):
+        self.traces = dict()
+    
+    def add_trace(self, name):
+        if name not in self.traces:
+            self.traces[name] = PlotlyTrace(name)
+            self.traces[name].order = len(self.traces)
+    
+    def add_x(self, trace_name, x):
+        if trace_name in self.traces:
+            self.traces[trace_name].x.append(x)
+        else:
+            raise(KeyError("Trace %s not found in ScatterPlot!" % trace_name))
+
+    def add_y(self, trace_name, y):
+        if trace_name in self.traces:
+            self.traces[trace_name].y.append(y)
+    
+    def add_name(self, trace_name, name):
+        if trace_name in self.traces:
+            self.traces[trace_name].names.append(name)
+
+    def plot(self):
+        theplot = dict()
+        theplot['data'] = list()
+        theplot['layout'] = dict()
+        for trace_name in sorted(self.traces.keys(), key=lambda n: self.traces[n].order):
+            trace = self.traces[trace_name]
+            trace_data = dict()
+            if str(trace_name).isdigit():
+                trace_data['name'] = 'c' + str(trace.name)
+            else:
+                trace_data['name'] = str(trace.name)
+            trace_data['x'] = trace.x
+            trace_data['y'] = trace.y
+            trace_data['type'] = trace.type
+            trace_data['mode'] = trace.mode
+            if trace.color:
+                trace_data['marker'] = { 'color': list(trace.color) }
+            if trace.names:
+                trace_data['text'] = trace.names
+            theplot['data'].append(trace_data)
+        return theplot
+    
+    def add_color_to_trace(self, trace_name, colors):
+        if trace_name in self.traces:
+            self.traces[trace_name].color = colors
+        else:
+            raise(KeyError("Trace %s not found in ScatterPlot!" % trace_name))
+
+
+
+class PlotlyTrace(object):
+    '''
+    Class for plotly traces
+    '''
+    def __init__(self, name):
+        self.name = name
+        self.order = int()
+        self.x = list()
+        self.y = list()
+        self.names = list()
+        self.mode = 'markers'
+        self.type = 'scatter'
+        self.color = list()
+
+    
 
 
 
@@ -2002,6 +2078,13 @@ class ExpressionAbsolute(models.Model):
         name_str += self.units
         return name_str
     
+    
+class CellPlotPosition(models.Model):
+    experiment = models.ForeignKey(Experiment, on_delete=models.CASCADE)
+    sample = models.ForeignKey(Sample, on_delete=models.CASCADE)
+    dataset = models.ForeignKey(Dataset, on_delete=models.CASCADE)
+    x_position = models.FloatField()
+    y_position = models.FloatField()
 
 
 # ------------------------------------------------------------------------------

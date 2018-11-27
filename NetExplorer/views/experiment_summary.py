@@ -15,7 +15,10 @@ def experiment_summary(request):
                 condition_list[condition.cond_type.name] = list()
             condition_list[condition.cond_type.name].append(condition)
 
-        response = { 'experiment': experiment, 'conditions': condition_list}
-        return render(request, 'NetExplorer/experiment_summary.html', response)
+        response = dict()
+        response_to_render = { 'experiment': experiment, 'conditions': condition_list }
+        response['html'] = render_to_string('NetExplorer/experiment_summary.html', response_to_render)
+        response['exp_type'] = experiment.exp_type.exp_type
+        return HttpResponse(json.dumps(response), content_type="application/json")
     else:
         return render(request, 'NetExplorer/404.html')

@@ -2004,12 +2004,19 @@ kbd {
 #select-dataset { display: none; }
 #planexp-gene-expression { display: none; }
 .gene-expression-search-container { width: 50%; }
-#expression-plot-container { 
+#plot-container { 
     width: 100%; 
     margin-top: 50px;
     text-align: center; 
 }
 #expression-plot { 
+    display: inline-block; 
+    height: 500px; 
+    min-width: 700px; 
+    background-color: #f4f4f4; 
+}
+
+#tsne-plot {
     display: inline-block; 
     height: 500px; 
     min-width: 700px; 
@@ -2025,7 +2032,24 @@ kbd {
     background-color: #FDD4D4;
 }
 
+#tsneplot-genenotfound {
+    display: none; 
+    margin: auto;
+    font-size: 18px;
+    padding: 8px;
+    width: 700px; 
+    background-color: #FDD4D4;  
+}
+
 #expression-plot-loading {
+    display: none;
+    position: absolute;
+    z-index: 2;
+    left: calc(50% - 75px);
+    margin-top: 175px;
+}
+
+#tsne-plot-loading {
     display: none;
     position: absolute;
     z-index: 2;
@@ -2040,3 +2064,12 @@ kbd {
 .input-grp-withlabel {
     vertical-align: bottom !important;
 }
+
+#planexp-tsne { display: none; }
+
+
+#planexp-tsne input[type=range]::-moz-range-track { 
+    background: #E7E7E7;
+}
+
+#plot-tsne-btn    { width: 125px; }

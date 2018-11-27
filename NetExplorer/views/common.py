@@ -1,5 +1,6 @@
 from django.shortcuts   import render
 from django.shortcuts   import render_to_response
+from django.template.loader import render_to_string
 from django.http        import HttpResponse
 from django.template    import RequestContext
 from NetExplorer.models import *
@@ -7,10 +8,13 @@ from subprocess import Popen, PIPE, STDOUT
 from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.db import connection
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core import serializers
 from statistics import stdev, mean
+from sklearn.manifold import TSNE
+from sklearn.decomposition import PCA
 import tempfile
 import textwrap
 import json
@@ -21,6 +25,9 @@ import time
 import requests
 import time
 import os
+import numpy as np
+import random
+
 
 # -----------------------
 # CONSTANTS

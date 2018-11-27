@@ -28,6 +28,7 @@ def do_barplot(experiment, dataset, conditions, gene_symbols):
     return theplot
 
 
+import time
 def do_violin(experiment, dataset, conditions, gene_symbols, ctype):
     '''
     THE CHECK
@@ -47,11 +48,14 @@ def do_violin(experiment, dataset, conditions, gene_symbols, ctype):
                 condname = "c" + str(condition.name)
             else:
                 condname = str(condition.name)
+
             samples = SampleCondition.objects.filter(condition=condition).values('sample')
             expression = ExpressionAbsolute.objects.filter(
                 experiment=experiment, dataset=dataset, 
                 sample__in=samples,    gene_symbol=gene_symbol)
             theplot.add_group(condname)
+
+            start = time.time()
             if expression:
                 for exp in expression:
                     if exp.expression_value:
@@ -88,7 +92,6 @@ def plot_gene_expression(request):
         gene_symbols = list()
         for gene_name in gene_names:
             gene_symbols.extend(disambiguate_gene(gene_name, dataset))
-
         # Get Experiment and conditions
         experiment = Experiment.objects.get(name=exp_name)
         dataset = Dataset.objects.get(name=dataset)
@@ -104,6 +107,7 @@ def plot_gene_expression(request):
 
         if theplot is not None and not theplot.is_empty():
             response = theplot.plot()
+            print("PLOTTING")
         else:
             response = None
 

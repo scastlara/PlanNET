@@ -58,6 +58,10 @@ def get_options():
         help='Relative expression file', required=True
     )
     parser.add_argument(
+        '-t','--tsne',
+        help='TSNE file', required=True
+    )
+    parser.add_argument(
         '-d','--dataset',
         help='Dataset name', required=True
     )
@@ -195,6 +199,19 @@ def upload_expression_relative(opts, experiment, dataset):
                 cols[5], cols[6], cols[7])
 
 
+def upload_tsne(opts, experiment, dataset):
+    with open(opts.tsne, "r") as tsne_fh:
+        for line in tsne_fh:
+            line = line.strip()
+            sample_name, x, y = line.split("\t")
+            cursor.execute("""SELECT id, sample_name FROM NetExplorer_sample 
+                              WHERE sample_name = %s""", (sample_name, ))
+            r = cursor.fetchone()
+            sample_id = r[0]
+            cursor.execute("""INSERT INTO NetExplorer_cellplotposition (experiment_id, sample_id, dataset_id, x_position, y_position) 
+            VALUES (%s, %s, %s, %s, %s)""", (experiment, sample_id, dataset, x, y))
+            
+
 # MAIN
 #--------------------------------------------------------------------------------
 sys.stderr.write("Reading options\n")
@@ -215,6 +232,9 @@ upload_expression_absolute(opts, experiment, dataset)
 
 sys.stderr.write("Uploading relative expression\n")
 upload_expression_relative(opts, experiment, dataset)
+
+sys.stderr.write("Uploading cell plot positions (t-SNE)\n")
+upload_tsne(opts, experiment, dataset)
 
 sys.stderr.write("Committing to database\n")
 db.commit()
