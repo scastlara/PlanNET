@@ -209,9 +209,15 @@ var PlanExp = (function() {
                 'csrfmiddlewaretoken': '{{ csrf_token }}'
             },
             success: function(data) {
-                targetDiv.html(data);
-                targetDiv.hide();
-                targetDiv.show(250);
+                if (jQuery.isEmptyObject(data)) {
+                    targetDiv.hide();
+                    $("#dge-table-notfound").show(250);
+                } else {
+                    $("#dge-table-notfound").hide();
+                    targetDiv.html(data);
+                    targetDiv.hide();
+                    targetDiv.show(250);
+                }
             }
         });
     }
