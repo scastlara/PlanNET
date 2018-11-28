@@ -17,7 +17,7 @@ def map_expression(request):
         response['experiment'] = ""
         response['expression']       = ""
         try:
-            experiment = Experiment(request.GET['experiment'])
+            experiment = oldExperiment(request.GET['experiment'])
             experiment.color_gradient(from_color, to_color, comp_type)
             response['experiment'] = experiment.to_json()
         except ExperimentNotFound as err:
