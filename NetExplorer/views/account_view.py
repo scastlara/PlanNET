@@ -1,10 +1,10 @@
-from common import *
+from .common import *
 
 def account_view(request):
     """
     View for account options
     """
-    if request.user.is_authenticated():
+    if request.user.is_authenticated:
         if request.method == "POST":
             # Check that everything was sent
             if "previous" in request.POST and "pwd1" in request.POST and "pwd2" in request.POST:

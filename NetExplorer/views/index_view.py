@@ -1,4 +1,4 @@
-from common import *
+from .common import *
 
 def index_view(request):
     '''

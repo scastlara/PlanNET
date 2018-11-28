@@ -283,22 +283,22 @@
         <div id="cyt-controls">
             <div class="user-in-controls">
                 {% if user.is_authenticated %}
-                    <a href="{% url account %}"><span class="glyphicon glyphicon-user"></span> {{ user.username }}</a>
+                    <a href="{% url 'account' %}"><span class="glyphicon glyphicon-user"></span> {{ user.username }}</a>
                 {% endif %}
             </div>
             <div id="cyt-controls-header">
                 <div class="back-div">
-                    <a href="{% url index_view %}" class="info-tooltip"
+                    <a href="{% url 'index_view' %}" class="info-tooltip"
                     title="Back to PlanNET"><span class="glyphicon glyphicon-home"></span></a>
                     <hr>
-                    <a target="_blank" href="{% url tutorial %}#netexplorer" class="info-tooltip"
+                    <a target="_blank" href="{% url 'tutorial' %}#netexplorer" class="info-tooltip"
                     title="Go to Tutorial"><span class="glyphicon glyphicon-question-sign"></span></a>
                 </div>
                 <img class="app-icon-inside" id="cyt-explorer-icon" src="{% static 'Images/network-icon.png' %}"/>
 
                 <!-- Add Node Form-->
                 <div id="add-node-container">
-                    <form id="add_node" class= "form" method="GET" action="{% url net_explorer %}">
+                    <form id="add_node" class= "form" method="GET" action="{% url 'net_explorer' %}">
                         {% csrf_token %}
                         <div class="form-group">
                             <input type="text" class="form-control netexplorer-form" name="genesymbol" placeholder="Enter Symbol">
@@ -607,7 +607,7 @@
                         </div>
 
                         <div id="upload-graph-container" class="col-md-3 cyto-button-ind">
-                            <form enctype="multipart/form-data" method="post" id="upload-graph-form" action="{% url net_explorer %}">
+                            <form enctype="multipart/form-data" method="post" id="upload-graph-form" action="{% url 'net_explorer' %}">
                                 {% csrf_token %}
                                 <label for="myfile" class="btn btn-default"><span class="glyphicon glyphicon-open" aria-hidden="true"></span></label>
                                 <input type="file" onchange="this.form.submit()" name="myfile" id="myfile" class="upload" style="box-sizing:border-box;">
@@ -674,6 +674,7 @@
 
 
         <!-- SCRIPTS -->
+        <script src="{% static 'js/root.js' %}"></script>
         <script src="{% static 'js/jquery-min.js' %}"></script>
         <script src="{% static 'js/cytoscape.js' %}"></script>
         <script src="{% static 'js/netexplorer-cytoscape-definition.js' %}"></script>

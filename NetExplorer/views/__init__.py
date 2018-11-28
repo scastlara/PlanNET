@@ -15,7 +15,6 @@ from .planexp import *
 from .register import *
 from .show_connections import *
 from .tutorial import *
-from .upload_graph import *
 from .get_fasta import *
 from .get_card import *
 from .experiment_summary import *

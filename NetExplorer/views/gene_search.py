@@ -1,4 +1,4 @@
-from common import *
+from .common import *
 
 def gene_search(request):
     '''

@@ -777,14 +777,14 @@ class ServedFile(object):
         '''
         Writes to temp file
         '''
-        with open(self.filename.name, "wb") as fh:
+        with open(self.filename.name, "w") as fh:
             if self.header is not None:
                 fh.write(self.header)
             for elem in self.elements:
                 if self.fformat == 'csv':
                     fh.write( "%s\n" % ",".join(elem) )
                 elif self.fformat == 'fasta':
-                    formatseq = "".join(elem[1][i:i+64] + "\n" for i in xrange(0,len(elem[1]), 64)) 
+                    formatseq = "".join(elem[1][i:i+64] + "\n" for i in range(0,len(elem[1]), 64)) 
                     fh.write(">%s|%s\n%s" % (elem[0], elem[2], formatseq))
                 else:
                     raise InvalidFormat(self.fformat)
@@ -796,7 +796,7 @@ class ServedFile(object):
         '''
         if self.written is False:
             self.write(what)
-        wrapper = FileWrapper(file(self.filename.name))
+        wrapper = FileWrapper(open(self.filename.name))
         response = HttpResponse(wrapper, content_type='text/plain')
         response['Content-Disposition'] = 'attachment; filename=%s' % self.oname
         response['Content-Length'] = os.path.getsize(self.filename.name)
@@ -1604,7 +1604,7 @@ class GenExpPlot(object):
     def is_empty(self):
         empty = True
         for trace in self.traces:
-            for condition, expression in trace.iteritems():
+            for condition, expression in trace.items():
                 if sum(expression):
                     empty = False
                     break
@@ -1908,7 +1908,7 @@ class Dataset(models.Model):
         Returns QuerySet of allowed datasets for a given user
         '''
         public_datasets = cls.objects.filter(public=True).order_by('-year')
-        if not user.is_authenticated():
+        if not user.is_authenticated:
             # Return only public datasets
             return public_datasets
         else:
@@ -1954,7 +1954,7 @@ class Experiment(models.Model):
         Returns QuerySet of allowed experiments for a given user
         '''
         public_experiments = cls.objects.filter(public=True).order_by('name')
-        if not user.is_authenticated():
+        if not user.is_authenticated:
             # Return only public datasets
             return public_experiments
         else:
@@ -2091,7 +2091,7 @@ class CellPlotPosition(models.Model):
 class ExpressionRelative(models.Model):
     experiment = models.ForeignKey(Experiment, on_delete=models.CASCADE)
     condition1 = models.ForeignKey(Condition, on_delete=models.CASCADE, related_name='condition1_expressionrelative_set')
-    condition2 = models.ForeignKey(Condition, on_delete=models.CASCADE, related_name='condition1_expressionrelative_setsubcondition_')
+    condition2 = models.ForeignKey(Condition, on_delete=models.CASCADE, related_name='condition1_expressionrelative_setsubcondition')
     cond_type = models.ForeignKey(ConditionType, on_delete=models.CASCADE)
     dataset = models.ForeignKey(Dataset, on_delete=models.CASCADE)
     gene_symbol = models.CharField(max_length=50)

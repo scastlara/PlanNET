@@ -19,7 +19,7 @@
         <div id="search-wrapper">
             <img class="app-icon-inside" src="{% static 'Images/gene-finder-icon.png' %}"/>
             <div class="panel-body app-panel">
-                <form class= "form-inline" method="GET" action="{% url gene_search %}">
+                <form class= "form-inline" method="GET" action="{% url 'gene_search' %}">
                     {% csrf_token %}
                     <div class="form-group">
                         <input type="text" class="form-control" name="genesymbol" placeholder="Enter Symbol">
@@ -44,7 +44,7 @@
                 </div>
 
                 <br><br>
-                <a class="tutorial-icon-link" href="{% url tutorial %}#genesearch">
+                <a class="tutorial-icon-link" href="{% url 'tutorial' %}#genesearch">
                     <div class="genesearch-gototutorial">
                         <span class="glyphicon glyphicon-question-sign legend-icon" aria-hidden="true"></span>
                         <br>Go to tutorial

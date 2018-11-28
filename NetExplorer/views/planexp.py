@@ -1,4 +1,4 @@
-from common import *
+from .common import *
 
 @login_required
 def planexp(request):

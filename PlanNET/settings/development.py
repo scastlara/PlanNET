@@ -104,7 +104,7 @@ TEMPLATE_LOADERS = (
 #     'django.template.loaders.eggs.Loader',
 )
 
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -112,23 +112,39 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
-)
+]
 
 ROOT_URLCONF = 'PlanNET.urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.
 WSGI_APPLICATION = 'PlanNET.wsgi.application'
 
-TEMPLATE_DIRS = (
-    BASE_DIR + "NetExplorer/templates",
-    BASE_DIR + "NetExplorer/templates/NetExplorer",
-    BASE_DIR + "templates"
-    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
-)
+TEMPLATES = [
+    {
+      'BACKEND': 'django.template.backends.django.DjangoTemplates',
+      'APP_DIRS': True,
+      'DIRS': [os.path.join(BASE_DIR, 'templates'), os.path.join(BASE_DIR, 'NetExplorer/templates')],
+      'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+            ],
+        },
+    },
+]
 
-INSTALLED_APPS = (
+#TEMPLATE_DIRS = (
+#    BASE_DIR + "NetExplorer/templates",
+#    BASE_DIR + "NetExplorer/templates/NetExplorer",
+#    BASE_DIR + "templates"
+#    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
+#    # Always use forward slashes, even on Windows.
+#    # Don't forget to use absolute paths, not relative paths.
+#)
+
+INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -138,11 +154,10 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'NetExplorer',
     # Uncomment the next line to enable the admin:
-     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
      'django.contrib.admindocs',
-)
-AUTH_USER_MODEL = 'NetExplorer.User'
+]
+#AUTH_USER_MODEL = 'NetExplorer.User'
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to

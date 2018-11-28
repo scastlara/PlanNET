@@ -1,4 +1,4 @@
-from common import *
+from .common import *
 
 def do_tsne(experiment, dataset, conditions, gene_symbol, ctype, with_color):
     '''

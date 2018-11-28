@@ -10,14 +10,14 @@
     <h2>Data downloader</h2>
     <p>Download PlanNET sequences and annotations in bulk</p>
 
-    <form id="download-seqs" method="POST" action="{% url downloader %}">
+    <form id="download-seqs" method="POST" action="{% url 'downloader' %}">
         {% csrf_token %}
         <label for="comment">Identifiers (separated by commas):</label>
         <textarea class="form-control idtextarea" name="identifiers" cols="5" rows="5" id="identifiers"></textarea>
         <br>
         <select id="download-data" name="database" class="selectpicker" title="Database">
             {% for db in databases %}
-                <option value="{{ db }}">{{ db }}</option>
+                <option value="{{ db.name }}">{{ db.name }}</option>
             {% endfor %}
         </select>
         <br>

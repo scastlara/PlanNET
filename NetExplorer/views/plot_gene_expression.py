@@ -1,4 +1,4 @@
-from common import *
+from .common import *
 
 def do_barplot(experiment, dataset, conditions, gene_symbols):
     """

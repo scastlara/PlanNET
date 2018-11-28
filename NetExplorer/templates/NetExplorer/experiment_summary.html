@@ -10,7 +10,7 @@
             {% else %}
                 <img id="Single-Cell" src="{% static 'Images/sc_type.png' %}">
             {% endif %}
-            {{ experiment.exp_type }}
+            {{ experiment.exp_type.exp_type }}
         </span>
     </div>
     <div class="col-sm-12"><br></div>
@@ -39,3 +39,5 @@
         </div>
     </div>
 </div>
+
+<script src="{% static 'js/root.js' %}"></script>

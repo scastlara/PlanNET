@@ -36,7 +36,7 @@ function addNode(symbol, database, type, cyobj) {
     // neighbours as a JSON object.
     $.ajax({
         type: "GET",
-        url: "/net_explorer",
+        url: window.ROOT + "/net_explorer",
         cache: true,
         data: {
             'genesymbol': symbol,

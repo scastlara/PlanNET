@@ -26,7 +26,7 @@
                 <div id="logo-container">
                     <div class="row row-eq-height">
                         <div class="col-sm-8">
-                            <a href="{% url index_view %}"> <img id="logoheader" src="{% static 'Images/logo-new-version2.png' %}"/> </a>
+                            <a href="{% url 'index_view' %}"> <img id="logoheader" src="{% static 'Images/logo-new-version2.png' %}"/> </a>
                         </div>
                         <div class="col-sm-4 company-logo-container-parent">
                             <div class="company-logo-container">
@@ -40,29 +40,29 @@
                 <nav class="navbar navbar-plannet">
                     <div class="container-fluid">
                         <ul class="nav navbar-nav">
-                            <li id="navbar-home"><a href="{% url index_view %}">Home</a></li>
-                            <li id="navbar-tutorial"><a href="{% url tutorial %}">Tutorial</a></li>
+                            <li id="navbar-home"><a href="{% url 'index_view' %}">Home</a></li>
+                            <li id="navbar-tutorial"><a href="{% url 'tutorial' %}">Tutorial</a></li>
                             <li class="dropdown">
                                 <a class="dropdown-toggle" data-toggle="dropdown" href="#">Tools
                                     <span class="caret"></span>
                                 </a>
                                 <ul class="dropdown-menu">
-                                    <li><a href="{% url gene_search %}">Gene Search</a></li>
-                                    <li><a href="{% url blast %}">Blast</a></li>
-                                    <li><a href="{% url net_explorer %}">Net Explorer</a></li>
-                                    <li><a href="{% url path_finder %}">Pathway Finder</a></li>
+                                    <li><a href="{% url 'gene_search' %}">Gene Search</a></li>
+                                    <li><a href="{% url 'blast' %}">Blast</a></li>
+                                    <li><a href="{% url 'net_explorer' %}">Net Explorer</a></li>
+                                    <li><a href="{% url 'path_finder' %}">Pathway Finder</a></li>
                                 </ul>
                             </li>
-                            <li id="navbar-datasets"><a href="{% url datasets %}">Datasets</a></li>
-                            <li id="navbar-downloads"><a href="{% url downloads %}">Downloads</a></li>
-                            <li id="navbar-about"><a href="{% url about %}">About</a></li>
+                            <li id="navbar-datasets"><a href="{% url 'datasets' %}">Datasets</a></li>
+                            <li id="navbar-downloads"><a href="{% url 'downloads' %}">Downloads</a></li>
+                            <li id="navbar-about"><a href="{% url 'about' %}">About</a></li>
                         </ul>
                         <ul class="nav navbar-nav navbar-right">
                             {% if user.is_authenticated %}
-                                <li id="navbar-login"><a href="{% url account %}"><span class="glyphicon glyphicon-user"></span> {{ user.username }}</a></li>
-                                <li id="navbar-logout"><a href="{% url logout %}"><span class="glyphicon glyphicon-log-out"></span> Log out</a></li>
+                                <li id="navbar-login"><a href="{% url 'account' %}"><span class="glyphicon glyphicon-user"></span> {{ user.username }}</a></li>
+                                <li id="navbar-logout"><a href="{% url 'logout' %}"><span class="glyphicon glyphicon-log-out"></span> Log out</a></li>
                             {% else %}
-                                <li id="navbar-login"><a href="{% url login %}"><span class="glyphicon glyphicon-user"></span> Login</a></li>
+                                <li id="navbar-login"><a href="{% url 'login' %}"><span class="glyphicon glyphicon-user"></span> Login</a></li>
                             {% endif %}
                     </div>
                 </nav>
@@ -109,6 +109,7 @@
 
     </div>
 
+        <script src="{% static 'js/root.js' %}"></script>
         <script src="{% static 'js/jquery-min.js' %}"></script>
         <script src="{% static 'js/jquery-data-tables-min.js' %}"></script>
         <script src="{% static 'js/bootstrap-min.js' %}"></script>

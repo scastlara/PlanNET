@@ -1,4 +1,4 @@
-from common import *
+from .common import *
 
 def experiment_conditions(request):
     """
@@ -13,7 +13,7 @@ def experiment_conditions(request):
             conditions = Condition.objects.filter(experiment__name=exp_name)
         
         response = dict()
-        for cond in sorted(conditions):
+        for cond in sorted(conditions, key=lambda x: x.name):
             response[cond.name] = cond.cond_type.name
         return HttpResponse(json.dumps(response), content_type="application/json")
     else:
