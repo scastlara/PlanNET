@@ -107,7 +107,6 @@ def plot_gene_expression(request):
 
         if theplot is not None and not theplot.is_empty():
             response = theplot.plot()
-            print("PLOTTING")
         else:
             response = None
 

@@ -22,7 +22,7 @@ def do_tsne(experiment, dataset, conditions, gene_symbol, ctype, with_color):
             theplot.add_y(trace_name, float(cell.y_position))
             cell_name = cell.sample.sample_name
             theplot.add_name(trace_name, cell_name)
-            cell_order.append(cell_name)
+            cell_order.append(cell.sample.id)
 
         if with_color is True:
             # Get Gene expression for cells
@@ -30,9 +30,12 @@ def do_tsne(experiment, dataset, conditions, gene_symbol, ctype, with_color):
                 experiment=experiment, dataset=dataset,
                 sample__in=samples, gene_symbol=gene_symbol
             )
-            cell_expression = list(cell_expression)
-            cell_expression.sort(key=lambda cell: cell_order.index(cell.sample.sample_name))
-            cell_expression = [ cell.expression_value for cell in cell_expression ]
+            # We need a dictionary with {cell_id : cell_expression}
+            # so we can keep the same order as cell positions (in cell_order) 
+            thedict = dict()
+            for cellexp in cell_expression:
+                thedict[cellexp.sample.id] = cellexp.expression_value
+            cell_expression = [ thedict[cell_idx] for cell_idx in cell_order ]
             theplot.add_color_to_trace(trace_name, cell_expression)
     return theplot
 
