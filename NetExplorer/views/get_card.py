@@ -7,7 +7,6 @@ def get_card(request, symbol=None, database=None):
     if request.method == 'GET' and request.is_ajax():
         symbol    = request.GET['target']
         database  = request.GET['targetDB']
-        print("AJAX")
     try:
         card_node = query_node(symbol, database)
         if database != "Human":

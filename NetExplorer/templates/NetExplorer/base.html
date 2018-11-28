@@ -17,7 +17,11 @@
     </head>
 
     <body>
+        
+        {% block toc %}
+        {% endblock toc %}
         <div id="page-container">
+
             <div id="content">
                 <div id="logo-container">
                     <div class="row row-eq-height">
@@ -63,6 +67,7 @@
                     </div>
                 </nav>
 
+                
 
                 <div id="body-wrapper">
                     {% block content %}

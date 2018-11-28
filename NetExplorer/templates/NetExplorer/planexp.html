@@ -5,6 +5,19 @@
 {% block title %}- PlanExp{% endblock title %}
 
 
+{% block toc %}
+<nav id="planexp-toc-container" class="col-sm-2">
+    <ul id="planexp-toc" class="nav nav-pills nav-stacked" data-spy="affix" data-offset-top="420">
+        <li><a class="planexp-toc-link" id="select-experiment-div-toc" href="#select-experiment-div">Select Experiment</a></li>
+        <li><a class="planexp-toc-link" id="planexp-summary-toc" href="#planexp-summary">Summary</a></li>
+        <li><a class="planexp-toc-link" id="planexp-dge-table-container-toc" href="#planexp-dge-table-container">DGE table</a></li>
+        <li><a class="planexp-toc-link" id="planexp-gene-expression-toc" href="#planexp-gene-expression">Gene Expression Plot</a></li>
+        <li><a class="planexp-toc-link" id="planexp-tsne-toc" href="#planexp-tsne">t-SNE Plot</a></li>
+        <hr>
+        <li id="back_home"><a href="{% url index_view %}" ><span class="glyphicon glyphicon-triangle-left"></span>Go back Home</a></li>
+    </ul>
+</nav>
+{% endblock toc %}
 
 {% block content %}
 <!-- HIDDEN CARD OVERLAY -->
@@ -23,6 +36,8 @@
    </div>
     
     
+
+
     <div class="panel panel-planexp">
         <div class="panel-heading">
             <div class="row row-eq-height">
@@ -36,7 +51,7 @@
         </div>
         <div class="panel-body">
             <!-- Select experiment card -->
-            <div class="planexp-card">
+            <div id="select-experiment-div" class="planexp-card">
                 <div class="planexp-h1">Select Experiment and Database:<hr class="planexp-rule"></div>
                 <form class= "form-inline" method="GET" action="#">
                     {% csrf_token %}
@@ -180,6 +195,7 @@
     
     {% block scripts %}
     <script src="https://cdn.plot.ly/plotly-1.32.0.min.js"></script>
+    <script src="{% static 'js/scrollTo.js' %}"></script>
     <script src="{% static 'js/planexp.js' %}"></script>
     {% endblock scripts%}
     

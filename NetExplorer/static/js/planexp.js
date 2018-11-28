@@ -315,10 +315,15 @@ var PlanExp = (function() {
         fillConditions(expName, $("select.condition-select"));
         fillCtypes(expName, $("select.ctype-select"));
 
-        // Hide on change 
+        // Hide and show on change 
+        $("#planexp-summary-toc").show();
+        $('#planexp-summary-toc').css('display', 'inline-block');
         $("#planexp-dge-table-container").hide();
+        $("#planexp-dge-table-container-toc").hide();
         $("#planexp-gene-expression").hide();
+        $("#planexp-gene-expression-toc").hide();
         $("#planexp-tsne").hide();
+        $("#planexp-tsne-toc").hide();
     });
 
 
@@ -345,8 +350,14 @@ var PlanExp = (function() {
         // Show the necessary cards
         $("#planexp-dge-table-container").show(250);
         $("#planexp-gene-expression").show(250);
+        $("#planexp-dge-table-container-toc").show(250);
+        $('#planexp-dge-table-container-toc').css('display', 'inline-block');
+        $("#planexp-gene-expression-toc").show(250);
+        $('#planexp-gene-expression-toc').css('display', 'inline-block');
         if (currentExpType == expType['Single-Cell']) {
             $("#planexp-tsne").show(250);
+            $("#planexp-tsne-toc").show(250);
+            $('#planexp-tsne-toc').css('display', 'inline-block');
         }
     });
 
@@ -418,6 +429,13 @@ var PlanExp = (function() {
     });
 
 
+    // SCROLL BEHAVIOUR
+    $(".planexp-toc-link").on("click", function(event){
+        event.preventDefault();
+        console.log($(this).attr("href"));
+        $.scrollTo($(this).attr("href"), 500);
+
+    });
 
 
 })();
