@@ -281,7 +281,7 @@ var PlanExp = (function() {
                     console.log(data.data);
                     Plotly.newPlot(plotDivId, data.data, data.layout);
                 } else {
-                    $("#plot-genenotfound").show(250);
+                    $("#tsne-plot-genenotfound").show(250);
                 }
                 $("#tsne-plot-loading").hide();
             }
@@ -419,12 +419,12 @@ var PlanExp = (function() {
             withcolor = true;
             ctype = "Cluster";
             if (!geneName) {
-                $("#tsneplot-genenotfound").show(250);
+                $("#tsne-plot-genenotfound").show(250);
                 return;
             }
         }
         
-        $("#tsneplot-genenotfound").hide();
+        $("#tsne-plot-genenotfound").hide();
         plotTSNE(expName, dataset, geneName, withcolor, ctype, "tsne-plot");
     });
 

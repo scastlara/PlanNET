@@ -30,13 +30,17 @@ def do_tsne(experiment, dataset, conditions, gene_symbol, ctype, with_color):
                 experiment=experiment, dataset=dataset,
                 sample__in=samples, gene_symbol=gene_symbol
             )
-            # We need a dictionary with {cell_id : cell_expression}
-            # so we can keep the same order as cell positions (in cell_order) 
-            thedict = dict()
-            for cellexp in cell_expression:
-                thedict[cellexp.sample.id] = cellexp.expression_value
-            cell_expression = [ thedict[cell_idx] for cell_idx in cell_order ]
-            theplot.add_color_to_trace(trace_name, cell_expression)
+            if cell_expression:
+                # We need a dictionary with {cell_id : cell_expression}
+                # so we can keep the same order as cell positions (in cell_order) 
+                thedict = dict()
+                for cellexp in cell_expression:
+                    thedict[cellexp.sample.id] = cellexp.expression_value
+                cell_expression = [ thedict[cell_idx] for cell_idx in cell_order ]
+                theplot.add_color_to_trace(trace_name, cell_expression)
+            else:
+                theplot = None
+                break
     return theplot
 
 
@@ -66,9 +70,9 @@ def plot_tsne(request):
 
         # Do the plot
         theplot = do_tsne(experiment, dataset, conditions, gene_symbol, ctype, with_color)
-        response = theplot.plot()
-        try:
-            json.dumps(response)
-        except Exception as err:
-            print(err)
+        if theplot is not None:
+            response = theplot.plot()
+        else:
+            response = None
+
         return HttpResponse(json.dumps(response), content_type="application/json")

@@ -2031,7 +2031,7 @@ kbd {
     background-color: #FDD4D4;
 }
 
-#tsneplot-genenotfound {
+#tsne-plot-genenotfound {
     display: none; 
     margin: auto;
     font-size: 18px;

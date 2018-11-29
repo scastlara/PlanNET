@@ -1565,6 +1565,7 @@ class GenExpPlot(object):
         self.title  = str()
         self.ylab   = str()
         self.trace_names = list()
+        self.units = dict()
 
     def add_group(self, group):
         if group not in self.groups_set:
@@ -1609,7 +1610,24 @@ class GenExpPlot(object):
                     empty = False
                     break
         return empty
-                
+    
+    def add_units(self, axis, units):
+        '''
+        Adds units to one axis of the plot.
+
+        Args:
+            axis: string cointaining 'x' or 'y'.
+            units: string for units.
+        
+        Returns:
+            nothing
+        '''
+        if axis == 'x' or axis == 'y':
+            self.units[axis] = units
+        else:
+            raise ValueError("Axis should be a string containing 'x' or 'y'.")
+            
+
 
 
 # ------------------------------------------------------------------------------
@@ -1647,8 +1665,15 @@ class BarPlot(GenExpPlot):
         if self.ylab:
             theplot['layout']['yaxis'] = dict()
             theplot['layout']['yaxis']['title'] = self.ylab
+        
+        if self.units:
+            for axis, units in self.units.items():
+                axis_name = axis + 'axis'
+                theplot['layout'][axis_name] = dict()
+                theplot['layout'][axis_name]['title'] = units
         return theplot
-
+    
+    
 
 # ------------------------------------------------------------------------------
 class ViolinPlot(GenExpPlot):
@@ -1711,6 +1736,11 @@ class ViolinPlot(GenExpPlot):
         if self.ylab:
             theplot['layout']['yaxis'] = dict()
             theplot['layout']['yaxis']['title'] = self.ylab
+        if self.units:
+            for axis, units in self.units.items():
+                axis_name = axis + 'axis'
+                theplot['layout'][axis_name] = dict()
+                theplot['layout'][axis_name]['title'] = units
         return theplot
 
 

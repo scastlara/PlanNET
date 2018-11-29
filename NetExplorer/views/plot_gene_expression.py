@@ -6,6 +6,7 @@ def do_barplot(experiment, dataset, conditions, gene_symbols):
     Useful when we have One Sample per Condition per Gene (one value to plot).
     """
     theplot = None
+    units = None
     for g_idx, gene_symbol in enumerate(gene_symbols):
         if theplot is None:
             theplot = BarPlot()
@@ -20,21 +21,25 @@ def do_barplot(experiment, dataset, conditions, gene_symbols):
                 experiment=experiment, dataset=dataset, 
                 sample__in=samples,    gene_symbol=gene_symbol)
             if expression:
+                if units is None:
+                    units = expression[0].units
                 expression = expression[0].expression_value
             else:
                 expression = 0
             theplot.add_group(condition.name)
             theplot.add_value(expression, condition.name, g_idx)
+            
+    theplot.add_units("y", units)
     return theplot
 
 
-import time
 def do_violin(experiment, dataset, conditions, gene_symbols, ctype):
     '''
     THE CHECK
     dd_Smed_v6_7_0_1,dd_Smed_v6_702_0_1,dd_Smed_v6_659_0_1,dd_Smed_v6_920_0_1
     '''
     theplot = None
+    units = None
     for g_idx, gene_symbol in enumerate(gene_symbols):
         if theplot is None:
             theplot = ViolinPlot()
@@ -55,8 +60,9 @@ def do_violin(experiment, dataset, conditions, gene_symbols, ctype):
                 sample__in=samples,    gene_symbol=gene_symbol)
             theplot.add_group(condname)
 
-            start = time.time()
             if expression:
+                if units is None:
+                    units = expression[0].units
                 for exp in expression:
                     if exp.expression_value:
                         theplot.add_value(exp.expression_value, condname, g_idx)
@@ -64,6 +70,7 @@ def do_violin(experiment, dataset, conditions, gene_symbols, ctype):
                         theplot.add_value(0, condname, g_idx)
             else:
                 expression = 0
+    theplot.add_units('y', units)
     return theplot
 
 
