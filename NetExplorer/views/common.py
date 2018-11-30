@@ -4,6 +4,7 @@ from django.template.loader import render_to_string
 from django.http        import HttpResponse
 from django.template    import RequestContext
 from NetExplorer.models import *
+from django.db.models import Func, F
 from subprocess import Popen, PIPE, STDOUT
 from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.contrib.auth.models import User

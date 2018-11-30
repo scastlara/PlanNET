@@ -2022,6 +2022,13 @@ kbd {
     background-color: #f4f4f4; 
 }
 
+#volcano-plot {
+    display: inline-block; 
+    height: 500px; 
+    min-width: 700px; 
+    background-color: #f4f4f4; 
+}
+
 #plot-genenotfound { 
     display: none; 
     margin: auto;

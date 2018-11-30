@@ -144,16 +144,14 @@ var PlanExp = (function() {
     }
 
     /**
-     * experimentDGETable
+     * getDatasets
      *   Summary:
-     *     Performs AJAX query to /experiment_dge_table, 
-     *     retrieving the HTML code of the differential
-     *     expression table and puting it in targetDiv.
+     *     
+     *     
      *   Arguments:
-     *     - Experiment name string
-     *     - jQuery object of div to put the table.
+     *    
      *   Returns:
-     *     - Nothing
+     *    
      */
     getDatasets = function(expName, datasetSelect) {
         datasetRow = function(datasetName) {
@@ -214,9 +212,10 @@ var PlanExp = (function() {
                     $("#dge-table-notfound").show(250);
                 } else {
                     $("#dge-table-notfound").hide();
-                    targetDiv.html(data);
+                    targetDiv.html(data.table);
                     targetDiv.hide();
                     targetDiv.show(250);
+                    Plotly.newPlot("volcano-plot", data.volcano);
                 }
             }
         });
@@ -341,6 +340,8 @@ var PlanExp = (function() {
         $('#planexp-dge-c1').selectpicker('val', '');
         $('#planexp-dge-c2').selectpicker('val', '');
         $("#expression-plot").html("");
+        $("#plot-tsne").html("");
+        $("#volcano-plot").html("");
         $("#plot-genenotfound").hide();
 
         // Change DGE table ConditionType select
@@ -377,7 +378,9 @@ var PlanExp = (function() {
         if ( ! condition1 || ! condition2 ) {
             return;
         } 
-
+        
+        // Clean volcano plot 
+        $("#volcano-plot").html("");
         experimentDGETable(expName, dataset, condition1, condition2, $("#planexp-dge-table"));
 
     });

@@ -1750,6 +1750,8 @@ class ScatterPlot(object):
     '''
     def __init__(self):
         self.traces = dict()
+        self.limits = { 'x': list(), 'y': list()}
+        self.units = dict()
     
     def add_trace(self, name):
         if name not in self.traces:
@@ -1769,6 +1771,12 @@ class ScatterPlot(object):
     def add_name(self, trace_name, name):
         if trace_name in self.traces:
             self.traces[trace_name].names.append(name)
+
+    def set_limits(self, axis, start, end):
+        if axis == 'x' or axis == 'y':
+            self.limits[axis] =[start, end]
+        else:
+            raise ValueError("Axis should be 'x' or 'y'.")
 
     def plot(self):
         theplot = dict()
@@ -1790,6 +1798,16 @@ class ScatterPlot(object):
             if trace.names:
                 trace_data['text'] = trace.names
             theplot['data'].append(trace_data)
+        theplot['layout'] = {'xaxis': dict(), 'yaxis': dict()}
+        if self.limits:
+            if 'x' in self.limits:
+                theplot['layout']['xaxis']['range'] = self.limits['x']
+            if 'y' in self.limits:
+                theplot['layout']['yaxis']['range'] = self.limits['y']
+        if self.units:
+            for axis, units in self.units.items():
+                axis_name = axis + 'axis'
+                theplot['layout'][axis_name]['title'] = units
         return theplot
     
     def add_color_to_trace(self, trace_name, colors):
@@ -1798,6 +1816,21 @@ class ScatterPlot(object):
         else:
             raise(KeyError("Trace %s not found in ScatterPlot!" % trace_name))
 
+    def add_units(self, axis, units):
+        '''
+        Adds units to one axis of the plot.
+
+        Args:
+            axis: string cointaining 'x' or 'y'.
+            units: string for units.
+        
+        Returns:
+            nothing
+        '''
+        if axis == 'x' or axis == 'y':
+            self.units[axis] = units
+        else:
+            raise ValueError("Axis should be a string containing 'x' or 'y'.")
 
 
 class PlotlyTrace(object):
@@ -1947,7 +1980,7 @@ class Dataset(models.Model):
             all_allowed = public_datasets | restricted_allowed
             return all_allowed
     
-    def __unicode__(self):
+    def __str__(self):
        return self.name
 
 
@@ -1956,7 +1989,7 @@ class UserDatasetPermission(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     dataset = models.ForeignKey(Dataset, on_delete=models.CASCADE)
 
-    def __unicode__(self):
+    def __str__(self):
        return self.user.username + " [access to] " + self.dataset.name
 
 
@@ -1965,7 +1998,7 @@ class ExperimentType(models.Model):
     exp_type = models.CharField(max_length=50)
     description = models.TextField()
 
-    def __unicode__(self):
+    def __str__(self):
        return self.exp_type
 
 
@@ -2015,7 +2048,7 @@ class Experiment(models.Model):
         json_string = json.dumps(json_dict)
         return json_string
 
-    def __unicode__(self):
+    def __str__(self):
        return self.name
 
 # ------------------------------------------------------------------------------
@@ -2023,7 +2056,7 @@ class ExperimentDataset(models.Model):
     dataset = models.ForeignKey(Dataset, on_delete=models.CASCADE)
     experiment = models.ForeignKey(Experiment, on_delete=models.CASCADE)
 
-    def __unicode__(self):
+    def __str__(self):
        return self.experiment.name + ' - ' + self.dataset.name
 
 
@@ -2032,7 +2065,7 @@ class UserExperimentPermission(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     experiment = models.ForeignKey(Experiment, on_delete=models.CASCADE)
 
-    def __unicode__(self):
+    def __str__(self):
        return self.user.username + " [access to] " + self.experiment.name
 
 
@@ -2046,7 +2079,7 @@ class ConditionType(models.Model):
     name = models.CharField(max_length=50)
     description = models.TextField()
 
-    def __unicode__(self):
+    def __str__(self):
        return self.name
 
 
@@ -2062,7 +2095,7 @@ class Condition(models.Model):
     cell_type = models.CharField(max_length=50)
     description = models.TextField()
 
-    def __unicode__(self):
+    def __str__(self):
        return self.name + " - " + self.experiment.name
 
 
@@ -2071,7 +2104,7 @@ class Sample(models.Model):
     experiment = models.ForeignKey(Experiment, on_delete=models.CASCADE)
     sample_name  = models.CharField(max_length=50)
 
-    def __unicode__(self):
+    def __str__(self):
        return self.sample_name + " - " + self.experiment.name
 
 
@@ -2081,7 +2114,7 @@ class SampleCondition(models.Model):
     sample = models.ForeignKey(Sample, on_delete=models.CASCADE)
     condition = models.ForeignKey(Condition, on_delete=models.CASCADE)
 
-    def __unicode__(self):
+    def __str__(self):
        return self.experiment.name + " - " + self.sample.sample_name + " - " + self.condition.name
 
 # ------------------------------------------------------------------------------
@@ -2100,7 +2133,7 @@ class ExpressionAbsolute(models.Model):
     expression_value = models.FloatField()
     units = models.CharField(max_length=10)
 
-    def __unicode__(self):
+    def __str__(self):
         name_str = self.experiment.name + " - "
         name_str += str(self.sample.sample_name) + " - "
         name_str += str(self.gene_symbol) + ": "
@@ -2128,7 +2161,7 @@ class ExpressionRelative(models.Model):
     fold_change = models.FloatField()
     pvalue = models.FloatField()
 
-    def __unicode__(self):
+    def __str__(self):
         name_str = self.experiment.name + " - "
         name_str += self.condition1.name + " vs "
         name_str += self.condition2.name + " - "
