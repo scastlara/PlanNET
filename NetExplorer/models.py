@@ -318,6 +318,13 @@ def query_node(symbol, database):
 class Node(object):
     """
     Base class for all the nodes in the database.
+
+    Attributes:
+        symbol: String containing the symbol attribute in Neo4j of a given node.
+        database: The Label for the symbol in Neo4j.
+        neighbours: List of Interaction objects connecting nodes adjacent to the Node.
+        domains: HasDomain objects describing domains in the sequence/node. 
+        allowed_databases: Class attribute. Set of allowed Labels for Node.
     """
 
     def __init__(self, symbol, database):
@@ -432,7 +439,18 @@ class Node(object):
 class Homology(object):
     """
     Class for homology relationships between a PredictedNode and a HumanNode.
+
+    Attributes:
+        prednode: PredictedNode object.
+        human: Human object.
+        blast_cov: Float with BLAST coverage value in %.
+        blast_eval: Float with BLAST e-value. 
+        nog_brh: 1/0 flag indicating if homology is best reciprocal hit in EggNOG alignment.
+        nog_eval: Float with EggNOG alignment e-value.
+        pfam_sc: Float with pfam meta-alignment score.
+        pfam_brh: 1/0 flag indicating if homology is best reciprocal hit in pfam alignment.
     """
+
     def __init__(self,  human, blast_cov, blast_eval, nog_brh,  pfam_sc, nog_eval, blast_brh, pfam_brh, prednode=None):
         self.prednode   = prednode
         self.human      = human
@@ -448,16 +466,27 @@ class Homology(object):
 # ------------------------------------------------------------------------------
 class Domain(object):
     """
-    Class for Pfam domains.
+    Class for PFAM domains.
+
+    Attributes:
+        accession: String with accession for pfam domain (PFXXXXX).
+        description: String with description for pfam domain.
+        identifier: String with identifier for pfam domain.
+        mlength: Integer with domain length.
     """
+
+    pfam_regexp = r'PF\d{5}'
     def __init__(self, accession, description=None, identifier=None, mlength=None):
-        pfam_regexp = r'PF\d{5}'
-        if not re.match(pfam_regexp, accession):
+        if not re.match(Domain.pfam_regexp, accession):
             raise NotPFAMAccession(accession)
         self.accession   = accession
         self.description = description
         self.identifier  = identifier
         self.mlength     = mlength
+
+    @classmethod
+    def is_symbol_valid(cls, symbol):
+        return re.match(cls.pfam_regexp, symbol)
 
     def get_nodes(self, database):
         query = "";
@@ -482,6 +511,16 @@ class Domain(object):
 class HasDomain(object):
     """
     Class for relationships between a node and a Pfam domain annotated on the sequence.
+
+    Attributes:
+        domain: Domain object.
+        node: Node object.
+        p_start: integer describing the start coordinate (1-indexed) on the PFAM domain.
+        p_end: integer describing the end coordinate (1-indexed) on the PFAM domain.
+        s_start: integer describing the start coordinate (1-indexed) on the sequence.
+        s_end: integer describing the end coordinate (1-indexed) on the sequence.
+        perc: float with % of domain in sequence.
+
     """
     def __init__(self, domain, node, p_start, p_end, s_start, s_end, perc):
         self.domain  = domain
@@ -491,6 +530,7 @@ class HasDomain(object):
         self.s_start = int(s_start)
         self.s_end   = int(s_end)
         self.perc    = perc
+
     def to_jsondict(self):
         json_dict = dict()
         json_dict['accession']   = self.domain.accession
@@ -509,6 +549,15 @@ class PredInteraction(object):
     """
     Class for predicted interactions.
     Source and target are PredictedNode attributes.
+
+    Attributes:
+        source_symbol: Symbol of parent node of interaction.
+        target: Node object of the child node of the interaction.
+        database: Neo4j label of parent and child nodes.
+        parameters: Dictionary containing the interaction properties.
+                    {'int_prob', 'path_length', 
+                    'cellcom_nto', 'molfun_nto', 
+                    'bioproc_nto', 'dom_int_sc'}
     """
 
     def __init__(self, source_symbol, target, database, parameters = None):
@@ -567,7 +616,11 @@ class PredInteraction(object):
 # ------------------------------------------------------------------------------
 class HumanNode(Node):
     """
-    Human node class definition.
+    Human node class definition. Inherits from 'Node'.
+
+    Attributes:
+        summary: String with gene summary.
+        summary_source: String with the source of the summary.
     """
 
     allowed_databases = set(["Human"])
@@ -668,6 +721,22 @@ class HumanNode(Node):
 class DownloadHandler(object):
     '''
     Class that handles downloadable files.
+
+    Attributes:
+        data_from_node: Class attribute, dictionary mapping data type keywords, 
+            to the methods that handle them.
+            {'contig'
+             'orf'
+             'homology'
+             'pfam'
+             'go'
+             'interactions'}
+    Usage:
+        dhandler = DownloadHandler()
+        the_file = dhandler.download_data(identifiers, database, data)
+        response = the_file.to_response()
+    
+
     Methods get_*_data returns a list of tuples, each tuple being a line, and each
     element of the tuple being a column.
     '''
@@ -757,7 +826,13 @@ class DownloadHandler(object):
 # ------------------------------------------------------------------------------
 class ServedFile(object):
     '''
-    Class of served files for download
+    Class of served files for download.
+
+    Attributes:
+        oname: String with output filename.
+        fformat: String with file format, can be 'csv' or 'fasta'.
+        header: Bool describing if file should have a header.
+        written: Bool describing if the file has data on it or not.
     '''
     def __init__(self, oname, fformat='csv', header=None):
         self.oname = oname
@@ -807,6 +882,10 @@ class ServedFile(object):
 class WildCard(object):
     """
     Class for wildcard searches. Returns a list of symbols.
+
+    Attributes:
+        search: String to search.
+        database: Database (label in neo4j) for the search.
     """
     def __init__(self, search, database):
         search = search.upper()
@@ -830,6 +909,16 @@ class WildCard(object):
 class PredictedNode(Node):
     """
     Class for planarian nodes.
+
+    Attributes:
+        symbol: String with Node symbol.
+        database: String with label for Neo4j.
+        off_symbol: String with official planarian symbol, of the form Smed_XX.
+        homolog: 'Homology' object with human homolog gene.
+        important: Bool indicating if Node should be marked on graph visualization.
+        degree: Integer with the degree (number of connections) of the node.
+        allowed_databases: Class attribute, dictionary with names of neo4j 
+            labels for planarian genes.
     """
     allowed_databases = ALL_DATABASES
 
@@ -1129,8 +1218,14 @@ class OfficialSymbol(object):
     '''
     Class for Planarian official symbol
     '''
+    offsymbol_regexp = r'Smed_.+'
+
     def __init__(self, symbol):
         self.symbol = symbol
+
+    @classmethod
+    def is_symbol_valid(cls, symbol):
+        return re.match(cls.offsymbol_regexp, symbol)
 
     def get_predictednode(self, database):
         query   = OFFSYMBOL_QUERY % (database, self.symbol)
@@ -1273,79 +1368,19 @@ class GraphCytoscape(object):
         """
         Takes a list of symbols and return the necessary GraphCytoscape with Human or PredictedNode objects
         """
-        symbol_regexp = {
-            "Cthulhu": r"cth1_",               "Consolidated": r"OX_Smed",
-            "Dresden": r"dd_Smed",             "Graveley":     r"CUFF\.\d+\.\d+",
-            "Newmark": r"Contig\d+",           "Illuminaplus": r"Gene_\d+_.+",
-            "Adamidi": r"contig\d+|isotig\d+", "Blythe":       r"AAA\.454ESTABI\.\d+",
-            "Pearson": r"BPKG\d+",             "Smed454":      r"90e_\d+|gnl\|UG\|Sme#S\d+",
-            "Gbrna":   r"\w{2}\d{6}\.\d"
-        }
-        go_regexp   = r"GO:\d{7}"
-        pfam_regexp = r'PF\d{5}'
-        offsymbol_regexp = r'Smed_.+'
-        newnodes = list()
         for symbol in symbols:
             symbol = symbol.replace(" ", "")
             symbol = symbol.replace("'", "")
             symbol = symbol.replace('"', '')
-
-            if database != "Human" and re.match(symbol_regexp[database], symbol):
-                # Matches the regexp for the given database
-                # Here we query the node!
-                try:
-                    self.add_node( PredictedNode(symbol, database) )
-                except NodeNotFound:
-                    continue
-            else:
-                if (re.match(offsymbol_regexp, symbol)):
-                    # Planarian Official symbol
-                    try:
-                        offsymbol = OfficialSymbol(symbol)
-                        prednodesym = offsymbol.get_predictednode(database)
-                        self.add_node(PredictedNode(prednodesym, database, off_symbol=symbol))
-                    except NodeNotFound:
-                        continue
-                elif (re.match(go_regexp, symbol)):
-                    # GO
-                    try:
-                        newnodes.extend(GeneOntology(symbol, human=True).human_nodes)
-                    except NodeNotFound:
-                        continue
-                elif (re.match(pfam_regexp, symbol)):
-                    # PFAM
-                    domain = Domain(accession=symbol)
-                    try:
-                        self.add_elements(domain.get_nodes(database))
-                    except NodeNotFound:
-                        continue
-                else:
-                    # MUST BE HUMAN
-                    if "*" in symbol:
-                        newnodes.extend(WildCard(symbol, "Human").get_nodes())
-                    else:
-                        try:
-                            # HERE WE HAVE TO QUERY THE NODE TO SEE IF IT EXISTS IN THE DB!!
-                            newnodes.append(HumanNode(symbol.upper(), "Human"))
-                        except NodeNotFound:
-                            continue
+            node_objects = list()
+            gene_search = GeneSearch(symbol, database)
 
             if database == "Human":
-                self.add_elements(newnodes)
+                node_objects = gene_search.get_human_nodes()
             else:
-                # Now we have a list of HumanNode objects that we have to 'translate' to PredictedNode
-                for final_node in newnodes:
-                    try:
-                        homologs = final_node.get_homologs(database)
-                        for db in homologs:
-                            for hom in homologs[db]:
-                                hom.prednode.homolog = hom
-                                self.add_node(hom.prednode)
-                    except (NodeNotFound, IncorrectDatabase):
-                        # Node is not a human node :_(
-                        logging.info("ERROR: NodeNotFound or IncorrectDatabase in substitute_human_symbols")
-                        continue
-
+                node_objects = gene_search.get_planarian_nodes()
+            self.add_elements(node_objects)
+            
 
     def __str__(self):
         return self.to_json()
@@ -1469,14 +1504,15 @@ class GeneOntology(object):
     """
     Class for GeneOntology nodes
     """
+    go_regexp = r"GO:\d{7}"
+
     def __init__(self, accession, domain=None, name=None, human=False, query=True):
         self.accession = accession
         self.domain = domain
         self.name = name
         self.human_nodes = list()
-        self.go_regexp = r"GO:\d{7}"
         if query is True:
-            if self.__check_go() is True:
+            if GeneOntology.is_symbol_valid(self.accession):
                 if human is True:
                     self.__get_nodes()
                 else:
@@ -1484,6 +1520,9 @@ class GeneOntology(object):
             else:
                 raise NotGOAccession(self)
 
+    @classmethod
+    def is_symbol_valid(cls, symbol):
+        return re.match(cls.go_regexp, symbol)
 
     def __query_go(self):
         """
@@ -1497,15 +1536,6 @@ class GeneOntology(object):
             self.name   = results[0]['name']
         else:
             raise NodeNotFound(self.accession, "Go")
-
-    def __check_go(self):
-        """
-        Checks if accession is a GO accession
-        """
-        if re.match(self.go_regexp, self.accession):
-            return True
-        else:
-            return False
 
     def __get_nodes(self):
         """
@@ -1541,6 +1571,103 @@ class Document(models.Model):
     Class for Documents uploaded to the server.
     """
     docfile = models.FileField(upload_to='documents/%Y/%m/%d')
+
+
+# ------------------------------------------------------------------------------
+class GeneSearch(object):
+    """
+    Class for node/gene searches
+
+    Attributes:
+        sterm: string, term to search.
+        database: string, database to search for sterm.
+        sterm_database: string, database to which sterm belongs to.
+    """
+
+    def __init__(self, sterm, database):
+        self.sterm = sterm
+        self.database = database
+        self.sterm_database = None
+    
+    def infer_symbol_database(self):
+        '''
+        Compares the symbol in self.sterm to the valid
+        patterns for each NodeType.
+        '''
+        datasets = Dataset.objects.all()
+        for dataset in datasets:
+            if dataset.is_symbol_valid(self.sterm):
+                self.sterm_database = dataset.name
+        if self.sterm_database is None:
+            # Not valid for any database.
+            # Check OFF_symbol, PFAM, GO, Human in that order.
+            if OfficialSymbol.is_symbol_valid(self.sterm):
+                self.sterm_database = "Official"
+            elif Domain.is_symbol_valid(self.sterm):
+                self.sterm_database = "PFAM"
+            elif GeneOntology.is_symbol_valid(self.sterm):
+                self.sterm_database = "GO"
+            else:
+                self.sterm_database = "Human"
+    
+    def get_planarian_nodes(self):
+        '''
+        Returns PredictedNode objects indepdendently of the search term used.
+        '''
+        if self.sterm_database is None:
+            self.infer_symbol_database()
+
+        planarian_nodes = list()
+        if self.sterm_database == "Official":
+            off_symbol = OfficialSymbol(self.sterm)
+            prednodesym = off_symbol.get_predictednode(self.database)
+            planarian_nodes =  [ PredictedNode(prednodesym, self.database, off_symbol=self.sterm) ]
+        elif self.sterm_database == "PFAM":
+            planarian_nodes = Domain(self.sterm).get_nodes(self.database)
+        elif self.sterm_database == "GO" or self.sterm_database == "Human" :
+            # Will require to go from Human -> Planarian
+            human_nodes = list()
+            if self.sterm_database == "GO":
+                human_nodes = GeneOntology(self.sterm, human=True).human_nodes
+            elif self.sterm_database == "Human":
+                if "*" in self.sterm:
+                    human_nodes = WildCard(self.sterm, self.sterm_database).get_nodes()
+                else:
+                    human_nodes [ HumanNode(self.sterm.upper(), self.sterm_database) ]
+
+            for hnode in human_nodes:
+                homologs = hnode.get_homologs(self.database)
+                for db in homologs:
+                    for hom in homologs[db]:
+                        hom.prednode.homolog = hom
+                        planarian_nodes.append(hom.prednode)
+        else:
+            planarian_nodes =  [ PredictedNode(self.sterm, self.sterm_database) ]
+        
+        return planarian_nodes
+
+
+    def get_human_nodes(self):
+        '''
+        Returns HumanNode objects indepdendently of the search term used.
+        '''
+        if self.sterm_database is None:
+            self.infer_symbol_database()
+
+        human_nodes = list()
+        if self.sterm_database == "Human":
+            if "*" in self.sterm:
+                human_nodes = WildCard(self.sterm, self.sterm_database).get_nodes()
+                print(human_nodes)
+            else:
+                human_nodes [ HumanNode(self.sterm.upper(), self.sterm_database) ]
+        elif self.sterm_database == "GO":
+            human_nodes = GeneOntology(self.sterm, human=True).human_nodes
+        return human_nodes
+
+
+
+
 
 
 # ------------------------------------------------------------------------------
