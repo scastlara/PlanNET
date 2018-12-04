@@ -1,4 +1,4 @@
-<img src="project-logo.png">
+<a href="https://compgen.bio.ub.edu/PlanNET" target="_blank"><img src="project-logo.png"></a>
 
 
 # Version
