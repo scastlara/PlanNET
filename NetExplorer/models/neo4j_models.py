@@ -1,317 +1,4 @@
-"""
-Models of PlanNet
-"""
-
-from __future__ import unicode_literals
-from django.db import models
-from py2neo import Graph
-from  django.contrib.auth.models import User
-import json
-import logging
-from colour import Color
-import math
-import re
-import time
-from django.db import connection
-import requests
-from wsgiref.util import FileWrapper
-import tempfile
-from django.http        import HttpResponse
-import os
-
-
-
-
-GRAPH     = Graph("http://127.0.0.1:7474/db/data/")
-DATABASES = set([
-    "Dresden",
-    "Consolidated",
-    #"Newmark",
-    "Graveley",
-    "Illuminaplus",
-    #"Smed454",
-    "Adamidi",
-    "Blythe",
-    "Pearson",
-    "Gbrna",
-])
-
-ALL_DATABASES = set([
-    "Dresden",
-    "Consolidated",
-    #"Newmark",
-    "Graveley",
-    "Illuminaplus",
-    #"Smed454",
-    "Adamidi",
-    "Blythe",
-    "Pearson",
-    'Cthulhu',
-    "Gbrna",
-])
-
-
-
-# QUERIES
-# ------------------------------------------------------------------------------
-PREDNODE_QUERY = """
-    MATCH (n:%s)-[r:HOMOLOG_OF]-(m:Human)
-    WHERE  n.symbol = "%s"
-    RETURN n.symbol AS symbol,
-        n.sequence AS sequence,
-        n.orf AS orf,
-        m.symbol AS human,
-        r.blast_cov AS blast_cov,
-        r.blast_eval AS blast_eval,
-        r.nog_brh AS nog_brh,
-        r.pfam_sc AS pfam_sc,
-        r.nog_eval AS nog_eval,
-        r.blast_brh AS blast_brh,
-        r.pfam_brh AS pfam_brh LIMIT 1
-"""
-
-# ------------------------------------------------------------------------------
-GET_CONNECTIONS_QUERY = """
-    MATCH (n)-[r:INTERACT_WITH]-(m)
-    WHERE n.symbol IN %s
-    AND   m.symbol IN %s
-    RETURN n.symbol      AS nsymbol,
-           labels(n)     AS database,
-           r.path_length AS path_length,
-           r.int_prob    AS int_prob,
-           r.dom_int_sc  AS dom_int_sc,
-           r.cellcom_nto AS cellcom_nto,
-           r.bioproc_nto AS bioproc_nto,
-           r.molfun_nto  AS molfun_nto,
-           m.symbol      AS msymbol
-"""
-
-GET_OFF_SYMBOL = """
-    MATCH (n:%s)-->(m:OFF_SYMBOL)
-    WHERE n.symbol = '%s'
-    RETURN m.symbol as offsymbol
-"""
-
-# ------------------------------------------------------------------------------
-GO_QUERY = """
-    MATCH (n:Go)
-    WHERE n.accession = "%s"
-    RETURN n.domain as domain, n.name as name
-"""
-
-# ------------------------------------------------------------------------------
-GO_HUMAN_NODE_QUERY = """
-    MATCH (n:Go)-[:HAS_GO]-(m:Human)
-    WHERE n.accession = "%s"
-    RETURN n.domain as domain, n.name as name, m.symbol as symbol
-"""
-
-# ------------------------------------------------------------------------------
-GO_HUMAN_GET_GO_QUERY = """
-    MATCH (n:Go)-[:HAS_GO]-(m:Human)
-    WHERE m.symbol = "%s"
-    RETURN n.accession as accession, n.domain as domain, n.name as name ORDER BY n.domain
-"""
-
-
-# ------------------------------------------------------------------------------
-DOMAIN_NODES_QUERY = """
-    MATCH (n:%s)-[:HAS_DOMAIN]->(m:Pfam)
-    WHERE m.accession = "%s"
-    RETURN n.symbol as symbol
-"""
-
-# ------------------------------------------------------------------------------
-DOMAIN_NODES_QUERY_FUZZY = """
-    MATCH (n:%s)-[:HAS_DOMAIN]->(m:Pfam)
-    WHERE m.accession =~ "%s"
-    RETURN n.symbol as symbol
-"""
-
-# ------------------------------------------------------------------------------
-EXPERIMENT_QUERY = """
-    MATCH (n:Experiment)
-    WHERE n.id = "%s"
-    RETURN
-        n.id as identifier,
-        n.maxexp as maxexp,
-        n.minexp as minexp,
-        n.reference as reference,
-        n.url       as url,
-        n.percentiles as percentiles
-"""
-
-# ------------------------------------------------------------------------------
-ALL_EXPERIMENTS_QUERY = """
-    MATCH (n:Experiment)-[r]-(m)
-    RETURN distinct keys(r) as samples, n.id as identifier, n.url as url, toInt(n.private) as private, n.reference as reference, collect(distinct labels(m)) as datasets
-"""
-
-# ------------------------------------------------------------------------------
-EXPRESSION_QUERY = """
-    MATCH (n:%s)-[r:HAS_EXPRESSION]-(m:Experiment)
-    WHERE n.symbol = "%s"
-    AND m.id = "%s"
-    RETURN r.%s as exp
-"""
-
-# ------------------------------------------------------------------------------
-EXPRESSION_QUERY_GRAPH = """
-    MATCH (n)-[r:HAS_EXPRESSION]-(m:Experiment)
-    WHERE n.symbol IN %s
-    AND m.id ="%s"
-    RETURN n.symbol AS symbol, labels(n) AS database, r.%s AS exp
-"""
-
-# ------------------------------------------------------------------------------
-HUMANNODE_QUERY = """
-    MATCH (n:%s)
-    WHERE n.symbol = "%s"
-    RETURN n.symbol AS symbol
-"""
-
-# ------------------------------------------------------------------------------
-PREDINTERACTION_QUERY = """
-    MATCH (n:%s)-[r:INTERACT_WITH]-(m:%s)
-    WHERE n.symbol = '%s' AND m.symbol = '%s'
-    RETURN r.int_prob     AS int_prob,
-           r.path_length  AS path_length,
-           r.cellcom_nto  AS cellcom_nto,
-           r.molfun_nto   AS molfun_nto,
-           r.bioproc_nto  AS bioproc_nto,
-           r.dom_int_sc   AS dom_int_sc
-           LIMIT 1
-"""
-
-# ------------------------------------------------------------------------------
-NEIGHBOURS_QUERY = """
-    MATCH (n:%s)-[r:INTERACT_WITH]-(m:%s)-[s:HOMOLOG_OF]-(l:Human), (m)-[t:INTERACT_WITH*0..1]-(other)
-    WHERE  n.symbol = '%s'
-    RETURN m.symbol         AS target,
-           count(t)         AS tdegree,
-           l.symbol         AS human,
-           r.int_prob       AS int_prob,
-           r.path_length    AS path_length,
-           r.cellcom_nto    AS cellcom_nto,
-           r.molfun_nto     AS molfun_nto,
-           r.bioproc_nto    AS bioproc_nto,
-           r.dom_int_sc     AS dom_int_sc,
-           s.blast_cov      AS blast_cov,
-           s.blast_eval     AS blast_eval,
-           s.nog_brh        AS nog_brh,
-           s.pfam_sc        AS pfam_sc,
-           s.nog_eval       AS nog_eval,
-           s.blast_brh      AS blast_brh,
-           s.pfam_brh       AS pfam_brh
-"""
-
-# ------------------------------------------------------------------------------
-WILDCARD_QUERY = """
-    MATCH (n:%s)
-    WHERE n.symbol =~ "%s"
-    RETURN n.symbol AS symbol
-"""
-
-# ------------------------------------------------------------------------------
-PATH_QUERY = """
-    MATCH p=( (n:%s)-[r:INTERACT_WITH*%s]-(m:%s) )
-    WHERE n.symbol = '%s' AND m.symbol = '%s'
-    RETURN extract(nod IN nodes(p) | nod.symbol)                       AS symbols,
-           extract(rel IN relationships(p) | toInt(rel.path_length))   AS path_length,
-           extract(rel IN relationships(p) | toFloat(rel.int_prob))    AS int_prob,
-           extract(rel IN relationships(p) | toFloat(rel.cellcom_nto)) AS cellcom_nto,
-           extract(rel IN relationships(p) | toFloat(rel.molfun_nto))  AS molfun_nto,
-           extract(rel IN relationships(p) | toFloat(rel.bioproc_nto)) AS bioproc_nto,
-           extract(rel IN relationships(p) | toFloat(rel.dom_int_sc))  AS dom_int_sc
-"""
-
-# ------------------------------------------------------------------------------
-DOMAIN_QUERY = """
-    MATCH (n:%s)-[r]->(dom:Pfam)
-    WHERE n.symbol = '%s'
-    RETURN dom.accession   AS accession,
-           dom.description AS description,
-           dom.identifier  AS identifier,
-           dom.mlength     AS mlength,
-           r.pfam_start    AS p_start,
-           r.pfam_end      AS p_end,
-           r.s_start       AS s_start,
-           r.s_end         AS s_end,
-           r.perc          AS perc
-"""
-
-# ------------------------------------------------------------------------------
-OFFSYMBOL_QUERY = """
-    MATCH (n:OFF_SYMBOL)<-[r]-(m:%s)
-    WHERE n.symbol = '%s'
-    RETURN m.symbol AS symbol
-"""
-
-# ------------------------------------------------------------------------------
-HOMOLOGS_QUERY = """
-    MATCH (n:Human)-[r:HOMOLOG_OF]-(m:%s)
-    WHERE  n.symbol = "%s"
-    RETURN n.symbol  AS human,
-        m.symbol     AS homolog,
-        r.blast_cov  AS blast_cov,
-        r.blast_eval AS blast_eval,
-        r.nog_brh    AS nog_brh,
-        r.pfam_sc    AS pfam_sc,
-        r.nog_eval   AS nog_eval,
-        r.blast_brh  AS blast_brh,
-        r.pfam_brh   AS pfam_brh,
-        labels(m)    AS database
-"""
-
-
-# ------------------------------------------------------------------------------
-HOMOLOGS_QUERY_ALL = """
-    MATCH (n:Human)-[r:HOMOLOG_OF]-(m)
-    WHERE  n.symbol = "%s"
-    RETURN n.symbol  AS human,
-        m.symbol     AS homolog,
-        r.blast_cov  AS blast_cov,
-        r.blast_eval AS blast_eval,
-        r.nog_brh    AS nog_brh,
-        r.pfam_sc    AS pfam_sc,
-        r.nog_eval   AS nog_eval,
-        r.blast_brh  AS blast_brh,
-        r.pfam_brh   AS pfam_brh,
-        labels(m)    AS database
-"""
-
-# ------------------------------------------------------------------------------
-SUMMARY_QUERY = """
-    MATCH (n:Human)
-    WHERE n.symbol = "%s"
-    RETURN n.summary as summary,
-           n.summary_source as summary_source
-"""
-
-
-# UTILITIES
-def query_node(symbol, database):
-    '''
-    This simple function takes a symbol and a database and tries to get it from
-    the DB
-    '''
-    node   = None
-    symbol = symbol.replace(" ", "")
-    symbol = symbol.replace("'", "")
-    symbol = symbol.replace('"', '')
-    symbol = symbol.replace("%7C", "|")
-        # Urls in django templates are double encoded for some reason
-        # Because we have identifiers with '|' symbols, they get encoded to %257, that gets decodeed
-        # to %7C. I have to re-decode it to '|'
-
-    if database == "Human":
-        symbol = symbol.upper()
-        node = HumanNode(symbol, database)
-    else:
-        node = PredictedNode(symbol, database)
-        node.get_summary()
-    return node
-
+from .common import *
 
 # NEO4J CLASSES
 # ------------------------------------------------------------------------------
@@ -334,7 +21,7 @@ class Node(object):
         self.neighbours = list()
         self.domains    = list()
         if self.database not in self.allowed_databases:
-            raise IncorrectDatabase(self.database)
+            raise exceptions.IncorrectDatabase(self.database)
 
     def __query_node(self):
         """
@@ -352,7 +39,7 @@ class Node(object):
             'graph': GraphCytoscape object with the graph of the path
             'score': Score of the given path.
         """
-        query = PATH_QUERY % (self.database, plen, target.database, self.symbol, target.symbol)
+        query = neoquery.PATH_QUERY % (self.database, plen, target.database, self.symbol, target.symbol)
         results = GRAPH.run(query)
         results = results.data()
 
@@ -392,7 +79,7 @@ class Node(object):
         This will return a list of Has_domain objects or, if the sequence has no Pfam domains,
         a None object.
         """
-        query = DOMAIN_QUERY % (self.database, self.symbol)
+        query = neoquery.DOMAIN_QUERY % (self.database, self.symbol)
 
         results = GRAPH.run(query)
         results = results.data()
@@ -478,7 +165,7 @@ class Domain(object):
     pfam_regexp = r'PF\d{5}'
     def __init__(self, accession, description=None, identifier=None, mlength=None):
         if not re.match(Domain.pfam_regexp, accession):
-            raise NotPFAMAccession(accession)
+            raise exceptions.NotPFAMAccession(accession)
         self.accession   = accession
         self.description = description
         self.identifier  = identifier
@@ -493,9 +180,9 @@ class Domain(object):
         if not re.match(r'PF\d{5}\.', self.accession):
             # Fuzzy pfam accession (no number)
             acc_regex = self.accession + ".*"
-            query = DOMAIN_NODES_QUERY_FUZZY % (database, acc_regex)
+            query = neoquery.DOMAIN_NODES_QUERY_FUZZY % (database, acc_regex)
         else:
-            query = DOMAIN_NODES_QUERY % (database, self.accession)
+            query = neoquery.DOMAIN_NODES_QUERY % (database, self.accession)
 
         results = GRAPH.run(query)
         results = results.data()
@@ -505,7 +192,7 @@ class Domain(object):
                 nodes.append(PredictedNode(row['symbol'], database, query=False))
             return nodes
         else:
-            raise NodeNotFound(self.accession, "Pfam-%s" % database)
+            raise exceptions.NodeNotFound(self.accession, "Pfam-%s" % database)
 
 # ------------------------------------------------------------------------------
 class HasDomain(object):
@@ -572,7 +259,7 @@ class PredInteraction(object):
         """
         This private method will fetch the interaction from the DB.
         """
-        query = PREDINTERACTION_QUERY % (self.database, self.database, self.source_symbol, self.target.symbol)
+        query = neoquery.PREDINTERACTION_QUERY % (self.database, self.database, self.source_symbol, self.target.symbol)
 
         results = GRAPH.run(query)
         results = results.data()
@@ -633,14 +320,14 @@ class HumanNode(Node):
         self.summary_source = None
 
     def __query_node(self):
-        query = HUMANNODE_QUERY % (self.database, self.symbol)
+        query = neoquery.HUMANNODE_QUERY % (self.database, self.symbol)
         results = GRAPH.run(query)
         results = results.data()
         if results:
             for row in results:
                 self.symbol   = row["symbol"]
         else:
-            raise NodeNotFound(self.symbol, self.database)
+            raise exceptions.NodeNotFound(self.symbol, self.database)
 
     def get_neighbours(self):
         pass
@@ -657,7 +344,7 @@ class HumanNode(Node):
         """
         Retrieves gene summary when available
         """
-        query = SUMMARY_QUERY % (self.symbol)
+        query = neoquery.SUMMARY_QUERY % (self.symbol)
         results = GRAPH.run(query)
         results = results.data()
         if results:
@@ -676,13 +363,13 @@ class HumanNode(Node):
         # Initialize homologs dictionary
         homologs         = dict()
         database_to_look = set()
-        query_to_use = HOMOLOGS_QUERY
+        query_to_use = neoquery.HOMOLOGS_QUERY
         if database == "ALL":
             database_to_look = set(DATABASES)
-            query_to_use = HOMOLOGS_QUERY_ALL % (self.symbol)
+            query_to_use = neoquery.HOMOLOGS_QUERY_ALL % (self.symbol)
         else:
             database_to_look = set([database])
-            query_to_use = HOMOLOGS_QUERY % (database, self.symbol)
+            query_to_use = neoquery.HOMOLOGS_QUERY % (database, self.symbol)
         for db in database_to_look:
             homologs[db] = list()
 
@@ -717,166 +404,6 @@ class HumanNode(Node):
             return None
 
 
-# ------------------------------------------------------------------------------
-class DownloadHandler(object):
-    '''
-    Class that handles downloadable files.
-
-    Attributes:
-        data_from_node: Class attribute, dictionary mapping data type keywords, 
-            to the methods that handle them.
-            {'contig'
-             'orf'
-             'homology'
-             'pfam'
-             'go'
-             'interactions'}
-    Usage:
-        dhandler = DownloadHandler()
-        the_file = dhandler.download_data(identifiers, database, data)
-        response = the_file.to_response()
-    
-
-    Methods get_*_data returns a list of tuples, each tuple being a line, and each
-    element of the tuple being a column.
-    '''
-    def _get_contig_data(node):
-        return [(node.symbol, node.sequence, node.database)]
-
-    def _get_orf_data(node):
-        return [(node.symbol, node.orf, node.database)]
-
-    def _get_homology_data(node):
-        return [(node.symbol, node.homolog.human.symbol, 
-                node.homolog.blast_eval, node.homolog.blast_cov, 
-                node.homolog.nog_eval, node.homolog.pfam_sc)]
-
-    def _get_pfam_data(node):
-        node.get_domains()
-        if node.domains:
-            domains = ";".join([ "%s:%s-%s"  % (str(dom.domain.accession), str(dom.s_start), str(dom.s_end)) for dom in node.domains ])
-        else:
-            domains = "NA"
-        return([(node.symbol, domains)])
-
-    def _get_go_data(node):
-        node.get_geneontology()
-        gos = ";".join([ go.accession for go in node.gene_ontologies ])
-        return [(node.symbol, gos)]
-
-    def _get_interactions_data(node):
-        node.get_neighbours()
-        ints = [ ( node.symbol, interaction.target.symbol, str(interaction.parameters['int_prob']) ) 
-                 for interaction in node.neighbours ]
-        return(ints)
-
-    data_from_node = {
-        'contig': _get_contig_data,
-        'orf': _get_orf_data,
-        'homology': _get_homology_data,
-        'pfam': _get_pfam_data,
-        'go': _get_go_data,
-        'interactions': _get_interactions_data
-    }
-
-    def download_data(self, identifiers, database, data):
-        '''
-        Creates file object with the specified data for the
-        specified identifiers.
-        '''
-        fformat = 'csv'
-        if data == "contig" or data == "orf":
-            fformat = 'fasta'
-        file = ServedFile(self.get_filename(data), fformat, self.get_header(data))
-        for identifier in identifiers:
-            try:
-                node = query_node(identifier, database)
-                file.add_elements(self.data_from_node[data](node))
-            except NodeNotFound:
-                continue
-        return file
-
-    def get_filename(self, data):
-        '''
-        Returns filename string
-        '''
-        if data == "contig" or data=="orf":
-            filename = "fasta.fa"
-        elif data == "homology":
-            filename = "homologs.csv"
-        elif data == "pfam":
-            filename = "domains.csv"
-        elif data == "interactions":
-            filename = "interactions.csv"
-        else:
-            filename = "gene_ontologies.csv"
-        return filename
-
-    def get_header(self, data):
-        '''
-        Returns header string
-        '''
-        if data == "homology":
-            header = "NAME,HUMAN,BLAST_EVALUE,BLAST_COVERAGE,EGGNOG_EVALUE,META_ALIGNMENT_SCORE\n"
-        else:
-            header = None
-        return header
-
-
-# ------------------------------------------------------------------------------
-class ServedFile(object):
-    '''
-    Class of served files for download.
-
-    Attributes:
-        oname: String with output filename.
-        fformat: String with file format, can be 'csv' or 'fasta'.
-        header: Bool describing if file should have a header.
-        written: Bool describing if the file has data on it or not.
-    '''
-    def __init__(self, oname, fformat='csv', header=None):
-        self.oname = oname
-        self.fformat = fformat
-        self.header = header
-        self.filename = tempfile.NamedTemporaryFile()
-        self.elements = list()
-        self.written = False
-
-    def add_elements(self, elem):
-        '''
-        Adds a register to the list of elements
-        '''
-        self.elements.extend(elem)
-
-    def write(self, what=None):
-        '''
-        Writes to temp file
-        '''
-        with open(self.filename.name, "w") as fh:
-            if self.header is not None:
-                fh.write(self.header)
-            for elem in self.elements:
-                if self.fformat == 'csv':
-                    fh.write( "%s\n" % ",".join(elem) )
-                elif self.fformat == 'fasta':
-                    formatseq = "".join(elem[1][i:i+64] + "\n" for i in range(0,len(elem[1]), 64)) 
-                    fh.write(">%s|%s\n%s" % (elem[0], elem[2], formatseq))
-                else:
-                    raise InvalidFormat(self.fformat)
-        self.written = True
-
-    def to_response(self, what=None):
-        '''
-        Creates a response object to be served to the user for download
-        '''
-        if self.written is False:
-            self.write(what)
-        wrapper = FileWrapper(open(self.filename.name))
-        response = HttpResponse(wrapper, content_type='text/plain')
-        response['Content-Disposition'] = 'attachment; filename=%s' % self.oname
-        response['Content-Length'] = os.path.getsize(self.filename.name)
-        return response
-
 
 # ------------------------------------------------------------------------------
 class WildCard(object):
@@ -893,7 +420,7 @@ class WildCard(object):
         self.database = database
 
     def get_nodes(self):
-        query   = WILDCARD_QUERY % (self.database, self.search)
+        query   = neoquery.WILDCARD_QUERY % (self.database, self.search)
         results = GRAPH.run(query)
         results = results.data()
         if results:
@@ -947,7 +474,7 @@ class PredictedNode(Node):
         Gets official symbol if possible
         '''
         if self.off_symbol is None:
-            query = GET_OFF_SYMBOL % (self.database, self.symbol)
+            query = neoquery.GET_OFF_SYMBOL % (self.database, self.symbol)
             results = GRAPH.run(query)
             results = results.data()
             if results:
@@ -966,7 +493,7 @@ class PredictedNode(Node):
 
     def __query_node(self):
         "Gets node from neo4j and fills sequence, orf and length attributes."
-        query = PREDNODE_QUERY % (self.database, self.symbol)
+        query = neoquery.PREDNODE_QUERY % (self.database, self.symbol)
 
         results = GRAPH.run(query)
         results = results.data()
@@ -993,7 +520,7 @@ class PredictedNode(Node):
                 )
         else:
             logging.info("NOTFOUND")
-            raise NodeNotFound(self.symbol, self.database)
+            raise exceptions.NodeNotFound(self.symbol, self.database)
 
     def to_jsondict(self):
         '''
@@ -1020,7 +547,7 @@ class PredictedNode(Node):
         Method to get the adjacent nodes in the graph.
         Fills attribute neighbours, which will be a list of PredInteraction objects.
         """
-        query = NEIGHBOURS_QUERY % (self.database, self.database, self.symbol)
+        query = neoquery.NEIGHBOURS_QUERY % (self.database, self.database, self.symbol)
         results = GRAPH.run(query)
         results = results.data()
         if results:
@@ -1076,14 +603,14 @@ class PredictedNode(Node):
         Gets expression data for a particular node, a particular experiment and a particular sample
         """
         expression = None
-        query = EXPRESSION_QUERY % (self.database, self.symbol, experiment.id, sample)
+        query = neoquery.EXPRESSION_QUERY % (self.database, self.symbol, experiment.id, sample)
         results = GRAPH.run(query)
         results = results.data()
         if results:
             for row in results:
                 expression = row["exp"]
         else:
-            raise NoExpressionData(self.symbol, self.database, experiment.id, sample)
+            raise exceptions.NoExpressionData(self.symbol, self.database, experiment.id, sample)
         return expression
 
     def get_graphelements(self, including=None):
@@ -1116,7 +643,7 @@ class PredictedNode(Node):
         if self.homolog is None:
             self.__query_node()
 
-        query = GO_HUMAN_GET_GO_QUERY % self.homolog.human.symbol
+        query = neoquery.GO_HUMAN_GET_GO_QUERY % self.homolog.human.symbol
         results = GRAPH.run(query)
         if results:
             for row in results:
@@ -1154,7 +681,7 @@ class oldExperiment(object):
         Checks if the specified experiment exists in the database and gets the max and min expression
         ranges defined aswell as the reference.
         """
-        query   = EXPERIMENT_QUERY % (self.id)
+        query   = neoquery.EXPERIMENT_QUERY % (self.id)
         results = GRAPH.run(query)
         results = results.data()
         if results:
@@ -1228,13 +755,13 @@ class OfficialSymbol(object):
         return re.match(cls.offsymbol_regexp, symbol)
 
     def get_predictednode(self, database):
-        query   = OFFSYMBOL_QUERY % (database, self.symbol)
+        query   = neoquery.OFFSYMBOL_QUERY % (database, self.symbol)
         results = GRAPH.run(query)
         results = results.data()
         if results:
             return results[0]['symbol']
         else:
-            raise NodeNotFound(self.symbol, "OFF_SYMBOL")
+            raise exceptions.NodeNotFound(self.symbol, "OFF_SYMBOL")
 
 
 # ------------------------------------------------------------------------------
@@ -1257,7 +784,7 @@ class GraphCytoscape(object):
             elif isinstance(element, PredInteraction):
                 self.edges.add( element )
             else:
-                raise WrongGraphObject(element)
+                raise exceptions.WrongGraphObject(element)
 
     def is_empty(self):
         """
@@ -1328,7 +855,7 @@ class GraphCytoscape(object):
         node_selector = "[" + node_list + "]"
         expression    = dict()
         for sample in samples:
-            query = EXPRESSION_QUERY_GRAPH % (node_selector, experiment.id, sample)
+            query = neoquery.EXPRESSION_QUERY_GRAPH % (node_selector, experiment.id, sample)
             results = GRAPH.run(query)
             results = results.data()
             for row in results:
@@ -1342,7 +869,7 @@ class GraphCytoscape(object):
         Function that looks for the edges between the nodes in the graph
         """
         node_q_string = str(list([str(node.symbol) for node in self.nodes]))
-        query = GET_CONNECTIONS_QUERY % (node_q_string, node_q_string)
+        query = neoquery.GET_CONNECTIONS_QUERY % (node_q_string, node_q_string)
         results = GRAPH.run(query)
         results = results.data()
         if results:
@@ -1401,7 +928,7 @@ class ExperimentList(object):
         self.experiments = set()
         self.samples     = dict()
         self.datasets    = dict()
-        query   = ALL_EXPERIMENTS_QUERY
+        query   = neoquery.ALL_EXPERIMENTS_QUERY
         # Add all the samples for each experiment
         results = GRAPH.run(query)
         results = results.data()
@@ -1449,14 +976,14 @@ class ExperimentList(object):
         if experiment in self.samples:
             return self.samples[experiment]
         else:
-            raise ExperimentNotFound
+            raise exceptions.ExperimentNotFound
 
     def get_datasets(self, experiment):
         """ Returns a set for the given experiment"""
         if experiment in self.samples:
             return self.datasets[experiment]
         else:
-            raise ExperimentNotFound
+            raise exceptions.ExperimentNotFound
 
     def __str__(self):
         final_str = ""
@@ -1518,7 +1045,7 @@ class GeneOntology(object):
                 else:
                     self.__query_go()
             else:
-                raise NotGOAccession(self)
+                raise exceptions.NotGOAccession(self)
 
     @classmethod
     def is_symbol_valid(cls, symbol):
@@ -1528,20 +1055,20 @@ class GeneOntology(object):
         """
         Query DB and get domain
         """
-        query   = GO_QUERY % self.accession
+        query   = neoquery.GO_QUERY % self.accession
         results = GRAPH.run(query)
         results = results.data()
         if results:
             self.domain = results[0]['domain']
             self.name   = results[0]['name']
         else:
-            raise NodeNotFound(self.accession, "Go")
+            raise exceptions.NodeNotFound(self.accession, "Go")
 
     def __get_nodes(self):
         """
         Gets Human nodes symbols with annotated GO
         """
-        query   = GO_HUMAN_NODE_QUERY % self.accession
+        query   = neoquery.GO_HUMAN_NODE_QUERY % self.accession
         results = GRAPH.run(query)
 
         results = results.data()
@@ -1550,7 +1077,7 @@ class GeneOntology(object):
             for row in results:
                 self.human_nodes.append(HumanNode(row['symbol'], "Human", query=False))
         else:
-            raise NodeNotFound(self.accession, "Go")
+            raise exceptions.NodeNotFound(self.accession, "Go")
 
 
 # ------------------------------------------------------------------------------
@@ -1633,7 +1160,7 @@ class GeneSearch(object):
                 if "*" in self.sterm:
                     human_nodes = WildCard(self.sterm, self.sterm_database).get_nodes()
                 else:
-                    human_nodes [ HumanNode(self.sterm.upper(), self.sterm_database) ]
+                    human_nodes = [ HumanNode(self.sterm.upper(), self.sterm_database) ]
 
             for hnode in human_nodes:
                 homologs = hnode.get_homologs(self.database)
@@ -1643,7 +1170,6 @@ class GeneSearch(object):
                         planarian_nodes.append(hom.prednode)
         else:
             planarian_nodes =  [ PredictedNode(self.sterm, self.sterm_database) ]
-        
         return planarian_nodes
 
 
@@ -1658,642 +1184,12 @@ class GeneSearch(object):
         if self.sterm_database == "Human":
             if "*" in self.sterm:
                 human_nodes = WildCard(self.sterm, self.sterm_database).get_nodes()
-                print(human_nodes)
             else:
-                human_nodes [ HumanNode(self.sterm.upper(), self.sterm_database) ]
+                human_nodes = [ HumanNode(self.sterm.upper(), self.sterm_database) ]
         elif self.sterm_database == "GO":
             human_nodes = GeneOntology(self.sterm, human=True).human_nodes
         return human_nodes
 
-
-
-
-
-
-# ------------------------------------------------------------------------------
-class GenExpPlot(object):
-    """
-    Class for Plotly barplots and violins.
-    traces = [
-        0 : {
-            group1: [ values ],
-            group2: [ values ],
-            ...
-        },
-        1 :
-            ...
-    ]
-    """
-    def __init__(self):
-        self.traces = list()
-        self.traces_set = set()
-        self.groups = list()
-        self.groups_set = set()
-        self.title  = str()
-        self.ylab   = str()
-        self.trace_names = list()
-        self.units = dict()
-
-    def add_group(self, group):
-        if group not in self.groups_set:
-            self.groups.append(group)
-            self.groups_set.add(group)
-        
-        for trace in self.traces:
-            if group not in trace:
-                trace[group] = list()
-        
-        if not self.traces:
-            self.traces.append(dict())
-
-    def add_value(self, value, group, trace=0):
-        if group not in self.traces[trace]:
-            self.add_group(group)
-        self.traces[trace][group].append(value)
-
-    def add_trace(self, trace_idx):
-        self.traces.append(dict())
-        # Clone groups from other traces
-        for group in self.traces[0].keys():
-            self.traces[trace_idx][group] = list()
-
-    def add_trace_name(self, trace_idx, name):
-        if len(self.trace_names) <= trace_idx:
-            self.trace_names.append(name)
-        else:
-            self.trace_names[trace_idx] = name
-
-    def add_title(self, title):
-        self.title = title
-
-    def add_ylab(self, ylab):
-        self.ylab = ylab
-    
-    def is_empty(self):
-        empty = True
-        for trace in self.traces:
-            for condition, expression in trace.items():
-                if sum(expression):
-                    empty = False
-                    break
-        return empty
-    
-    def add_units(self, axis, units):
-        '''
-        Adds units to one axis of the plot.
-
-        Args:
-            axis: string cointaining 'x' or 'y'.
-            units: string for units.
-        
-        Returns:
-            nothing
-        '''
-        if axis == 'x' or axis == 'y':
-            self.units[axis] = units
-        else:
-            raise ValueError("Axis should be a string containing 'x' or 'y'.")
-            
-
-
-
-# ------------------------------------------------------------------------------
-class BarPlot(GenExpPlot):
-    """
-    Class for Plotly bar plots.
-    Each bar (group) consists of only one value.
-    """
-    def __init__(self):
-        super(BarPlot, self).__init__()
-    
-    def plot(self):
-        theplot = dict()
-        theplot['data'] = list()
-        for trace_idx, trace in enumerate(self.traces):
-            trace_data = dict()
-            x = list()
-            y = list()
-            if len(self.trace_names) > trace_idx:
-                trace_data['name'] = self.trace_names[trace_idx]
-            for group in self.groups:
-                x.append(group)
-                
-                y.append(trace[group][0])
-            trace_data['x'] = x
-            trace_data['y'] = y
-            trace_data['type'] = 'bar'
-            theplot['data'].append(trace_data)
-        theplot['layout'] = dict()
-        if len(self.traces) > 1:
-            theplot['layout']['barmode'] = "group"
-        
-        if self.title:
-            theplot['layout']['title'] = self.title
-        if self.ylab:
-            theplot['layout']['yaxis'] = dict()
-            theplot['layout']['yaxis']['title'] = self.ylab
-        
-        if self.units:
-            for axis, units in self.units.items():
-                axis_name = axis + 'axis'
-                theplot['layout'][axis_name] = dict()
-                theplot['layout'][axis_name]['title'] = units
-        return theplot
-    
-    
-
-# ------------------------------------------------------------------------------
-class ViolinPlot(GenExpPlot):
-    """
-    Class for Plotly violinplots.
-    Each violin (group) is made of multiple values.
-    Class for Plotly barplots.
-    traces = [
-        0 : {
-            group1: [ values ],
-            group2: [ values ],
-            ...
-        },
-        1 :
-            ...
-    ]
-    """
-    def __init__(self):
-        super(ViolinPlot, self).__init__()
-    
-
-    def jitter_and_round(self, values, jitter=0.01):
-        newvalues = list()
-        for idx, value in enumerate(values):
-            value = round(value, 3)
-            if idx % 2 == 0:
-                newvalues.append(value + jitter)
-            else:
-                newvalues.append(value - jitter)
-        return newvalues
-
-
-    def plot(self):
-        theplot = dict()
-        theplot['data'] = list()
-        for trace_idx, trace in enumerate(self.traces):
-            trace_data = dict()
-            trace_data['type'] = 'violin'
-            trace_data['box'] = {'visible': True}
-
-            x = list()
-            y = list()
-            if len(self.trace_names) > trace_idx:
-                trace_data['name'] = self.trace_names[trace_idx]
-            for group in sorted(self.traces[trace_idx]):
-                values = self.traces[trace_idx][group]
-                values = self.jitter_and_round(values)
-                for value in values:
-                    x.append(str(group))
-                    y.append(value)
-
-            trace_data['x'] = x
-            trace_data['y'] = y
-            theplot['data'].append(trace_data)
-        theplot['layout'] = dict()
-        if len(self.traces) > 1:
-            theplot['layout']['violinmode'] = "group"
-        if self.title:
-            theplot['layout']['title'] = self.title
-        if self.ylab:
-            theplot['layout']['yaxis'] = dict()
-            theplot['layout']['yaxis']['title'] = self.ylab
-        if self.units:
-            for axis, units in self.units.items():
-                axis_name = axis + 'axis'
-                theplot['layout'][axis_name] = dict()
-                theplot['layout'][axis_name]['title'] = units
-        return theplot
-
-
-class ScatterPlot(object):
-    '''
-    Class for Plotly scatterplots
-    '''
-    def __init__(self):
-        self.traces = dict()
-        self.limits = { 'x': list(), 'y': list()}
-        self.units = dict()
-    
-    def add_trace(self, name):
-        if name not in self.traces:
-            self.traces[name] = PlotlyTrace(name)
-            self.traces[name].order = len(self.traces)
-    
-    def add_x(self, trace_name, x):
-        if trace_name in self.traces:
-            self.traces[trace_name].x.append(x)
-        else:
-            raise(KeyError("Trace %s not found in ScatterPlot!" % trace_name))
-
-    def add_y(self, trace_name, y):
-        if trace_name in self.traces:
-            self.traces[trace_name].y.append(y)
-    
-    def add_name(self, trace_name, name):
-        if trace_name in self.traces:
-            self.traces[trace_name].names.append(name)
-
-    def set_limits(self, axis, start, end):
-        if axis == 'x' or axis == 'y':
-            self.limits[axis] =[start, end]
-        else:
-            raise ValueError("Axis should be 'x' or 'y'.")
-
-    def plot(self):
-        theplot = dict()
-        theplot['data'] = list()
-        theplot['layout'] = dict()
-        for trace_name in sorted(self.traces.keys(), key=lambda n: self.traces[n].order):
-            trace = self.traces[trace_name]
-            trace_data = dict()
-            if str(trace_name).isdigit():
-                trace_data['name'] = 'Cluster ' + str(trace.name)
-            else:
-                trace_data['name'] = str(trace.name)
-            trace_data['x'] = trace.x
-            trace_data['y'] = trace.y
-            trace_data['type'] = trace.type
-            trace_data['mode'] = trace.mode
-            if trace.color:
-                trace_data['marker'] = { 'color': list(trace.color) }
-            if trace.names:
-                trace_data['text'] = trace.names
-            theplot['data'].append(trace_data)
-        theplot['layout'] = {'xaxis': dict(), 'yaxis': dict()}
-        if self.limits:
-            if 'x' in self.limits:
-                theplot['layout']['xaxis']['range'] = self.limits['x']
-            if 'y' in self.limits:
-                theplot['layout']['yaxis']['range'] = self.limits['y']
-        if self.units:
-            for axis, units in self.units.items():
-                axis_name = axis + 'axis'
-                theplot['layout'][axis_name]['title'] = units
-        return theplot
-    
-    def add_color_to_trace(self, trace_name, colors):
-        if trace_name in self.traces:
-            self.traces[trace_name].color = colors
-        else:
-            raise(KeyError("Trace %s not found in ScatterPlot!" % trace_name))
-
-    def add_units(self, axis, units):
-        '''
-        Adds units to one axis of the plot.
-
-        Args:
-            axis: string cointaining 'x' or 'y'.
-            units: string for units.
-        
-        Returns:
-            nothing
-        '''
-        if axis == 'x' or axis == 'y':
-            self.units[axis] = units
-        else:
-            raise ValueError("Axis should be a string containing 'x' or 'y'.")
-
-
-class PlotlyTrace(object):
-    '''
-    Class for plotly traces
-    '''
-    def __init__(self, name):
-        self.name = name
-        self.order = int()
-        self.x = list()
-        self.y = list()
-        self.names = list()
-        self.mode = 'markers'
-        self.type = 'scatter'
-        self.color = list()
-
-    
-
-
-
-
-# EXCEPTIONS
-# ------------------------------------------------------------------------------
-class IncorrectDatabase(Exception):
-    """Exception raised when incorrect database"""
-    def __init__(self, database):
-        self.database = database
-
-    def __str__(self):
-        return "%s database not found, incorrect database name." % self.database
-
-# ------------------------------------------------------------------------------
-class WrongGraphObject(Exception):
-    """Exception for wrong graph object given to add_[node|edge]"""
-    def __init__(self, obj):
-        self.type = type(obj)
-    def __str__(self):
-        return "Can't add object of type %s to GraphCytoscape object." % self.type
-
-# ------------------------------------------------------------------------------
-class NodeNotFound(Exception):
-    """Exception raised when a node is not found on the db"""
-    def __init__(self, symbol, database):
-        self.symbol   = symbol
-        self.database = database
-    def __str__(self):
-        return "Symbol %s not found in database %s." % (self.symbol, self.database)
-
-# ------------------------------------------------------------------------------
-class NoExpressionData(Exception):
-    """Exception node has no expression data"""
-    def __init__(self, symbol, database, experiment, sample):
-        self.symbol     = symbol
-        self.database   = database
-        self.experiment = experiment
-        self.sample     = sample
-    def __str__(self):
-        return "Expression for experiment %s and sample %s not found for node %s of database %s" % (self.experiment, self.sample, self.symbol, self.database)
-
-# ------------------------------------------------------------------------------
-class ExperimentNotFound(Exception):
-    """
-    Exception thrown when trying to create a experiment object that was not found on the DB
-    """
-    def __init__(self, experiment):
-        self.experiment = experiment
-    def __str__(self):
-        return "Experiment %s not found in database" % self.experiment
-
-# ------------------------------------------------------------------------------
-class SampleNotAvailable(Exception):
-    """Exception raised when a specified sample is not found for a particular experiment"""
-    def __init__(self, experiment, sample):
-        self.experiment = experiment
-        self.sample     = sample
-    def __str__(self):
-        return "Sample %s not found for experiment %s in database" % (self.sample, self.experiment)
-
-# ------------------------------------------------------------------------------
-class NotGOAccession(Exception):
-    """Exception when GO accession provided to GO object is not a GO accession"""
-    def __init__(self, go_object):
-        self.go = go_object
-    def __str__(self):
-        return "GO accession: %s is not an allowed GO accession (GO:\\d{7})" % (self.go.accession)
-
-# ------------------------------------------------------------------------------
-class NotPFAMAccession(Exception):
-    """Exception when PFAM accession provided to GO object is not a GO accession"""
-    def __init__(self, acc):
-        self.acc = acc
-    def __str__(self):
-        return "PFAM accession: %s is not an allowed PFAM accession (PFAM:\\d{7})" % (self.acc)
-
-# ------------------------------------------------------------------------------
-class NoHomologFound(Exception):
-    """Exception raised when a node homolog is not found. Internal error. Should not happen"""
-    def __init__(self, symbol):
-        self.symbol = symbol
-    def __str__(self):
-        return "Homolog of %s not found in database." % (self.symbol)
-
-class InvalidFormat(Exception):
-    """Exception raised when format for ServedFile is invalid"""
-    def __init__(self, ffomat):
-        self.fformat = fformat
-    def __str__(self):
-        return "Invalid file format: %s ." % (self.fformat)
-
-
-
-
-# MODELS
-# ------------------------------------------------------------------------------
-class Dataset(models.Model):
-    name = models.CharField(max_length=50)
-    year = models.IntegerField(max_length=4)
-    citation = models.CharField(max_length=512)
-    url = models.URLField(max_length=200)
-    n_contigs = models.IntegerField(max_length=1000000)
-    n_ints = models.IntegerField(max_length=2000000)
-    identifier_regex = models.CharField(max_length=200)
-    public = models.BooleanField()
-
-    def is_symbol_valid(self, symbol):
-        '''
-        Checks if a given symbol belongs to database based on 
-        the symbol naming convention.
-        '''
-        if re.match(self.identifier_regex, symbol):
-            return True
-        else:
-            return False
-
-    @classmethod
-    def get_allowed_datasets(cls, user):
-        '''
-        Returns QuerySet of allowed datasets for a given user
-        '''
-        public_datasets = cls.objects.filter(public=True).order_by('-year')
-        if not user.is_authenticated:
-            # Return only public datasets
-            return public_datasets
-        else:
-            # user is authenticated, return allowed datasets
-            restricted_allowed = cls.objects.filter(userdatasetpermission__user=user).order_by('-year')
-            all_allowed = public_datasets | restricted_allowed
-            return all_allowed
-    
-    def __str__(self):
-       return self.name
-
-
-# ------------------------------------------------------------------------------
-class UserDatasetPermission(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    dataset = models.ForeignKey(Dataset, on_delete=models.CASCADE)
-
-    def __str__(self):
-       return self.user.username + " [access to] " + self.dataset.name
-
-
-# ------------------------------------------------------------------------------
-class ExperimentType(models.Model):
-    exp_type = models.CharField(max_length=50)
-    description = models.TextField()
-
-    def __str__(self):
-       return self.exp_type
-
-
-# ------------------------------------------------------------------------------
-class Experiment(models.Model):
-    name = models.CharField(max_length=50)
-    description = models.TextField()
-    citation = models.CharField(max_length=512)
-    url = models.URLField(max_length=200)
-    exp_type = models.ForeignKey(ExperimentType, on_delete=models.CASCADE)
-    public = models.BooleanField()
-
-    @classmethod
-    def get_allowed_experiments(cls, user):
-        '''
-        Returns QuerySet of allowed experiments for a given user
-        '''
-        public_experiments = cls.objects.filter(public=True).order_by('name')
-        if not user.is_authenticated:
-            # Return only public datasets
-            return public_experiments
-        else:
-            # user is authenticated, return allowed datasets
-            restricted_allowed = cls.objects.filter(userexperimentpermission__user=user).order_by('name')
-            all_allowed = public_experiments | restricted_allowed
-            return all_allowed
-
-    def to_json(self):
-        '''
-        Returns json string with info about experiment
-        '''
-        json_dict = {
-            'name': self.name,
-            'description': self.description,
-            'citation': self.citation,
-            'url': self.url,
-            'type': self.exp_type.exp_type
-        }
-        conditions = Condition.objects.filter(experiment__name=self.name)
-        json_dict['conditions'] = dict()
-        for cond in conditions:
-            if cond.cond_type.name not in json_dict['conditions']:
-                json_dict['conditions'][cond.cond_type.name] = list()
-            json_dict['conditions'][cond.cond_type.name].append( 
-                (cond.name, cond.defines_cell_type, cond.cell_type, cond.description) 
-            )
-        json_string = json.dumps(json_dict)
-        return json_string
-
-    def __str__(self):
-       return self.name
-
-# ------------------------------------------------------------------------------
-class ExperimentDataset(models.Model):
-    dataset = models.ForeignKey(Dataset, on_delete=models.CASCADE)
-    experiment = models.ForeignKey(Experiment, on_delete=models.CASCADE)
-
-    def __str__(self):
-       return self.experiment.name + ' - ' + self.dataset.name
-
-
-# ------------------------------------------------------------------------------
-class UserExperimentPermission(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    experiment = models.ForeignKey(Experiment, on_delete=models.CASCADE)
-
-    def __str__(self):
-       return self.user.username + " [access to] " + self.experiment.name
-
-
-# ------------------------------------------------------------------------------
-class ConditionType(models.Model):
-    '''
-    1 Batch (technical condition).
-    2 Experimental condition.
-    3 Cluster.
-    '''
-    name = models.CharField(max_length=50)
-    description = models.TextField()
-
-    def __str__(self):
-       return self.name
-
-
-# ------------------------------------------------------------------------------
-class Condition(models.Model):
-    '''
-    Technical conditions, Experimental conditions, Clusters, and Cells will be stored here.
-    '''
-    name = models.CharField(max_length=50)
-    experiment = models.ForeignKey(Experiment, on_delete=models.CASCADE)
-    cond_type = models.ForeignKey(ConditionType, on_delete=models.CASCADE)
-    defines_cell_type = models.BooleanField()
-    cell_type = models.CharField(max_length=50)
-    description = models.TextField()
-
-    def __str__(self):
-       return self.name + " - " + self.experiment.name
-
-
-# ------------------------------------------------------------------------------
-class Sample(models.Model):
-    experiment = models.ForeignKey(Experiment, on_delete=models.CASCADE)
-    sample_name  = models.CharField(max_length=50)
-
-    def __str__(self):
-       return self.sample_name + " - " + self.experiment.name
-
-
-# ------------------------------------------------------------------------------
-class SampleCondition(models.Model):
-    experiment = models.ForeignKey(Experiment, on_delete=models.CASCADE)
-    sample = models.ForeignKey(Sample, on_delete=models.CASCADE)
-    condition = models.ForeignKey(Condition, on_delete=models.CASCADE)
-
-    def __str__(self):
-       return self.experiment.name + " - " + self.sample.sample_name + " - " + self.condition.name
-
-# ------------------------------------------------------------------------------
-class ExpressionAbsolute(models.Model):
-    '''
-    This table will store the expression value for each condition (for a given experiment and a given gene). 
-    Keep in mind that a 'Condition' can be a Technical-Condition (0), Experimental-Condition (2), Cluster (3) or a Cell (4).
-    In the case of 0, 1, 2, and 3 the expression will be the MEAN expression for that gene in those samples.
-    In the case of 4 (a cell), the expression will be the actual expression in that particular cell. 
-    The cell will have an entry in the 'Condition' table, just like any condition, linking it to a particular experiment.
-    '''
-    experiment = models.ForeignKey(Experiment, on_delete=models.CASCADE)
-    sample = models.ForeignKey(Sample, on_delete=models.CASCADE)
-    dataset = models.ForeignKey(Dataset, on_delete=models.CASCADE)
-    gene_symbol = models.CharField(max_length=50)
-    expression_value = models.FloatField()
-    units = models.CharField(max_length=10)
-
-    def __str__(self):
-        name_str = self.experiment.name + " - "
-        name_str += str(self.sample.sample_name) + " - "
-        name_str += str(self.gene_symbol) + ": "
-        name_str += str(self.expression_value) + " "
-        name_str += self.units
-        return name_str
-    
-    
-class CellPlotPosition(models.Model):
-    experiment = models.ForeignKey(Experiment, on_delete=models.CASCADE)
-    sample = models.ForeignKey(Sample, on_delete=models.CASCADE)
-    dataset = models.ForeignKey(Dataset, on_delete=models.CASCADE)
-    x_position = models.FloatField()
-    y_position = models.FloatField()
-
-
-# ------------------------------------------------------------------------------
-class ExpressionRelative(models.Model):
-    experiment = models.ForeignKey(Experiment, on_delete=models.CASCADE)
-    condition1 = models.ForeignKey(Condition, on_delete=models.CASCADE, related_name='condition1_expressionrelative_set')
-    condition2 = models.ForeignKey(Condition, on_delete=models.CASCADE, related_name='condition1_expressionrelative_setsubcondition')
-    cond_type = models.ForeignKey(ConditionType, on_delete=models.CASCADE)
-    dataset = models.ForeignKey(Dataset, on_delete=models.CASCADE)
-    gene_symbol = models.CharField(max_length=50)
-    fold_change = models.FloatField()
-    pvalue = models.FloatField()
-
-    def __str__(self):
-        name_str = self.experiment.name + " - "
-        name_str += self.condition1.name + " vs "
-        name_str += self.condition2.name + " - "
-        name_str += str(self.gene_symbol) + ": "
-        name_str += str(self.fold_change) + " "
-        name_str += "(p=" + str(self.pvalue) + ")"
-        return name_str
-
+from NetExplorer.models.mysql_models import *
+from NetExplorer.models import neo4j_queries as neoquery
+from NetExplorer.models import exceptions

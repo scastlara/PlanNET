@@ -8,8 +8,11 @@ def get_card(request, symbol=None, database=None):
         symbol    = request.GET['target']
         database  = request.GET['targetDB']
     try:
-        card_node = query_node(symbol, database)
+        #card_node = query_node(symbol, database)
+        card_node = GeneSearch(symbol, database)
         if database != "Human":
+            card_node = card_node.get_planarian_nodes()[0]
+            card_node.get_summary()
             card_node.get_neighbours()
             card_node.get_domains()
             card_node.get_geneontology()
@@ -18,9 +21,10 @@ def get_card(request, symbol=None, database=None):
             graph.add_elements(nodes)
             graph.add_elements(edges)
         else:
+            card_node = card_node.get_human_nodes()[0]
             homologs = card_node.get_homologs()
             card_node.get_summary()
-    except (NodeNotFound, IncorrectDatabase):
+    except Exception:
         return render_to_response('NetExplorer/not_interactome.html')
     if database != "Human":
         response = {

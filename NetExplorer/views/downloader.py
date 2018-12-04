@@ -19,7 +19,7 @@ def downloader(request):
         identifiers = identifiers[0:MAX_IDS]
     database = request.POST['database']
     data = request.POST['data']
-    dhandler = DownloadHandler()
-    file = dhandler.download_data(identifiers, database, data)
-    response = file.to_response()
+    dhandler = downloaders.DownloadHandler()
+    the_file = dhandler.download_data(identifiers, database, data)
+    response = the_file.to_response()
     return response
