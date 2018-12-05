@@ -7,6 +7,7 @@ PREDNODE_QUERY = """
     RETURN n.symbol AS symbol,
         n.sequence AS sequence,
         n.orf AS orf,
+        n.length AS length,
         m.symbol AS human,
         r.blast_cov AS blast_cov,
         r.blast_eval AS blast_eval,
@@ -15,6 +16,15 @@ PREDNODE_QUERY = """
         r.nog_eval AS nog_eval,
         r.blast_brh AS blast_brh,
         r.pfam_brh AS pfam_brh LIMIT 1
+"""
+
+PREDNODE_NOHOMOLOG_QUERY = """
+    MATCH (n:%s)
+    WHERE n.symbol = "%s"
+    RETURN n.symbol   AS symbol,
+           n.sequence AS sequence,
+           n.orf      AS orf,
+           n.length   AS length
 """
 
 # ------------------------------------------------------------------------------
@@ -233,4 +243,56 @@ SUMMARY_QUERY = """
     WHERE n.symbol = "%s"
     RETURN n.summary as summary,
            n.summary_source as summary_source
+"""
+
+# ------------------------------------------------------------------------------
+GET_GENES_QUERY = """
+    MATCH (n:Smesgene)-[r:HAS_TRANSCRIPT]->(m:%s)
+    WHERE m.symbol = "%s"
+    RETURN n.symbol as symbol,
+           n.name as name,
+           n.start as start,
+           n.end as end,
+           n.sequence as sequence,
+           n.strand as strand
+"""
+
+# ------------------------------------------------------------------------------
+GET_GENES_FROMHUMAN_QUERY = """
+    MATCH (n:Human)<-[r:HOMOLOG_OF]-(m:%s)<-[s:HAS_TRANSCRIPT]-(l:Smesgene)
+    WHERE n.symbol = "%s"
+    RETURN l.symbol as symbol,
+           l.name as name,
+           l.start as start,
+           l.end as end,
+           l.sequence as sequence,
+           l.strand as strand
+"""
+
+SMESGENE_QUERY = """
+    MATCH (n:Smesgene)
+    WHERE n.symbol = "%s"
+    RETURN n.symbol as symbol,
+           n.name as name,
+           n.start as start,
+           n.end as end,
+           n.sequence as sequence,
+           n.chromosome as chromosome,
+           n.strand as strand
+"""
+
+SMESGENE_GET_PREDICTEDNODES_QUERY = """
+    MATCH (n:Smesgene)-[r:HAS_TRANSCRIPT]->(m:%s)
+    WHERE  n.symbol = "%s"
+    RETURN m.symbol as symbol,
+           m.length as length
+"""
+
+SMESGENE_GET_ALL_PREDICTEDNODES_QUERY = """
+    MATCH (n:Smesgene)-[r:HAS_TRANSCRIPT]->(m)
+    WHERE  n.symbol = "%s"
+    RETURN labels(m) as database,
+           m.symbol as symbol,
+           m.length as length
+    ORDER BY labels(m), m.length DESC
 """

@@ -1,0 +1,164 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/jquery-data-tables.css' %}">
+
+<html>
+
+<body>
+    
+    <div class="card-subtitle">
+        <h3>
+            <a target="_blank" title="Information about the dataset" href="{% url 'datasets' %}#{{ node.database }}">
+                <img class='legend-db' src="{% static 'Images/' %}legend-{{ node.database }}.png"/>
+                {{ node.database }}
+            </a>
+        </h3>
+    </div>
+    <div class="card-title">
+        <h1>{{ node.symbol }}</h1>
+        
+    </div>
+    {% if node.name %}
+        <h3><span class="bg-official">Gene Name:  <b>{{node.name}}</b></span></h3>
+    {% endif %}
+
+    <h2><span class="glyphicon glyphicon-tag"></span> Genomic region sequence</h2>
+    <hr class="h2-sep">
+    <a href="{% url 'get_fasta' %}?genesymbol={{ node.symbol|urlencode }}&database={{ node.database }}&type=sequence">
+        <div class="download-fasta-wrapper" title="Download FASTA file">
+            <img class="download-fasta" src="{% static 'Images/download-icon.png' %}">
+            Download FASTA
+        </div>
+    </a>
+    <div class="sequence-container">
+        <p>>{{ node.symbol}}</p>
+        <p>{{ node.sequence }}</p>
+    </div>
+
+    <h2><span class="glyphicon glyphicon-tag"></span> Gene location</h2>
+    <hr class="h2-sep">
+    <iframe width="100%" height="400px" src="http://planmine-test.mpi-cbg.de:8088/jbrowse/?data=planmine%2Fjson&loc={{ node.chromosome }}%3A{{ node.start }}..{{ node.end }}&tracks=RNA%2CSMESG%2Cdd_Smes_v1%2Cdd_Smed_v6&overview=1&highlight=&tracklist=0&highres=2"></iframe> 
+    <div class="jbrowser-subtitle">Genomic visualization powered by <a href="http://planmine.mpi-cbg.de/" target="_blank">Planmine</a></div>
+
+
+    <h2><span class="glyphicon glyphicon-tag"></span> Transcripts</h2>
+    <hr class="h2-sep">
+    
+        <table class="table table-hover transcripts-table">
+            <thead>
+                <tr>
+                    <th>Database</th>
+                    <th>Transcript symbol</th>
+                    <th>Length</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for transcript in transcripts %}
+                
+                    <tr>
+                        <td>
+                            <a href="{% url 'datasets' %}#{{ transcript.database }}" target="_blank">{{ transcript.database }}</a>
+                        </td>
+                        <td>
+                            <a
+                                class="card-link"
+                                current="{{ node.symbol|urlencode}}"
+                                currentDB="{{ node.database }}"
+                                target="{{ transcript.symbol }}"
+                                targetDB="{{ transcript.database }}">{{ transcript.symbol }}
+                            </a>
+                        </td>
+                        <td>{{ transcript.length }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    
+
+    
+</body>
+
+<script src="{% static 'js/root.js' %}"></script>
+<script src="{% static 'js/jquery-data-tables-min.js' %}"></script>
+<script>
+    $('.card-link').click(function() {
+        var card_data = {
+            div_id      : $(this).closest('.card-overlay').attr("id"),
+            current     : $(this).attr("current"),
+            currentDB   : $(this).attr("currentDB"),
+            target      : $(this).attr("target"),
+            targetDB    : $(this).attr("targetDB"),
+            csrfmiddlewaretoken: '{{ csrf_token }}'
+        }
+        var new_url = '{% url 'index_view' %}gene_card/' + card_data.targetDB + "/" + card_data.target;
+        history.pushState(card_data, null, new_url);
+        
+        // Load Get request html on current card-overlay
+        $.ajax({
+            type: "GET",
+            context: this, //this makes the this variable visible inside the success
+            url: "{% url 'get_card' %}",
+            cache: true,
+            data: {
+                'target'    : card_data['target'],
+                'current'   : card_data['current'],
+                'targetDB'  : card_data['targetDB'],
+                'currentDB' : card_data['currentDB'],
+                'csrfmiddlewaretoken': '{{ csrf_token }}'
+            },
+            success : function(data) {
+                $(this).closest('.card-overlay').html(data)
+                $(document).ready(function(){
+                    $('#int-table').DataTable({
+                        "order": [[ 1, "desc" ]]
+                    });
+                });
+            }
+        });
+        
+        
+    });
+    
+    // This will check if the user is pressing the "back" button on his/her
+    // browser. If that's the case, it will update the content of the "visible"
+    // card-div.
+    window.onpopstate = function(event) {
+        if (event.state != null){
+            $.ajax({
+                type: "GET",
+                context: this, //this makes the this variable visible inside the success
+                url: "{% url 'get_card' %}",
+                cache: true,
+                data: {
+                    'target'    : event.state['target'],
+                    'targetDB'  : event.state['targetDB'],
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                },
+                success : function(data) {
+                    if ( $(".card-overlay").is(':hidden')  ){
+                        $('[id="card-overlay"]').slideToggle(450);
+                        $('.close-overlay').slideToggle(450);
+                        $('.full-screen-card').slideToggle(450);
+                    }
+                    $('.card-overlay:visible').html(data)
+                }
+            });
+        } else {
+            $('.card-overlay').hide(250);
+            $('.close-overlay').hide();
+            $('.full-screen-card').hide();
+        }
+    };
+    
+</script>
+
+<script>
+    $(document).ready(function(){
+        $('.transcripts-table').DataTable({
+            "order": [[ 0, 2, "desc" ]]
+        });
+
+    });
+</script>
+
+</html>

@@ -27,87 +27,7 @@
 
         </div>
 
-                {% if node.database == "Human" %}
-                <!--HUMAN CARD -->
-
-                    {% if node.summary != "NA" %}
-                        <h2><span class="glyphicon glyphicon-tag"></span> Summary</h2>
-                        <hr class="h2-sep">
-                        <p>{{ node.summary }}</p>
-                        <div class="pull-right"><i>{{ node.summary_source }}</i></div>
-                    {% endif %}
-
-
-                    <h2><span class="glyphicon glyphicon-tag"></span> External links</h2>
-                    <hr class="h2-sep">
-                    <ul>
-                        <li>
-                            <a target="_blank" title="Search on HGNC" href="http://www.genenames.org/cgi-bin/gene_search?search={{ node.symbol }}&submit=Submit">
-                                 Search on HGNC
-                            </a>
-                        </li>
-
-                        <li>
-                            <a target="_blank" title="Search on Uniprot" href="http://www.uniprot.org/uniprot/?query=gene%3A{{ node.symbol }}+AND+organism%3Ahuman&sort=score">
-                                Search on Uniprot
-                            </a>
-                        </li>
-                    </ul>
-
-
-                    <h2><span class="glyphicon glyphicon-tag"></span> Homologs</h2>
-                    <hr class="h2-sep">
-                    {% for db, list  in homologs.items %}
-                        <div class="panel panel-default">
-                            <div class="panel-heading">{{ db }} </div>
-                            <div class="panel-body">
-                                <table class="table table-hover hom-table">
-                                    {% if list %}
-                                        <thead>
-                                            <th>Symbol</th>
-                                            <th>EggNOG e-value</th>
-                                            <th>EggNOG BRH</th>
-                                            <th>BLAST e-value</th>
-                                            <th>BLAST coverage</th>
-                                            <th>BLAST BRH</th>
-                                            <th>Pfam M.A. score</th>
-                                            <th>Pfam M.A. BRH</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {% for hom in list %}
-                                                <tr>
-                                                    <td>
-                                                        <a
-                                                            class="card-link"
-                                                            current="{{ node.symbol|urlencode}}"
-                                                            currentDB="{{ node.database }}"
-                                                            target="{{ hom.prednode.symbol }}"
-                                                            targetDB="{{ hom.prednode.database }}">{{ hom.prednode.symbol }}
-                                                        </a>
-                                                    </td>
-                                                    <td>{{ hom.nog_eval }}</td>
-                                                    <td>{{ hom.nog_brh }}</td>
-                                                    <td>{{ hom.blast_eval }}</td>
-                                                    <td>{{ hom.blast_cov }}</td>
-                                                    <td>{{ hom.blast_brh }}</td>
-                                                    <td>{{ hom.pfam_sc }}</td>
-                                                    <td>{{ hom.pfam_brh }}</td>
-                                                </tr>
-                                            {% endfor %}
-
-                                    {% else %}
-                                        <tr><td><h4>No Homologs</h4></td></tr>
-                                    {% endif %}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-
-
-                    {% endfor %}
-
-                {% else %}
+                
                 <!--PREDICTED NODE CARD -->
                 {% if node.off_symbol %}
                     <h3><span class="bg-official"><b>{{node.off_symbol}}</b></span></h3>
@@ -115,7 +35,7 @@
                     <h2><span class="glyphicon glyphicon-tag"></span> Sequence information</h2>
                     <hr class="h2-sep">
 
-                    <h3>Read sequence:</h3>
+                    <h3>Contig sequence:</h3>
                     <a href="{% url 'get_fasta' %}?genesymbol={{ node.symbol|urlencode }}&database={{ node.database }}&type=sequence">
                         <div class="download-fasta-wrapper" title="Download FASTA file">
                             <img class="download-fasta" src="{% static 'Images/download-icon.png' %}">
@@ -321,7 +241,6 @@
                         <h3>No interactions</h3>
                     {% endif %}
 
-                {% endif %} <!-- If Human or PredictedNode -->
     </body>
 
     <script src="{% static 'js/root.js' %}"></script>

@@ -24,8 +24,10 @@
                     <div class="form-group">
                         <input type="text" class="form-control" name="genesymbol" placeholder="Enter Symbol">
 
-                        <select name="database" class="selectpicker" title="Select Database">
-                            <option value="Human">Human</option>
+                        <select name="database" class="selectpicker" title="Select Database" data-size="5">
+                            <option data-content="<span class='badge badge-success human-select'>Human</span>" value="Human">Human</option>
+                            <option data-content="<span class='badge badge-success gene-select'>Planarian Gene</span>" value="Smesgene">Planarian Gene</option>
+                            <option data-divider="true"></option>
                             {% for db in databases %}
                                 <option value="{{ db.name }}">{{ db.name }}</option>
                             {% endfor %}
@@ -93,12 +95,20 @@
                         {% if node.off_symbol %}
                             <span class="bg-official"><b>{{node.off_symbol}}</b></span> -
                         {% endif %}
+                        
+                        {% if node.name %}
+                            <span class="bg-official"><b>{{node.name}}</b></span> -
+                        {% endif %}
 
                         {{ node.symbol }}
                     </div>
                     <div class="database-small-searchpanel">
                         <img class='legend-db' src="{% static 'Images/' %}legend-{{ node.database }}.png"/>
-                        {{ node.database }}
+                        {% if node.database == "Smesgene" %}
+                            Planarian Gene
+                        {% else %}
+                            {{ node.database }}
+                        {% endif %}
                     </div>
                 </div>
                 {% if node.database != "Human" %}

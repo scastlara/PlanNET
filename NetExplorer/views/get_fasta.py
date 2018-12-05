@@ -14,8 +14,12 @@ def get_fasta(request):
 
     node = None
     try:
-        node = query_node(genesymbol, database)
-    except (NodeNotFound, IncorrectDatabase):
+        gsearch = GeneSearch(genesymbol, database)
+        if database == "Smesgene":
+            node = gsearch.get_planarian_genes()[0]
+        else:
+            node = gsearch.get_planarian_contigs()[0]
+    except (exceptions.NodeNotFound, exceptions.IncorrectDatabase) as err:
         pass # server error!
 
     sequence = str()

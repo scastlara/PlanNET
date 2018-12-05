@@ -35,9 +35,12 @@ def gene_search(request):
                 # Valid search (symbols + database)
                 response['valid_query'] = True
                 nodes_graph = GraphCytoscape()
-                nodes_graph.new_nodes(symbols, database)
+                try:
+                    nodes_graph.new_nodes(symbols, database)
+                except exceptions.NodeNotFound:
+                    logging.info("Node not found.")
                 if not nodes_graph:
                     response['search_error'] = 1
                 else:
-                    response['res'] = nodes_graph.nodes
+                    response['res'] = sorted(list(nodes_graph.nodes), key= lambda x: x.name if hasattr(x, 'name') else x.symbol  )
     return render(request, 'NetExplorer/gene_search.html', response)

@@ -370,9 +370,9 @@ h1, h2, h3, h4, h5, h6 {
     z-index: 80;
     background: white;
     padding-left: 80px;
-    padding-top: 40px;
+    padding-top: 20px;
     padding-right: 80px;
-    padding-bottom: 40px;
+    padding-bottom: 20px;
     overflow: scroll;
     overflow-y: scroll;
     -webkit-box-shadow: 0px 0px 180px 120px rgba(0,0,0,0.75);
@@ -382,15 +382,14 @@ h1, h2, h3, h4, h5, h6 {
     font-size: 12px;
 }
 
+.card-overlay h1 { font-size: 20px; }
+.card-overlay h2 { font-size: 18px; }
+.card-overlay h3 { font-size: 16px; }
+
 .close-overlay, #click {
     cursor:
     pointer;
 }
-
-
-.card-overlay h1 { font-size: 28px; }
-.card-overlay h2 { font-size: 22px; }
-.card-overlay h3 { font-size: 20px; }
 
 #button-container {
     position: fixed;
@@ -526,7 +525,7 @@ h1, h2, h3, h4, h5, h6 {
     background-color: #F7F7F7;
     padding: 20px;
     overflow-y: scroll;
-    max-height: 150px;
+    max-height: 100px;
 }
 
 .download-fasta {
@@ -1447,6 +1446,10 @@ input[type="file"] {
     color: #777777;
 }
 
+.transcripts-table {
+    font-size: 12px;
+    color: #777777;
+}
 
 .pfam-line-table-td-scale {
     margin-right: 0 !important;
@@ -2127,3 +2130,7 @@ kbd {
 .planexp-toc-link {
     width: 100% !important;
 }
+
+.human-select { background-color: #6785d0 !important; }
+.gene-select { background-color: #c45ca2 !important; }
+.jbrowser-subtitle { float:right; }
