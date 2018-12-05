@@ -29,9 +29,6 @@
 
                 
                 <!--PREDICTED NODE CARD -->
-                {% if node.off_symbol %}
-                    <h3><span class="bg-official"><b>{{node.off_symbol}}</b></span></h3>
-                {% endif %}
                     <h2><span class="glyphicon glyphicon-tag"></span> Sequence information</h2>
                     <hr class="h2-sep">
 
@@ -255,7 +252,7 @@
                 targetDB    : $(this).attr("targetDB"),
                 csrfmiddlewaretoken: '{{ csrf_token }}'
             }
-            var new_url = '{% url 'index_view' %}gene_card/' + card_data.targetDB + "/" + card_data.target;
+            var new_url = window.location.href;
             history.pushState(card_data, null, new_url);
 
             // Load Get request html on current card-overlay

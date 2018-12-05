@@ -55,7 +55,7 @@ def net_explorer(request):
         symbols  = symbols.split(",")
         database = request.GET['database']
 
-        # ADDING NODES USING CONTIG_IDS, PROTEIN SYMBOLS, GO CODES OR PFAM IDENTIFIERS
+        # ADDING NODES USING CONTIG_IDS, PROTEIN SYMBOLS, GO CODES, OR PFAM IDENTIFIERS
         if request.GET['type'] == "node":
             graphobject = GraphCytoscape()
             graphobject.new_nodes(symbols, database)
@@ -68,7 +68,7 @@ def net_explorer(request):
                     nodes, edges = node.get_graphelements()
                     graphobject.add_elements(nodes)
                     graphobject.add_elements(edges)
-                except (NodeNotFound, IncorrectDatabase) as err:
+                except (exceptions.NodeNotFound, exceptions.IncorrectDatabase) as err:
                     continue
             if graphobject.is_empty():
                 return HttpResponse(status=404)

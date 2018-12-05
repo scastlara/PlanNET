@@ -43,10 +43,11 @@ GET_CONNECTIONS_QUERY = """
            m.symbol      AS msymbol
 """
 
-GET_OFF_SYMBOL = """
-    MATCH (n:%s)-->(m:OFF_SYMBOL)
-    WHERE n.symbol = '%s'
-    RETURN m.symbol as offsymbol
+GET_GENE = """
+    MATCH (n:Smesgene)-[r:HAS_TRANSCRIPT]->(m:%s)
+    WHERE m.symbol = '%s'
+    RETURN n.symbol as genesymbol,
+           n.name as name
 """
 
 # ------------------------------------------------------------------------------
@@ -261,12 +262,20 @@ GET_GENES_QUERY = """
 GET_GENES_FROMHUMAN_QUERY = """
     MATCH (n:Human)<-[r:HOMOLOG_OF]-(m:%s)<-[s:HAS_TRANSCRIPT]-(l:Smesgene)
     WHERE n.symbol = "%s"
-    RETURN l.symbol as symbol,
-           l.name as name,
-           l.start as start,
-           l.end as end,
-           l.sequence as sequence,
-           l.strand as strand
+    RETURN l.symbol     AS symbol,
+           l.name       AS name,
+           l.start      AS start,
+           l.end        AS end,
+           l.sequence   AS sequence,
+           l.strand     AS strand,
+           m.symbol     AS prednode_symbol,
+           r.blast_cov  AS blast_cov,
+           r.blast_eval AS blast_eval,
+           r.nog_brh    AS nog_brh,
+           r.pfam_sc    AS pfam_sc,
+           r.nog_eval   AS nog_eval,
+           r.blast_brh  AS blast_brh,
+           r.pfam_brh   AS pfam_brh
 """
 
 SMESGENE_QUERY = """
@@ -286,6 +295,7 @@ SMESGENE_GET_PREDICTEDNODES_QUERY = """
     WHERE  n.symbol = "%s"
     RETURN m.symbol as symbol,
            m.length as length
+    ORDER BY m.length DESC
 """
 
 SMESGENE_GET_ALL_PREDICTEDNODES_QUERY = """

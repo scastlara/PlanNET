@@ -19,6 +19,11 @@ def get_card(request, symbol=None, database=None):
             template = "NetExplorer/smesgene_card.html"
             card_node = gsearch.get_planarian_genes()[0]
             contigs = card_node.get_predictednodes()
+            best_contig = card_node.get_best_transcript()
+            nodes, edges = best_contig.get_graphelements()
+            graph = GraphCytoscape()
+            graph.add_elements(nodes)
+            graph.add_elements(edges)
         else:
             template = "NetExplorer/contig_card.html"
             card_node = gsearch.get_planarian_contigs()[0]
@@ -41,7 +46,8 @@ def get_card(request, symbol=None, database=None):
     elif database == "Smesgene":
         response = {
             'node': card_node,
-            'transcripts': contigs 
+            'transcripts': contigs,
+            'json_graph': graph.to_json()
         }
     else:
         response = {

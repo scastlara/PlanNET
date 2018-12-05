@@ -9,7 +9,7 @@
         <h3>
             <a target="_blank" title="Information about the dataset" href="{% url 'datasets' %}#{{ node.database }}">
                 <img class='legend-db' src="{% static 'Images/' %}legend-{{ node.database }}.png"/>
-                {{ node.database }}
+                SmesGene
             </a>
         </h3>
     </div>
@@ -36,7 +36,7 @@
 
     <h2><span class="glyphicon glyphicon-tag"></span> Gene location</h2>
     <hr class="h2-sep">
-    <iframe width="100%" height="400px" src="http://planmine-test.mpi-cbg.de:8088/jbrowse/?data=planmine%2Fjson&loc={{ node.chromosome }}%3A{{ node.start }}..{{ node.end }}&tracks=RNA%2CSMESG%2Cdd_Smes_v1%2Cdd_Smed_v6&overview=1&highlight=&tracklist=0&highres=2"></iframe> 
+    <iframe id="jbrowser" width="100%" height="400px" src="http://planmine-test.mpi-cbg.de:8088/jbrowse/?data=planmine%2Fjson&loc={{ node.chromosome }}%3A{{ node.start }}..{{ node.end }}&tracks=RNA%2CSMESG%2Cdd_Smes_v1%2Cdd_Smed_v6&overview=1&highlight=&tracklist=0&highres=2"></iframe> 
     <div class="jbrowser-subtitle">Genomic visualization powered by <a href="http://planmine.mpi-cbg.de/" target="_blank">Planmine</a></div>
 
 
@@ -90,7 +90,8 @@
             targetDB    : $(this).attr("targetDB"),
             csrfmiddlewaretoken: '{{ csrf_token }}'
         }
-        var new_url = '{% url 'index_view' %}gene_card/' + card_data.targetDB + "/" + card_data.target;
+
+        var new_url = window.location.href;
         history.pushState(card_data, null, new_url);
         
         // Load Get request html on current card-overlay
@@ -161,4 +162,13 @@
     });
 </script>
 
+
+<script>
+$(document).ready(function(){
+	var iFrameDOM = $("iframe#jbrowser").contents();
+
+	iFrameDOM.find(".menuBar").css("background-color", "red");
+});
+
+</script>
 </html>

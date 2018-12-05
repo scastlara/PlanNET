@@ -91,13 +91,9 @@
 
                 <div class="panel-heading">
                     <div class="symbol-small-searchpanel">
-
-                        {% if node.off_symbol %}
-                            <span class="bg-official"><b>{{node.off_symbol}}</b></span> -
-                        {% endif %}
                         
                         {% if node.name %}
-                            <span class="bg-official"><b>{{node.name}}</b></span> -
+                            <span class="bg-official"><b>{{ node.name }}</b></span> -
                         {% endif %}
 
                         {{ node.symbol }}
@@ -113,7 +109,12 @@
                 </div>
                 {% if node.database != "Human" %}
                     <div class="panel-body app-panel">
-                            <p>Homolog: {{ node.homolog.human.symbol }}</p>
+                            <p>Homolog:
+                            {% if node.homolog %}
+                                <span class="bg-homolog">{{ node.homolog.human.symbol }}</span></p>
+                            {% else %}
+                                None
+                            {% endif %}
                     </div>
                 {% endif %}
             </div>
