@@ -73,14 +73,14 @@ GO_HUMAN_GET_GO_QUERY = """
 
 
 # ------------------------------------------------------------------------------
-DOMAIN_NODES_QUERY = """
+DOMAIN_TO_CONTIG = """
     MATCH (n:%s)-[:HAS_DOMAIN]->(m:Pfam)
     WHERE m.accession = "%s"
     RETURN n.symbol as symbol
 """
 
 # ------------------------------------------------------------------------------
-DOMAIN_NODES_QUERY_FUZZY = """
+DOMAIN_TO_CONTIG_FUZZY = """
     MATCH (n:%s)-[:HAS_DOMAIN]->(m:Pfam)
     WHERE m.accession =~ "%s"
     RETURN n.symbol as symbol
@@ -164,10 +164,18 @@ NEIGHBOURS_QUERY = """
 """
 
 # ------------------------------------------------------------------------------
-WILDCARD_QUERY = """
+SYMBOL_WILDCARD = """
     MATCH (n:%s)
     WHERE n.symbol =~ "%s"
     RETURN n.symbol AS symbol
+"""
+
+# ------------------------------------------------------------------------------
+NAME_WILDCARD = """
+    MATCH (n:%s)
+    WHERE n.name =~ "%s"
+    RETURN n.symbol AS symbol
+           n.name AS name
 """
 
 # ------------------------------------------------------------------------------
@@ -290,7 +298,7 @@ SMESGENE_QUERY = """
            n.strand as strand
 """
 
-SMESGENE_GET_PREDICTEDNODES_QUERY = """
+SMESGENE_GET_CONTIGS_QUERY = """
     MATCH (n:Smesgene)-[r:HAS_TRANSCRIPT]->(m:%s)
     WHERE  n.symbol = "%s"
     RETURN m.symbol as symbol,
@@ -298,11 +306,25 @@ SMESGENE_GET_PREDICTEDNODES_QUERY = """
     ORDER BY m.length DESC
 """
 
-SMESGENE_GET_ALL_PREDICTEDNODES_QUERY = """
+SMESGENE_GET_ALL_CONTIGS_QUERY = """
     MATCH (n:Smesgene)-[r:HAS_TRANSCRIPT]->(m)
     WHERE  n.symbol = "%s"
     RETURN labels(m) as database,
            m.symbol as symbol,
            m.length as length
     ORDER BY labels(m), m.length DESC
+"""
+
+GO_TO_CONTIG = """
+    MATCH (go:Go)<-[r:HAS_GO]-(h:Human)<-[hom:HOMOLOG_OF]-(c:%s)
+    WHERE go.accession = "%s"
+    RETURN c.symbol AS symbol,
+           h.symbol AS human,
+           hom.blast_cov  AS blast_cov,
+           hom.blast_eval AS blast_eval,
+           hom.nog_brh    AS nog_brh,
+           hom.pfam_sc    AS pfam_sc,
+           hom.nog_eval   AS nog_eval,
+           hom.blast_brh  AS blast_brh,
+           hom.pfam_brh   AS pfam_brh
 """

@@ -25,7 +25,7 @@ class Node(object):
 
     def __query_node(self):
         """
-        This method will be overriden by HumanNode or PredictedNode.
+        This method will be overriden by HumanNode or PlanarianContig.
         It will query the Neo4j database and it will get the required node.
         """
 
@@ -46,7 +46,7 @@ class Node(object):
         if results:
             paths = list()
             for path in results:
-                nodes_in_path  = [ PredictedNode(node, self.database, query=False) for node in path['symbols']]
+                nodes_in_path  = [ PlanarianContig(node, self.database, query=False) for node in path['symbols']]
                 relationships  = list()
                 path_graph_obj = GraphCytoscape()
                 for idx, val in enumerate(path['molfun_nto']):
@@ -125,10 +125,10 @@ class Node(object):
 # ------------------------------------------------------------------------------
 class Homology(object):
     """
-    Class for homology relationships between a PredictedNode and a HumanNode.
+    Class for homology relationships between a PlanarianContig and a HumanNode.
 
     Attributes:
-        prednode: PredictedNode object.
+        prednode: PlanarianContig object.
         human: Human object.
         blast_cov: Float with BLAST coverage value in %.
         blast_eval: Float with BLAST e-value. 
@@ -175,25 +175,32 @@ class Domain(object):
     def is_symbol_valid(cls, symbol):
         return re.match(cls.pfam_regexp, symbol)
 
-    def get_nodes(self, database):
+    def get_planarian_contigs(self, database):
+        '''
+        Returns a list of PlanarianContigs of 'database'.
+
+        Args:
+            database: str, database from which to retrieve the planarian contigs.
+        '''
         query = "";
-        if not re.match(r'PF\d{5}\.', self.accession):
+        if not re.match(Domain.pfam_regexp, self.accession):
             # Fuzzy pfam accession (no number)
             acc_regex = self.accession + ".*"
-            query = neoquery.DOMAIN_NODES_QUERY_FUZZY % (database, acc_regex)
+            query = neoquery.DOMAIN_TO_CONTIG_FUZZY % (database, acc_regex)
         else:
-            query = neoquery.DOMAIN_NODES_QUERY % (database, self.accession)
+            query = neoquery.DOMAIN_TO_CONTIG % (database, self.accession)
 
         results = GRAPH.run(query)
         results = results.data()
         nodes = list()
         if results:
             for row in results:
-                nodes.append(PredictedNode(row['symbol'], database, query=False))
+                nodes.append(PlanarianContig(row['symbol'], database, query=False))
             return nodes
         else:
             raise exceptions.NodeNotFound(self.accession, "Pfam-%s" % database)
 
+    
 # ------------------------------------------------------------------------------
 class HasDomain(object):
     """
@@ -235,7 +242,7 @@ class HasDomain(object):
 class PredInteraction(object):
     """
     Class for predicted interactions.
-    Source and target are PredictedNode attributes.
+    Source and target are PlanarianContig attributes.
 
     Attributes:
         source_symbol: Symbol of parent node of interaction.
@@ -342,11 +349,11 @@ class HumanNode(Node):
 
     def get_planarian_genes(self, database):
         '''
-        Gets planarian gene objects (SmesGene) connected to HumanNode
+        Gets planarian gene objects (PlanarianGene) connected to HumanNode
         through contigs of dataset 'database', e.g.: (Human)->(Dresden)->(Smesgene)
 
         Args:
-            database: string, database of contigs to get SmesGene
+            database: string, database of contigs to get PlanarianGene
         '''
         query = neoquery.GET_GENES_FROMHUMAN_QUERY % (database, self.symbol)
         results = GRAPH.run(query)
@@ -354,7 +361,7 @@ class HumanNode(Node):
         if results:
             smesgenes = list()
             for row in results:
-                smesgene = SmesGene(
+                smesgene = PlanarianGene(
                     row['symbol'], 
                     'Smesgene', 
                     name=row['name'], 
@@ -365,7 +372,7 @@ class HumanNode(Node):
                     query=False
                 )
                 homology = Homology(
-                    prednode   = PredictedNode(row['prednode_symbol'], database, query=False),
+                    prednode   = PlanarianContig(row['prednode_symbol'], database, query=False),
                     human      = self,
                     blast_cov  = row['blast_cov'],
                     blast_eval = row['blast_eval'],
@@ -397,9 +404,30 @@ class HumanNode(Node):
             self.summary_source = "NA"
         return self            
 
+    def get_planarian_contigs(self, database):
+        '''
+        Gets all PlanarianContigs homologous to HumanNode.
+
+        Args:
+            database: str, Database from which to retrieve planarian contigs.
+
+        Returns:
+            list: PlanarianContigs objects.
+        '''
+        homologs = self.get_homologs(database)
+        planarian_contigs = list()
+        for db, homologies in homologs.items():
+            for homology in homologies:
+                planarian_contigs.append(homology.prednode)
+        return planarian_contigs
+
     def get_homologs(self, database="ALL"):
         """
-        Gets all homologs of the specified database. Returns a LIST of Homology objects.
+        Gets all homologs of the specified database. Returns a dictionary of the form:
+            dict['database'] = [ Homology() ]
+
+        Returns:
+            dictionary: key='database', value=List of Homology objects.
         """
         # Initialize homologs dictionary
         homologs         = dict()
@@ -423,7 +451,7 @@ class HumanNode(Node):
                 if database not in database_to_look:
                     continue
                 try:
-                    homolog_node = PredictedNode(row['homolog'], database, query=False)
+                    homolog_node = PlanarianContig(row['homolog'], database, query=False)
                     homolog_node.get_gene_name()
                 except:
                     continue
@@ -460,21 +488,38 @@ class WildCard(object):
         self.search   = search.replace("*", ".*")
         self.database = database
 
-    def get_nodes(self):
-        query   = neoquery.WILDCARD_QUERY % (self.database, self.search)
+    def get_human_genes(self):
+        '''
+        Returns list of HumanNode objects matching the wildcard query.
+
+        Returns:
+            list: HumanNode objects.
+        '''
+        query   = neoquery.SYMBOL_WILDCARD % (self.database, self.search)
         results = GRAPH.run(query)
         results = results.data()
+        list_of_nodes = list()
         if results:
-            list_of_nodes = list()
             for row in results:
                 list_of_nodes.append(HumanNode(row['symbol'], "Human", query=False))
-            return list_of_nodes
-        else:
-            return list()
+        return list_of_nodes
+
+    def get_planarian_genes(self):
+        '''
+        Returns list of PlanarianGene objects matching the wildcard query.
+        '''
+        query = neoquery.NAME_WILDCARD % (self.database, self.search)
+        results = GRAPH.run(query)
+        results = results.data()
+        list_of_nodes = list()
+        if results:
+            for row in results:
+                list_of_nodes.append(PlanarianGene(row['symbol'], "Smesgene", name=row['name'], query=False))
+        return list_of_nodes
 
 
 # ------------------------------------------------------------------------------
-class PredictedNode(Node):
+class PlanarianContig(Node):
     """
     Class for planarian nodes.
 
@@ -493,7 +538,7 @@ class PredictedNode(Node):
                  sequence=None, name=None, gene=None,
                  orf=None, homolog=None, important=False,
                  degree=None, query=True):
-        super(PredictedNode, self).__init__(symbol, database)
+        super(PlanarianContig, self).__init__(symbol, database)
         self.sequence = sequence
         self.orf = orf
         self.homolog = homolog
@@ -535,7 +580,7 @@ class PredictedNode(Node):
         results = results.data()
         if results:
             return [ 
-                SmesGene(
+                PlanarianGene(
                     res['symbol'], 
                     'Smesgene', 
                     name=res['name'], 
@@ -576,7 +621,7 @@ class PredictedNode(Node):
                 self.length         = row['length']
 
                 # Add homolog
-                human_node = HumanNode(row['human'], "Human")
+                human_node = HumanNode(row['human'], "Human", query=False)
                 self.homolog = Homology(
                     prednode   = self,
                     human      = human_node,
@@ -659,7 +704,7 @@ class PredictedNode(Node):
                     blast_brh  = row['blast_brh'],  pfam_brh   = row['pfam_brh']
                 )
                 # Node Object
-                target = PredictedNode(
+                target = PlanarianContig(
                     symbol   = row['target'],    database = self.database,
                     homolog  = thomolog,         degree   = row['tdegree'], query=False
                 )
@@ -953,14 +998,14 @@ class GraphCytoscape(object):
                 newinteraction = PredInteraction(
                     database      = row['database'][0],
                     source_symbol = row['nsymbol'],
-                    target        = PredictedNode(row['msymbol'], row['database'][0], query=False),
+                    target        = PlanarianContig(row['msymbol'], row['database'][0], query=False),
                     parameters    = parameters
                 )
                 self.add_interaction(newinteraction)
 
     def new_nodes(self, symbols, database):
         """
-        Takes a list of symbols and return the necessary GraphCytoscape with Human or PredictedNode objects
+        Takes a list of symbols and return the necessary GraphCytoscape with Human or PlanarianContig objects
         """
         for symbol in symbols:
             symbol = symbol.replace(" ", "")
@@ -970,7 +1015,7 @@ class GraphCytoscape(object):
             gene_search = GeneSearch(symbol, database)
 
             if database == "Human":
-                node_objects = gene_search.get_human_nodes()
+                node_objects = gene_search.get_human_genes()
             elif database == "Smesgene":
                 node_objects = gene_search.get_planarian_genes()
             else:
@@ -1110,7 +1155,7 @@ class GeneOntology(object):
         if query is True:
             if GeneOntology.is_symbol_valid(self.accession):
                 if human is True:
-                    self.__get_nodes()
+                    self.get_human_genes()
                 else:
                     self.__query_go()
             else:
@@ -1133,7 +1178,7 @@ class GeneOntology(object):
         else:
             raise exceptions.NodeNotFound(self.accession, "Go")
 
-    def __get_nodes(self):
+    def get_human_genes(self):
         """
         Gets Human nodes symbols with annotated GO
         """
@@ -1147,6 +1192,41 @@ class GeneOntology(object):
                 self.human_nodes.append(HumanNode(row['symbol'], "Human", query=False))
         else:
             raise exceptions.NodeNotFound(self.accession, "Go")
+        return self.human_nodes
+
+    def get_planarian_contigs(self, database):
+        """
+        Gets planarian contigs whose homolog has the GO annotated. (GO)<-(Human)<-(Contig)
+
+        Args:
+            database: str, database string from which to retrieve the PlanarianContigs.
+
+        Returns:
+            list: List of PlanarianContig objects.
+        """
+        query = neoquery.GO_TO_CONTIG % (database, self.accession)
+        results = GRAPH.run(query)
+        results = results.data()
+        contigs = list()
+        if results:
+            for data in results:
+                contig = PlanarianContig(
+                    data['symbol'], 
+                    database, 
+                    query=False)
+                contig.homolog = Homology(
+                    prednode   = contig,
+                    human      = HumanNode(data['human'], "Human", query=False),
+                    blast_cov  = data['blast_cov'],
+                    blast_eval = data['blast_eval'],
+                    nog_brh    = data['nog_brh'],
+                    pfam_sc    = data['pfam_sc'],
+                    nog_eval   = data['nog_eval'],
+                    blast_brh  = data['blast_brh'],
+                    pfam_brh   = data['pfam_brh']
+                )
+                contigs.append(contig)
+        return contigs
 
 
 # ------------------------------------------------------------------------------
@@ -1204,7 +1284,7 @@ class GeneSearch(object):
         if self.sterm_database is None:
             # Not valid for any database.
             # Check Smesgene, PFAM, GO, Human in that order.
-            if SmesGene.is_symbol_valid(self.sterm):
+            if PlanarianGene.is_symbol_valid(self.sterm):
                 self.sterm_database = "Smesgene"
             elif Domain.is_symbol_valid(self.sterm):
                 self.sterm_database = "PFAM"
@@ -1215,93 +1295,75 @@ class GeneSearch(object):
     
     def get_planarian_contigs(self):
         '''
-        Returns PredictedNode objects indepdendently of the search term used.
+        Returns PlanarianContig objects independently of the search term used.
         '''
         if self.sterm_database is None:
             self.infer_symbol_database()
 
-        planarian_nodes = list()
+        planarian_contigs = list()
+        source_nodes = list()
         if self.sterm_database == "Smesgene":
-            smes_gene = SmesGene(self.sterm, self.sterm_database)
-            planarian_nodes = smes_gene.get_predictednodes(self.database)
+            source_nodes.append(PlanarianGene(self.sterm, self.sterm_database))
         elif self.sterm_database == "PFAM":
-            planarian_nodes = Domain(self.sterm).get_nodes(self.database)
-        elif self.sterm_database == "GO" or self.sterm_database == "Human" :
-            # Will require to go from Human -> Planarian
-            human_nodes = list()
-            if self.sterm_database == "GO":
-                human_nodes = GeneOntology(self.sterm, human=True).human_nodes
-            elif self.sterm_database == "Human":
-                if "*" in self.sterm:
-                    human_nodes = WildCard(self.sterm, self.sterm_database).get_nodes()
-                else:
-                    human_nodes = [ HumanNode(self.sterm.upper(), self.sterm_database) ]
-
-                # If we are searching for CONTIGS using gene symbols, that is, symbols that 
-                # do not match any contig or domain or GO identifiers regexp, we should also
-                # look for genes BY Smesgene NAME.
-                if "*" in self.sterm:
-                    # Fuzzy name search
-                    pass
-                else:
-                    # Exact name search
-                    #      
-                    pass 
-
-            for hnode in human_nodes:
-                homologs = hnode.get_homologs(self.database)
-                for db in homologs:
-                    for hom in homologs[db]:
-                        hom.prednode.homolog = hom
-                        planarian_nodes.append(hom.prednode)
+            source_nodes.append(Domain(self.sterm))
+        elif self.sterm_database == "GO":
+            source_nodes.append(GeneOntology(self.sterm))
+        elif self.sterm_database == "Human" :
+            if "*" in self.sterm:
+                source_nodes = WildCard(self.sterm, self.sterm_database).get_human_genes()
+            else:
+                source_nodes = [ HumanNode(self.sterm.upper(), self.sterm_database) ]
         else:
-            planarian_nodes =  [ PredictedNode(self.sterm, self.sterm_database) ]
-        return planarian_nodes
+            # We already have the planarian contig by identifier,
+            # no need to try to retrieve it from neo4j connections.
+            planarian_contigs =  [ PlanarianContig(self.sterm, self.sterm_database) ]
+            return planarian_contigs
+
+        for snode in source_nodes:
+            planarian_contigs.extend(snode.get_planarian_contigs(self.database))
+
+        for pcontig in planarian_contigs:
+            if not pcontig.homolog:
+                pcontig.get_homolog()
+            if not pcontig.name:
+                pcontig.get_gene_name()
+        return planarian_contigs
 
     def get_planarian_genes(self):
         '''
-        Returns SmesGene object from search term.
+        Returns PlanarianGene object from search term.
         '''
         if self.sterm_database is None:
             self.infer_symbol_database()
         planarian_genes = list()
-
+        
         if self.sterm_database == "Human":
             if "*" in self.sterm:
-                human_nodes = WildCard(self.sterm, self.sterm_database).get_nodes()
+                human_nodes = WildCard(self.sterm, self.sterm_database).get_human_genes()
             else:
-                human_nodes = [ HumanNode(self.sterm.upper(), self.sterm_database) ]   
+                human_nodes = [ HumanNode(self.sterm.upper(), self.sterm_database) ]
             for hnode in human_nodes:
-                planarian_genes.extend(hnode.get_planarian_genes(SmesGene.preferred_database))
-            # If we are searching for SMESGENES using gene symbols, that is, symbols that 
-            # do not match any contig or domain or GO identifiers regexp, we should also
-            # look for genes BY Smesgene NAME.
-            if "*" in self.sterm:
-                # Fuzzy name search
-                pass
-            else:
-                # Exact name search
-                #      
-                pass       
+                planarian_genes.extend(hnode.get_planarian_genes(PlanarianGene.preferred_database))
         elif self.sterm_database == "PFAM":
-            planarian_nodes = Domain(self.sterm).get_nodes(SmesGene.preferred_database)
+            planarian_nodes = Domain(self.sterm).get_planarian_contigs(PlanarianGene.preferred_database)
             for contig in planarian_nodes:
                 planarian_genes.extend(contig.get_genes())
         elif self.sterm_database == "Smesgene":
-            planarian_genes.append(SmesGene(self.sterm, self.sterm_database))
+            planarian_genes.append(PlanarianGene(self.sterm, self.sterm_database))
         elif self.sterm_database == "GO":
             pass
         else:
             # Transcriptome database
-            planarian_node = PredictedNode(self.sterm, self.sterm_database)
+            planarian_node = PlanarianContig(self.sterm, self.sterm_database)
             planarian_genes.extend(planarian_node.get_genes())
 
         for pgene in planarian_genes:
             if not pgene.homolog:
                 pgene.get_homolog()
+        planarian_genes = list(set(planarian_genes)) # Unique genes only 
         return planarian_genes
 
-    def get_human_nodes(self):
+    def get_human_genes(self):
         '''
         Returns HumanNode objects indepdendently of the search term used.
         '''
@@ -1319,9 +1381,9 @@ class GeneSearch(object):
         return human_nodes
 
 
-class SmesGene(Node):
+class PlanarianGene(Node):
     """
-    Class for SmesGenes (genes from Planmine 3.0 gene annotation)
+    Class for PlanarianGenes (genes from Planmine 3.0 gene annotation)
     """
     smesgene_regexp = r'SMESG\d+'
     preferred_database = "Dresden"
@@ -1331,7 +1393,7 @@ class SmesGene(Node):
                  name=None, start=None, end=None, 
                  strand=None, sequence=None, homolog=None, 
                  chromosome=None, query=True):
-        super(SmesGene, self).__init__(symbol, database)
+        super(PlanarianGene, self).__init__(symbol, database)
         self.name = name
         self.start = start
         self.end = end
@@ -1350,13 +1412,13 @@ class SmesGene(Node):
         Checks if symbol is valid
 
         Args:
-            symbol: string, symbol to check if follows SmesGene naming convention.
+            symbol: string, symbol to check if follows PlanarianGene naming convention.
         '''
         return re.match(cls.smesgene_regexp, symbol.upper())
 
     def __query_node(self):
         '''
-        Queries SmesGene to get the attributes from the database.
+        Queries PlanarianGene to get the attributes from the database.
         '''
         query = neoquery.SMESGENE_QUERY % (self.symbol)
         results = GRAPH.run(query)
@@ -1384,7 +1446,7 @@ class SmesGene(Node):
 
     def get_homolog(self):
         '''
-        Gets homologous gene of longest transcript associated with this SmesGene.
+        Gets homologous gene of longest transcript associated with this PlanarianGene.
         Fills attribute 'homolog'. Returns the HumanNode object.
         '''
         best_transcript = self.get_best_transcript()
@@ -1403,7 +1465,7 @@ class SmesGene(Node):
         '''
         Retrieves the longest transcript of preferred_database.
         '''
-        best = self.get_predictednodes(SmesGene.preferred_database)
+        best = self.get_planarian_contigs(PlanarianGene.preferred_database)
         if best:
             best = best[0]
         else:
@@ -1411,18 +1473,22 @@ class SmesGene(Node):
         return best
 
 
-    def get_predictednodes(self, database=None):
+    def get_planarian_contigs(self, database=None):
         '''
-        Returns list predictednode objects of database or all databases.
+        Returns list PlanarianContig objects of database or all databases that map to
+        the PlanarianGene genomic location.
         
         Args:
             database: string, optional, database from which to retrieve planarian contigs.
                       if not defined will get all planarian contigs.
+
+        Returns:
+            list: PlanarianContig objects.
         '''
         if database is None:
-            query = neoquery.SMESGENE_GET_ALL_PREDICTEDNODES_QUERY % (self.symbol)
+            query = neoquery.SMESGENE_GET_ALL_CONTIGS_QUERY % (self.symbol)
         else:
-            query = neoquery.SMESGENE_GET_PREDICTEDNODES_QUERY % (database, self.symbol)
+            query = neoquery.SMESGENE_GET_CONTIGS_QUERY % (database, self.symbol)
         results = GRAPH.run(query)
         results = results.data()
         prednodes = list()
@@ -1430,7 +1496,7 @@ class SmesGene(Node):
             for contig in results:
                 if 'database' in contig:
                     database = contig['database'][0]
-                prednode = PredictedNode(contig['symbol'], database, query=False)
+                prednode = PlanarianContig(contig['symbol'], database, query=False)
                 prednode.length = contig['length']
                 prednodes.append(prednode)
         else:
@@ -1440,6 +1506,11 @@ class SmesGene(Node):
             raise exceptions.NodeNotFound(symbol_err, database)
         return prednodes
 
+    def __hash__(self):
+        return hash((self.symbol))
+
+    def __eq__(self, other):
+        return self.symbol == other.symbol
 
 
 # To avoid import errors

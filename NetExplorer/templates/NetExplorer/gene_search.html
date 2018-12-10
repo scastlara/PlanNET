@@ -15,14 +15,25 @@
 <!-- FORM -->
 
     <div class="panel panel-info genesearch-panel" >
-        <div class="panel-heading"><h2>Gene Search</h2></div>
+        <div class="panel-heading">
+            <div class="row row-eq-height">
+                    <div class="col-sm-1 blast-icon-container">
+                        <img class="blast-icon-inside" src="{% static 'Images/genesearch-icon-transparent.png' %}"/>
+                    </div>
+                    <div class="col-sm-11 blast-title">
+                        <h1>Gene Search</h1>
+                    </div>
+            </div>
+
+        </div>
         <div id="search-wrapper">
-            <img class="app-icon-inside" src="{% static 'Images/gene-finder-icon.png' %}"/>
             <div class="panel-body app-panel">
                 <form class= "form-inline" method="GET" action="{% url 'gene_search' %}">
                     {% csrf_token %}
-                    <div class="form-group">
-                        <input type="text" class="form-control" name="genesymbol" placeholder="Enter Symbol">
+                    <div id="genesearch-form" class="form-group">
+                        <input id="genesearch-genesymbol"
+                         type="text" class="form-control" 
+                         name="genesymbol" placeholder="Enter Symbol(s)">
 
                         <select name="database" class="selectpicker" title="Select Database" data-size="5">
                             <option data-content="<span class='badge badge-success human-select'>Human</span>" value="Human">Human</option>

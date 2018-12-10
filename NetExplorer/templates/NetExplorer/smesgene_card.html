@@ -72,7 +72,80 @@
                 {% endfor %}
             </tbody>
         </table>
+    
 
+    <div class="row row-eq-height interactions-title">
+        <div class="col-sm-10">
+            <h2><span class="glyphicon glyphicon-tag"></span> Interactions</h2>
+            <hr class="h2-sep">
+        </div>
+        <div class="col-sm-2">
+            <a href="#" class="view-on-netexplorer" data-toggle="tooltip" data-placement="top" title="View on NetExplorer">
+                <form class="view-on-netexplorer" method="POST" action="{% url 'net_explorer' %}" target="_blank"> {% csrf_token %}
+                    <input type="hidden" name="json_text" value='{{ json_graph|safe }}' />
+                    <button id="netexplorer-mini" class="btn btn-default netexplorer-view view-on-netexplorer-btn" type="submit">
+                        <img src="{% static 'Images/netexplorer-mini.png' %}" class="netexplorer-mini"/>
+                    </button>
+                </form>
+            </a>
+        </div>
+    </div>
+
+    Predicted from longest transcript: <a
+        class="card-link"
+        current="{{ node.symbol|urlencode}}"
+        currentDB="{{ node.database }}"
+        target="{{ best_transcript.symbol }}"
+        targetDB="{{ best_transcript.database }}">{{ best_transcript.symbol }}
+    </a>
+    <br>
+    <hr>
+
+    <div class="int-table-container">
+            <table id="int-table" class="table table-hover int-table-class">
+                <thead>
+                    <tr>
+                    <th>Symbol</th>
+                    <th>Confidence</th>
+                    <th>Homolog</th>
+                    <th>Path Length</th>
+                    <th>Cellular Component NTO</th>
+                    <th>Molecular Function NTO</th>
+                    <th>Biological Process NTO</th>
+                    <th>Domain Interaction Score</th>
+                    </tr>
+                </thead>
+                <tbody>
+            {% for int in best_transcript.neighbours %}
+                <tr>
+                    <td><a
+                        class="card-link"
+                        current="{{ best_transcript.symbol|urlencode}}"
+                        currentDB="{{ best_transcript.database }}"
+                        target="{{ int.target.symbol }}"
+                        targetDB="{{ int.target.database }}">{{ int.target.symbol }}</a>
+                    </td>
+                    <td>{{ int.parameters.int_prob }}</td>
+                    <td><a
+                        class="card-link"
+                        current="{{ best_transcript.symbol|urlencode}}"
+                        currentDB="{{ best_transcript.database }}"
+                        target="{{ int.target.homolog.human.symbol }}"
+                        targetDB="Human">{{ int.target.homolog.human.symbol }}
+                        </a>
+                    </td>
+                    <td>{{ int.parameters.path_length }}</td>
+                    <td>{{ int.parameters.cellcom_nto }}</td>
+                    <td>{{ int.parameters.molfun_nto }}</td>
+                    <td>{{ int.parameters.bioproc_nto }}</td>
+                    <td>{{ int.parameters.dom_int_sc }}</td>
+                </tr>
+
+            {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
     
 
     

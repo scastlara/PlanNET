@@ -33,7 +33,7 @@ def map_expression(request):
             sample = [sample]
 
         newgraph = GraphCytoscape()
-        newgraph.add_elements([ PredictedNode(node, database, query=False) for node, database in zip(nodes, databases) ])
+        newgraph.add_elements([ PlanarianContig(node, database, query=False) for node, database in zip(nodes, databases) ])
         expression_data = newgraph.get_expression(experiment, sample)
         response['expression'] = dict()
         if comp_type == "two-sample":

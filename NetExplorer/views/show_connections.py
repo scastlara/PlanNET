@@ -10,7 +10,7 @@ def show_connections(request):
         databases       = request.POST['databases'].split(",")
         graphelements   = GraphCytoscape()
         for symbol, database in zip(nodes_including, databases):
-            graphelements.add_node( PredictedNode(symbol, database, query=False) )
+            graphelements.add_node( PlanarianContig(symbol, database, query=False) )
         graphelements.get_connections()
         return HttpResponse(graphelements, content_type="application/json")
     else:

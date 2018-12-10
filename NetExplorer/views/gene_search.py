@@ -38,9 +38,10 @@ def gene_search(request):
                 try:
                     nodes_graph.new_nodes(symbols, database)
                 except Exception as err:
+                    print(err)
                     logging.info("Node not found.")
                 if not nodes_graph:
                     response['search_error'] = 1
                 else:
-                    response['res'] = sorted(list(nodes_graph.nodes), key= lambda x: x.name if hasattr(x, 'name') and x.name else x.symbol  )
+                    response['res'] = sorted(list(nodes_graph.nodes), key= lambda x: (x.name, x.symbol) if hasattr(x, 'name') and x.name else ("a", x.symbol)  )
     return render(request, 'NetExplorer/gene_search.html', response)

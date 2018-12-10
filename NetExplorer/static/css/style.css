@@ -313,6 +313,14 @@ h1, h2, h3, h4, h5, h6 {
     display: inline-block;
 }
 
+#genesearch-genesymbol {
+    width: 300px;
+}
+
+#genesearch-form {
+    margin-top: 3%;
+}
+
 .pfam-line-table-tr {
     margin-top: 8px;
     height: 20px;

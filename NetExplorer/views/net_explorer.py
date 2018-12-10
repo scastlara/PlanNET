@@ -34,7 +34,7 @@ def upload_graph(request, json_text):
     # They are not if we are coming from Pathway Finder to save time.
     if u'homolog' not in json_graph[u'nodes'][0][u'data']:
         for node in json_graph[u'nodes']:
-            qnode = PredictedNode(node[u'data'][u'id'], node[u'data'][u'database'])
+            qnode = PlanarianContig(node[u'data'][u'id'], node[u'data'][u'database'])
             if qnode.homolog is not None:
                 node[u'data'][u'homolog'] = str(qnode.homolog.human.symbol)
         graph_content = json.dumps(json_graph)
