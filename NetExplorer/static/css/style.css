@@ -2,6 +2,8 @@
 /* BASE HTML */
 /* ----------------------------- */
 /* BASE CONTAINERS */
+
+body { font-size: 12px; }
 #page-container {
     position: absolute;
     background-color: #E7E7E7;
@@ -2175,4 +2177,4 @@ kbd {
 .gene-select { background-color: #c45ca2 !important; }
 .jbrowser-subtitle { float:right; }
 
-.panel-genesearch { background-color: #d9edf7 !important ; }
+.panel-genesearch { background-color: #d9edf7 !important ; font-size: 12px;}
