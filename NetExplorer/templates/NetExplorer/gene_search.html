@@ -85,9 +85,9 @@
                 </ul>
             </div>
         </div>
-        <br><br>
     {% endif %}
     <!-- SEARCH RESULTS -->
+    <hr>
     {% if res %}
 
         <h2>Results:</h2>
@@ -95,7 +95,7 @@
         <!-- Small searchpanel for each gene in results -->
         {% for node in res %}
             <div id="{{ node.symbol }}"
-                 class="panel panel-info small-searchpanel card-trigger"
+                 class="panel panel-genesearch small-searchpanel card-trigger"
                  title="Click to view info card"
                  target="{{ node.symbol }}"
                  targetDB="{{ node.database }}">
@@ -120,7 +120,7 @@
                 </div>
                 {% if node.database != "Human" %}
                     <div class="panel-body app-panel">
-                            <p>Homolog:
+                            <p>Human Homolog:
                             {% if node.homolog %}
                                 <span class="bg-homolog">{{ node.homolog.human.symbol }}</span></p>
                             {% else %}

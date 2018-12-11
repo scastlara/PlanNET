@@ -29,6 +29,19 @@
 
                 
                 <!--PREDICTED NODE CARD -->
+                    <h2><span class="glyphicon glyphicon-tag"></span> Gene</h2>
+                    <hr class="h2-sep">
+                    {% if node.gene %}
+                        <a
+                        class="card-link"
+                        current="{{ node.symbol|urlencode }}"
+                        currentDB="{{ node.database }}"
+                        target="{{ node.gene }}"
+                        targetDB="Smesgene">
+                            <span class="bg-official-light">{{ node.gene }} {% if node.name %}({{ node.name }}){% endif %}</span>
+                        </a>
+                    {% endif %}
+
                     <h2><span class="glyphicon glyphicon-tag"></span> Sequence information</h2>
                     <hr class="h2-sep">
 
