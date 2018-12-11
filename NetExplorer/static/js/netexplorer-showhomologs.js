@@ -20,6 +20,7 @@ function displayHomologs(cyobj) {
         if ( element.isEdge() ) {
             if (! element.data("type")) {
                 // Not an homology edge
+                console.log(element.data());
                 var selector_1 = 'node[id = "' + element.data("source") + '"]';
                 var selector_2 = 'node[id = "' + element.data("target") + '"]';
                 var source = cy.filter(selector_1);

@@ -1373,7 +1373,7 @@ class GeneSearch(object):
         human_nodes = list()
         if self.sterm_database == "Human":
             if "*" in self.sterm:
-                human_nodes = WildCard(self.sterm, self.sterm_database).get_nodes()
+                human_nodes = WildCard(self.sterm, self.sterm_database).get_human_genes()
             else:
                 human_nodes = [ HumanNode(self.sterm.upper(), self.sterm_database) ]
         elif self.sterm_database == "GO":

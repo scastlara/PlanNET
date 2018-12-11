@@ -57,7 +57,8 @@ def get_card(request, symbol=None, database=None):
             'json_graph': graph.to_json(),
             'domains'   : card_node.domains_to_json()
         }
-        
+    
+    print(response['json_graph'])
     if request.is_ajax():
         return render(request, template, response)
     else:

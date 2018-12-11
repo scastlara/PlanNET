@@ -18,7 +18,7 @@
             <h3>
                 <a target="_blank" title="Information about the dataset" href="{% url 'datasets' %}#{{ node.database }}">
                     <img class='legend-db' src="{% static 'Images/' %}legend-{{ node.database }}.png"/>
-                    {{ node.database }}
+                    <span id="card-database">{{ node.database }}</span>
                 </a>
             </h3>
         </div>

@@ -16,7 +16,7 @@
         <div class="full-screen-card-wrapper">
             <div class="card-subtitle">
                 <h3>
-                    <a target="_blank" title="Information about the dataset" href="{% url datasets %}#{{ node.database }}">
+                    <a target="_blank" title="Information about the dataset" href="{% url 'datasets' %}#{{ node.database }}">
                         <img class='legend-db' src="{% static 'Images/' %}legend-{{ node.database }}.png"/>
                         {{ node.database }}
                     </a>
@@ -51,7 +51,7 @@
                                                 {% for hom in list %}
                                                     <tr>
                                                         <td>
-                                                            <a href="{% url card_fullscreen hom.prednode.database hom.prednode.symbol %}">{{hom.prednode.symbol}}</a>
+                                                            <a href="{% url 'card_fullscreen' hom.prednode.database hom.prednode.symbol %}">{{hom.prednode.symbol}}</a>
                                                         </td>
                                                         <td>{{ hom.nog_eval }}</td>
                                                         <td>{{ hom.nog_brh }}</td>
@@ -80,7 +80,7 @@
                         <hr>
 
                         <h3>Read sequence:</h3>
-                        <a href="{% url get_fasta %}?genesymbol={{ node.symbol|urlencode }}&database={{ node.database }}&type=sequence">
+                        <a href="{% url 'get_fasta' %}?genesymbol={{ node.symbol|urlencode }}&database={{ node.database }}&type=sequence">
                             <div class="download-fasta-wrapper" title="Download FASTA file">
                                 <img class="download-fasta" src="{% static 'Images/download-icon.png' %}">
                                 Download FASTA
@@ -92,7 +92,7 @@
                         </div>
 
                         <h3>Longest Orf sequence:</h3>
-                        <a href="{% url get_fasta %}?genesymbol={{ node.symbol|urlencode }}&database={{ node.database }}&type=orf">
+                        <a href="{% url 'get_fasta' %}?genesymbol={{ node.symbol|urlencode }}&database={{ node.database }}&type=orf">
                             <div class="download-fasta-wrapper" title="Download FASTA file">
                                 <img class="download-fasta" src="{% static 'Images/download-icon.png' %}">
                                 Download FASTA
@@ -108,7 +108,7 @@
                             <hr>
                             <h4>
                                 <strong>Symbol:</strong>
-                                <a href="{% url card_fullscreen node.homolog.human.database node.homolog.human.symbol %}"> {{node.homolog.human.symbol}}</a>
+                                <a href="{% url 'card_fullscreen' node.homolog.human.database node.homolog.human.symbol %}"> {{node.homolog.human.symbol}}</a>
                             </h4>
 
                                 <ul>
@@ -243,7 +243,7 @@
                             </div>
                             <div class="col-sm-2">
                                 <a href="#" class="view-on-netexplorer" data-toggle="tooltip" data-placement="top" title="View on NetExplorer">
-                                    <form class="view-on-netexplorer" method="POST" action="{% url net_explorer %}" target="_blank"> {% csrf_token %}
+                                    <form class="view-on-netexplorer" method="POST" action="{% url 'net_explorer' %}" target="_blank"> {% csrf_token %}
                                         <input type="hidden" name="json_text" value='{{ json_graph|safe }}' />
                                         <button id="netexplorer-mini" class="btn btn-default netexplorer-view view-on-netexplorer-btn" type="submit">
                                             <img src="{% static 'Images/netexplorer-mini.png' %}" class="netexplorer-mini"/>
@@ -271,7 +271,7 @@
                             {% for int in node.neighbours %}
                                 <tr>
                                     <td>
-                                        <a href="{% filter urlencode %}{% url card_fullscreen int.target.database int.target.symbol %}{% endfilter %}">{{ int.target.symbol}}</a>
+                                        <a href="{% filter urlencode %}{% url 'card_fullscreen' int.target.database int.target.symbol %}{% endfilter %}">{{ int.target.symbol}}</a>
                                     </td>
                                     <td>{{ int.parameters.int_prob }}</td>
                                     <td>{{ int.parameters.path_length }}</td>
