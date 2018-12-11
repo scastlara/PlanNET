@@ -749,7 +749,7 @@ h1, h2, h3, h4, h5, h6 {
 
 #cyt-explorer-icon {
     display: inline-block;
-    margin-top: 10%;
+    margin-top: 15px;
 }
 
 #select-layout-container {
@@ -757,6 +757,10 @@ h1, h2, h3, h4, h5, h6 {
     text-align: left;
     padding-left: 20%;
     position: relative;
+}
+
+#select-layout-container .row {
+    height: 40px;
 }
 
 #select-layout-container h3 {
@@ -887,7 +891,7 @@ h1, h2, h3, h4, h5, h6 {
 
 #add-node-container {
     width: 60%;
-    margin-top: 5%;
+    margin-top: 5px;
     margin-left: 20%;
 }
 
@@ -1003,7 +1007,7 @@ h1, h2, h3, h4, h5, h6 {
 
 #cyt-controls-header {
     width: 100%;
-    height: 420px;
+    height: 350px;
 }
 
 
@@ -1743,8 +1747,8 @@ strong{
     padding: 8px;
     background-color: white;
     float: right;
-    margin-right: 15px;
-    margin-top: 15px;
+    margin-right: 5px;
+    margin-top: 5px;
     border-color: #cccccc;
     border-width: 1;
     border-style: solid;
@@ -1932,10 +1936,10 @@ kbd {
 }
 
 .user-in-controls {
-    padding-right: 15px;
+    padding-right: 5px;
     text-align: right;
     right: 5px;
-    margin-top: 15px;
+    margin-top: 5px;
 }
 
 

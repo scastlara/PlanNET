@@ -62,6 +62,7 @@ def get_shortest_paths(startnodes, endnodes, plen):
     numpath = 0
     for snode in startnodes:
         for enode in endnodes:
+            print("HERE")
             paths = snode.path_to_node(enode, plen)
             if paths is None:
                 # Return no-path that matches the query_node

@@ -23,6 +23,7 @@ def path_finder(request):
         start_nodes.new_nodes([request.GET['start']], database)
         end_nodes = GraphCytoscape()
         end_nodes.new_nodes([request.GET['end']], database)
+        
         # Get shortest paths
         graphelements, numpath = get_shortest_paths(
             start_nodes.nodes,
