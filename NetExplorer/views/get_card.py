@@ -20,6 +20,7 @@ def get_card(request, symbol=None, database=None):
             card_node = gsearch.get_planarian_genes()[0]
             contigs = card_node.get_planarian_contigs()
             best_contig = card_node.get_best_transcript()
+            best_contig.get_homolog()
             best_contig.get_neighbours()
             nodes, edges = best_contig.get_graphelements()
             graph = GraphCytoscape()
@@ -58,7 +59,6 @@ def get_card(request, symbol=None, database=None):
             'domains'   : card_node.domains_to_json()
         }
     
-    print(response['json_graph'])
     if request.is_ajax():
         return render(request, template, response)
     else:

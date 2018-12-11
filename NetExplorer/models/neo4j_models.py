@@ -1005,22 +1005,29 @@ class GraphCytoscape(object):
 
     def new_nodes(self, symbols, database):
         """
-        Takes a list of symbols and return the necessary GraphCytoscape with Human or PlanarianContig objects
+        Takes a list of symbols and returns the necessary GraphCytoscape with Human or PlanarianContig objects
+
+        Args:
+            symbols: List of strings with gene/contig/pfam/go/kegg symbols.
+            database: String with database.
         """
         for symbol in symbols:
             symbol = symbol.replace(" ", "")
             symbol = symbol.replace("'", "")
             symbol = symbol.replace('"', '')
             node_objects = list()
-            gene_search = GeneSearch(symbol, database)
+            try:
+                gene_search = GeneSearch(symbol, database)
 
-            if database == "Human":
-                node_objects = gene_search.get_human_genes()
-            elif database == "Smesgene":
-                node_objects = gene_search.get_planarian_genes()
-            else:
-                node_objects = gene_search.get_planarian_contigs()
-            self.add_elements(node_objects)
+                if database == "Human":
+                    node_objects = gene_search.get_human_genes()
+                elif database == "Smesgene":
+                    node_objects = gene_search.get_planarian_genes()
+                else:
+                    node_objects = gene_search.get_planarian_contigs()
+                self.add_elements(node_objects)
+            except exceptions.NodeNotFound:
+                continue
             
 
     def __str__(self):
