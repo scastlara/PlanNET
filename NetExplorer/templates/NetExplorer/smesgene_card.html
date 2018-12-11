@@ -182,11 +182,6 @@
             },
             success : function(data) {
                 $(this).closest('.card-overlay').html(data)
-                $(document).ready(function(){
-                    $('#int-table').DataTable({
-                        "order": [[ 1, "desc" ]]
-                    });
-                });
             }
         });
         
@@ -228,11 +223,10 @@
 
 <script>
     $(document).ready(function(){
-        $('.transcripts-table').DataTable({
-            "order": [[ 0, 2, "desc" ]]
+            $('#int-table').DataTable({
+                "order": [[ 0, 2, "desc" ]]
+            });
         });
-
-    });
 </script>
 
 

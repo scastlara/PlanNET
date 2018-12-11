@@ -40,6 +40,8 @@
                         targetDB="Smesgene">
                             <span class="bg-official-light">{{ node.gene }} {% if node.name %}({{ node.name }}){% endif %}</span>
                         </a>
+                    {% else %}
+                        None
                     {% endif %}
 
                     <h2><span class="glyphicon glyphicon-tag"></span> Sequence information</h2>
@@ -283,18 +285,13 @@
                 },
                 success : function(data) {
                     $(this).closest('.card-overlay').html(data)
-                    $(document).ready(function(){
-                        $('#int-table').DataTable({
-                            "order": [[ 1, "desc" ]]
-                        });
-                    });
+                   
                 }
             });
 
 
         });
 
-        // This will check if the user is pressing the "back" button on his/her
         // browser. If that's the case, it will update the content of the "visible"
         // card-div.
         window.onpopstate = function(event) {
@@ -548,10 +545,9 @@
 
     <script>
         $(document).ready(function(){
-            $('.int-table').DataTable({
+            $('#int-table').DataTable({
                 "order": [[ 1, "desc" ]]
             });
-
         });
     </script>
 

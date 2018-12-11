@@ -25,11 +25,6 @@ function getCard(card_data) {
             $('.close-overlay').slideToggle(450);
             $('.full-screen-card').slideToggle(450);
 
-            // Activate DataTable
-            $('#int-table').DataTable({
-                "order": [[ 1, "desc" ]]
-            });
-
         }
     });
 }
