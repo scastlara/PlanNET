@@ -154,7 +154,8 @@
                             {% endif %}
 
                         <br>
-                        <h4>Gene Ontologies</h4>
+                        <h2><span class="glyphicon glyphicon-tag"></span> Gene Ontologies</h2>
+                        <hr class="h2-sep">
                         {% if not node.gene_ontologies %}
                             No Gene Ontologies
                         {% else %}
@@ -162,12 +163,12 @@
                                 <table class="table table-hover homology-table">
                                 {% for go in node.gene_ontologies %}
                                     <tr>
-                                        <td class="homology-table-header">
+                                        <td><span class="{{ go.domain }}">{{ go.domain }}</span></td>   
+                                        <td>
                                             <a href="http://amigo.geneontology.org/amigo/term/{{ go.accession }}" target="_blank">{{ go.accession }}
                                             </a>
                                         </td>
-                                        <td><span class="{{ go.domain }}">{{ go.domain }}</span></td>   
-                                        <td>{{ go.name }}</td>
+                                        <td>{{ go.name|title }}</td>
                                     </tr>
                                 {% endfor %}
                                 </table>
@@ -425,7 +426,7 @@
                 // Basic HTML
                 var rule_html = [];
                 rule_html.reference = "<tr class='pfam-line-table-tr'>";
-                rule_html.reference    += "<td class='pfam-line-table-td-name'><strong>Reference</strong></td>";
+                rule_html.reference    += "<td class='pfam-line-table-td-name'><strong>Reference (ORF)</strong></td>";
                 rule_html.reference    += "<td class='pfam-line-table-td-line'>";
                 if (length <= binsize) {
                     rule_html.reference  += "<img src='{% static 'Images/pfam-line-rule.png' %}' style='width:100%;height:12px;'>";

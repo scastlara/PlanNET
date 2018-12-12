@@ -81,6 +81,15 @@ h1, h2, h3, h4, h5, h6 {
     font-weight: bolder;
 }
 
+.bg-official-small {
+    padding-left: 4px;
+    padding-right: 4px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    color: #c45ca2;
+    font-size: 12px;
+    font-weight: bolder;
+}
 
 .bg-homolog {
     padding-left: 4px;
@@ -296,9 +305,9 @@ h1, h2, h3, h4, h5, h6 {
     color: #777777;
 }
 
-.molecular_function { background-color: #D5A0E4; padding: 2px; color:white; }
-.cellular_component { background-color: #9DB9E6; padding: 2px; color:white; }
-.biological_process { background-color: #D7A070; padding: 2px; color:white; }
+.molecular_function { background-color: #D5A0E4; padding: 4px; color:white; border-radius: 4px; }
+.cellular_component { background-color: #9DB9E6; padding: 4px; color:white; border-radius: 4px; }
+.biological_process { background-color: #D7A070; padding: 4px; color:white; border-radius: 4px; }
 
 .tutorial-icon-link:hover {
     color: #777777;
@@ -564,6 +573,7 @@ h1, h2, h3, h4, h5, h6 {
     padding: 20px;
     overflow-y: scroll;
     max-height: 100px;
+    max-width: 800px;
 }
 
 .download-fasta {
@@ -775,7 +785,6 @@ h1, h2, h3, h4, h5, h6 {
 #select-layout-container {
     display: block;
     text-align: left;
-    padding-left: 20%;
     position: relative;
 }
 
@@ -805,6 +814,7 @@ h1, h2, h3, h4, h5, h6 {
     top: 1%;
     position: relative;
     display: block;
+    padding-left: 10%;
 }
 
 .netexplorer-form {
@@ -1045,9 +1055,6 @@ input[type="file"] {
     width: 120%;
 }
 
-#upload-graph-form {
-    width: 52px;
-}
 
 #dialog-confirm {
     display: none;
@@ -1074,26 +1081,23 @@ input[type="file"] {
 #show-homologs-container {
     display: inline-block;
     width: 100%;
-    height: 10%;
     position: relative;
 }
 
 #show-homologs-container-title {
-    height: 100%;
+    height: 50px;
 }
 
 .show-homologs-label {
     width: 60%;
-    height: 70% !important;
     vertical-align: middle;
     cursor: pointer;
-    margin-top: 15%;
 }
 
 #show-homologs-toggle {
     display: inline-block;
-    height: 100%;
-
+    height: 50px;
+    margin-top: 10px;
 }
 
 #layout-dropdown {
@@ -1110,7 +1114,15 @@ input[type="file"] {
 
 #layout-toggle-btn {
     vertical-align: middle;
-    margin-top: 10%;
+    height: 100%;
+    line-height: 100%;
+    width: 60%;
+    display: block;
+}
+
+#cyt-controls hr { 
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 .show-homologs-btn {
@@ -2178,3 +2190,7 @@ kbd {
 .jbrowser-subtitle { float:right; }
 
 .panel-genesearch { background-color: #d9edf7 !important ; font-size: 12px;}
+
+#kegg-funkyradio { margin-top: -10px; }
+
+.cyt-controls-subtitle { font-size: 24px; }

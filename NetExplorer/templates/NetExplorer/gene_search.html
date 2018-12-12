@@ -102,12 +102,10 @@
 
                 <div class="panel-heading">
                     <div class="symbol-small-searchpanel">
-                        
-                        {% if node.name %}
-                            <span class="bg-official"><b>{{ node.name }}</b></span> -
-                        {% endif %}
-
                         {{ node.symbol }}
+                        {% if node.name %}
+                            - <span class="bg-official-small"><b>{{ node.name }}</b></span>
+                        {% endif %}
                     </div>
                     <div class="database-small-searchpanel">
                         <img class='legend-db' src="{% static 'Images/' %}legend-{{ node.database }}.png"/>
