@@ -223,6 +223,7 @@
 
 <script>
     $(document).ready(function(){
+            $.fn.dataTable.ext.errMode = 'throw';
             $('#int-table').DataTable({
                 "order": [[ 0, 2, "desc" ]]
             });
