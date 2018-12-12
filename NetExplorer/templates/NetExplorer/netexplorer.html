@@ -18,6 +18,14 @@
         <link rel="stylesheet" href="{% static 'css/jquery-ui-all.theme.min.css' %}">
         <link rel="stylesheet" href="{% static 'css/bootstrap-select.min.css' %}">
         <link rel="shortcut icon" href="{% static 'Images/mini-logo.ico' %}">
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-40314676-2"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'UA-40314676-2');
+        </script>
         <title>PlanNET - Net Explorer</title>
         <script>
             var graphelements = "";
@@ -336,7 +344,7 @@
                                 <a class="info-tooltip" title="
                                     Search KEGG pathways using KEGG pathway identifiers, eg.: hsa04930.
                                 ">
-                                    <div class="funkyradio-success">
+                                    <div id="kegg-funkyradio" class="funkyradio-success">
 
                                         <input id="pathway-type" type="radio" class="netexplorer-form-type" name="type" value="pathway"/>
                                         <label for="pathway-type">Pahtway</label> 
@@ -358,10 +366,10 @@
             <!-- Layout Selection-->
             <div class="dropdown" id="select-layout-container">
                 <div class="row control-row">
-                    <div class="col-sm-6" id="layout-title">
-                        <h3>Layout</h3>
+                    <div class="col-sm-4" id="layout-title">
+                        <span class="cyt-controls-subtitle">Layout</span>
                     </div>
-                    <div class="col-sm-6" id="layout-dropdown">
+                    <div class="col-sm-8" id="layout-dropdown">
                         <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" id="layout-toggle-btn">Cose
                             <span class="caret"></span>
                         </button>
@@ -380,10 +388,10 @@
 
             <!-- SHOW HOMOLOGS -->
             <div class="row control-row">
-                <div class="col-sm-6" id="show-homologs-container-title">
-                    <h3>Homologs</h3>
+                <div class="col-sm-4" id="show-homologs-container-title">
+                    <span class="cyt-controls-subtitle">Homologs</span>
                 </div>
-                <div class="col-sm-6" id="show-homologs-toggle">
+                <div class="col-sm-8" id="show-homologs-toggle">
                     <label class="switch-light switch-candy show-homologs-label" onclick="">
                         <input type="checkbox" id="show-homologs">
                         <span class="show-homolog-btn">
@@ -654,11 +662,11 @@
 
         <!-- Get info Card on click -->
         <!-- Gene Card -->
-        <div id="button-container">
-            <div class="close-overlay" title="Close card">
+        <div id="button-container" >
+            <div class="close-overlay" title="Close card" style="display: none;">
                 <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
             </div>
-            <div class="full-screen-card" title="Open in new window">
+            <div class="full-screen-card" title="Open in new window" style="display: none;">
                 <span class="glyphicon glyphicon-new-window" aria-hidden="true"></span>
             </div>
         </div>

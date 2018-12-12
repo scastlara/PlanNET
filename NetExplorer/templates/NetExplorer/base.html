@@ -13,6 +13,16 @@
         <link rel="stylesheet" href="{% static 'css/jquery-ui.structure-all.min.css' %}">
         <link rel="stylesheet" href="{% static 'css/jquery-ui-all.theme.min.css' %}">
         <link rel="shortcut icon" href="{% static 'Images/mini-logo.ico' %}">
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-40314676-2"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+
+            gtag('config', 'UA-40314676-2');
+        </script>
+
         <title>PlanNET {% block title %} {% endblock title %}</title>
     </head>
 
@@ -51,6 +61,9 @@
                                     <li><a href="{% url 'blast' %}">Blast</a></li>
                                     <li><a href="{% url 'net_explorer' %}">Net Explorer</a></li>
                                     <li><a href="{% url 'path_finder' %}">Pathway Finder</a></li>
+                                    {% if user.is_authenticated %}
+                                    <li><a href="{% url 'planexp' %}">PlanExp</a></li>
+                                    {% endif %}
                                 </ul>
                             </li>
                             <li id="navbar-datasets"><a href="{% url 'datasets' %}">Datasets</a></li>
