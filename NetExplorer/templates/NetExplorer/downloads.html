@@ -16,8 +16,11 @@
         <textarea class="form-control idtextarea" name="identifiers" cols="5" rows="5" id="identifiers"></textarea>
         <br>
         <select id="download-data" name="database" class="selectpicker" title="Database">
+            <option data-content="<span class='badge badge-success human-select'>Human</span>" value="Human">Human</option>
+            <option data-content="<span class='badge badge-success gene-select'>Planarian Gene</span>" value="Smesgene">Planarian Gene</option>
+            <option data-divider="true"></option>
             {% for db in databases %}
-                <option value="{{ db.name }}">{{ db.name }}</option>
+                <option data-content="<img class='legend-db' src='{% static 'Images/' %}legend-{{ db.name }}.png'>{{ db.name }}" value="{{ db.name }}">{{ db.name }}</option>
             {% endfor %}
         </select>
         <br>

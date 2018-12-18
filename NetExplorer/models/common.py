@@ -68,7 +68,7 @@ def query_node(symbol, database):
         symbol = symbol.upper()
         node = HumanNode(symbol, database)
     else:
-        node = PredictedNode(symbol, database)
+        node = PlanarianContig(symbol, database)
         node.get_summary()
     return node
 
