@@ -18,7 +18,7 @@
         
     </div>
     
-    {% if node.summary != "NA" %}
+    {% if node.summary and node.summary != "NA" %}
     <h2><span class="glyphicon glyphicon-tag"></span> Summary</h2>
     <hr class="h2-sep">
     <p>{{ node.summary }}</p>

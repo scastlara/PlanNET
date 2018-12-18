@@ -21,6 +21,29 @@
         <h3><span class="bg-official">Gene Name:  <b>{{node.name}}</b></span></h3>
     {% endif %}
 
+    {% if best_transcript.homolog.human.summary and best_transcript.homolog.human.summary != "NA" %}
+        <h2><span class="glyphicon glyphicon-tag"></span> Summary</h2>
+        <hr class="h2-sep">
+        <p>{{ best_transcript.homolog.human.summary }}</p>
+        <div class="pull-right">
+            <i>Summary for 
+                
+                    <a
+                    class="card-link"
+                    current="{{ node.symbol|urlencode}}"
+                    currentDB="{{ node.database }}"
+                    target="{{ best_transcript.homolog.human.symbol }}"
+                    targetDB="{{ best_transcript.homolog.human.database }}">
+                        <span class="human-color">
+                            Human {{ best_transcript.homolog.human.symbol }}
+                        </span> 
+                    </a>
+                    
+                {{ best_transcript.homolog.human.summary_source }}
+            </i>
+        </div>
+    {% endif %}
+
     <h2><span class="glyphicon glyphicon-tag"></span> Genomic region sequence</h2>
     <hr class="h2-sep">
     <a href="{% url 'get_fasta' %}?genesymbol={{ node.symbol|urlencode }}&database={{ node.database }}&type=sequence">
@@ -43,7 +66,7 @@
     <h2><span class="glyphicon glyphicon-tag"></span> Transcripts</h2>
     <hr class="h2-sep">
     
-        <table class="table table-hover transcripts-table">
+        <table id="transcripts-table" class="table table-hover transcripts-table">
             <thead>
                 <tr>
                     <th>Database</th>
@@ -225,8 +248,10 @@
     $(document).ready(function(){
             $.fn.dataTable.ext.errMode = 'throw';
             $('#int-table').DataTable({
-                "order": [[ 0, 2, "desc" ]]
+                "order": [[ 1, "desc" ]]
             });
+
+            $("#transcripts-table").DataTable();
         });
 </script>
 

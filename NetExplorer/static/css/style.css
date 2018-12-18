@@ -344,8 +344,12 @@ h1, h2, h3, h4, h5, h6 {
 
 #genesearch-genesymbol {
     width: 300px;
+    height: 41px;
 }
 
+.genesearch-panel .btn { height: 41px;}
+
+#select-experiment-div .btn { height: 41px;}
 #genesearch-form {
     margin-top: 3%;
 }
@@ -2186,6 +2190,7 @@ kbd {
 }
 
 .human-select { background-color: #6785d0 !important; }
+.human-color {color: #6785d0; }
 .gene-select { background-color: #c45ca2 !important; }
 .jbrowser-subtitle { float:right; }
 

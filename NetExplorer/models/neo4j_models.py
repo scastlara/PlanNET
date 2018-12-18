@@ -669,7 +669,8 @@ class PlanarianContig(Node):
         if self.degree is not None:
             element['data']['degree']   = self.degree
         if self.important:
-            element['data']['colorNODE'] = "#6785d0"
+            element['data']['colorNODE'] = "#404040"
+            element['classes'] = 'important'
         else:
             element['data']['colorNODE'] = "#404040"
         return element
@@ -1392,7 +1393,7 @@ class PlanarianGene(Node):
     Class for PlanarianGenes (genes from Planmine 3.0 gene annotation)
     """
     smesgene_regexp = r'SMESG\d+'
-    preferred_database = "Dresden"
+    preferred_database = "Smest"
     allowed_databases = set(["Smesgene"])
 
     def __init__(self, symbol, database, 
@@ -1495,6 +1496,7 @@ class PlanarianGene(Node):
             query = neoquery.SMESGENE_GET_ALL_CONTIGS_QUERY % (self.symbol)
         else:
             query = neoquery.SMESGENE_GET_CONTIGS_QUERY % (database, self.symbol)
+        print(query)
         results = GRAPH.run(query)
         results = results.data()
         prednodes = list()

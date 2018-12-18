@@ -155,11 +155,27 @@ var PlanExp = (function() {
      */
     getDatasets = function(expName, datasetSelect) {
         datasetRow = function(datasetName) {
-            return "<option class='dataset-option' value='" + 
-                    datasetName + 
-                    "'>" + 
-                    datasetName + 
-                    "</option>";
+            //<option data-content="<img class=" legend-db'="" src="/static/Images/legend-Adamidi.png">Adamidi' value='Adamidi'</option>
+
+
+            //<option data-content="<img class='legend-db' src='{% static 'Images/' %}legend-{{ db.name }}.png'>{{ db.name }}" value="{{ db.name }}">{{ db.name }}</option>
+            return "<option data-content='<img class=\"" +
+                    "legend-db\" src=\"" +
+                    window.ROOT + 
+                    "/static/Images/legend-" + 
+                    datasetName +
+                    ".png\">" +
+                    datasetName +
+                    "'" +
+                    " value='" +
+                    datasetName +
+                    "'" +
+                    "</option>"; 
+            //return "<option class='dataset-option' value='" + 
+            //        datasetName + 
+            //        "'>" + 
+            //        datasetName + 
+            //        "</option>";
         }
 
         $.ajax({

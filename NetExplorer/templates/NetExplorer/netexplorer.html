@@ -315,7 +315,7 @@
                             <select name="database" class="selectpicker" data-width="100%">
                                 <option value="" selected disabled>Select Database</option>
                                 {% for db in databases %}
-                                    <option value="{{ db.name }}">{{ db.name }}</option>
+                                    <option data-content="<img class='legend-db' src='{% static 'Images/' %}legend-{{ db.name }}.png'>{{ db.name }}" value="{{ db.name }}">{{ db.name }}</option>
                                 {% endfor %}
                             </select>
                             <br>

@@ -22,6 +22,7 @@ GRAPH     = Graph("http://127.0.0.1:7474/db/data/")
 DATABASES = set([
     "Dresden",
     "Consolidated",
+    "Smest",
     #"Newmark",
     "Graveley",
     "Illuminaplus",
@@ -37,6 +38,7 @@ ALL_DATABASES = set([
     "Consolidated",
     #"Newmark",
     "Graveley",
+    "Smest",
     "Illuminaplus",
     #"Smed454",
     "Adamidi",

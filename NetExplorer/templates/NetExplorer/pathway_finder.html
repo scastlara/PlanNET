@@ -240,7 +240,7 @@
                 <img class="pfind-form-icon" src="{% static 'Images/database-icon.png' %}"/>
                 <select name="database" class="selectpicker" title="Select Database">
                     {% for db in databases %}
-                        <option value="{{ db.name }}">{{ db.name }}</option>
+                        <option data-content="<img class='legend-db' src='{% static 'Images/' %}legend-{{ db.name }}.png'>{{ db.name }}" value="{{ db.name }}">{{ db.name }}</option>
                     {% endfor %}
                 </select>
 
