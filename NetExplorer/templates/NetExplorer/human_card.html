@@ -127,11 +127,13 @@
             },
             success : function(data) {
                 $(this).closest('.card-overlay').html(data)
-                $(document).ready(function(){
-                    $('#int-table').DataTable({
-                        "order": [[ 1, "desc" ]]
+                if (! $.fn.DataTable.isDataTable( '#int-table' )) {
+                    $(document).ready(function(){
+                        $('#int-table').DataTable({
+                            "order": [[ 1, "desc" ]]
+                        });
                     });
-                });
+                }
             }
         });
         

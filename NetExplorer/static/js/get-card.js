@@ -21,9 +21,9 @@ function getCard(card_data) {
             $('[id="' + elementID + '"]').html(data);
 
             // Show the hidden div
-            $('[id="card-overlay"]').slideToggle(450);
-            $('.close-overlay').slideToggle(450);
-            $('.full-screen-card').slideToggle(450);
+            $('[id="card-overlay"]').show(450);
+            $('.close-overlay').show(450);
+            $('.full-screen-card').show(450);
 
         }
     });

@@ -547,9 +547,11 @@
     <script>
         $(document).ready(function(){
             $.fn.dataTable.ext.errMode = 'throw';
-            $('#int-table').DataTable({
-                "order": [[ 1, "desc" ]]
-            });
+            if (! $.fn.DataTable.isDataTable( '#int-table' )) {
+                $('#int-table').DataTable({
+                    "order": [[ 1, "desc" ]]
+                });
+            }
         });
     </script>
 
