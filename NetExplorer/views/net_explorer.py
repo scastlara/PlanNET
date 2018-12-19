@@ -63,7 +63,7 @@ def net_explorer(request):
             nodes_to_search = list(graphobject.nodes)
             for node in nodes_to_search:
                 try:
-                    node.get_neighbours()
+                    node.get_neighbours_shallow()
                     node.important = True
                     nodes, edges = node.get_graphelements()
                     graphobject.add_elements(nodes)

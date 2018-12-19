@@ -143,10 +143,9 @@ PREDINTERACTION_QUERY = """
 
 # ------------------------------------------------------------------------------
 NEIGHBOURS_QUERY = """
-    MATCH (n:%s)-[r:INTERACT_WITH]-(m:%s)-[s:HOMOLOG_OF]-(l:Human), (m)-[t:INTERACT_WITH*0..1]-(other)
+    MATCH (n:%s)-[r:INTERACT_WITH]-(m:%s)-[s:HOMOLOG_OF]-(l:Human)
     WHERE  n.symbol = '%s'
     RETURN m.symbol         AS target,
-           count(t)         AS tdegree,
            l.symbol         AS human,
            r.int_prob       AS int_prob,
            r.path_length    AS path_length,
@@ -161,6 +160,17 @@ NEIGHBOURS_QUERY = """
            s.nog_eval       AS nog_eval,
            s.blast_brh      AS blast_brh,
            s.pfam_brh       AS pfam_brh
+"""
+
+# ------------------------------------------------------------------------------
+NEIGHBOURS_QUERY_SHALLOW = """
+    MATCH (n:%s)-[r:INTERACT_WITH]-(m:%s)-[s:HOMOLOG_OF]-(l:Human), (m)-[t:INTERACT_WITH*0..1]-(other)
+    WHERE  n.symbol = '%s'
+    RETURN m.symbol         AS target,
+           count(t)         AS tdegree,
+           l.symbol         AS human,
+           r.int_prob       AS int_prob,
+           r.path_length    AS path_length
 """
 
 # ------------------------------------------------------------------------------
@@ -185,11 +195,7 @@ MATCH p=( (n)-[r:INTERACT_WITH*%s]-(end) )
     WHERE end = m
     RETURN extract(nod IN nodes(p) | nod.symbol)                       AS symbols,
            extract(rel IN relationships(p) | toInt(rel.path_length))   AS path_length,
-           extract(rel IN relationships(p) | toFloat(rel.int_prob))    AS int_prob,
-           extract(rel IN relationships(p) | toFloat(rel.cellcom_nto)) AS cellcom_nto,
-           extract(rel IN relationships(p) | toFloat(rel.molfun_nto))  AS molfun_nto,
-           extract(rel IN relationships(p) | toFloat(rel.bioproc_nto)) AS bioproc_nto,
-           extract(rel IN relationships(p) | toFloat(rel.dom_int_sc))  AS dom_int_sc
+           extract(rel IN relationships(p) | toFloat(rel.int_prob))    AS int_prob
 """
 
 # ------------------------------------------------------------------------------

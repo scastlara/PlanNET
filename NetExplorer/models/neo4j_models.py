@@ -48,14 +48,10 @@ class Node(object):
                 nodes_in_path  = [ PlanarianContig(node, self.database, query=False) for node in path['symbols']]
                 relationships  = list()
                 path_graph_obj = GraphCytoscape()
-                for idx, val in enumerate(path['molfun_nto']):
+                for idx, val in enumerate(path['int_prob']):
                     parameters = dict()
                     parameters['int_prob']    = path['int_prob'][idx]
                     parameters['path_length'] = path['path_length'][idx]
-                    parameters['cellcom_nto'] = path['cellcom_nto'][idx]
-                    parameters['molfun_nto']  = path['molfun_nto'][idx]
-                    parameters['bioproc_nto'] = path['bioproc_nto'][idx]
-                    parameters['dom_int_sc']  = path['dom_int_sc'][idx]
                     relationships.append(
                         PredInteraction(
                             database      = self.database,
@@ -137,7 +133,7 @@ class Homology(object):
         pfam_brh: 1/0 flag indicating if homology is best reciprocal hit in pfam alignment.
     """
 
-    def __init__(self,  human, blast_cov, blast_eval, nog_brh,  pfam_sc, nog_eval, blast_brh, pfam_brh, prednode=None):
+    def __init__(self,  human, blast_cov=None, blast_eval=None, nog_brh=None,  pfam_sc=None, nog_eval=None, blast_brh=None, pfam_brh=None, prednode=None):
         self.prednode   = prednode
         self.human      = human
         self.blast_cov  = blast_cov
@@ -253,12 +249,12 @@ class PredInteraction(object):
                     'bioproc_nto', 'dom_int_sc'}
     """
 
-    def __init__(self, source_symbol, target, database, parameters = None):
+    def __init__(self, source_symbol, target, database, parameters=None, query=True):
         self.source_symbol = source_symbol
         self.target        = target
         self.database      = database
         self.parameters    = parameters
-        if self.parameters is None:
+        if query is True and self.parameters is None:
             self.__query_interaction()
 
     def __query_interaction(self):
@@ -289,21 +285,24 @@ class PredInteraction(object):
         element['data']['id']          = "-".join(sorted((self.source_symbol, self.target.symbol)))
         element['data']['source']      = self.source_symbol
         element['data']['target']      = self.target.symbol
-        element['data']['pathlength']  = self.parameters['path_length']
-        element['data']['probability'] = self.parameters['int_prob']
+        if self.parameters is not None:
+            element['data']['pathlength']  = self.parameters['path_length']
+            element['data']['probability'] = self.parameters['int_prob']
 
-        if self.parameters['path_length'] == 1:
-            element['data']['colorEDGE']   = "#72a555"
+            if self.parameters['path_length'] == 1:
+                element['data']['colorEDGE']   = "#72a555"
+            else:
+                element['data']['colorEDGE']   = "#CA6347"
         else:
             element['data']['colorEDGE']   = "#CA6347"
 
         return element
 
     def __hash__(self):
-        return hash((self.source_symbol, self.target.symbol, self.database, self.parameters['int_prob']))
+        return hash((self.source_symbol, self.target.symbol, self.database))
 
     def __eq__(self, other):
-        return (self.source_symbol, self.target.symbol, self.database, self.parameters['int_prob']) == (other.source_symbol, other.target.symbol, other.database, other.parameters['int_prob'])
+        return (self.source_symbol, self.target.symbol, self.database) == (other.source_symbol, other.target.symbol, other.database)
 
 
 # ------------------------------------------------------------------------------
@@ -675,9 +674,55 @@ class PlanarianContig(Node):
             element['data']['colorNODE'] = "#404040"
         return element
 
+    def get_neighbours_shallow(self):
+        '''
+        Method to get adjacent nodes (and their degree) in the graph without 
+        homology information and only with path_length and probability for the interaction information.
+        It also retrieves the degree of the neighbour nodes.
+        Fills attribute neighbours, which will be a list of PredInteraction objects.
+        Used by NetExplorer add_connection/expand
+        '''
+        query = neoquery.NEIGHBOURS_QUERY_SHALLOW % (self.database, self.database, self.symbol)
+        results = GRAPH.run(query)
+        results = results.data()
+        if results:
+            for row in results:
+                parameters = dict()
+                # Homology object
+                human_node = HumanNode(row['human'], "Human", query=False)
+                thomolog  = Homology(human = human_node)
+                # Node Object
+                target = PlanarianContig(
+                    symbol   = row['target'],    database = self.database,
+                    homolog  = thomolog,         degree = row['tdegree'],
+                    query=False
+                )
+
+                # Add prednode to homology object
+                target.homolog.prednode = target
+
+                # Interaction Object
+                interaction = PredInteraction(
+                    source_symbol = self.symbol,
+                    target        = target,
+                    database      = self.database,
+                    query         = False,
+                    parameters    = { 
+                        'path_length': int(row['path_length']), 
+                        'int_prob': round(float(row['int_prob']), 3)
+                    } 
+                )
+                # Add interaction to list of neighbours
+                self.neighbours.append(interaction)
+        else:
+            self.neighbours = None
+            self.degree     = 0
+        return self.neighbours
+
     def get_neighbours(self):
         """
-        Method to get the adjacent nodes in the graph.
+        Method to get the adjacent nodes in the graph and all the information about 
+        those connections (including the homology information, etc.).
         Fills attribute neighbours, which will be a list of PredInteraction objects.
         """
         query = neoquery.NEIGHBOURS_QUERY % (self.database, self.database, self.symbol)
@@ -689,7 +734,7 @@ class PlanarianContig(Node):
                 # Initialize parameters to pass to the PredInteraction object
                 parameters = {
                     'int_prob'    : round(float(row['int_prob']), 3),
-                    'path_length' : round(float(row['path_length']), 3),
+                    'path_length' : int(row['path_length']),
                     'cellcom_nto' : round(float(row['cellcom_nto']), 3),
                     'molfun_nto'  : round(float(row['molfun_nto']), 3),
                     'bioproc_nto' : round(float(row['bioproc_nto']), 3),
@@ -706,7 +751,7 @@ class PlanarianContig(Node):
                 # Node Object
                 target = PlanarianContig(
                     symbol   = row['target'],    database = self.database,
-                    homolog  = thomolog,         degree   = row['tdegree'], query=False
+                    homolog  = thomolog,         query=False
                 )
 
                 # Add prednode to homology object
@@ -1496,7 +1541,6 @@ class PlanarianGene(Node):
             query = neoquery.SMESGENE_GET_ALL_CONTIGS_QUERY % (self.symbol)
         else:
             query = neoquery.SMESGENE_GET_CONTIGS_QUERY % (database, self.symbol)
-        print(query)
         results = GRAPH.run(query)
         results = results.data()
         prednodes = list()
