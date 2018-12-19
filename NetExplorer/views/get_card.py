@@ -15,6 +15,13 @@ def get_card(request, symbol=None, database=None):
             card_node = gsearch.get_human_genes()[0]
             homologs = card_node.get_homologs()
             card_node.get_summary()
+            all_databases = Dataset.get_allowed_datasets(request.user)
+            sorted_homologs = list()
+            for db in all_databases:
+                if db.name in homologs:
+                    sorted_homologs.append((db.name, homologs[db.name]))
+                else:
+                    sorted_homologs.append((db.name, list()))
         elif database == "Smesgene":
             template = "NetExplorer/smesgene_card.html"
             card_node = gsearch.get_planarian_genes()[0]
@@ -45,7 +52,7 @@ def get_card(request, symbol=None, database=None):
     if database == "Human":
        response = {
             'node' : card_node,
-            'homologs': homologs
+            'homologs': sorted_homologs
         }
     elif database == "Smesgene":
         response = {

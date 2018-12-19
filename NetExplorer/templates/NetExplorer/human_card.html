@@ -45,12 +45,12 @@
     
     <h2><span class="glyphicon glyphicon-tag"></span> Homologs</h2>
     <hr class="h2-sep">
-    {% for db, list  in homologs.items %}
+    {% for dbhomologs  in homologs %}
     <div class="panel panel-default">
-        <div class="panel-heading">{{ db }} </div>
+        <div class="panel-heading">{{ dbhomologs.0 }} </div>
         <div class="panel-body">
             <table class="table table-hover hom-table">
-                {% if list %}
+                {% if dbhomologs.1  %}
                 <thead>
                     <th>Symbol</th>
                     <th>EggNOG e-value</th>
@@ -63,26 +63,26 @@
                 </tr>
             </thead>
             <tbody>
-                {% for hom in list %}
-                <tr>
-                    <td>
-                        <a
-                        class="card-link"
-                        current="{{ node.symbol|urlencode}}"
-                        currentDB="{{ node.database }}"
-                        target="{{ hom.prednode.symbol }}"
-                        targetDB="{{ hom.prednode.database }}">{{ hom.prednode.symbol }}
-                    </a>
-                </td>
-                <td>{{ hom.nog_eval }}</td>
-                <td>{{ hom.nog_brh }}</td>
-                <td>{{ hom.blast_eval }}</td>
-                <td>{{ hom.blast_cov }}</td>
-                <td>{{ hom.blast_brh }}</td>
-                <td>{{ hom.pfam_sc }}</td>
-                <td>{{ hom.pfam_brh }}</td>
-            </tr>
-            {% endfor %}
+                {% for hom in dbhomologs.1 %}
+                    <tr>
+                        <td>
+                            <a
+                            class="card-link"
+                            current="{{ node.symbol|urlencode}}"
+                            currentDB="{{ node.database }}"
+                            target="{{ hom.prednode.symbol }}"
+                            targetDB="{{ hom.prednode.database }}">{{ hom.prednode.symbol }}
+                        </a>
+                    </td>
+                    <td>{{ hom.nog_eval }}</td>
+                    <td>{{ hom.nog_brh }}</td>
+                    <td>{{ hom.blast_eval }}</td>
+                    <td>{{ hom.blast_cov }}</td>
+                    <td>{{ hom.blast_brh }}</td>
+                    <td>{{ hom.pfam_sc }}</td>
+                    <td>{{ hom.pfam_brh }}</td>
+                </tr>
+                {% endfor %}
             
             {% else %}
             <tr><td><h4>No Homologs</h4></td></tr>
