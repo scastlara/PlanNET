@@ -40,7 +40,6 @@ def get_card(request, symbol=None, database=None):
             card_node = gsearch.get_planarian_contigs()[0]
             card_node.get_summary()
             card_node.get_neighbours()
-            print("YES")
             card_node.get_domains()
             card_node.get_geneontology()
             nodes, edges = card_node.get_graphelements()
@@ -48,7 +47,6 @@ def get_card(request, symbol=None, database=None):
             graph.add_elements(nodes)
             graph.add_elements(edges)
     except Exception as err:
-        print(err)
         return render_to_response('NetExplorer/not_interactome.html')
     if database == "Human":
        response = {

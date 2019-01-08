@@ -726,7 +726,6 @@ class PlanarianContig(Node):
         Fills attribute neighbours, which will be a list of PredInteraction objects.
         """
         query = neoquery.NEIGHBOURS_QUERY % (self.database, self.database, self.symbol)
-        print(query)
         results = GRAPH.run(query)
         results = results.data()
         if results:
