@@ -40,6 +40,7 @@ def get_card(request, symbol=None, database=None):
             card_node = gsearch.get_planarian_contigs()[0]
             card_node.get_summary()
             card_node.get_neighbours()
+            print("YES")
             card_node.get_domains()
             card_node.get_geneontology()
             nodes, edges = card_node.get_graphelements()

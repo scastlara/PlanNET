@@ -451,7 +451,7 @@ class HumanNode(Node):
                 try:
                     homolog_node = PlanarianContig(row['homolog'], database, query=False)
                     homolog_node.get_gene_name()
-                except:
+                except Exception as err:
                     continue
                 homolog_rel    = Homology(
                     prednode   = homolog_node,
@@ -726,6 +726,7 @@ class PlanarianContig(Node):
         Fills attribute neighbours, which will be a list of PredInteraction objects.
         """
         query = neoquery.NEIGHBOURS_QUERY % (self.database, self.database, self.symbol)
+        print(query)
         results = GRAPH.run(query)
         results = results.data()
         if results:
