@@ -15,7 +15,7 @@ function getCard(card_data) {
         },
         success : function(data) {
             // Add history entry!
-            history.pushState(card_data, null, "/PlanNET/gene_card/" + card_data.targetDB + "/" + card_data.target);
+            history.pushState(card_data, null,  window.location.href);
 
             // Get the HTML data
             $('[id="' + elementID + '"]').html(data);

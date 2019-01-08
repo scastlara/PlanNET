@@ -2199,3 +2199,5 @@ kbd {
 #kegg-funkyradio { margin-top: -10px; }
 
 .cyt-controls-subtitle { font-size: 24px; }
+
+summary:hover { cursor: pointer; opacity: 0.8; }
