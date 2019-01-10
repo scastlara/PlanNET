@@ -96,6 +96,36 @@
             </tbody>
         </table>
     
+        <h2><span class="glyphicon glyphicon-tag"></span> Gene Ontologies</h2>
+        <hr class="h2-sep">
+            Predicted from longest transcript: <a
+            class="card-link"
+            current="{{ node.symbol|urlencode}}"
+            currentDB="{{ node.database }}"
+            target="{{ best_transcript.symbol }}"
+            targetDB="{{ best_transcript.database }}">{{ best_transcript.symbol }}
+            </a> 
+            <br>
+            <hr>
+
+        {% if not best_transcript.gene_ontologies %}
+            No Gene Ontologies
+        {% else %}
+            <div class="gene-ontology-div">
+                <table class="table table-hover homology-table">
+                {% for go in best_transcript.gene_ontologies %}
+                    <tr>
+                        <td><span class="{{ go.domain }}">{{ go.domain }}</span></td>   
+                        <td>
+                            <a href="http://amigo.geneontology.org/amigo/term/{{ go.accession }}" target="_blank">{{ go.accession }}
+                            </a>
+                        </td>
+                        <td>{{ go.name|title }}</td>
+                    </tr>
+                {% endfor %}
+                </table>
+            </div>
+        {% endif %}
 
     <div class="row row-eq-height interactions-title">
         <div class="col-sm-10">
@@ -123,6 +153,7 @@
     </a>
     <br>
     <hr>
+
 
     <div class="int-table-container">
             <table id="int-table" class="table table-hover int-table-class">

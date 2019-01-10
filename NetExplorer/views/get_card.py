@@ -29,6 +29,7 @@ def get_card(request, symbol=None, database=None):
             best_contig = card_node.get_best_transcript()
             best_contig.get_homolog()
             best_contig.get_neighbours()
+            best_contig.get_geneontology()
             if best_contig.homolog:
                 best_contig.homolog.human.get_summary()
             nodes, edges = best_contig.get_graphelements()
