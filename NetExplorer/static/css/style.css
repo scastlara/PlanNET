@@ -956,7 +956,7 @@ h1, h2, h3, h4, h5, h6 {
 #map-expression-dialog {
     display: none;
     margin: 5%;
-    width: 60%;
+    width: 50%;
     height: 80%;
     z-index: 1000000000;
     position: fixed;
@@ -974,7 +974,7 @@ h1, h2, h3, h4, h5, h6 {
 #map-expression-dialog-header {
     position: fixed;
     background-color: #E9E9E9;
-    width: 58%;
+    width: 49%;
     height: 40px;
     margin-left: 0.5%;
     margin-top: 0.5%;
@@ -994,12 +994,15 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 #map-expression-dialog-send {
-    float: right;
     display: inline-block;
-    margin-top: 200px;
-    bottom: 0;
-    margin-right: 20px;
-    margin-bottom: 20px;
+    text-align: center;
+    position: fixed;
+    left: calc(55% - 360px);
+    width: 350px;
+    bottom: calc(5% + 80px);
+    height: 80px;
+    background-color: white;
+}
 }
 
 #exTab2 {
