@@ -37,7 +37,13 @@
     <script src="{% static 'js/root.js' %}"></script>
     <script>
         $(document).ready(function(){
-            $("#dge-table").DataTable({"order": [[ 3, "desc" ]]});
+            $("#dge-table").DataTable({
+                "order": [[ 3, "desc" ]],
+                dom: 'Bfrtip',
+                buttons: [
+                    'csv'
+                ]
+            });
         });
     </script>
     <script src="{% static 'js/get-card.js' %}"></script>
