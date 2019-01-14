@@ -211,6 +211,8 @@ var PlanExp = (function() {
      *     - Nothing
      */
     experimentDGETable = function(expName, dataset, condition1, condition2, targetDiv) {
+        condition1 = condition1.replace(/ \(.+\)/, "");
+        condition2 = condition2.replace(/ \(.+\)/, "");
 
         $.ajax({
             type: "GET",
@@ -339,6 +341,8 @@ var PlanExp = (function() {
         $("#planexp-gene-expression-toc").hide();
         $("#planexp-tsne").hide();
         $("#planexp-tsne-toc").hide();
+        $("#planexp-network").hide();
+        $("#planexp-network-toc").hide();
     });
 
 
@@ -364,6 +368,10 @@ var PlanExp = (function() {
         var ctype = $("#planexp-dge-ctype").val();
         showConditionTypes("dge-table-condition-selects", ctype);
 
+        // Change Network ConditionType select
+        var ctype = $("#network-ctype").val();
+        showConditionTypes("network-condition-selects", ctype);
+
         // Show the necessary cards
         $("#planexp-dge-table-container").show(250);
         $("#planexp-gene-expression").show(250);
@@ -371,6 +379,8 @@ var PlanExp = (function() {
         $('#planexp-dge-table-container-toc').css('display', 'inline-block');
         $("#planexp-gene-expression-toc").show(250);
         $('#planexp-gene-expression-toc').css('display', 'inline-block');
+        $("#planexp-network").show(250);
+        $("#planexp-network-toc").show(250);
         if (currentExpType == expType['Single-Cell']) {
             $("#planexp-tsne").show(250);
             $("#planexp-tsne-toc").show(250);
@@ -454,6 +464,12 @@ var PlanExp = (function() {
         console.log($(this).attr("href"));
         $.scrollTo($(this).attr("href"), 500);
 
+    });
+
+    // NETWORK CONDITIONS
+    $("#network-ctype").on("change", function(){
+        var ctype = $("#network-ctype").val();
+        showConditionTypes("network-condition-selects", ctype);
     });
 
 

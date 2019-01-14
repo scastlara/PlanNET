@@ -13,6 +13,7 @@
         <li><a class="planexp-toc-link" id="planexp-dge-table-container-toc" href="#planexp-dge-table-container">DGE table</a></li>
         <li><a class="planexp-toc-link" id="planexp-gene-expression-toc" href="#planexp-gene-expression">Gene Expression Plot</a></li>
         <li><a class="planexp-toc-link" id="planexp-tsne-toc" href="#planexp-tsne">t-SNE Plot</a></li>
+        <li><a class="planexp-toc-link" id="planexp-network-toc" href="#planexp-network">Network</a></li>
         <hr>
         <li id="back_home"><a href="{% url 'index_view' %}" ><span class="glyphicon glyphicon-triangle-left"></span>Go back Home</a></li>
     </ul>
@@ -191,6 +192,43 @@
 
             </div> <!-- tSNE plot-->
             
+            <div id="planexp-network" class="planexp-card">
+                <h2 id="planexp-title">Network</h2>
+                <hr class="planexp-rule">
+
+                <div id="planexp-cyt-buttons">
+                        <div class="btn btn-default planexp-cyt-btn"><span class="glyphicon glyphicon-fullscreen"></span> Center</div>
+                        <div class="btn btn-default planexp-cyt-btn"><span class="glyphicon glyphicon-pencil"></span> Edit</div>
+                        <div class="btn btn-default planexp-cyt-btn"><span class="glyphicon glyphicon-open"></span> Import</div>
+                        <div class="btn btn-default planexp-cyt-btn"><span class="glyphicon glyphicon-save"></span> Export</div>
+                        <div class="btn btn-default planexp-cyt-btn"><span class="glyphicon glyphicon-picture"></span> Save</div>
+                </div>
+                <br>
+
+                <div id="planexp-cyt-wrapper">
+                    <div id="planexp-cyt"> </div>
+                    <div id="planexp-cyt-controls">
+                        <h4>Select Condition Type:</h4>
+                        <select id="network-ctype" name="network-ctype" class="selectpicker ctype-select" title="Select Condition Type">
+                        </select>
+                        <hr>
+                        <h4>Select Conditions:</h4>
+                        <select id="network-conditions" name="network-condition" class="selectpicker condition-select network-condition-selects" title="Select Condition" multiple>
+                            <option value="" disabled selected>Select condition</option>
+                        </select>
+                        <hr>
+                        <h4>Select Expression (<i class="units">normcounts</i>):</h4>
+                        <input type="range" name="minExp" id="minExp" value="2.5" min="0.25" max="5" step="0.25" oninput="minExpOutput.value = minExp.value"/>
+                        <div class="minExp-container">
+                            <output name="minExpOutput" id="minExpOutput">2.5</output>
+                        </div>
+                    </div>
+                </div>
+
+                
+            </div> <!-- Planexp network-->
+
+
         </div> <!-- Planexp panel body div -->
     </div><!-- Planexp panel div -->
     

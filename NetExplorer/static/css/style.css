@@ -2182,7 +2182,28 @@ kbd {
     height: 195px;
 }
 
+#planexp-network     { display: none; }
+#planexp-network-toc { display: none; }
+#planexp-cyt { background-color: #f4f4f4; width: 100%; height: 720px;}
 
+#planexp-cyt-wrapper {
+    position: relative;
+}
+#planexp-cyt-controls {̣
+    background-color: white;
+    text-align: center;
+    position: absolute; 
+    top: 50px;
+    right: 50px;
+}
+
+.planexp-cyt-btn { margin-right: 10px; width: 90px; }
+.planexp-cyt-btn .glyphicon { color: #777777; font-size: 16px; }
+
+#planexp-cyt-controls h4 { font-size: 14px; }
+#planexp-cyt-controls .btn { font-size: 12px; }
+
+.minExp-container { text-align: center; }
 #planexp-summary-toc { display: none; }
 #planexp-dge-table-container-toc { display: none; }
 #planexp-gene-expression-toc     { display: none; }
