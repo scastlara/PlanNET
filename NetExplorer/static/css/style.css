@@ -2199,12 +2199,12 @@ kbd {
 .color-pick { display: inline-block; opacity: 0.5; margin-top: 10px; height: 60px; width: 30px; }
 .color-pick:hover { opacity: 1; cursor: pointer; }
 
-.gradient-blue {  background-image: linear-gradient(blue, white); }
-.gradient-red {  background-image: linear-gradient(red, white); }
-.gradient-green {  background-image: linear-gradient(green, white); }
-.gradient-blue-to-red { background-image: linear-gradient(red, white, blue) }
-.gradient-yellow-to-blue { background-image: linear-gradient(blue, white, yellow); }
-.gradient-red-to-green { background-image: linear-gradient(green, white, red); }
+.gradient-blue {  background-image: linear-gradient(#638ccc, white); }
+.gradient-red {  background-image: linear-gradient(#ca566f, white); }
+.gradient-green {  background-image: linear-gradient(#71a557, white); }
+.gradient-blue-to-red { background-image: linear-gradient(#ca566f, white, #638ccc) }
+.gradient-yellow-to-blue { background-image: linear-gradient(#638ccc, white, #e4a32d); }
+.gradient-red-to-green { background-image: linear-gradient(#71a557, white, #ca566f); }
 
 
 .color-pick.active { border: solid 2px #777777; opacity: 1; }

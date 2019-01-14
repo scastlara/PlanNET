@@ -599,9 +599,30 @@ var PlanExp = (function() {
     // NETWORK BUTTONS
     $("#planexp-cyt-center").on("click", function() { cy.center(); cy.fit(); });
     $("#planexp-cyt-edit").on("click",   function() { console.log("EDIT"); });
-    $("#planexp-cyt-export").on("click", function() { console.log("EXPORT"); });
-    $("#planexp-cyt-save").on("click",   function() { console.log("SAVE"); });
-    $("#planexp-cyt-delete").on("click", function() { console.log("DELETE"); });
+    $("#planexp-cyt-export").on("click", function() { 
+        var jsonGraph = JSON.stringify(cy.json().elements);
+        var blob = new Blob([jsonGraph], {type: "text/plain;charset=utf-8"});
+        saveAs(blob, "graph-export.json"); 
+    });
+    $("#planexp-cyt-save").on("click",   function() { var graph_png = cy.png(); $('#save-image-link').attr('href', graph_png); });
+    $("#planexp-cyt-delete").on("click", function() { 
+        $( "#dialog-confirm" ).dialog({
+            resizable: false,
+            height: "auto",
+            width: 400,
+            modal: true,
+            buttons: {
+                Cancel: function() {
+                    $( this ).dialog( "close" );
+                },
+                "Delete graph": function() {
+                    cy.nodes().remove();
+                    $( this ).dialog( "close" );
+                }
+            }
+        })
+
+     });
 
     // NETWORK COLOR
     $(".color-pick").on("click", function() { changeNetworkColor(this) });

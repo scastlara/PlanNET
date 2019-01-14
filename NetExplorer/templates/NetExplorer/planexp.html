@@ -192,6 +192,13 @@
 
             </div> <!-- tSNE plot-->
             
+            <div id="dialog-confirm" title="Delete Graph?">
+                <p>
+                    <span class="ui-icon ui-icon-alert" style="float:left; margin:12px 12px 20px 0;"></span>
+                    The graph will be permanently removed, are you sure you want to delete the graph?
+                </p>
+            </div>
+
             <div id="planexp-network" class="planexp-card">
                 <h2 id="planexp-title">Network</h2>
                 <hr class="planexp-rule">
@@ -204,7 +211,9 @@
                             Import <input type="file" id="import-json" name="files[]" style="display:none;"/>
                         </label>
                         <div id="planexp-cyt-export" class="btn btn-default planexp-cyt-btn"><span class="glyphicon glyphicon-save"></span> Export</div>
-                        <div id="planexp-cyt-save" class="btn btn-default planexp-cyt-btn"><span class="glyphicon glyphicon-picture"></span> Save</div>
+                        <a href="#" id="save-image-link" download="graph-export-img">
+                            <div id="planexp-cyt-save" class="btn btn-default planexp-cyt-btn"><span class="glyphicon glyphicon-picture"></span> Save</div>
+                        </a>
                         <div id="planexp-cyt-delete" class="btn btn-default planexp-cyt-btn"><span class="glyphicon glyphicon-trash"></span> Delete</div>
                 </div>
                 <br>
@@ -283,6 +292,7 @@
     <script src="https://cdn.plot.ly/plotly-1.32.0.min.js"></script>
     <script src="{% static 'js/scrollTo.js' %}"></script>
     <script src="{% static 'js/planexp-cytoscape-definition.js' %}"></script>
+    <script src="{% static 'js/FileSaver.js' %}"></script>
     <script src="{% static 'js/planexp.js' %}"></script>
     {% endblock scripts%}
     
