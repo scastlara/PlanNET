@@ -24,9 +24,13 @@ class DownloadHandler(object):
     element of the tuple being a column.
     '''
     def _get_contig_data(node):
+        if not node.sequence:
+            node.get_all_information()
         return [(node.symbol, node.sequence, node.database)]
 
     def _get_orf_data(node):
+        if not node.orf:
+            node.get_all_information()
         return [(node.symbol, node.orf, node.database)]
 
     def _get_homology_data(node):
@@ -73,8 +77,10 @@ class DownloadHandler(object):
         dfile = ServedFile(self.get_filename(data), fformat, self.get_header(data))
         for identifier in identifiers:
             try:
-                node = query_node(identifier, database)
-                dfile.add_elements(self.data_from_node[data](node))
+                gsearch = GeneSearch(identifier, database)
+                nodes = gsearch.get_planarian_contigs()
+                for node in nodes:
+                    dfile.add_elements(self.data_from_node[data](node))
             except exceptions.NodeNotFound:
                 continue
         return dfile

@@ -647,6 +647,12 @@ class PlanarianContig(Node):
             else:
                 raise exceptions.NodeNotFound(self.symbol, self.database)
 
+    def get_all_information(self):
+        '''
+        Fills all attributes of PlanarianContig by querying the database
+        '''
+        self.__query_node()
+
     def get_homolog(self):
         '''
         Tries to get the homologous human gene of this planarian transcript

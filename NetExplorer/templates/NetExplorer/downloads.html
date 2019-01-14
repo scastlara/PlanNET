@@ -12,13 +12,10 @@
 
     <form id="download-seqs" method="POST" action="{% url 'downloader' %}">
         {% csrf_token %}
-        <label for="comment">Identifiers (separated by commas):</label>
+        <label for="comment">Contig identifiers (separated by commas):</label>
         <textarea class="form-control idtextarea" name="identifiers" cols="5" rows="5" id="identifiers"></textarea>
         <br>
         <select id="download-data" name="database" class="selectpicker" title="Database">
-            <option data-content="<span class='badge badge-success human-select'>Human</span>" value="Human">Human</option>
-            <option data-content="<span class='badge badge-success gene-select'>Planarian Gene</span>" value="Smesgene">Planarian Gene</option>
-            <option data-divider="true"></option>
             {% for db in databases %}
                 <option data-content="<img class='legend-db' src='{% static 'Images/' %}legend-{{ db.name }}.png'>{{ db.name }}" value="{{ db.name }}">{{ db.name }}</option>
             {% endfor %}
@@ -37,6 +34,24 @@
         <input type="submit" class="btn btn-info" value="Download">
     </form>
     <br>
+    {% if error %}
+        <div class="panel panel-danger error-downloader">
+            <div class="panel-heading">
+                Download Error
+            </div>
+            <div class="panel-body">
+                {% if error == "identifiers" %}
+                    Please, input contig or gene identifiers.
+                {% elif error == "data" %}
+                    Please, select what to download on the form.
+                {% elif error == "database" %}
+                    Please, select database.
+                {% else %}
+                    Something went wrong. Please, try again later.
+                {% endif %}
+            </div>
+        </div>
+    {% endif %}
     <hr>
     <br>
     <h2>Software</h2>

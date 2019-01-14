@@ -5,12 +5,13 @@ def downloader(request):
     Handles the download of sequence and annotations
     """
     MAX_IDS = 10000
+    databases = Dataset.get_allowed_datasets(request.user)
     if 'identifiers' not in request.POST:
-        return render(request, 'NetExplorer/downloads.html')
-    if 'data' not in request.POST:
-        return render(request, 'NetExplorer/downloads.html')
-    if 'database' not in request.POST:
-        return render(request, 'NetExplorer/downloads.html')
+        return render(request, 'NetExplorer/downloads.html', { 'databases': databases })
+    if 'database' not in request.POST or not request.POST['database']:
+        return render(request, 'NetExplorer/downloads.html', { 'databases': databases, 'error': 'database' })
+    if 'data' not in request.POST or not request.POST['data']:
+        return render(request, 'NetExplorer/downloads.html', { 'databases': databases, 'error': 'data' })
 
     identifiers = request.POST['identifiers']
     identifiers = re.split(r"[\n\r,;]+", identifiers)
