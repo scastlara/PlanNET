@@ -212,16 +212,55 @@
                 <div id="planexp-cyt-wrapper">
                     <div id="planexp-cyt"> </div>
                     <div id="planexp-cyt-controls">
+                        <h3>Color Genes:</h3>
+
+                        <ul class="nav nav-tabs">
+                            <li class="active"><a data-toggle="tab" href="#one-sample">One Sample</a></li>
+                            <li><a data-toggle="tab" href="#two-sample">Two Samples</a></li>
+                        </ul>
+                        <div class="tab-content">
+                            <div id="one-sample" class="tab-pane fade in active">
+                                <!-- ONE SAMPLE -->
+                                <select id="network-color-conditions" name="network-color-conditions" class="selectpicker condition-select network-color-condition-selects" title="Select Condition">
+                                    <option value="" disabled selected>Select condition</option>
+                                </select>
+                                <br>
+
+                                <div id="gradient-red" class="color-pick gradient-red active"></div>
+                                <div id="gradient-blue" class="color-pick gradient-blue"></div>
+                                <div id="gradient-green" class="color-pick gradient-green"></div>
+
+                            </div>
+                            <div id="two-sample" class="tab-pane fade in">
+                                <!-- TWO SAMPLES -->
+                                <select id="network-color-condition1" name="network-color-condition1" class="selectpicker condition-select network-color-condition-selects" title="Select Condition">
+                                    <option value="" disabled selected>Select condition</option>
+                                </select>
+                                <br>
+                                <select id="network-color-condition2" name="network-color-condition2" class="selectpicker condition-select network-color-condition-selects" title="Select Condition">
+                                    <option value="" disabled selected>Select condition</option>
+                                </select>
+                                <br>
+
+                                <div id="gradient-blue-to-red" class="color-pick gradient-blue-to-red active"></div>
+                                <div id="gradient-yellow-to-blue" class="color-pick gradient-yellow-to-blue"></div>
+                                <div id="gradient-red-to-green" class="color-pick gradient-red-to-green"></div>
+                            </div>
+                        </div>
+
+                        
+                        <hr>
+                        <h3>Filter Genes:</h3>
                         <h4>Select Condition Type:</h4>
                         <select id="network-ctype" name="network-ctype" class="selectpicker ctype-select" title="Select Condition Type">
                         </select>
-                        <hr>
+                        <br><br>
                         <h4>Select Conditions:</h4>
                         <select id="network-conditions" name="network-condition" class="selectpicker condition-select network-condition-selects" title="Select Condition" multiple>
                             <option value="" disabled selected>Select condition</option>
                         </select>
-                        <hr>
-                        <h4>Select Expression (<i class="units">normcounts</i>):</h4>
+                        <br><br>
+                        <h4>Select Threshold (<i class="units">normcounts</i>):</h4>
                         <input type="range" name="minExp" id="minExp" value="2.5" min="0.25" max="5" step="0.25" oninput="minExpOutput.value = minExp.value"/>
                         <div class="minExp-container">
                             <output name="minExpOutput" id="minExpOutput">2.5</output>

@@ -65,7 +65,30 @@ var PlanExp = (function() {
                     conditionName + 
                     "'>" + 
                     conditionName + 
-                    "</option>";
+                    "</option>\n";
+        }
+
+        optGroupOpen = function(ctype) {
+            console.log(
+
+                "<optgroup label='" + 
+                    ctype + 
+                    "' " + 
+                    "class='condition-option " + 
+                    ctype + "'" +
+                    ">\n"
+
+            );
+            return "<optgroup label='" + 
+                    ctype + 
+                    "' " + 
+                    "class='condition-option " + 
+                    ctype + "'" + 
+                    ">\n";
+        }
+
+        optGroupClose = function() {
+            return "</optgroup>\n";
         }
 
         $.ajax({
@@ -78,12 +101,30 @@ var PlanExp = (function() {
             success: function(data) {
                 conditionSelects.html(""); // clean previous HTML
                 var keys = Object.keys(data);
-                keys.sort();
-                for(var i=0; i<keys.length; ++i){
-                    var conditionName = keys[i];
-                    var ctype = data[keys[i]];
-                    conditionSelects.append(conditionRow(conditionName, ctype));
+
+                // Group conditions by Condition Type
+                groups = {};
+                for (var i=0; i<keys.length; ++i) {
+                    if (! groups[ data[keys[i]] ]) {
+                        groups[ data[keys[i]] ] = [];
+                    }
+                    groups[ data[keys[i]] ].push(keys[i]);
                 }
+                
+                var html_to_add = "";
+                // Add conditions to dropdowns sorted within each Condition Type.
+                for (ctype in groups) {
+                    html_to_add += optGroupOpen(ctype);
+                    var conditions = groups[ctype];
+                    conditions.sort();
+                    for (cond in conditions) {
+                        var conditionName = conditions[cond];
+                        html_to_add += conditionRow(conditionName, ctype);
+                    }
+                    html_to_add += optGroupClose();
+                    
+                }
+                conditionSelects.append(html_to_add);
                 conditionSelects.selectpicker('refresh');
             },
             error: function(data) {
@@ -278,6 +319,23 @@ var PlanExp = (function() {
         });
     }
 
+    /**
+     * plotTSNE
+     *   Summary:
+     *     Performs AJAX query to /plot_tsne to 
+     *     retrieve the data for the TSNE plot to pass it 
+     *     to Plotly.
+     *   Arguments:
+     *     - Experiment name
+     *     - Dataset
+     *     - Gene name
+     *     - jQuery object of div to plot.
+     *     - withcolor: Bool to indicate if color dimension is necessary (i.e.: if we are plotting a gene).
+     *     - Type of condition.
+     *     - Id of the plot.
+     *   Returns:
+     *     - Nothing
+     */
     plotTSNE = function(expName, dataset, geneName, withcolor, ctype, plotDivId) {
         $("#tsne-plot-loading").show();
         $("#" + plotDivId).html("");
@@ -357,10 +415,25 @@ var PlanExp = (function() {
           $('.close-overlay-uploadgraph').slideToggle(450);
       
         };
-      
         reader.readAsText(file);
-      
-      }
+    }
+
+
+    /**
+     * changeNetworkColor
+     *   Summary:
+     *     Changes the color gradient of the displayed network.
+     *   Arguments:
+     *     - Color gradient picked.
+     *   Returns:
+     *     - Nothing
+     */
+    changeNetworkColor = function(element) {
+        $("#" + $(element).parent().attr("id") + " .color-pick").removeClass("active");
+        $(element).addClass("active");
+        var colorGradient = $(element).attr('id');
+        console.log(colorGradient);
+    }
       
 
     //----------------------------------------------------
@@ -525,8 +598,11 @@ var PlanExp = (function() {
 
     // NETWORK BUTTONS
     $("#planexp-cyt-center").on("click", function() { cy.center(); cy.fit(); });
-    $("#planexp-cyt-edit").on("click", function() { console.log("EDIT"); });
+    $("#planexp-cyt-edit").on("click",   function() { console.log("EDIT"); });
     $("#planexp-cyt-export").on("click", function() { console.log("EXPORT"); });
-    $("#planexp-cyt-save").on("click", function() { console.log("SAVE"); });
+    $("#planexp-cyt-save").on("click",   function() { console.log("SAVE"); });
     $("#planexp-cyt-delete").on("click", function() { console.log("DELETE"); });
+
+    // NETWORK COLOR
+    $(".color-pick").on("click", function() { changeNetworkColor(this) });
 })();

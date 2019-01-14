@@ -2189,17 +2189,36 @@ kbd {
 #planexp-cyt-wrapper {
     position: relative;
 }
-#planexp-cyt-controls {̣
-    background-color: white;
-    text-align: center;
+
+#planexp-cyt-controls {
     position: absolute; 
-    top: 50px;
-    right: 50px;
+    top: 25px;
+    right: 25px;
 }
+
+.color-pick { display: inline-block; opacity: 0.5; margin-top: 10px; height: 60px; width: 30px; }
+.color-pick:hover { opacity: 1; cursor: pointer; }
+
+.gradient-blue {  background-image: linear-gradient(blue, white); }
+.gradient-red {  background-image: linear-gradient(red, white); }
+.gradient-green {  background-image: linear-gradient(green, white); }
+.gradient-blue-to-red { background-image: linear-gradient(red, white, blue) }
+.gradient-yellow-to-blue { background-image: linear-gradient(blue, white, yellow); }
+.gradient-red-to-green { background-image: linear-gradient(green, white, red); }
+
+
+.color-pick.active { border: solid 2px #777777; opacity: 1; }
+
+
+#one-sample { text-align: center; }
+#two-sample { text-align: center; }
+
+#planexp-cyt-controls .nav-tabs { width: 100%; }
 
 .planexp-cyt-btn { margin-right: 10px; width: 90px; }
 .planexp-cyt-btn .glyphicon { color: #777777; font-size: 16px; }
 
+#planexp-cyt-controls h3 { font-size: 16px; font-weight: bold; }
 #planexp-cyt-controls h4 { font-size: 14px; }
 #planexp-cyt-controls .btn { font-size: 12px; }
 
