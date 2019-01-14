@@ -1,4 +1,4 @@
-// CYTOSCAPE DEFINITION FOR NET EXPLORER
+// CYTOSCAPE DEFINITION FOR PLANEXP
 
 // Cytoscape style definition
 var stylesheet = cytoscape.stylesheet()
@@ -14,7 +14,7 @@ var stylesheet = cytoscape.stylesheet()
             "color": "#404040",
             "border-color": "data(colorNODE)",
             "border-width": 2,
-            "min-zoomed-font-size": 2,
+            "min-zoomed-font-size": 4,
         })
     .selector('.important')
         .css({
@@ -145,7 +145,7 @@ var stylesheet = cytoscape.stylesheet()
 // Cytoscape variable definition
 var cy = cytoscape({
     style: stylesheet,
-    layout: { name: 'preset' },
-    container: document.getElementById('cyt'),
+    layout: { name: 'cola' },
+    container: document.getElementById('planexp-cyt'),
     ready: function() {}
 });

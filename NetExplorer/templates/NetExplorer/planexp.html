@@ -197,11 +197,15 @@
                 <hr class="planexp-rule">
 
                 <div id="planexp-cyt-buttons">
-                        <div class="btn btn-default planexp-cyt-btn"><span class="glyphicon glyphicon-fullscreen"></span> Center</div>
-                        <div class="btn btn-default planexp-cyt-btn"><span class="glyphicon glyphicon-pencil"></span> Edit</div>
-                        <div class="btn btn-default planexp-cyt-btn"><span class="glyphicon glyphicon-open"></span> Import</div>
-                        <div class="btn btn-default planexp-cyt-btn"><span class="glyphicon glyphicon-save"></span> Export</div>
-                        <div class="btn btn-default planexp-cyt-btn"><span class="glyphicon glyphicon-picture"></span> Save</div>
+                        <div id="planexp-cyt-center" class="btn btn-default planexp-cyt-btn"><span class="glyphicon glyphicon-fullscreen"></span> Center</div>
+                        <div id="planexp-cyt-edit" class="btn btn-default planexp-cyt-btn"><span class="glyphicon glyphicon-pencil"></span> Edit</div>
+                        <label class="btn btn-default planexp-cyt-btn">
+                            <span class="glyphicon glyphicon-open"></span>
+                            Import <input type="file" id="import-json" name="files[]" style="display:none;"/>
+                        </label>
+                        <div id="planexp-cyt-export" class="btn btn-default planexp-cyt-btn"><span class="glyphicon glyphicon-save"></span> Export</div>
+                        <div id="planexp-cyt-save" class="btn btn-default planexp-cyt-btn"><span class="glyphicon glyphicon-picture"></span> Save</div>
+                        <div id="planexp-cyt-delete" class="btn btn-default planexp-cyt-btn"><span class="glyphicon glyphicon-trash"></span> Delete</div>
                 </div>
                 <br>
 
@@ -239,6 +243,9 @@
     {% block scripts %}
     <script src="https://cdn.plot.ly/plotly-1.32.0.min.js"></script>
     <script src="{% static 'js/scrollTo.js' %}"></script>
+    <script src="{% static 'js/planexp-cytoscape-definition.js' %}"></script>
     <script src="{% static 'js/planexp.js' %}"></script>
     {% endblock scripts%}
+    
+
     

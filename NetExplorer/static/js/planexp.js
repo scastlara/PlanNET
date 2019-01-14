@@ -295,7 +295,6 @@ var PlanExp = (function() {
             success: function(data) {
                 if (data) {
                     $("#plot-genenotfound").hide();
-                    console.log(data.data);
                     Plotly.newPlot(plotDivId, data.data, data.layout);
                 } else {
                     $("#tsne-plot-genenotfound").show(250);
@@ -315,6 +314,54 @@ var PlanExp = (function() {
         $("." + selectDivClass).selectpicker("refresh");
     }
 
+
+   /**
+    * Add JSON Graph to Cytoscape
+    **/
+   addJsonToCy = function(graphelements) {
+        try {
+            cy.add(graphelements);
+            cy.layout({'name': 'cose'});
+        }
+        catch(err) {
+            displayError("Incorrect graph definition");
+        }
+    }
+
+
+    handleFileSelect = function(evt) {
+        var files = evt.target.files; // FileList object
+        // files is a FileList of File objects. List some properties.
+        var output = [];
+        var file = files[0];
+        var format = "";
+      
+        // Read file
+        var reader = new FileReader();
+        reader.onload = function(){
+          var graphelements;
+          textfile = reader.result;
+          // Check format
+          if (evt.target.id == "import-json") {
+            try {
+              graphelements = JSON.parse(textfile);
+              addJsonToCy(graphelements);
+            }
+            catch (err) {
+              displayError("Incorrect JSON file.");
+            }
+          }
+
+          // Close overlay
+          $('.card-overlay-netcell-uploadgraph').slideToggle(450);
+          $('.close-overlay-uploadgraph').slideToggle(450);
+      
+        };
+      
+        reader.readAsText(file);
+      
+      }
+      
 
     //----------------------------------------------------
     /* BUTTONS AND EVENTS */
@@ -461,7 +508,6 @@ var PlanExp = (function() {
     // SCROLL BEHAVIOUR
     $(".planexp-toc-link").on("click", function(event){
         event.preventDefault();
-        console.log($(this).attr("href"));
         $.scrollTo($(this).attr("href"), 500);
 
     });
@@ -472,5 +518,15 @@ var PlanExp = (function() {
         showConditionTypes("network-condition-selects", ctype);
     });
 
+    // IMPORT NETWORK
+    $(function(){
+        document.querySelector("#import-json").addEventListener('change', handleFileSelect, false);
+    });
 
+    // NETWORK BUTTONS
+    $("#planexp-cyt-center").on("click", function() { cy.center(); cy.fit(); });
+    $("#planexp-cyt-edit").on("click", function() { console.log("EDIT"); });
+    $("#planexp-cyt-export").on("click", function() { console.log("EXPORT"); });
+    $("#planexp-cyt-save").on("click", function() { console.log("SAVE"); });
+    $("#planexp-cyt-delete").on("click", function() { console.log("DELETE"); });
 })();
