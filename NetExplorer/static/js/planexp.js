@@ -598,7 +598,12 @@ var PlanExp = (function() {
 
     // NETWORK BUTTONS
     $("#planexp-cyt-center").on("click", function() { cy.center(); cy.fit(); });
-    $("#planexp-cyt-edit").on("click",   function() { console.log("EDIT"); });
+    $("#planexp-cyt-edit").on("click",   function() { 
+        $("#edit-graph-dialog").show(250, function() {
+            window.theEditor = new CyEditor('cytoscape-editor', cy);
+        });
+        
+    });
     $("#planexp-cyt-export").on("click", function() { 
         var jsonGraph = JSON.stringify(cy.json().elements);
         var blob = new Blob([jsonGraph], {type: "text/plain;charset=utf-8"});
@@ -626,4 +631,13 @@ var PlanExp = (function() {
 
     // NETWORK COLOR
     $(".color-pick").on("click", function() { changeNetworkColor(this) });
+
+    // EDIT GRAPH DIALOG
+     $("#close-edit-graph").on("click", function(){
+        $("#edit-graph-dialog").hide(250);
+     });
+
+
+
+     
 })();

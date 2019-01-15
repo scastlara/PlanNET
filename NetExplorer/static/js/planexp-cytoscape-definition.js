@@ -50,8 +50,8 @@ var stylesheet = cytoscape.stylesheet()
         })
     .selector('node[database != "Human"]')
         .css({
-            'width': 'mapData(degree, 1, 200, 10, 30)',
-            'height': 'mapData(degree, 1, 200, 10, 30)',
+            'width': '15',
+            'height': '15',
         })
     .selector('node[database = "Smest"]')
         .css({

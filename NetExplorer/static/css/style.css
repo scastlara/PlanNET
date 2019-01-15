@@ -2199,12 +2199,12 @@ kbd {
 .color-pick { display: inline-block; opacity: 0.5; margin-top: 10px; height: 60px; width: 30px; }
 .color-pick:hover { opacity: 1; cursor: pointer; }
 
-.gradient-blue {  background-image: linear-gradient(#638ccc, white); }
-.gradient-red {  background-image: linear-gradient(#ca566f, white); }
-.gradient-green {  background-image: linear-gradient(#71a557, white); }
-.gradient-blue-to-red { background-image: linear-gradient(#ca566f, white, #638ccc) }
-.gradient-yellow-to-blue { background-image: linear-gradient(#638ccc, white, #e4a32d); }
-.gradient-red-to-green { background-image: linear-gradient(#71a557, white, #ca566f); }
+.gradient-blue {  background-image: linear-gradient(#1f77b4, white); }
+.gradient-red {  background-image: linear-gradient(#d62728, white); }
+.gradient-green {  background-image: linear-gradient(#2ca02c, white); }
+.gradient-blue-to-red { background-image: linear-gradient(#d62728, white, #1f77b4) }
+.gradient-yellow-to-blue { background-image: linear-gradient(#1f77b4, white, #e4a32d); }
+.gradient-red-to-green { background-image: linear-gradient(#2ca02c, white, #d62728); }
 
 
 .color-pick.active { border: solid 2px #777777; opacity: 1; }
@@ -2244,3 +2244,53 @@ kbd {
 .cyt-controls-subtitle { font-size: 24px; }
 
 summary:hover { cursor: pointer; opacity: 0.8; }
+
+#edit-graph-dialog {
+    display: none;
+    width: 90%;
+    height: 90%;
+    z-index: 1000000000;
+    position: fixed;
+    background-color: white;
+    border-color: #D4D4D4;
+    border-style: solid;
+    border-width: 2px;
+    top: 10;
+    left: 5%;
+}
+
+#edit-graph-dialog-header {
+    position: fixed;
+    background-color: #E9E9E9;
+    width: 89%;
+    height: 40px;
+    margin-left: 0.5%;
+    margin-right: 0.5%;
+    margin-top: 0.5%;
+    margin-bottom: 40px;
+}
+
+#close-edit-graph {
+    float: right;
+    cursor: pointer;
+}
+
+#close-edit-graph .glyphicon-remove {
+    line-height: 40px;
+    height: 40px;
+    margin-right: 10px;
+}
+
+.edit-graph-title {
+    line-height: 40px;
+    height: 40px;
+    margin-left: 10px;
+    font-weight: bold;
+}
+
+#cytoscape-editor {
+    width: 80%;
+    background-color: white;
+    border: solid 1px grey;
+    height: 80%;
+}

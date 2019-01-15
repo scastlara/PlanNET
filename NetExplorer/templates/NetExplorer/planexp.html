@@ -23,7 +23,7 @@
 {% block content %}
 <!-- HIDDEN CARD OVERLAY -->
     <div id="button-container">
-        <div class="close-overlay" title="Close card">
+        <div class="close-overlay" style="display: none;" title="Close card">
             <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
         </div>
         <div class="full-screen-card" title="Open in new window">
@@ -282,7 +282,26 @@
 
 
         </div> <!-- Planexp panel body div -->
+        
     </div><!-- Planexp panel div -->
+
+
+    <div id="edit-graph-dialog">
+        <div id="edit-graph-dialog-header">
+            <span class="edit-graph-title">EDIT NETWORK</span>
+            <div id="close-edit-graph" title="Close">
+                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+            </div>
+        </div>
+        <div id="map-expression-dialog-body">
+            <div id="cytoscape-editor">
+            
+            </div>
+        </div>
+    </div>
+            
+
+
     
     {% endblock content %}
     
@@ -293,6 +312,7 @@
     <script src="{% static 'js/scrollTo.js' %}"></script>
     <script src="{% static 'js/planexp-cytoscape-definition.js' %}"></script>
     <script src="{% static 'js/FileSaver.js' %}"></script>
+    <script src="{% static 'js/cy-editor.js' %}"></script>
     <script src="{% static 'js/planexp.js' %}"></script>
     {% endblock scripts%}
     
