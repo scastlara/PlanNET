@@ -95,6 +95,12 @@ var stylesheet = cytoscape.stylesheet()
             'border-color': "#de9640",
 
         })
+    .selector('node[database = "Smedgd"]')
+        .css({
+            'shape': 'triangle',
+            'border-color': "#e4857b",
+
+        })
     .selector('node[database = "Adamidi"]')
         .css({
             'shape': 'circle',
