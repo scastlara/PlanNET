@@ -203,8 +203,19 @@
                 <h2 id="planexp-title">Network</h2>
                 <hr class="planexp-rule">
 
+                <!-- PLANEXP CYTOSCAPE BUTTONS -->
                 <div id="planexp-cyt-buttons">
                         <div id="planexp-cyt-center" class="btn btn-default planexp-cyt-btn"><span class="glyphicon glyphicon-fullscreen"></span> Center</div>
+                        <select id="planexp-cyt-layout" name="planexp-cyt-layout" class="selectpicker" title="Layout" >
+                                <option value="Grid">Grid</option>
+                                <option value="Cola">Cola</option>
+                                <option value="Circle">Circle</option>
+                                <option value="Dagre">Dagre</option>
+                                <option value="Random">Random</option>
+                        </select>
+                        
+                        <div class="vertical-sep"></div>
+
                         <div id="planexp-cyt-edit" class="btn btn-default planexp-cyt-btn"><span class="glyphicon glyphicon-pencil"></span> Edit</div>
                         <label class="btn btn-default planexp-cyt-btn">
                             <span class="glyphicon glyphicon-open"></span>
@@ -293,9 +304,12 @@
                 <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
             </div>
         </div>
-        <div id="map-expression-dialog-body">
-            <div id="cytoscape-editor">
-            
+        <div id="edit-graph-body">
+            <div id="edit-graph-top-spacing"></div>
+
+            <div id="cytoscape-editor"></div>
+            <div id="cytoscape-editor-controls">
+                controls.
             </div>
         </div>
     </div>
@@ -310,10 +324,13 @@
     {% block scripts %}
     <script src="https://cdn.plot.ly/plotly-1.32.0.min.js"></script>
     <script src="{% static 'js/scrollTo.js' %}"></script>
-    <script src="{% static 'js/planexp-cytoscape-definition.js' %}"></script>
     <script src="{% static 'js/FileSaver.js' %}"></script>
+    <script src="{% static 'js/dagre.js' %}"></script>
+    <script src="{% static 'js/cytoscape-dagre.js' %}"></script>
+    <script src="{% static 'js/cytoscape-cola-min.js' %}"></script>
     <script src="{% static 'js/cy-editor.js' %}"></script>
     <script src="{% static 'js/planexp.js' %}"></script>
+    <script src="{% static 'js/planexp-cytoscape-definition.js' %}"></script>
     {% endblock scripts%}
     
 

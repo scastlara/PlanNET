@@ -1,6 +1,6 @@
 /* PlanExp */
 
-var PlanExp = (function() {
+var PlanExp = $(function() {
     var expType = Object.freeze({"Single-Cell":1, "RNA-Seq":2});
     var currentExpType = false;
 
@@ -378,8 +378,14 @@ var PlanExp = (function() {
     **/
    addJsonToCy = function(graphelements) {
         try {
-            cy.add(graphelements);
-            cy.layout({'name': 'cose'});
+            window.cy = cytoscape({
+                style: window.stylesheet,
+                layout: { name: 'cola' },
+                container: document.getElementById('planexp-cyt'),
+                elements: graphelements,
+                ready: function() {}
+            })
+            cy.layout({'name': 'cola'});
         }
         catch(err) {
             displayError("Incorrect graph definition");
@@ -629,6 +635,10 @@ var PlanExp = (function() {
 
      });
 
+     $("#planexp-cyt-layout").on("change", function() {
+        cy.layout({ name: $(this).val().toLowerCase() });
+     });
+
     // NETWORK COLOR
     $(".color-pick").on("click", function() { changeNetworkColor(this) });
 
@@ -637,6 +647,7 @@ var PlanExp = (function() {
         $("#edit-graph-dialog").hide(250);
      });
 
+     // NETWORK
 
 
      

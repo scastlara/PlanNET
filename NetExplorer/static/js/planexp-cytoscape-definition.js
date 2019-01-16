@@ -1,7 +1,12 @@
 // CYTOSCAPE DEFINITION FOR PLANEXP
 
+
+
+// Cytoscape variable definition
+$( document ).ready(function() {
+
 // Cytoscape style definition
-var stylesheet = cytoscape.stylesheet()
+    window.stylesheet = cytoscape.stylesheet()
     .selector('node')
         .css({
             'content': 'data(name)',
@@ -140,12 +145,12 @@ var stylesheet = cytoscape.stylesheet()
             'color': '#ffffff',
 
         });
-
-
-// Cytoscape variable definition
-var cy = cytoscape({
-    style: stylesheet,
-    layout: { name: 'cola' },
-    container: document.getElementById('planexp-cyt'),
-    ready: function() {}
+        
+    window.cy = cytoscape({
+        style: stylesheet,
+        layout: { name: 'random' },
+        container: document.getElementById('planexp-cyt'),
+        ready: function() {}
+    })
 });
+

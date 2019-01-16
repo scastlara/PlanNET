@@ -2288,9 +2288,37 @@ summary:hover { cursor: pointer; opacity: 0.8; }
     font-weight: bold;
 }
 
+#edit-graph-body {
+    display: grid;
+    height: 100%;
+    grid-column-gap: 5px;
+    grid-template-columns: 70% 30%;
+    grid-template-rows: 50px calc(100% - 50px);
+}
+
+#edit-graph-top-spacing {
+    grid-column: 1 / span 2;
+}
+
 #cytoscape-editor {
-    width: 80%;
     background-color: white;
     border: solid 1px grey;
-    height: 80%;
+}
+
+#cytoscape-editor-controls {
+    padding: 10px;
+    padding-top: 50px;
+}
+
+.vertical-sep {
+    display: inline-block;
+    width: 24px; 
+    height: 34px;
+    border-right: solid 1px #adadad;
+    margin-right: 24px;
+}
+
+#planexp-cyt-buttons {
+    display: flex;
+    align-items: center;
 }
