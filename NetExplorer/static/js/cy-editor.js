@@ -55,9 +55,11 @@ class CyEditor {
         });
 
 
-        var clickBehaviour = $("input[value=on]:checked", ".editor-switch").closest("form").attr("id");
+        
 
         this.cytoscape.on("click", "node", function() {
+            var clickBehaviour = $("input[value=on]:checked", ".editor-switch").closest("form").attr("id");
+            alert(clickBehaviour);
             if (clickBehaviour == "editor-interaction-form") {
                 /*
                 // Check if there is a node already selected
@@ -70,17 +72,20 @@ class CyEditor {
                 }
                 */
             } else if (clickBehaviour == "editor-delete-node-form") {
+                alert("REMOVING");
                 this.remove();
             }
         });
 
-        /*
+
         this.cytoscape.on("click", "edge", function() {
+            var clickBehaviour = $("input[value=on]:checked", ".editor-switch").closest("form").attr("id");
             if (clickBehaviour == "editor-delete-interaction-form") {
+                alert("EDGE");
                 this.remove();
             }
         })
-        */
+
 
     }
 
@@ -116,26 +121,6 @@ class CyEditor {
 
         this.cytoscape.add(json_data);
         this.runLayout();
-    }
-
-    
-    addInteraction(node1, node2) {
-        var json_data = {
-            'edges': [
-                {
-                    'data': {
-                        'id': node1.data("name") + "-" + node2.data("name"),
-                        'source': node1.data("name"),
-                        'target': node2.data("name"),
-                        //'colorEDGE': "#019dcc"
-                    }
-                }
-            ]
-        }
-
-        this.cytoscape.add(json_data);
-        this.runLayout();
-
     }
     
 }
