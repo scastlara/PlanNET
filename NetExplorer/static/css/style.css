@@ -2353,6 +2353,18 @@ summary:hover { cursor: pointer; opacity: 0.8; }
     background-color: #d9534f;
 }
 
+.editor-delete-interaction {
+    width: 250px;
+}
+
+.switch-candy.editor-delete-interaction a {
+    background-color: #d9534f;
+}
+
 .editor-switch:hover {
     cursor: pointer;
+}
+
+.edgehandleCanvas {
+    top: 50px !important;
 }

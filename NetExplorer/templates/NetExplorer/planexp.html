@@ -309,7 +309,7 @@
 
             <div id="cytoscape-editor"></div>
             <div id="cytoscape-editor-controls">
-                <h3>Add node:</h3>
+                <h4>Add node:</h4>
                 <input type="text" id="editor-add-node-text" name="editor-add-node-text" placeholder="Enter gene symbol">
                 <input type="text" id="editor-add-node-homolog" name="editor-add-node-homolog" placeholder="Enter homolog symbol">
                 <div class="center-btn">
@@ -318,24 +318,7 @@
 
                 <hr>
 
-                <h3>Add interaction:</h3>
-                <div class="center-btn">
-                    <fieldset>
-                        <div class="switch-toggle switch-candy editor-interaction editor-switch">
-                            <form action="" id="editor-interaction-form">
-                                <input id="radio-add-interaction-off" name="editor-interaction" type="radio" value="off" checked>
-                                <label class="editor-interaction-btn" for="radio-add-interaction-off" onclick="">OFF</label>
-                                <input id="radio-add-interaction-on" value="on" name="editor-interaction" type="radio">
-                                <label class="editor-interaction-btn" for="radio-add-interaction-on" onclick="">ON</label>
-                                <a></a>
-                            </form>
-                        </div>
-                    </fieldset>
-                </div>
-
-                <hr>
-
-                <h3>Delete node:</h3>
+                <h4>Delete node:</h4>
                 <div class="center-btn">
                     <fieldset>
                         <div class="switch-toggle switch-candy editor-delete-node editor-switch">
@@ -349,6 +332,23 @@
                         </div>
                     </fieldset>
                 </div>
+
+                <hr>
+                <h4>Delete interaction:</h4>
+                <div class="center-btn">
+                    <fieldset>
+                        <div class="switch-toggle switch-candy editor-delete-interaction editor-switch">
+                            <form action="" id="editor-delete-interaction-form">
+                                <input id="radio-delete-interaction-off" name="editor-delete-interaction" type="radio" value="off" checked>
+                                <label class="editor-delete-interaction-btn" for="radio-delete-interaction-off" onclick="">OFF</label>
+                                <input id="radio-delete-interaction-on" value="on" name="editor-delete-interaction" type="radio">
+                                <label class="editor-delete-interaction-btn" for="radio-delete-interaction-on" onclick="">ON</label>
+                                <a></a>
+                            </form>
+                        </div>
+                    </fieldset>
+                </div>
+
 
                 
             </div>

@@ -662,6 +662,16 @@ var PlanExp = (function() {
     $("#planexp-cyt-edit").on("click",   function() { 
         $("#edit-graph-dialog").show(250, function() {
             window.theEditor = new CyEditor('cytoscape-editor', cy);
+
+            theEditor.cytoscape.edgehandles({
+                toggleOffOnLeave: true,
+                handleNodes: "node",
+                handleSize: 10,
+                handlePosition:'middle top', // sets the position of the handle in the format of "X-AXIS Y-AXIS" such as "left top", "middle top"
+                edgeType: function() {
+                    return 'flat';
+                }
+            });
         });
     });
 
@@ -680,6 +690,7 @@ var PlanExp = (function() {
             $("input[value=off]", ".editor-switch").not(currInputOff).prop("checked", true);
         }
     });
+
 
 
 
