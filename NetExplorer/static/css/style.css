@@ -2322,3 +2322,37 @@ summary:hover { cursor: pointer; opacity: 0.8; }
     display: flex;
     align-items: center;
 }
+
+.center-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#editor-add-node-btn {
+    display: block;
+    margin-top: 4px;
+    width: 150px;
+}
+
+.editor-interaction {
+    width: 250px;
+}
+
+.switch-candy.editor-interaction a {
+    background-color: #d9534f;
+}
+
+
+
+.editor-delete-node {
+    width: 250px;
+}
+
+.switch-candy.editor-delete-node a {
+    background-color: #d9534f;
+}
+
+.editor-switch:hover {
+    cursor: pointer;
+}

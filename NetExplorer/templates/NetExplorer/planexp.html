@@ -309,7 +309,48 @@
 
             <div id="cytoscape-editor"></div>
             <div id="cytoscape-editor-controls">
-                controls.
+                <h3>Add node:</h3>
+                <input type="text" id="editor-add-node-text" name="editor-add-node-text" placeholder="Enter gene symbol">
+                <input type="text" id="editor-add-node-homolog" name="editor-add-node-homolog" placeholder="Enter homolog symbol">
+                <div class="center-btn">
+                    <div id="editor-add-node-btn" class="btn btn-danger">Add +</div>
+                </div>
+
+                <hr>
+
+                <h3>Add interaction:</h3>
+                <div class="center-btn">
+                    <fieldset>
+                        <div class="switch-toggle switch-candy editor-interaction editor-switch">
+                            <form action="" id="editor-interaction-form">
+                                <input id="radio-add-interaction-off" name="editor-interaction" type="radio" value="off" checked>
+                                <label class="editor-interaction-btn" for="radio-add-interaction-off" onclick="">OFF</label>
+                                <input id="radio-add-interaction-on" value="on" name="editor-interaction" type="radio">
+                                <label class="editor-interaction-btn" for="radio-add-interaction-on" onclick="">ON</label>
+                                <a></a>
+                            </form>
+                        </div>
+                    </fieldset>
+                </div>
+
+                <hr>
+
+                <h3>Delete node:</h3>
+                <div class="center-btn">
+                    <fieldset>
+                        <div class="switch-toggle switch-candy editor-delete-node editor-switch">
+                            <form action="" id="editor-delete-node-form">
+                                <input id="radio-delete-node-off" name="editor-delete-node" type="radio" value="off" checked>
+                                <label class="editor-delete-node-btn" for="radio-delete-node-off" onclick="">OFF</label>
+                                <input id="radio-delete-node-on" value="on" name="editor-delete-node" type="radio">
+                                <label class="editor-delete-node-btn" for="radio-delete-node-on" onclick="">ON</label>
+                                <a></a>
+                            </form>
+                        </div>
+                    </fieldset>
+                </div>
+
+                
             </div>
         </div>
     </div>

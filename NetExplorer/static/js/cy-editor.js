@@ -25,7 +25,12 @@ class CyEditor {
                         "border-color": "data(colorNODE)",
                         "border-width": 2,
                         "min-zoomed-font-size": 2,
-                    });
+                    })
+                .selector('node[database = "Custom"]')
+                    .css({
+                        'background-color': "#E7E7E7"
+                    })    
+                ;
         }
         console.log("Init graph...");
         console.log(cyEditorStyle);
@@ -35,6 +40,7 @@ class CyEditor {
                 elements: JSON.parse(JSON.stringify(cyInput.elements().jsons())),
                 layout: { name: 'preset' },
                 positions: cyInput.nodes().positions(),
+                wheelSensitivity: 0.25,
                 style: cyEditorStyle
             });
             console.log(this.cy);
@@ -42,6 +48,36 @@ class CyEditor {
             console.log(error);   
         }
         
+    }
+
+    addNode(name, homolog) {
+        var error = null;
+        if (!name) {
+            error = "Name must be provided.";
+            return error;
+        }
+
+        var json_data = { 
+            'nodes': [ 
+                {
+                    'data': { 
+                        'id': name, 'name': name, 'database': 'Custom', 'colorNODE': "#404040" 
+                    },
+                }
+            ] 
+        };
+        if (homolog) {
+            json_data.nodes[0].data.homolog = homolog;
+        };
+
+        this.cytoscape.add(json_data);
+        this.cytoscape.layout({
+            name: 'cola',
+            maxSimulationTime: 3000,
+            fit: true,
+            directed: false,
+            padding: 40
+        });
     }
 }
 

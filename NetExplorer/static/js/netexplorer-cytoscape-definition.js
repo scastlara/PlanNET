@@ -153,5 +153,6 @@ var cy = cytoscape({
     style: stylesheet,
     layout: { name: 'preset' },
     container: document.getElementById('cyt'),
+    wheelSensitivity: 0.25,
     ready: function() {}
 });

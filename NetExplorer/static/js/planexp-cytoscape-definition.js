@@ -150,6 +150,7 @@ $( document ).ready(function() {
         style: stylesheet,
         layout: { name: 'random' },
         container: document.getElementById('planexp-cyt'),
+        wheelSensitivity: 0.25,
         ready: function() {}
     })
 });

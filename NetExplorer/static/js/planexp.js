@@ -1,6 +1,6 @@
 /* PlanExp */
 
-var PlanExp = $(function() {
+var PlanExp = (function() {
     var expType = Object.freeze({"Single-Cell":1, "RNA-Seq":2});
     var currentExpType = false;
 
@@ -383,6 +383,7 @@ var PlanExp = $(function() {
                 layout: { name: 'cola' },
                 container: document.getElementById('planexp-cyt'),
                 elements: graphelements,
+                wheelSensitivity: 0.25,
                 ready: function() {}
             })
             cy.layout({'name': 'cola'});
@@ -603,19 +604,22 @@ var PlanExp = $(function() {
     });
 
     // NETWORK BUTTONS
+    // CENTER
     $("#planexp-cyt-center").on("click", function() { cy.center(); cy.fit(); });
-    $("#planexp-cyt-edit").on("click",   function() { 
-        $("#edit-graph-dialog").show(250, function() {
-            window.theEditor = new CyEditor('cytoscape-editor', cy);
-        });
-        
-    });
+
+    
+
+    // EXPORT
     $("#planexp-cyt-export").on("click", function() { 
         var jsonGraph = JSON.stringify(cy.json().elements);
         var blob = new Blob([jsonGraph], {type: "text/plain;charset=utf-8"});
         saveAs(blob, "graph-export.json"); 
     });
+
+    // SAVE
     $("#planexp-cyt-save").on("click",   function() { var graph_png = cy.png(); $('#save-image-link').attr('href', graph_png); });
+    
+    // DELETE
     $("#planexp-cyt-delete").on("click", function() { 
         $( "#dialog-confirm" ).dialog({
             resizable: false,
@@ -635,6 +639,7 @@ var PlanExp = $(function() {
 
      });
 
+     // CHANGE LAYOUT
      $("#planexp-cyt-layout").on("change", function() {
         cy.layout({ name: $(this).val().toLowerCase() });
      });
@@ -648,6 +653,34 @@ var PlanExp = $(function() {
      });
 
      // NETWORK
+
+
+
+    // NETWORK EDITOR
+    // -----------------------------------
+    // EDIT
+    $("#planexp-cyt-edit").on("click",   function() { 
+        $("#edit-graph-dialog").show(250, function() {
+            window.theEditor = new CyEditor('cytoscape-editor', cy);
+        });
+    });
+
+    $("#editor-add-node-btn").on("click", function() {
+        var nodeToAdd = $("#editor-add-node-text").val();
+        var homologToAdd = $("#editor-add-node-homolog").val();
+        theEditor.addNode(nodeToAdd, homologToAdd);
+    });
+
+    $(".editor-switch").on("change", function(){
+        var currValue = $("input:checked", this).val();
+        alert(currValue);
+        if (currValue == "on") {
+            // Change all other editor switches to OFF.
+            var currInputOff = $("input[value=off]", this);
+            $("input[value=off]", ".editor-switch").not(currInputOff).prop("checked", true);
+        }
+    });
+
 
 
      
