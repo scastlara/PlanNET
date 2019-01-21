@@ -28,9 +28,15 @@ $( document ).ready(function() {
         })
     .selector('edge')
         .css({
+            'line-color': '#ddadad',
+            'target-arrow-color': '#ddadad',
+            'width': 3
+        })
+    .selector('edge[colorEDGE]')
+        .css({
             'content': 'data(probability)',
             'font-size': 6,
-            'width': 1,
+            'width': 2,
             'color': "#404040",
             'text-background-opacity': 1,
             'text-background-color': '#F8F8F8',
@@ -42,13 +48,13 @@ $( document ).ready(function() {
             'target-arrow-color': 'data(colorEDGE)',
             "min-zoomed-font-size": 6,
         })
-    .selector('edge[type = "homology"]')
+    .selector('edge[colorEDGE]edge[type = "homology"]')
         .css({
             'line-style': 'dashed',
             'content': '',
             'opacity': 0.8
         })
-    .selector('edge[type = "homologyInt"]')
+    .selector('edge[colorEDGE]edge[type = "homologyInt"]')
         .css({
             'content': '',
             'opacity': 0.8

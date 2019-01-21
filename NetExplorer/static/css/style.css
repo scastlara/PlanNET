@@ -2368,3 +2368,12 @@ summary:hover { cursor: pointer; opacity: 0.8; }
 .edgehandleCanvas {
     top: 50px !important;
 }
+
+#editor-done-btns {
+    position: absolute;
+    bottom: 25px;
+    width: 30%;
+}
+
+#editor-cancel, #editor-save { width: 100px; }
+.space { width: 20px; }

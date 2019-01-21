@@ -25,7 +25,7 @@ var stylesheet = cytoscape.stylesheet()
         .css({
             'content': 'data(probability)',
             'font-size': 6,
-            'width': 1,
+            'width': 2,
             'color': "#404040",
             'text-background-opacity': 1,
             'text-background-color': '#F8F8F8',

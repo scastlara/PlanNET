@@ -691,6 +691,18 @@ var PlanExp = (function() {
         }
     });
 
+    $("#editor-cancel").on("click", function(){
+        $("#edit-graph-dialog").hide();
+    })
+
+    $("#editor-save").on("click", function(){
+        if (theEditor.cytoscape.elements()) {
+            cy.nodes().remove();
+            cy.add( JSON.parse(JSON.stringify(theEditor.cytoscape.elements().jsons())));
+            cy.layout({'name': 'cola'});
+            $("#edit-graph-dialog").hide();
+        }
+    })
 
 
 

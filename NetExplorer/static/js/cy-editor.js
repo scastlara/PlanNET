@@ -12,7 +12,7 @@ class CyEditor {
         if (! stylesheet) {
             console.log("No stylesheet...");
             var cyEditorStyle =  cytoscape.stylesheet()
-                .selector('node')
+                .selector('node[colorNODE]')
                     .css({
                         'content': 'data(name)',
                         'text-valign': 'bottom',
@@ -22,7 +22,7 @@ class CyEditor {
                         'text-outline-width': 2,
                         "text-outline-color": "#FFFFFF",
                         "color": "#404040",
-                        ////"border-color": "data(colorNODE)",
+                        "border-color": "data(colorNODE)",
                         "border-width": 2,
                         "min-zoomed-font-size": 2,
                     })
@@ -37,8 +37,29 @@ class CyEditor {
                     })
                 .selector('edge')
                     .css({
-                        //'line-color': 'data(colorEDGE)',
-                        //'target-arrow-color': 'data(colorEDGE)'
+                        'line-color': '#ddadad',
+                        'target-arrow-color': '#ddadad',
+                        'width': 3
+                    })
+                .selector('edge[colorEDGE]')
+                    .css({
+                        'line-color': 'data(colorEDGE)',
+                        'target-arrow-color': 'data(colorEDGE)',
+                        'width': 2
+                    })
+                .selector('.edgehandles-preview, .edgehandles-ghost-edge')
+                    .css({
+                        'line-color': '#ddadad',
+                        'target-arrow-color': '#ddadad'
+                    })
+                .selector('.edgehandles-hover')
+                    .css({
+                        'background-color': '#ddadad'
+                    })
+                .selector('.edgehandles-handle')
+                    .css({
+                        'background-color': '#ddadad',
+                        'color': '#ddadad'
                     })
                 ;
         }
