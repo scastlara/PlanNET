@@ -6,13 +6,20 @@ $("#search-netexplorer-btn").on("click", function(){
     var terms = searchterm.split(",").map(function(x){ return x.toUpperCase()});
     if (terms.length) {
         cy.nodes().filter(function(eidx, ele) {
-            if (terms.indexOf(ele.data("name").toUpperCase()) !== -1) {
-                return true;
-            } else if (terms.indexOf(ele.data("homolog").toUpperCase()) !== -1 ) {
-                return true;
+            if (ele.data().hasOwnProperty("homolog")) {
+                console.log("HAS PROPERTY");
+                // Contig node
+                if (terms.indexOf(ele.data("name").toUpperCase()) !== -1) {
+                    return true;
+                } else if ( terms.indexOf(ele.data("homolog").toUpperCase()) !== -1 ) {
+                    return true;
+                } else {
+                    return false;
+                }
             } else {
-                return false;
+                console.log("NO PROPERTY");
             }
+            
         }).addClass("highlighted");
     }
 });

@@ -4,7 +4,11 @@
 
 $(document).ready(function(){
 
-defaultSliderValue = 0.7;
+// set initial value of slider
+    defaultSliderValue = 0.7;
+    $('#sl1').slider('setValue', defaultSliderValue);
+
+
 
 // UPLOADING A JSON
     if (upload_json) {
@@ -19,10 +23,10 @@ defaultSliderValue = 0.7;
                 padding: 40
             });
         }
+        filterByConfidence(defaultSliderValue, cy, $('input[name=show-plen]:checked').val());
     }
 
-// set initial value of slider
-$('#sl1').slider('setValue', defaultSliderValue);
+
 
 // --------------------------
 // CHANGE LAYOUT CONTROLS

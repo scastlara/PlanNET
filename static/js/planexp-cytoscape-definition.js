@@ -1,7 +1,12 @@
-// CYTOSCAPE DEFINITION FOR NET EXPLORER
+// CYTOSCAPE DEFINITION FOR PLANEXP
+
+
+
+// Cytoscape variable definition
+$( document ).ready(function() {
 
 // Cytoscape style definition
-var stylesheet = cytoscape.stylesheet()
+    window.stylesheet = cytoscape.stylesheet()
     .selector('node')
         .css({
             'content': 'data(name)',
@@ -14,7 +19,7 @@ var stylesheet = cytoscape.stylesheet()
             "color": "#404040",
             "border-color": "data(colorNODE)",
             "border-width": 2,
-            "min-zoomed-font-size": 2,
+            "min-zoomed-font-size": 4,
         })
     .selector('.important')
         .css({
@@ -22,6 +27,12 @@ var stylesheet = cytoscape.stylesheet()
             "color": "#FFFFFF",
         })
     .selector('edge')
+        .css({
+            'line-color': '#ddadad',
+            'target-arrow-color': '#ddadad',
+            'width': 3
+        })
+    .selector('edge[colorEDGE]')
         .css({
             'content': 'data(probability)',
             'font-size': 6,
@@ -37,21 +48,26 @@ var stylesheet = cytoscape.stylesheet()
             'target-arrow-color': 'data(colorEDGE)',
             "min-zoomed-font-size": 6,
         })
-    .selector('edge[type = "homology"]')
+    .selector('edge[colorEDGE]edge[type = "homology"]')
         .css({
             'line-style': 'dashed',
             'content': '',
             'opacity': 0.8
         })
-    .selector('edge[type = "homologyInt"]')
+    .selector('edge[colorEDGE]edge[type = "homologyInt"]')
         .css({
             'content': '',
             'opacity': 0.8
         })
     .selector('node[database != "Human"]')
         .css({
-            'width': 'mapData(degree, 1, 200, 10, 30)',
-            'height': 'mapData(degree, 1, 200, 10, 30)',
+            'width': '15',
+            'height': '15',
+        })
+    .selector('node[database = "Custom"]')
+        .css({
+            'border-color': "#ddadad",
+
         })
     .selector('node[database = "Smest"]')
         .css({
@@ -93,12 +109,6 @@ var stylesheet = cytoscape.stylesheet()
         .css({
             'shape': 'triangle',
             'border-color': "#de9640",
-
-        })
-    .selector('node[database = "Smedgd"]')
-        .css({
-            'shape': 'triangle',
-            'border-color': "#e4857b",
 
         })
     .selector('node[database = "Adamidi"]')
@@ -146,13 +156,13 @@ var stylesheet = cytoscape.stylesheet()
             'color': '#ffffff',
 
         });
-
-
-// Cytoscape variable definition
-var cy = cytoscape({
-    style: stylesheet,
-    layout: { name: 'preset' },
-    container: document.getElementById('cyt'),
-    wheelSensitivity: 0.25,
-    ready: function() {}
+        
+    window.cy = cytoscape({
+        style: stylesheet,
+        layout: { name: 'random' },
+        container: document.getElementById('planexp-cyt'),
+        wheelSensitivity: 0.25,
+        ready: function() {}
+    })
 });
+
