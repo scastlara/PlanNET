@@ -39,7 +39,7 @@ class Node(object):
             'graph': GraphCytoscape object with the graph of the path
             'score': Score of the given path.
         """
-        query = neoquery.PATH_QUERY % (self.database, self.symbol, target.database, target.symbol, plen)
+        query = neoquery.PATH_QUERY % (self.database, plen, target.database, self.symbol, target.symbol)
         results = GRAPH.run(query)
         results = results.data()
         if results:

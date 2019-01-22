@@ -190,12 +190,11 @@ NAME_WILDCARD = """
 
 # ------------------------------------------------------------------------------
 PATH_QUERY = """
-MATCH (n:%s {symbol:'%s'}), (m:%s {symbol: '%s' })
-MATCH p=( (n)-[r:INTERACT_WITH*%s]-(end) )
-    WHERE end = m
-    RETURN extract(nod IN nodes(p) | nod.symbol)                       AS symbols,
-           extract(rel IN relationships(p) | toInt(rel.path_length))   AS path_length,
-           extract(rel IN relationships(p) | toFloat(rel.int_prob))    AS int_prob
+MATCH p=( (n:%s)-[r:INTERACT_WITH*%s]-(m:%s) )
+WHERE n.symbol = '%s' AND m.symbol = '%s'
+RETURN extract(nod IN nodes(p) | nod.symbol)                       AS symbols,
+       extract(rel IN relationships(p) | toInt(rel.path_length))   AS path_length,
+       extract(rel IN relationships(p) | toFloat(rel.int_prob))    AS int_prob
 """
 
 # ------------------------------------------------------------------------------
