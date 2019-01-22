@@ -64,6 +64,11 @@ $( document ).ready(function() {
             'width': '15',
             'height': '15',
         })
+    .selector('node[database = "Custom"]')
+        .css({
+            'border-color': "#ddadad",
+
+        })
     .selector('node[database = "Smest"]')
         .css({
             'shape': 'circle',

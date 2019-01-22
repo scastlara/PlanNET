@@ -23,12 +23,82 @@ class CyEditor {
                         "text-outline-color": "#FFFFFF",
                         "color": "#404040",
                         "border-color": "data(colorNODE)",
-                        "border-width": 2,
+                        "border-width": 3,
                         "min-zoomed-font-size": 2,
                     })
                 .selector('node[database = "Custom"]')
                     .css({
-                        'background-color': "#FDD4D4",
+                        'border-color': "#ddadad",
+
+                    })
+                .selector('node[database = "Smest"]')
+                    .css({
+                        'shape': 'circle',
+                        'border-color': "#bb4ab7",
+                    })
+                .selector('node[database = "Cthulhu"]')
+                    .css({
+                        'shape': 'circle',
+                        'border-color': "#49b9d1",
+                    })
+                .selector('node[database = "Consolidated"]')
+                    .css({
+                        'shape': 'circle',
+                        'border-color': "#74be47",
+                    })
+                .selector('node[database = "Dresden"]')
+                    .css({
+                        'shape': 'circle',
+                        'border-color': "#ca552d",
+            
+                    })
+                .selector('node[database = "Graveley"]')
+                    .css({
+                        'shape': 'circle',
+                        'border-color': "#4b8c38",
+                    })
+                .selector('node[database = "Illuminaplus"]')
+                    .css({
+                        'shape': 'circle',
+                        'border-color': "#b175e3",
+                    })
+                .selector('node[database = "Newmark"]')
+                    .css({
+                        'shape': 'circle',
+                        'border-color': "#bcb042",
+                    })
+                .selector('node[database = "Smed454"]')
+                    .css({
+                        'shape': 'triangle',
+                        'border-color': "#de9640",
+            
+                    })
+                .selector('node[database = "Smedgd"]')
+                    .css({
+                        'shape': 'triangle',
+                        'border-color': "#e4857b",
+            
+                    })
+                .selector('node[database = "Adamidi"]')
+                    .css({
+                        'shape': 'circle',
+                        'border-color': "#648ad0"
+            
+                    })
+                .selector('node[database = "Blythe"]')
+                    .css({
+                        'shape': 'circle',
+                        'border-color': "#d34057"
+                    })
+                .selector('node[database = "Pearson"]')
+                    .css({
+                        'shape': 'circle',
+                        'border-color': "#5fc38f"
+                    })
+                .selector('node[database = "Gbrna"]')
+                    .css({
+                        'shape': 'circle',
+                        'border-color': "#818941"
                     })
                 .selector(':selected')
                     .css({
