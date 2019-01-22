@@ -18,7 +18,7 @@ from django.http  import HttpResponse
 from wsgiref.util import FileWrapper
 import tempfile
 
-GRAPH     = Graph("http://127.0.0.1:7474/db/data/")
+GRAPH     = Graph("https://192.168.0.2:6473/db/data/", user="neo4j", password="p0tat0+")
 DATABASES = set([
     "Dresden",
     "Consolidated",

@@ -1,3 +1,5 @@
+#!/usr/local/bin/python3
+
 """
 WSGI config for PlaNET project.
 
