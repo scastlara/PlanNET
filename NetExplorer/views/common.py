@@ -33,7 +33,7 @@ import random
 # -----------------------
 # CONSTANTS
 # -----------------------
-BLAST_DB_DIR    = "/home/sergio/code/PlanNET/blast/"
+BLAST_DB_DIR    = "/www/compgen/compgen.bio.ub.edu.2018/doc/PlanNET/blast/"
 MAX_NUMSEQ      = 50
 MAX_CHAR_LENGTH = 25000
 
