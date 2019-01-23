@@ -27,7 +27,7 @@ def blast(request):
 
         # Check length of sequence/number of sequences
         joined_sequences = list()
-        numseq           = 0
+        numseq = 0
         for line in fasta.split("\n"):
             if not line:
                 continue
@@ -43,7 +43,8 @@ def blast(request):
             return render(request, 'NetExplorer/blast.html', {"error_msg": "Query sequence too long (> 25,000 characters)", 'databases':  Dataset.get_allowed_datasets(request.user)})
 
         # Create temp file with the sequences
-        with tempfile.NamedTemporaryFile() as temp:
+        print(fasta)
+        with tempfile.NamedTemporaryFile(mode="w") as temp:
             temp.write(fasta)
             temp.flush()
             # Run BLAST
