@@ -253,7 +253,18 @@
                     {% else %}
                         <h3>No interactions</h3>
                     {% endif %}
-
+        
+        {% if node.database == "Dresden" or  node.database == "Smest"  %}
+            <h2><span class="glyphicon glyphicon-tag"></span> External links</h2>
+            <hr class="h2-sep">
+            <ul>
+                <li>Search on <a href="http://planmine.mpi-cbg.de/planmine/keywordSearchResults.do?searchTerm={{ node.symbol }}&searchSubmit=GO" target="_blank">PlanMine</a>.</li>
+            </ul>
+        {% endif %}
+    
+        <br>
+        <br>
+        <br>
     </body>
 
     <script src="{% static 'js/root.js' %}"></script>
