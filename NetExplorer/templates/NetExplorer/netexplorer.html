@@ -365,6 +365,8 @@
             </div>
             <div id="node-not-found" style="display: none;"><div class="panel panel-danger"><div class="panel-heading node-not-found-err"> </div></div></div>
             <hr>
+        
+            
         <div id="layout-homologs-container">
             <!-- Layout Selection-->
             <div class="dropdown" id="select-layout-container">
@@ -407,6 +409,45 @@
             </div>
             <hr>
         </div>
+
+        <!--- "On click" Behaviour -->
+        <div id="on-click-container">
+                <h3>On Click <a  class="info-tooltip"
+                title="
+                    This option will determine what happens when you click on a node.
+                    <ul>
+                        <li>Card: An information card for the node will appear.</li>
+                        <li>Expand: All the elements interacting with the node will be added to the graph.</li>
+                        <li>Delete: The node and all its interactions will be removed from the graph.</li>
+                    </ul>
+                "><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></a></h3>
+
+                <fieldset>
+                    <div class="switch-toggle switch-candy behaviour-div">
+                        <form action="" id="behaviour-form">
+                            <input id="radio-card" name="behaviour" type="radio" value="card" checked>
+                            <label class="behaviour-btn" for="radio-card" onclick="">Card</label>
+                            <input id="radio-expand" value="expand" name="behaviour" type="radio">
+                            <label class="behaviour-btn" for="radio-expand" onclick="">Expand</label>
+                            <input id="radio-delete" value="delete" name="behaviour" type="radio">
+                            <label class="behaviour-btn" for="radio-delete" onclick="">Delete</label>
+                            <a></a>
+                        </form>
+                    </div>
+                </fieldset>
+
+                <!--<input
+                    class="click-behaviour"
+                    checked type="checkbox"
+                    data-toggle="toggle"
+                    data-on="Show card"
+                    data-off="Expand"
+                    data-onstyle="info"
+                    data-offstyle="success"
+                > -->
+                <hr>
+            </div>
+            <br>
 
         <!-- SHOW CONNECTIONS -->
         <div id="showconnections-container">
@@ -504,43 +545,7 @@
         </div>
 
 
-            <!--- "On click" Behaviour -->
-            <div id="on-click-container">
-                <h3>On Click <a  class="info-tooltip"
-                title="
-                    This option will determine what happens when you click on a node.
-                    <ul>
-                        <li>Card: An information card for the node will appear.</li>
-                        <li>Expand: All the elements interacting with the node will be added to the graph.</li>
-                        <li>Delete: The node and all its interactions will be removed from the graph.</li>
-                    </ul>
-                "><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></a></h3>
-
-                <fieldset>
-                    <div class="switch-toggle switch-candy behaviour-div">
-                        <form action="" id="behaviour-form">
-                            <input id="radio-card" name="behaviour" type="radio" value="card" checked>
-                            <label class="behaviour-btn" for="radio-card" onclick="">Card</label>
-                            <input id="radio-expand" value="expand" name="behaviour" type="radio">
-                            <label class="behaviour-btn" for="radio-expand" onclick="">Expand</label>
-                            <input id="radio-delete" value="delete" name="behaviour" type="radio">
-                            <label class="behaviour-btn" for="radio-delete" onclick="">Delete</label>
-                            <a></a>
-                        </form>
-                    </div>
-                </fieldset>
-
-                <!--<input
-                    class="click-behaviour"
-                    checked type="checkbox"
-                    data-toggle="toggle"
-                    data-on="Show card"
-                    data-off="Expand"
-                    data-onstyle="info"
-                    data-offstyle="success"
-                > -->
-                <hr>
-            </div>
+            
 
             <div id="expression-container">
                 <h3>Show Expression Data <a class="info-tooltip" title="
