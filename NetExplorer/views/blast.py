@@ -48,7 +48,7 @@ def blast(request):
             temp.write(fasta)
             temp.flush()
             # Run BLAST
-            pipe = Popen([request.POST['type'], "-evalue", "1e-10", "-db", BLAST_DB_DIR + database , "-query", temp.name, '-outfmt', '6'], stdout=PIPE, stderr=STDOUT)
+            pipe = Popen([request.POST['type'], "-evalue", "1e-10", "-db", BLAST_DB_DIR + database , "-query", temp.name, '-outfmt', '6'], stdout=PIPE, stderr=STDOUT, encoding='utf8')
             stdout, stderr = pipe.communicate()
             results = [ line.split("\t") for line in stdout.split("\n") if line ]
         if results:
