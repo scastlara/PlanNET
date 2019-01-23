@@ -1493,9 +1493,6 @@ class PlanarianGene(Node):
             # Add 2000 nts for good visualization
             self.start -= 5000
             self.end += 5000
-            print("%s" % str(self.strand))
-            print("START: %s" % str(self.start))
-            print("END: %s" % str(self.end))
         else:
             raise exceptions.NodeNotFound(self.symbol, self.database)
 
