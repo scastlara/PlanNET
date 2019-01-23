@@ -1487,17 +1487,15 @@ class PlanarianGene(Node):
             self.chromosome = results[0]['chromosome']
             self.strand = results[0]['strand']
 
-            if int(self.strand) == -1:
-                # Invert coordinates if gene is reverse strand
-                self.start = int(results[0]['end'])
-                self.end = int(results[0]['start'])
-            else:
-                self.start = int(results[0]['start'])
-                self.end = int(results[0]['end'])
+            self.start = int(results[0]['start'])
+            self.end = int(results[0]['end'])
             
             # Add 2000 nts for good visualization
             self.start -= 5000
             self.end += 5000
+            print("%s" % str(self.strand))
+            print("START: %s" % str(self.start))
+            print("END: %s" % str(self.end))
         else:
             raise exceptions.NodeNotFound(self.symbol, self.database)
 
