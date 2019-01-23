@@ -2377,3 +2377,5 @@ summary:hover { cursor: pointer; opacity: 0.8; }
 
 #editor-cancel, #editor-save { width: 100px; }
 .space { width: 20px; }
+
+summary { display: list-item !important; }
