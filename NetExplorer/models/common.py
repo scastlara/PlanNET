@@ -17,6 +17,10 @@ import os
 from django.http  import HttpResponse
 from wsgiref.util import FileWrapper
 import tempfile
+from django.db.models import Max, Min
+from enum import Enum 
+from NetExplorer.models import colors
+
 
 GRAPH     = Graph("http://127.0.0.1:7474/db/data/")
 DATABASES = set([

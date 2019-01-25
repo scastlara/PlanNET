@@ -1,9 +1,26 @@
 /* PlanExp */
 
 var PlanExp = (function() {
+
     var expType = Object.freeze({"Single-Cell":1, "RNA-Seq":2});
     var currentExpType = false;
+    var csrftoken = getCookie('csrftoken');
 
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie != '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
 
     /**
      * experimentSummary
@@ -439,6 +456,7 @@ var PlanExp = (function() {
         $("#" + $(element).parent().attr("id") + " .color-pick").removeClass("active");
         $(element).addClass("active");
         var colorGradient = $(element).attr('id');
+        
         console.log(colorGradient);
     }
       
@@ -703,6 +721,54 @@ var PlanExp = (function() {
             $("#edit-graph-dialog").hide();
         }
     })
+
+
+    // Color Nodes by One-Sample Condition
+    $("#network-color-conditions").on("change", function(){
+        var expName  = $("#select-experiment").val();
+        var dataset  = $("#select-dataset").val();
+        var condition = $(this).val();
+        condition = condition.replace(/ \(.+\)/, "");
+        var cprofile = $("#one-sample .color-pick.active").attr("id");
+        alert(cprofile);
+
+        var gene_symbols = [];
+        for (var i = 0; i < cy.nodes().length; i++) {
+            gene_symbols.push( cy.nodes()[i].data("id") );
+        }
+        
+
+        $.ajax({
+            type: "POST",
+            url: window.ROOT + "/map_expression_new",
+            data: {
+                'experiment'    : expName,
+                'dataset'       : dataset,
+                'condition'     : condition,
+                'symbols'       : gene_symbols.join(","),
+                'profile'       : cprofile,
+                'csrfmiddlewaretoken': csrftoken
+            },
+            success: function(data) {
+                // Change Exp type
+                console.log("UH YEYEYE");
+                console.log(data);
+                cy.filter(function(i, element){
+                    if ( element.isNode() ) {
+                        if (element.data("name") in data) {
+                            element.css("background-color", data[element.data("id")]);
+                        } else {
+                            element.css("background-color", "#000000");
+                        }
+                    }
+                });
+            },
+            error: function(data) {
+                console.log(data.responseText);
+            }
+        });
+
+    });
 
 
 

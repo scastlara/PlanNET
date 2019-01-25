@@ -83,6 +83,8 @@ class Experiment(models.Model):
             all_allowed = public_experiments | restricted_allowed
             return all_allowed
 
+
+
     def to_json(self):
         '''
         Returns json string with info about experiment
@@ -104,6 +106,9 @@ class Experiment(models.Model):
             )
         json_string = json.dumps(json_dict)
         return json_string
+
+
+
 
     def __str__(self):
        return self.name
@@ -151,9 +156,25 @@ class Condition(models.Model):
     defines_cell_type = models.BooleanField()
     cell_type = models.CharField(max_length=50)
     description = models.TextField()
+    max_expression = None
+    min_expression = 0
 
     def __str__(self):
        return self.name + " - " + self.experiment.name
+    
+            
+    def get_color(self, dataset, value, profile="red"):
+
+        samples = SampleCondition.objects.filter(condition=self).values('sample')
+        if self.max_expression is None:
+            self.max_expression = round(ExpressionAbsolute.objects.filter(
+                experiment=self.experiment,
+                dataset=dataset,
+                sample__in=samples
+            ).aggregate(Max('expression_value'))['expression_value__max'], 3)
+        self.min_expression = 0
+        color_gradient = colors.ColorGenerator(self.max_expression, self.min_expression, profile)
+        return color_gradient.map_color(value)
 
 
 # ------------------------------------------------------------------------------
@@ -197,6 +218,7 @@ class ExpressionAbsolute(models.Model):
         name_str += str(self.expression_value) + " "
         name_str += self.units
         return name_str
+
     
     
 class CellPlotPosition(models.Model):
