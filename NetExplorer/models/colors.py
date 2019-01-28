@@ -24,6 +24,7 @@ class ColorGenerator(object):
         thecolor = "#000000"
         if value != "NA":
             normval = int(self.__normalize(value))
+            print(normval)
             thecolor = str(self.profile.value[normval])
         return thecolor
     
@@ -39,6 +40,6 @@ class ColorGenerator(object):
             normval = float(0)
         else:
             normval = (x - self.min) / (self.max - self.min)
-        return normval * 50
+        return normval * 49
     
 

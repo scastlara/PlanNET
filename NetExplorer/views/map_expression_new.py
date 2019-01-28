@@ -29,7 +29,7 @@ def map_expression_new(request):
                 if len(expressions) > 1:
                     expression = mean([ exp.expression_value for exp in expressions ])
                 else:
-                    expression = expressions.expression_value
+                    expression = expressions[0].expression_value
             else:
                 expression = "NA"
             colormap[symbol] = condition.get_color(dataset, expression, profile)

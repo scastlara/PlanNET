@@ -455,11 +455,63 @@ var PlanExp = (function() {
     changeNetworkColor = function(element) {
         $("#" + $(element).parent().attr("id") + " .color-pick").removeClass("active");
         $(element).addClass("active");
-        var colorGradient = $(element).attr('id');
-        
-        console.log(colorGradient);
     }
       
+
+    /**
+     * colorOneCondition
+     *   Summary:
+     *     Maps expression of one condition to the network
+     *   Arguments:
+     *     - expName: str, experiment id.
+     *     - dataset:  str, dataset id.
+     *     - condition: str, condition to map.
+     *     - gene_symbols: list, gene symbols/identifiers.
+     *     - cprofile: str, color profile.
+     *   Returns:
+     *     - Nothing
+     */
+    colorOneCondition = function() {
+        var expName  = $("#select-experiment").val();
+        var dataset  = $("#select-dataset").val();
+        var condition = $("#network-color-conditions").val();
+        condition = condition.replace(/ \(.+\)/, "");
+        var cprofile = $("#one-sample .color-pick.active").attr("id");
+        var gene_symbols = [];
+        for (var i = 0; i < cy.nodes().length; i++) {
+            gene_symbols.push( cy.nodes()[i].data("id") );
+        }
+        gene_symbols = gene_symbols.join(",");
+
+        $.ajax({
+            type: "POST",
+            url: window.ROOT + "/map_expression_new",
+            data: {
+                'experiment'    : expName,
+                'dataset'       : dataset,
+                'condition'     : condition,
+                'symbols'       : gene_symbols,
+                'profile'       : cprofile,
+                'csrfmiddlewaretoken': csrftoken
+            },
+            success: function(data) {
+                // Change Exp type
+                cy.filter(function(i, element){
+                    if ( element.isNode() ) {
+                        if (element.data("name") in data) {
+                            element.css("background-color", data[element.data("id")]);
+                        } else {
+                            element.css("background-color", "#000000");
+                        }
+                    }
+                });
+            },
+            error: function(data) {
+                console.log(data.responseText);
+            }
+        });
+    }
+
 
     //----------------------------------------------------
     /* BUTTONS AND EVENTS */
@@ -663,7 +715,10 @@ var PlanExp = (function() {
      });
 
     // NETWORK COLOR
-    $(".color-pick").on("click", function() { changeNetworkColor(this) });
+    $(".color-pick").on("click", function() { 
+        changeNetworkColor(this);
+        colorOneCondition();
+    });
 
     // EDIT GRAPH DIALOG
      $("#close-edit-graph").on("click", function(){
@@ -725,51 +780,8 @@ var PlanExp = (function() {
 
     // Color Nodes by One-Sample Condition
     $("#network-color-conditions").on("change", function(){
-        var expName  = $("#select-experiment").val();
-        var dataset  = $("#select-dataset").val();
-        var condition = $(this).val();
-        condition = condition.replace(/ \(.+\)/, "");
-        var cprofile = $("#one-sample .color-pick.active").attr("id");
-        alert(cprofile);
-
-        var gene_symbols = [];
-        for (var i = 0; i < cy.nodes().length; i++) {
-            gene_symbols.push( cy.nodes()[i].data("id") );
-        }
-        
-
-        $.ajax({
-            type: "POST",
-            url: window.ROOT + "/map_expression_new",
-            data: {
-                'experiment'    : expName,
-                'dataset'       : dataset,
-                'condition'     : condition,
-                'symbols'       : gene_symbols.join(","),
-                'profile'       : cprofile,
-                'csrfmiddlewaretoken': csrftoken
-            },
-            success: function(data) {
-                // Change Exp type
-                console.log("UH YEYEYE");
-                console.log(data);
-                cy.filter(function(i, element){
-                    if ( element.isNode() ) {
-                        if (element.data("name") in data) {
-                            element.css("background-color", data[element.data("id")]);
-                        } else {
-                            element.css("background-color", "#000000");
-                        }
-                    }
-                });
-            },
-            error: function(data) {
-                console.log(data.responseText);
-            }
-        });
-
+        colorOneCondition();
     });
-
 
 
      
