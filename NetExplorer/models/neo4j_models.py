@@ -1518,11 +1518,13 @@ class PlanarianGene(Node):
         '''
         Retrieves the longest transcript of preferred_database.
         '''
-        best = self.get_planarian_contigs(PlanarianGene.preferred_database)
+        best = None
+        try:
+            best = self.get_planarian_contigs(PlanarianGene.preferred_database)
+        except Exception:
+            pass
         if best:
             best = best[0]
-        else:
-            best = None
         return best
 
 
