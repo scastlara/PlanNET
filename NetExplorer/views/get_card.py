@@ -27,15 +27,16 @@ def get_card(request, symbol=None, database=None):
             card_node = gsearch.get_planarian_genes()[0]
             contigs = card_node.get_planarian_contigs()
             best_contig = card_node.get_best_transcript()
-            best_contig.get_homolog()
-            best_contig.get_neighbours()
-            best_contig.get_geneontology()
-            if best_contig.homolog:
-                best_contig.homolog.human.get_summary()
-            nodes, edges = best_contig.get_graphelements()
             graph = GraphCytoscape()
-            graph.add_elements(nodes)
-            graph.add_elements(edges)
+            if best_contig:
+                best_contig.get_homolog()
+                best_contig.get_neighbours()
+                best_contig.get_geneontology()
+                if best_contig.homolog:
+                    best_contig.homolog.human.get_summary()
+                nodes, edges = best_contig.get_graphelements()
+                graph.add_elements(nodes)
+                graph.add_elements(edges)
         else:
             template = "NetExplorer/contig_card.html"
             card_node = gsearch.get_planarian_contigs()[0]

@@ -13,7 +13,7 @@ urlpatterns = [
     url(r'^info_card',     views.get_card,        name="get_card"),
     url(r'^blast',         views.blast,           name="blast"),
     url(r'^path_finder', views.path_finder,       name="path_finder"),
-    url(r'^map_expression', views.map_expression, name="map_expression"),
+    url(r'^map_expression$', views.map_expression, name="map_expression"),
     url(r'^tutorial', views.tutorial,             name="tutorial"),
     url(r'^show_connections', views.show_connections, name="show_connections"),
     url(r'^downloads', views.downloads, name="downloads"),
@@ -30,4 +30,5 @@ urlpatterns = [
     url(r'^plot_gene_expression', views.plot_gene_expression, name="plot_gene_expression"),
     url(r'^plot_tsne', views.plot_tsne, name="plot_tsne"),
     url(r'^experiment_condition_types', views.experiment_condition_types, name="experiment_condition_types"),
+    url(r'^map_expression_new', views.map_expression_new, name="map_expression_new")
 ]
