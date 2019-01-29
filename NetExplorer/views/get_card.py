@@ -26,6 +26,7 @@ def get_card(request, symbol=None, database=None):
             template = "NetExplorer/smesgene_card.html"
             card_node = gsearch.get_planarian_genes()[0]
             contigs = card_node.get_planarian_contigs()
+            print("YP")
             best_contig = card_node.get_best_transcript()
             graph = GraphCytoscape()
             if best_contig:
@@ -49,6 +50,7 @@ def get_card(request, symbol=None, database=None):
             graph.add_elements(nodes)
             graph.add_elements(edges)
     except Exception as err:
+        print(err)
         return render_to_response('NetExplorer/not_interactome.html')
     if database == "Human":
        response = {

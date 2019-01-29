@@ -179,6 +179,36 @@ h1, h2, h3, h4, h5, h6 {
 
 }
 
+.navbar-nav li {
+    line-height: 45px;
+}
+
+#quicksearch {
+    display: inline;
+    float: left;
+    height: 35px;
+    padding: 0 !important;
+    margin-right: 20px;
+}
+
+@media only screen and (max-width: 1226px) {
+    .navbar-plannet .navbar-right {
+        float: left !important;
+    }
+
+}
+
+@media only screen and (max-width: 768px) {
+    #quicksearch {
+        float: none;
+    }
+    #navbar-quicksearch {
+        line-height: 0px;
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+}
+
 
 
 /* PANELS */
@@ -298,6 +328,7 @@ h1, h2, h3, h4, h5, h6 {
     margin-bottom: 25px !important;
     border-width: 4px !important;
     color:#31708f;
+    height: 100px;
 }
 
 .small-searchpanel .panel-body { background-color: white; }
@@ -370,6 +401,42 @@ h1, h2, h3, h4, h5, h6 {
     font-size: 16px;
     vertical-align: middle;
     line-height: 40px;
+}
+
+#genesearch-results {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+
+#genesearch-results-summary {
+    flex-grow: 2;
+    padding: 25px;
+}
+
+#genesearch-results-list {
+    flex-grow: 8;
+    padding: 50px;
+    padding-top: 0px;
+}
+
+
+
+.filter-results.bigger {
+    font-size: 20px !important;
+    line-height: 48px !important;
+}
+
+#results-summary-list li {
+    font-size: 16px;
+    line-height: 32px;
+    padding-left: 8px;
+}
+
+#results-summary-list li:hover {
+    background-color: #E7E7E7;
+    cursor: pointer;
 }
 
 
@@ -2234,6 +2301,7 @@ kbd {
 
 .human-select { background-color: #6785d0 !important; padding: 6px 6px !important; }
 .gene-select { background-color: #c45ca2 !important; padding: 6px 6px !important; }
+.all-select { background-color: #E7E7E7 !important; padding: 6px 6px !important; color: #777 !important; }
 .human-color {color: #6785d0; }
 .jbrowser-subtitle { float:right; }
 

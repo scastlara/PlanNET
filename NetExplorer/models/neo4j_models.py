@@ -445,7 +445,7 @@ class HumanNode(Node):
         results  = results.data()
         if results:
             for row in results:
-                database = row['database'][0]
+                database = [ database for database in row['database'] if database != "PlanarianContig" ][0]
                 if database not in database_to_look:
                     continue
                 try:
@@ -847,6 +847,8 @@ class PlanarianContig(Node):
     def __eq__(self, other):
         return (self.symbol, self.database, self.important) == (other.symbol, other.database, other.important)
 
+    def __str__(self):
+        return "%s:%s" % (self.database, self.symbol)
 
 # ------------------------------------------------------------------------------
 class oldExperiment(object):
@@ -1046,10 +1048,11 @@ class GraphCytoscape(object):
                     'bioproc_nto' : round(float(row['bioproc_nto']), 3),
                     'dom_int_sc'  : round(float(row['dom_int_sc']), 3)
                 }
+                database = [ database for database in row['database'] if database != "PlanarianContig" ][0]
                 newinteraction = PredInteraction(
-                    database      = row['database'][0],
+                    database      = database,
                     source_symbol = row['nsymbol'],
-                    target        = PlanarianContig(row['msymbol'], row['database'][0], query=False),
+                    target        = PlanarianContig(row['msymbol'], database, query=False),
                     parameters    = parameters
                 )
                 self.add_interaction(newinteraction)
@@ -1074,6 +1077,8 @@ class GraphCytoscape(object):
                     node_objects = gene_search.get_human_genes()
                 elif database == "Smesgene":
                     node_objects = gene_search.get_planarian_genes()
+                elif database == "ALL":
+                    node_objects = gene_search.quick_search()
                 else:
                     node_objects = gene_search.get_planarian_contigs()
                 self.add_elements(node_objects)
@@ -1136,6 +1141,7 @@ class ExperimentList(object):
                 if row['identifier'] not in self.datasets:
                     self.datasets[ row['identifier'] ] = set()
                 for item in row['datasets']:
+                    item = [ it for it in item if it != "PlanarianContig" ]
                     self.datasets[ row['identifier'] ].update(item)
             for exp in self.samples:
                 self.samples[exp] = sorted(self.samples[exp])
@@ -1438,6 +1444,29 @@ class GeneSearch(object):
             human_nodes = GeneOntology(self.sterm, human=True).human_nodes
         return human_nodes
 
+    def quick_search(self):
+        '''
+        Retrieves given symbol in all databases:
+            Human + PlanarianGene + PlanarianContigs
+        '''
+        all_results = list()
+
+        # Get Planarian Genes
+        all_results.extend(self.get_planarian_genes())
+
+        # Get Planarian Contigs
+        datasets = Dataset.objects.all()
+        for dataset in datasets:
+            self.database = dataset.name
+            contigs = self.get_planarian_contigs()
+            if contigs:
+                all_results.extend(contigs)
+        self.database = "ALL"
+
+        return all_results
+
+
+
 
 class PlanarianGene(Node):
     """
@@ -1550,7 +1579,8 @@ class PlanarianGene(Node):
         if results:
             for contig in results:
                 if 'database' in contig:
-                    database = contig['database'][0]
+                    database = [ database for database in contig['database'] if database != "PlanarianContig"]
+                    database = database[0]
                 prednode = PlanarianContig(contig['symbol'], database, query=False)
                 prednode.length = contig['length']
                 prednodes.append(prednode)

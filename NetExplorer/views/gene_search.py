@@ -1,5 +1,42 @@
 from .common import *
 
+def sort_results(datasets, results):
+    '''
+    Sorts gene/node results by:
+        1- Dataset (Smesgene - Human - AllContigs by year)
+        2- Gene Name.
+        3- Contig/Gene symbol.
+    '''
+    dataset_order = [ dat.name for dat in datasets ]
+    dataset_order.insert(0, 'Smesgene')
+    dataset_order.insert(1, 'Human')
+    sorted_results = sorted(
+        list(results.nodes), 
+        key= lambda a: (dataset_order.index(a.database), a.name, a.symbol) if hasattr(a, 'name') and a.name else (dataset_order.index(a.database), "a", a.symbol)
+    )
+    return sorted_results
+
+def get_search_summary(datasets, results):
+    dataset_order = [ dat.name for dat in datasets ]
+    dataset_order.insert(0, 'Smesgene')
+    dataset_order.insert(1, 'Human')
+
+    summary = dict()
+    for node in results:
+        if node.database not in summary:
+            summary[node.database] = 1
+        else:
+            summary[node.database] += 1
+    sorted_summary = list()
+    all_results = 0
+    for dataset in dataset_order:
+        if dataset in summary:
+            sorted_summary.append((dataset, summary[dataset]))
+            all_results += summary[dataset]
+    sorted_summary.insert(0, ("All results", all_results))
+    return sorted_summary
+
+
 def gene_search(request):
     '''
     This is the text-based database search function.
@@ -27,21 +64,21 @@ def gene_search(request):
         if symbol_is_empty(symbols) is False:
             # If there is a search term
             symbols = symbols.split(",")
-            if database is None:
-                # No database selected
-                response['search_error'] = 2
-                response['res'] = nodes
+            if not database:
+                database = "ALL"
+                response['database'] = database
+
+            # Valid search (symbols + database)
+            response['valid_query'] = True
+            nodes_graph = GraphCytoscape()
+            try:
+                nodes_graph.new_nodes(symbols, database)
+            except Exception as err:
+                print(err)
+                logging.info("Node not found.")
+            if not nodes_graph:
+                response['search_error'] = 1
             else:
-                # Valid search (symbols + database)
-                response['valid_query'] = True
-                nodes_graph = GraphCytoscape()
-                try:
-                    nodes_graph.new_nodes(symbols, database)
-                except Exception as err:
-                    print(err)
-                    logging.info("Node not found.")
-                if not nodes_graph:
-                    response['search_error'] = 1
-                else:
-                    response['res'] = sorted(list(nodes_graph.nodes), key= lambda x: (x.name, x.symbol) if hasattr(x, 'name') and x.name else ("a", x.symbol)  )
+                response['res'] = sort_results(response['databases'], nodes_graph)
+                response['summary'] = get_search_summary(response['databases'], response['res'])
     return render(request, 'NetExplorer/gene_search.html', response)
