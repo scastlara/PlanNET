@@ -1452,15 +1452,19 @@ class GeneSearch(object):
         all_results = list()
 
         # Get Planarian Genes
+        self.database = "Smesgene"
         all_results.extend(self.get_planarian_genes())
 
         # Get Planarian Contigs
         datasets = Dataset.objects.all()
         for dataset in datasets:
-            self.database = dataset.name
-            contigs = self.get_planarian_contigs()
-            if contigs:
-                all_results.extend(contigs)
+            try:
+                self.database = dataset.name
+                contigs = self.get_planarian_contigs()
+                if contigs:
+                    all_results.extend(contigs)
+            except exceptions.NodeNotFound:
+                continue
         self.database = "ALL"
 
         return all_results

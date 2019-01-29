@@ -8,11 +8,15 @@ def sort_results(datasets, results):
         3- Contig/Gene symbol.
     Also removes results from not allowed datasets
     '''
+    dataset_names = set([ dat.name for dat in datasets ])
+    dataset_names.add("Smesgene")
+    dataset_names.add("Human")
+
     dataset_order = [ dat.name for dat in datasets ]
     dataset_order.insert(0, 'Smesgene')
     dataset_order.insert(1, 'Human')
     # Remove results from not allowed datasets
-    results = [ res for res in list(results.nodes) if res.database in set([ dat.name for dat in datasets ]) ]
+    results = [ res for res in list(results.nodes) if res.database in dataset_names ]
     # Sort the thing
     sorted_results = sorted(
         results, 
@@ -78,7 +82,6 @@ def gene_search(request):
             try:
                 nodes_graph.new_nodes(symbols, database)
             except Exception as err:
-                print(err)
                 logging.info("Node not found.")
             if not nodes_graph:
                 response['search_error'] = 1
