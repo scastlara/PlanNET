@@ -36,6 +36,8 @@
                          name="genesymbol" placeholder="Enter Symbol(s)">
 
                         <select id="genesearch-database" name="database" class="selectpicker" title="Select Database" data-size="8">
+                            <option selected data-content="<span class='badge badge-success all-select'>All Databases</span>" value="ALL">All</option>
+                            <option data-divider="true"></option>
                             <option data-content="<span class='badge badge-success human-select'>Human</span>" value="Human">Human</option>
                             <option data-content="<span class='badge badge-success gene-select'>Planarian Gene</span>" value="Smesgene">Planarian Gene</option>
                             <option data-divider="true"></option>
@@ -49,9 +51,9 @@
                 <br>
                 <div class="genesearch-minitutorial">
                     <ul>
-                        <li>Input query protein symbols or PFAM identifiers and select the desired database to search.</li>
+                        <li>You can search on planarian databases using contig identifiers or Human protein symbols.</li>
+                        <li>Alternatively, you can also use PFAM domain accessions and GO identifiers.</li>
                         <li>Search multiple symbols separating them by commas: THOC2,NCBP1</li>
-                        <li>You can search on planarian databases using contig identifiers or Human symbols.</li>
                         <li>Use wild cards when searching human symbols (on any database), like so: HOX<strong>*</strong></li>
                     </ul>
                 </div>
@@ -92,42 +94,64 @@
 
         <h2>Results:</h2>
 
-        <!-- Small searchpanel for each gene in results -->
-        {% for node in res %}
-            <div id="{{ node.symbol }}"
-                 class="panel panel-genesearch small-searchpanel card-trigger"
-                 title="Click to view info card"
-                 target="{{ node.symbol }}"
-                 targetDB="{{ node.database }}">
+        <div id="genesearch-results">
 
-                <div class="panel-heading">
-                    <div class="symbol-small-searchpanel">
-                        {{ node.symbol }}
-                        {% if node.name %}
-                            - <span class="bg-official-small"><b>{{ node.name }}</b></span>
+            <div id="genesearch-results-summary">
+                <ul id="results-summary-list" class="list-unstyled">
+                    {% for res_summary in summary %}
+                        {% if forloop.first %}
+                            <li database="{{ res_summary.0 }}" class="filter-results bigger">{{ res_summary.0 }} ({{ res_summary.1 }})</li>      
+                        {% else %}  
+                            <li database="{{ res_summary.0 }}" class="filter-results"><img class='legend-db' src='{% static 'Images/' %}legend-{{ res_summary.0 }}.png'>{{ res_summary.0 }} ({{ res_summary.1 }})</li>
+
                         {% endif %}
-                    </div>
-                    <div class="database-small-searchpanel">
-                        <img class='legend-db' src="{% static 'Images/' %}legend-{{ node.database }}.png"/>
-                        {% if node.database == "Smesgene" %}
-                            Planarian Gene
-                        {% else %}
-                            {{ node.database }}
-                        {% endif %}
-                    </div>
-                </div>
-                {% if node.database != "Human" %}
-                    <div class="panel-body app-panel">
-                            <p>Human Homolog:
-                            {% if node.homolog %}
-                                <span class="bg-homolog">{{ node.homolog.human.symbol }}</span></p>
-                            {% else %}
-                                None
-                            {% endif %}
-                    </div>
-                {% endif %}
+
+                    {% endfor %}
+                </ul>
             </div>
-        {% endfor %}
+
+            <div id="genesearch-results-list">
+                <!-- Small searchpanel for each gene in results -->
+                {% for node in res %}
+                <div id="{{ node.symbol }}"
+                    class="panel panel-genesearch small-searchpanel card-trigger"
+                    title="Click to view info card"
+                    target="{{ node.symbol }}"
+                    targetDB="{{ node.database }}">
+
+                    <div class="panel-heading">
+                        <div class="symbol-small-searchpanel">
+                            {{ node.symbol }}
+                            {% if node.name %}
+                                - <span class="bg-official-small"><b>{{ node.name }}</b></span>
+                            {% endif %}
+                        </div>
+                        <div class="database-small-searchpanel">
+                            <img class='legend-db' src="{% static 'Images/' %}legend-{{ node.database }}.png"/>
+                            {% if node.database == "Smesgene" %}
+                                Planarian Gene
+                            {% else %}
+                                {{ node.database }}
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% if node.database != "Human" %}
+                        <div class="panel-body app-panel">
+                                <p>Human Homolog:
+                                {% if node.homolog %}
+                                    <span class="bg-homolog">{{ node.homolog.human.symbol }}</span></p>
+                                {% else %}
+                                    None
+                                {% endif %}
+                        </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+
+            </div>
+
+           
+        </div>
 
         <!-- This will be filled by the JS code in base.html with an onclick
              event triggered by small-searchpanel -->
@@ -186,6 +210,7 @@
 {% block scripts %}
     <script src="{% static 'js/get-card.js' %}"></script>
     <script src="{% static 'js/searchpanel.js' %}"></script>
+    <script src="{% static 'js/genesearch-filter.js' %}"></script>
     <script>
         $( function() {
             $( ".info-tooltip" ).tooltip({

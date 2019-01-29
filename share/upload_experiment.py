@@ -228,13 +228,13 @@ sys.stderr.write("Getting Dataset from database\n")
 dataset = get_dataset(opts, cursor)
 
 sys.stderr.write("Uploading Absolute expression\n")
-upload_expression_absolute(opts, experiment, dataset)
+#upload_expression_absolute(opts, experiment, dataset)
 
 sys.stderr.write("Uploading relative expression\n")
 upload_expression_relative(opts, experiment, dataset)
 
 sys.stderr.write("Uploading cell plot positions (t-SNE)\n")
-upload_tsne(opts, experiment, dataset)
+#upload_tsne(opts, experiment, dataset)
 
 sys.stderr.write("Committing to database\n")
 db.commit()
