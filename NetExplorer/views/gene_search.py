@@ -6,12 +6,16 @@ def sort_results(datasets, results):
         1- Dataset (Smesgene - Human - AllContigs by year)
         2- Gene Name.
         3- Contig/Gene symbol.
+    Also removes results from not allowed datasets
     '''
     dataset_order = [ dat.name for dat in datasets ]
     dataset_order.insert(0, 'Smesgene')
     dataset_order.insert(1, 'Human')
+    # Remove results from not allowed datasets
+    results = [ res for res in list(results.nodes) if res.database in set([ dat.name for dat in datasets ]) ]
+    # Sort the thing
     sorted_results = sorted(
-        list(results.nodes), 
+        results, 
         key= lambda a: (dataset_order.index(a.database), a.name, a.symbol) if hasattr(a, 'name') and a.name else (dataset_order.index(a.database), "a", a.symbol)
     )
     return sorted_results
