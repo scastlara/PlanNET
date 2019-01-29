@@ -73,7 +73,25 @@
                             <li id="navbar-downloads"><a href="{% url 'downloads' %}">Downloads</a></li>
                             <li id="navbar-about"><a href="{% url 'about' %}">About</a></li>
                         </ul>
+                        
                         <ul class="nav navbar-nav navbar-right">
+                            <li id="navbar-quicksearch">
+                                <form id="quicksearch" class= "form-inline" method="GET" action="{% url 'gene_search' %}">
+                                    {% csrf_token %}
+                                    <div id="genesearch-form-quick" class="form-group">
+                                        <input id="genesearch-genesymbol-quick"
+                                        type="text" class="form-control" 
+                                        name="genesymbol" placeholder="Quick Search e.g.: WNT*">
+                
+                                        <select id="genesearch-database" name="database" title="Select Database" data-size="8" hidden>
+                                            <option selected value="ALL">All</option>
+                                        </select>
+                                        <button type="submit" value=" Send" class="btn btn-info" id="submit">Go</button>
+                                    </div>
+                                </form>
+                            </li>
+                            
+
                             {% if user.is_authenticated %}
                                 <li id="navbar-login"><a href="{% url 'account' %}"><span class="glyphicon glyphicon-user"></span> {{ user.username }}</a></li>
                                 <li id="navbar-logout"><a href="{% url 'logout' %}"><span class="glyphicon glyphicon-log-out"></span> Log out</a></li>
