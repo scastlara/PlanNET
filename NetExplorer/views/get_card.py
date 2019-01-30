@@ -72,6 +72,8 @@ def get_card(request, symbol=None, database=None):
         }
     
     if request.is_ajax():
-        return render(request, template, response)
+        response['base_template'] = 'NetExplorer/null.html'
     else:
-        return render(request, 'NetExplorer/gene_card_fullscreen.html', response)
+        response['base_template'] = 'NetExplorer/base.html'
+    
+    return render(request, template, response)
