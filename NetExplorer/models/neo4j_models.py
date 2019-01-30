@@ -1415,7 +1415,9 @@ class GeneSearch(object):
         elif self.sterm_database == "Smesgene":
             planarian_genes.append(PlanarianGene(self.sterm, self.sterm_database))
         elif self.sterm_database == "GO":
-            pass
+            planarian_nodes = GeneOntology(self.sterm).get_planarian_contigs(PlanarianGene.preferred_database)
+            for contig in planarian_nodes:
+                planarian_genes.extend(contig.get_genes())
         else:
             # Transcriptome database
             planarian_node = PlanarianContig(self.sterm, self.sterm_database)
