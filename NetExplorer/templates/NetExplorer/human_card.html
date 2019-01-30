@@ -1,3 +1,6 @@
+{% extends base_template %}
+
+{% block content %}
 {% load static %}
 <link rel="stylesheet" href="{% static 'css/jquery-data-tables.css' %}">
 
@@ -97,80 +100,108 @@
 
 </body>
 
+{% endblock content %}
+
+
+{% block scripts %}
 <script src="{% static 'js/root.js' %}"></script>
 <script src="{% static 'js/jquery-data-tables-min.js' %}"></script>
-<script>
-    $('.card-link').click(function() {
-        var card_data = {
-            div_id      : $(this).closest('.card-overlay').attr("id"),
-            current     : $(this).attr("current"),
-            currentDB   : $(this).attr("currentDB"),
-            target      : $(this).attr("target"),
-            targetDB    : $(this).attr("targetDB"),
-            csrfmiddlewaretoken: '{{ csrf_token }}'
-        }
-        var new_url = window.location.href;
-        history.pushState(card_data, null, new_url);
-        
-        // Load Get request html on current card-overlay
-        $.ajax({
-            type: "GET",
-            context: this, //this makes the this variable visible inside the success
-            url: "{% url 'get_card' %}",
-            cache: true,
-            data: {
-                'target'    : card_data['target'],
-                'current'   : card_data['current'],
-                'targetDB'  : card_data['targetDB'],
-                'currentDB' : card_data['currentDB'],
-                'csrfmiddlewaretoken': '{{ csrf_token }}'
-            },
-            success : function(data) {
-                $(this).closest('.card-overlay').html(data)
-                if (! $.fn.DataTable.isDataTable( '#int-table' )) {
-                    $(document).ready(function(){
-                        $('#int-table').DataTable({
-                            "order": [[ 1, "desc" ]]
-                        });
-                    });
-                }
+
+{% if base_template == "NetExplorer/null.html" %}
+    <script>
+        $('.card-link').click(function() {
+            var card_data = {
+                div_id      : $(this).closest('.card-overlay').attr("id"),
+                current     : $(this).attr("current"),
+                currentDB   : $(this).attr("currentDB"),
+                target      : $(this).attr("target"),
+                targetDB    : $(this).attr("targetDB"),
+                csrfmiddlewaretoken: '{{ csrf_token }}'
             }
-        });
-        
-        
-    });
-    
-    // This will check if the user is pressing the "back" button on his/her
-    // browser. If that's the case, it will update the content of the "visible"
-    // card-div.
-    window.onpopstate = function(event) {
-        if (event.state != null){
+            var new_url = window.location.href;
+            history.pushState(card_data, null, new_url);
+            
+            // Load Get request html on current card-overlay
             $.ajax({
                 type: "GET",
                 context: this, //this makes the this variable visible inside the success
                 url: "{% url 'get_card' %}",
                 cache: true,
                 data: {
-                    'target'    : event.state['target'],
-                    'targetDB'  : event.state['targetDB'],
+                    'target'    : card_data['target'],
+                    'current'   : card_data['current'],
+                    'targetDB'  : card_data['targetDB'],
+                    'currentDB' : card_data['currentDB'],
                     'csrfmiddlewaretoken': '{{ csrf_token }}'
                 },
                 success : function(data) {
-                    if ( $(".card-overlay").is(':hidden')  ){
-                        $('[id="card-overlay"]').slideToggle(450);
-                        $('.close-overlay').slideToggle(450);
-                        $('.full-screen-card').slideToggle(450);
+                    $(this).closest('.card-overlay').html(data)
+                    if (! $.fn.DataTable.isDataTable( '#int-table' )) {
+                        $(document).ready(function(){
+                            $('#int-table').DataTable({
+                                "order": [[ 1, "desc" ]]
+                            });
+                        });
                     }
-                    $('.card-overlay:visible').html(data)
                 }
             });
-        } else {
-            $('.card-overlay').hide(250);
-            $('.close-overlay').hide();
-            $('.full-screen-card').hide();
-        }
-    };
-    
-</script>
+            
+            
+        });
+        
+        // This will check if the user is pressing the "back" button on his/her
+        // browser. If that's the case, it will update the content of the "visible"
+        // card-div.
+        window.onpopstate = function(event) {
+            if (event.state != null){
+                $.ajax({
+                    type: "GET",
+                    context: this, //this makes the this variable visible inside the success
+                    url: "{% url 'get_card' %}",
+                    cache: true,
+                    data: {
+                        'target'    : event.state['target'],
+                        'targetDB'  : event.state['targetDB'],
+                        'csrfmiddlewaretoken': '{{ csrf_token }}'
+                    },
+                    success : function(data) {
+                        if ( $(".card-overlay").is(':hidden')  ){
+                            $('[id="card-overlay"]').slideToggle(450);
+                            $('.close-overlay').slideToggle(450);
+                            $('.full-screen-card').slideToggle(450);
+                        }
+                        $('.card-overlay:visible').html(data)
+                    }
+                });
+            } else {
+                $('.card-overlay').hide(250);
+                $('.close-overlay').hide();
+                $('.full-screen-card').hide();
+            }
+        };
+        
+    </script>
+    {% else %}
+    <!-- FULL SCREEN -->
+        <script>
+            $('.card-link').click(function() {
+                var div_id       = $(this).closest('.card-overlay').attr("id");
+                var current      = $(this).attr("current");
+                var currentDB    = $(this).attr("currentDB");
+                var target       = $(this).attr("target");
+                var targetDB     = $(this).attr("targetDB");
+                window.location = window.ROOT + "/gene_card/" + targetDB + "/" + target;
 
-</html>
+            });
+        </script>
+
+        <style>
+            #body-wrapper {
+                margin-left: 15%;
+                margin-right: 15%;
+            }
+        </style>
+    {% endif %}
+
+
+{% endblock scripts %}
