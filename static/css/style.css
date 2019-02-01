@@ -2447,3 +2447,11 @@ summary:hover { cursor: pointer; opacity: 0.8; }
 .space { width: 20px; }
 
 summary { display: list-item !important; }
+
+.location-contig {
+    display: block;
+    font-size: 14px;
+    font-weight: bold;
+    color: #396494;
+    margin-bottom: 15px;
+}
