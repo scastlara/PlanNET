@@ -163,16 +163,23 @@ class Condition(models.Model):
        return self.name + " - " + self.experiment.name
     
             
-    def get_color(self, dataset, value, profile="red"):
+    def get_color(self, dataset, value, profile="red", max_v=None):
 
         samples = SampleCondition.objects.filter(condition=self).values('sample')
-        if self.max_expression is None:
-            self.max_expression = round(ExpressionAbsolute.objects.filter(
-                experiment=self.experiment,
-                dataset=dataset,
-                sample__in=samples
-            ).aggregate(Max('expression_value'))['expression_value__max'], 3)
-        self.min_expression = 0
+        if max_v is None:
+            # Compute max expression for the whole experiment
+            if self.max_expression is None:
+                # Compute only once
+                self.max_expression = round(ExpressionAbsolute.objects.filter(
+                    experiment=self.experiment,
+                    dataset=dataset,
+                    sample__in=samples
+                ).aggregate(Max('expression_value'))['expression_value__max'], 3)
+        else:
+            # Max expression is provided.
+            self.max_expression = max_v
+            
+        self.min_expression = 0   
         color_gradient = colors.ColorGenerator(self.max_expression, self.min_expression, profile)
         return color_gradient.map_color(value)
 

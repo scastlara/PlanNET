@@ -477,6 +477,7 @@ var PlanExp = (function() {
         var condition = $("#network-color-conditions").val();
         condition = condition.replace(/ \(.+\)/, "");
         var cprofile = $("#one-sample .color-pick.active").attr("id");
+        var creference = $("input[name='color-reference']:checked").val()
         var gene_symbols = [];
         for (var i = 0; i < cy.nodes().length; i++) {
             gene_symbols.push( cy.nodes()[i].data("id") );
@@ -492,6 +493,7 @@ var PlanExp = (function() {
                 'condition'     : condition,
                 'symbols'       : gene_symbols,
                 'profile'       : cprofile,
+                'reference'     : creference,
                 'csrfmiddlewaretoken': csrftoken
             },
             success: function(data) {
@@ -717,6 +719,11 @@ var PlanExp = (function() {
     // NETWORK COLOR
     $(".color-pick").on("click", function() { 
         changeNetworkColor(this);
+        colorOneCondition();
+    });
+
+    // Reference
+    $("input[type='radio'][name='color-reference']").on("change", function(){
         colorOneCondition();
     });
 

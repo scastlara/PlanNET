@@ -16,7 +16,6 @@ class ColorGenerator(object):
 
     def __init__(self,  max_v, min_v, profile="red"):
         self.profile = ColorProfiles[profile]
-        print("ColorGenerator init: %s" % profile)
         self.max = max_v
         self.min = min_v
     
@@ -24,7 +23,6 @@ class ColorGenerator(object):
         thecolor = "#000000"
         if value != "NA":
             normval = int(self.__normalize(value))
-            print(normval)
             thecolor = str(self.profile.value[normval])
         return thecolor
     

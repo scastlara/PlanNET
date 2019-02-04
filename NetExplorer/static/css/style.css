@@ -2455,3 +2455,6 @@ summary { display: list-item !important; }
     color: #396494;
     margin-bottom: 15px;
 }
+
+.radio-title { display: block; font-weight: bold; margin-top: 10px; }
+.color-reference { font-weight: normal; margin-right: 10px; }
