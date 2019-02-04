@@ -1,9 +1,9 @@
 from .common import *
 
 class ColorProfiles(Enum):
-    red = list(Color('white').range_to('red', 50))
-    blue = list(Color('white').range_to('blue', 50))
-    green = list(Color('white').range_to('green', 50))
+    red = list(Color('#fffafa').range_to('#ff0000', 50))
+    blue = list(Color('#f7f8ff').range_to('#0029ff', 50))
+    green = list(Color('#f9fff9').range_to('#42d242', 50))
     blue_red = 4
     yellow_blue = 5
     red_green = 6
