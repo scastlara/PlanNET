@@ -234,9 +234,9 @@
                     <div id="planexp-cyt-controls">
                         <h3>Color Genes:</h3>
 
-                        <ul class="nav nav-tabs">
-                            <li class="active"><a data-toggle="tab" href="#one-sample">One Sample</a></li>
-                            <li><a data-toggle="tab" href="#two-sample">Two Samples</a></li>
+                        <ul class="nav nav-tabs" id="color-by">
+                            <li class="active" id="one-sample-nav"><a data-toggle="tab" href="#one-sample">One Sample</a></li>
+                            <li id="two-sample-nav"><a data-toggle="tab" href="#two-sample">Two Samples</a></li>
                         </ul>
                         <div class="tab-content">
                             <div id="one-sample" class="tab-pane fade in active">
@@ -250,7 +250,11 @@
                                 <div id="blue" class="color-pick gradient-blue"></div>
                                 <div id="green" class="color-pick gradient-green"></div>
 
-
+                                <span class="radio-title">Reference:</span>
+                                <input id="reference-network" type="radio" name="color-reference" value="Network">
+                                <label class="color-reference" for="reference-network">Network</label>
+                                <input id="reference-experiment" type="radio" name="color-reference" value="Experiment">
+                                <label class="color-reference" for="reference-experiment">Experiment</label>
 
 
                             </div>
@@ -270,11 +274,7 @@
                                 <div id="red_green" class="color-pick gradient-red-to-green"></div>
                             </div>
 
-                            <span class="radio-title">Reference:</span>
-                            <input id="reference-network" type="radio" name="color-reference" value="Network">
-                            <label class="color-reference" for="reference-network">Network</label>
-                            <input id="reference-experiment" type="radio" name="color-reference" value="Experiment">
-                            <label class="color-reference" for="reference-experiment">Experiment</label>
+                            
                         </div>
 
                         

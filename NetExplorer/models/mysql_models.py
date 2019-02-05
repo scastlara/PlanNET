@@ -1,5 +1,6 @@
 from .common import *
 from django_mysql.models import Model
+from django.db.models import Avg
 
 # MODELS
 # ------------------------------------------------------------------------------
@@ -165,17 +166,32 @@ class Condition(models.Model):
     
             
     def get_color(self, dataset, value, profile="red", max_v=None):
+        '''
+        Returns expression color for a given expression value. 
+        Will use one of the saved color profiles 'red', 'green' or 'blue'.
+
+        If max_v is provided, the color will be determined using a scale from 0 to max_v. 
+        Otherwise, max_v will be computed as the maximum expression value for a 
+        particular experiment + condition.
+        '''
         
         samples = SampleCondition.objects.filter(condition=self).values('sample')
         if max_v is None:
             # Compute max expression for the whole experiment
             if self.max_expression is None:
                 # Compute only once
-                self.max_expression = round(ExpressionAbsolute.objects.filter(
-                    experiment=self.experiment,
-                    dataset=dataset,
-                    sample__in=samples
-                ).use_index("NetExplorer_expressionabsolute_c08decf8").aggregate(Max('expression_value'))['expression_value__max'], 3)
+                self.max_expression = ExpressionAbsolute.objects.filter(
+                        experiment=self.experiment,
+                        dataset=dataset,
+                        sample__in=samples
+                    ).use_index(
+                        "NetExplorer_expressionabsolute_c08decf8"
+                    ).values(
+                        "gene_symbol"
+                    ).annotate(
+                        average_exp=Avg('expression_value')
+                    ).aggregate(Max('average_exp'))['average_exp__max']
+                self.max_expression = round(self.max_expression, 3)
         else:
             # Max expression is provided.
             self.max_expression = max_v

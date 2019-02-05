@@ -30,5 +30,6 @@ urlpatterns = [
     url(r'^plot_gene_expression', views.plot_gene_expression, name="plot_gene_expression"),
     url(r'^plot_tsne', views.plot_tsne, name="plot_tsne"),
     url(r'^experiment_condition_types', views.experiment_condition_types, name="experiment_condition_types"),
-    url(r'^map_expression_new', views.map_expression_new, name="map_expression_new")
+    url(r'^map_expression_one', views.map_expression_one, name="map_expression_one"),
+    url(r'^map_expression_two', views.map_expression_two, name="map_expression_two")
 ]

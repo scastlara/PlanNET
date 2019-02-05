@@ -1,6 +1,6 @@
 from .common import *
 
-def map_expression_new(request):
+def map_expression_one(request):
     '''
     Gets a list of gene symbols, an experiment, a condition, and a color palette,
     returning the necessary colors for each gene.
@@ -28,6 +28,8 @@ def map_expression_new(request):
                 sample__in=samples,
                 gene_symbol=symbol)
             if expressions:
+                # Check if expression is a single value for each gene in the network
+                # or if there are replicates (multiple samples per condition -> multiple expression values)
                 if len(expressions) > 1:
                     expression = mean([ exp.expression_value for exp in expressions ])
                 else:
@@ -42,6 +44,7 @@ def map_expression_new(request):
                 colormap[symbol] = expression
                 if expression != "NA" and expression > max_expression:
                     max_expression = expression
+                    
         
         if reference == "Network":
             # If colors are to be computed according to the max expression in the network,
