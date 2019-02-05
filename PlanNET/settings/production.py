@@ -5,7 +5,7 @@ import logging
 
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
-DEBUG = True
+DEBUG = False
 #False
 TEMPLATE_DEBUG = DEBUG
 ADMINS = (
