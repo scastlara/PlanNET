@@ -19,7 +19,7 @@ S. Castillo-Lara, J.F. Abril
 PlanNET: homology-based predicted interactome for multiple planarian transcriptomes
 Bioinformatics, Volume 34, Issue 6, 15 March 2018, Pages 1016–1023, btx738
 ```
-* [link to the published paper](https://academic.oup.com/bioinformatics/article/34/6/1016/4657068)
+* [Link to the published paper](https://academic.oup.com/bioinformatics/article/34/6/1016/4657068)
 
 # Copyright
 ```
