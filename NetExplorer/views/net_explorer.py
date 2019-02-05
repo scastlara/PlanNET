@@ -11,11 +11,11 @@ def upload_graph(request, json_text):
     graph_content = str()
     no_layout     = 0
     if json_text is None:
-        graph_content   = request.FILES['myfile'].read()
+        graph_content   = request.FILES['myfile'].read().decode("utf-8-sig")
         graph_content   = graph_content.replace("\xef\xbb\xbf", "") # Remove unicode BOM
         graph_content.replace("'", '"') # Json only allows double quotes
     else:
-        graph_content = json_text
+        graph_content = str(json_text)
         no_layout = 1
 
     try: # Check if file is a valid JSON

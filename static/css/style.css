@@ -2266,9 +2266,9 @@ kbd {
 .color-pick { display: inline-block; opacity: 0.5; margin-top: 10px; height: 60px; width: 30px; }
 .color-pick:hover { opacity: 1; cursor: pointer; }
 
-.gradient-blue {  background-image: linear-gradient(#1f77b4, white); }
-.gradient-red {  background-image: linear-gradient(#d62728, white); }
-.gradient-green {  background-image: linear-gradient(#2ca02c, white); }
+.gradient-blue {  background-image: linear-gradient(#0029ff, #f7f8ff); }
+.gradient-red {  background-image: linear-gradient(#ff0000, #fffafa); }
+.gradient-green {  background-image: linear-gradient(#42d242, #f9fff9); }
 .gradient-blue-to-red { background-image: linear-gradient(#d62728, white, #1f77b4) }
 .gradient-yellow-to-blue { background-image: linear-gradient(#1f77b4, white, #e4a32d); }
 .gradient-red-to-green { background-image: linear-gradient(#2ca02c, white, #d62728); }
@@ -2455,3 +2455,6 @@ summary { display: list-item !important; }
     color: #396494;
     margin-bottom: 15px;
 }
+
+.radio-title { display: block; font-weight: bold; margin-top: 10px; }
+.color-reference { font-weight: normal; margin-right: 10px; }

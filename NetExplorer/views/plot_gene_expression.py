@@ -58,6 +58,7 @@ def do_violin(experiment, dataset, conditions, gene_symbols, ctype):
             expression = ExpressionAbsolute.objects.filter(
                 experiment=experiment, dataset=dataset, 
                 sample__in=samples,    gene_symbol=gene_symbol)
+
             theplot.add_group(condname)
 
             if expression:

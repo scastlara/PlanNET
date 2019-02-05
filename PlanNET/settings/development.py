@@ -153,11 +153,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'NetExplorer',
+    'django_mysql',
     # Uncomment the next line to enable the admin:
     # Uncomment the next line to enable admin documentation:
      'django.contrib.admindocs',
 ]
 #AUTH_USER_MODEL = 'NetExplorer.User'
+DJANGO_MYSQL_REWRITE_QUERIES = True
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to

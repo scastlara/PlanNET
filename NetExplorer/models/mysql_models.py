@@ -1,4 +1,6 @@
 from .common import *
+from django_mysql.models import Model
+from django.db.models import Avg
 
 # MODELS
 # ------------------------------------------------------------------------------
@@ -163,16 +165,38 @@ class Condition(models.Model):
        return self.name + " - " + self.experiment.name
     
             
-    def get_color(self, dataset, value, profile="red"):
+    def get_color(self, dataset, value, profile="red", max_v=None):
+        '''
+        Returns expression color for a given expression value. 
+        Will use one of the saved color profiles 'red', 'green' or 'blue'.
 
+        If max_v is provided, the color will be determined using a scale from 0 to max_v. 
+        Otherwise, max_v will be computed as the maximum expression value for a 
+        particular experiment + condition.
+        '''
+        
         samples = SampleCondition.objects.filter(condition=self).values('sample')
-        if self.max_expression is None:
-            self.max_expression = round(ExpressionAbsolute.objects.filter(
-                experiment=self.experiment,
-                dataset=dataset,
-                sample__in=samples
-            ).aggregate(Max('expression_value'))['expression_value__max'], 3)
-        self.min_expression = 0
+        if max_v is None:
+            # Compute max expression for the whole experiment
+            if self.max_expression is None:
+                # Compute only once
+                self.max_expression = ExpressionAbsolute.objects.filter(
+                        experiment=self.experiment,
+                        dataset=dataset,
+                        sample__in=samples
+                    ).use_index(
+                        "NetExplorer_expressionabsolute_c08decf8"
+                    ).values(
+                        "gene_symbol"
+                    ).annotate(
+                        average_exp=Avg('expression_value')
+                    ).aggregate(Max('average_exp'))['average_exp__max']
+                self.max_expression = round(self.max_expression, 3)
+        else:
+            # Max expression is provided.
+            self.max_expression = max_v
+            
+        self.min_expression = 0   
         color_gradient = colors.ColorGenerator(self.max_expression, self.min_expression, profile)
         return color_gradient.map_color(value)
 
@@ -196,13 +220,15 @@ class SampleCondition(models.Model):
        return self.experiment.name + " - " + self.sample.sample_name + " - " + self.condition.name
 
 # ------------------------------------------------------------------------------
-class ExpressionAbsolute(models.Model):
+class ExpressionAbsolute(Model):
     '''
     This table will store the expression value for each condition (for a given experiment and a given gene). 
     Keep in mind that a 'Condition' can be a Technical-Condition (0), Experimental-Condition (2), Cluster (3) or a Cell (4).
     In the case of 0, 1, 2, and 3 the expression will be the MEAN expression for that gene in those samples.
     In the case of 4 (a cell), the expression will be the actual expression in that particular cell. 
     The cell will have an entry in the 'Condition' table, just like any condition, linking it to a particular experiment.
+
+    This is a django-mysql Model, which is an extension of the default models.Model class. Includes use_index() method.
     '''
     experiment = models.ForeignKey(Experiment, on_delete=models.CASCADE)
     sample = models.ForeignKey(Sample, on_delete=models.CASCADE)

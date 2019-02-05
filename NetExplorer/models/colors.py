@@ -1,30 +1,44 @@
 from .common import *
 
 class ColorProfiles(Enum):
-    red = list(Color('white').range_to('red', 50))
-    blue = list(Color('white').range_to('blue', 50))
-    green = list(Color('white').range_to('green', 50))
-    blue_red = 4
-    yellow_blue = 5
-    red_green = 6
+    # Linear gradients
+    red = list(Color('#fffafa').range_to('#ff0000', 50))
+    blue = list(Color('#f7f8ff').range_to('#0029ff', 50))
+    green = list(Color('#f9fff9').range_to('#42d242', 50))
 
+    # Divergent gradients
+    blue_red = list(Color('#1f77b4').range_to('white', 25)) + list(Color('white').range_to("#ff0000", 25))
+    yellow_blue = list(Color('#e4a32d').range_to('white', 25)) + list(Color('white').range_to("#0029ff", 25))
+    red_green = list(Color('#ff0000').range_to('white', 25)) + list(Color('white').range_to("#42d242", 25))
 
 class ColorGenerator(object):
     '''
-    What up
+    Generates a color gradient given a maximum value and a minimum value, using
+    min-max normalization in a 0-50 scale.
+    Contains color profiles:
+        red
+        blue
+        green
+        blue_red
+        yellow_blue
+        red_green
     '''
 
     def __init__(self,  max_v, min_v, profile="red"):
         self.profile = ColorProfiles[profile]
-        print("ColorGenerator init: %s" % profile)
         self.max = max_v
         self.min = min_v
     
     def map_color(self, value):
+        '''
+        Assigns a color to the provided value by using the max and min attributes as
+        the scale and normalizing the provided value using min-max normalization.
+        
+        Returns the hex value of the computed color.
+        '''
         thecolor = "#000000"
         if value != "NA":
             normval = int(self.__normalize(value))
-            print(normval)
             thecolor = str(self.profile.value[normval])
         return thecolor
     
