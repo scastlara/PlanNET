@@ -2472,7 +2472,7 @@ summary { display: list-item !important; }
 
 .grid-legend {
     display: grid;
-    height: 14.3px;
+    height: 14.4px;
     width: 25px;
     grid-template-columns: 25px;
 }
