@@ -85,8 +85,6 @@ class Experiment(models.Model):
             all_allowed = public_experiments | restricted_allowed
             return all_allowed
 
-
-
     def to_json(self):
         '''
         Returns json string with info about experiment
@@ -108,9 +106,6 @@ class Experiment(models.Model):
             )
         json_string = json.dumps(json_dict)
         return json_string
-
-
-
 
     def __str__(self):
        return self.name
@@ -164,7 +159,27 @@ class Condition(models.Model):
     def __str__(self):
        return self.name + " - " + self.experiment.name
     
-            
+    def __get_max_expression(self, dataset):
+        '''
+        Gets max expression of samples in this particular condition.
+        Assigns it to self.max_expression and returns it.
+        '''
+        samples = SampleCondition.objects.filter(condition=self).values('sample')
+        self.max_expression = ExpressionAbsolute.objects.filter(
+            experiment=self.experiment,
+            dataset=dataset,
+            sample__in=samples
+        ).use_index(
+            "NetExplorer_expressionabsolute_c08decf8"
+        ).values(
+            "gene_symbol"
+        ).annotate(
+            average_exp=Avg('expression_value')
+        ).aggregate(Max('average_exp'))['average_exp__max']
+        self.max_expression = round(self.max_expression, 3)
+
+        return self.max_expression
+        
     def get_color(self, dataset, value, profile="red", max_v=None):
         '''
         Returns expression color for a given expression value. 
@@ -174,31 +189,26 @@ class Condition(models.Model):
         Otherwise, max_v will be computed as the maximum expression value for a 
         particular experiment + condition.
         '''
-        
-        samples = SampleCondition.objects.filter(condition=self).values('sample')
         if max_v is None:
             # Compute max expression for the whole experiment
             if self.max_expression is None:
                 # Compute only once
-                self.max_expression = ExpressionAbsolute.objects.filter(
-                        experiment=self.experiment,
-                        dataset=dataset,
-                        sample__in=samples
-                    ).use_index(
-                        "NetExplorer_expressionabsolute_c08decf8"
-                    ).values(
-                        "gene_symbol"
-                    ).annotate(
-                        average_exp=Avg('expression_value')
-                    ).aggregate(Max('average_exp'))['average_exp__max']
-                self.max_expression = round(self.max_expression, 3)
+                self.__get_max_expression(dataset)
         else:
             # Max expression is provided.
             self.max_expression = max_v
-            
-        self.min_expression = 0   
         color_gradient = colors.ColorGenerator(self.max_expression, self.min_expression, profile)
         return color_gradient.map_color(value)
+
+    def get_color_legend(self, profile="red"):
+        '''
+        Returns html of color gradient generated for expression in Condition
+        '''
+        if self.max_expression is None:
+            self.__get_max_expression()
+        color_gradient = colors.ColorGenerator(self.max_expression, self.min_expression, profile)
+        return color_gradient.get_color_legend()
+
 
 
 # ------------------------------------------------------------------------------

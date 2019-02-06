@@ -50,5 +50,8 @@ def map_expression_two(request):
         
         colormap[symbol] = color_gradient.map_color(expression)
 
-    response = json.dumps(colormap)
+    response = dict()
+    response['colormap'] = colormap
+    response['legend'] =  color_gradient.get_color_legend()
+    response = json.dumps(response)
     return HttpResponse(response, content_type="application/json")

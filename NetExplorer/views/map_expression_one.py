@@ -52,7 +52,10 @@ def map_expression_one(request):
             for symbol, exp in colormap.items():
                 colormap[symbol] = condition.get_color(dataset, exp, profile, max_expression)
 
-        response = json.dumps(colormap)
+        response = dict()
+        response['colormap'] = colormap
+        response['legend'] = condition.get_color_legend(profile)
+        response = json.dumps(response)
         return HttpResponse(response, content_type="application/json")
     else:
         return render(request, 'NetExplorer/404.html')
