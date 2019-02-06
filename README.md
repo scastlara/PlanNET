@@ -1,9 +1,5 @@
 <a href="https://compgen.bio.ub.edu/PlanNET" target="_blank"><img src="project-logo.png"></a>
 
-
-# Version
-v1.1.0
-
 # Description
 Application to explore the different Schmidtea mediterranea predicted interactomes. Available at [compgen.bio.ub.edu/PlanNET](https://compgen.bio.ub.edu/PlanNET).
 
@@ -20,6 +16,10 @@ PlanNET: homology-based predicted interactome for multiple planarian transcripto
 Bioinformatics, Volume 34, Issue 6, 15 March 2018, Pages 1016–1023, btx738
 ```
 * [Link to the published paper](https://academic.oup.com/bioinformatics/article/34/6/1016/4657068)
+
+# Version
+v.1.2
+
 
 # Copyright
 ```

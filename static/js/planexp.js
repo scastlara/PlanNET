@@ -59,6 +59,15 @@ var PlanExp = (function() {
         
     }
 
+    rgb2hex = function(rgb) {
+        if (/^#[0-9A-F]{6}$/i.test(rgb)) return rgb;
+    
+        rgb = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+        function hex(x) {
+            return ("0" + parseInt(x).toString(16)).slice(-2);
+        }
+        return "#" + hex(rgb[1]) + hex(rgb[2]) + hex(rgb[3]);
+    }
 
     /**
      * fillConditions
@@ -404,6 +413,7 @@ var PlanExp = (function() {
                 ready: function() {}
             })
             cy.layout({'name': 'cola'});
+            colorByCondition();
         }
         catch(err) {
             displayError("Incorrect graph definition");
@@ -472,7 +482,6 @@ var PlanExp = (function() {
      */
     colorByCondition = function() {
         var mode = $("#color-by li.active").attr("id"); 
-
         if (mode == "one-sample-nav") {
             colorOneCondition();
         } else {
@@ -510,6 +519,9 @@ var PlanExp = (function() {
             return;
         }
 
+        $("#planexp-cyt-legend").html(""); // Removing legend
+
+
         $.ajax({
             type: "POST",
             url: window.ROOT + "/map_expression_two",
@@ -524,10 +536,12 @@ var PlanExp = (function() {
             },
             success: function(data) {
                 // Change Exp type
+                var colormap = data.colormap;
+                $("#planexp-cyt-legend").html(data.legend);
                 cy.filter(function(i, element){
                     if ( element.isNode() ) {
-                        if (element.data("name") in data) {
-                            element.css("background-color", data[element.data("id")]);
+                        if (element.data("name") in colormap) {
+                            element.css("background-color", colormap[element.data("id")]);
                         } else {
                             element.css("background-color", "#000000");
                         }
@@ -535,6 +549,7 @@ var PlanExp = (function() {
                 });
             },
             error: function(data) {
+                $("#planexp-cyt-legend").html(""); // Removing legend
                 console.log(data.responseText);
             }
         });
@@ -568,6 +583,9 @@ var PlanExp = (function() {
             return;
         }
 
+        $("#planexp-cyt-legend").html(""); // Removing legend
+
+
         $.ajax({
             type: "POST",
             url: window.ROOT + "/map_expression_one",
@@ -582,10 +600,12 @@ var PlanExp = (function() {
             },
             success: function(data) {
                 // Change Exp type
+                var colormap = data.colormap;
+                $("#planexp-cyt-legend").html(data.legend);
                 cy.filter(function(i, element){
                     if ( element.isNode() ) {
-                        if (element.data("name") in data) {
-                            element.css("background-color", data[element.data("id")]);
+                        if (element.data("name") in colormap) {
+                            element.css("background-color", colormap[element.data("id")]);
                         } else {
                             element.css("background-color", "#000000");
                         }
@@ -593,6 +613,7 @@ var PlanExp = (function() {
                 });
             },
             error: function(data) {
+                $("#planexp-cyt-legend").html(""); // Removing legend
                 console.log(data.responseText);
             }
         });
@@ -865,7 +886,6 @@ var PlanExp = (function() {
 
     $(".editor-switch").on("change", function(){
         var currValue = $("input:checked", this).val();
-        alert(currValue);
         if (currValue == "on") {
             // Change all other editor switches to OFF.
             var currInputOff = $("input[value=off]", this);
@@ -888,6 +908,50 @@ var PlanExp = (function() {
         colorByCondition();
     })
 
+    $( "#planexp-cyt-legend" ).tooltip({
+        track: true,
+        content: function(){
+            return $(this).attr("title");
+        }
+    });
 
+    $( document ).on({
+        mouseenter: function () {
+            //stuff to do on mouse enter
+            $('.grid-legend').css('opacity', 0.5);
+            $('.grid-legend').css('cursor', 'pointer');
+            $(this).css('opacity', 1);
+            var color = rgb2hex($(this).css('background-color')).toUpperCase();
+            cy.filter(function(i, element){
+                if ( element.isNode() ) {
+                    var nodeColor = element.css("background-color").toUpperCase();
+                    if (nodeColor.length == 4) {
+                       // short hex
+                       nodeColor = nodeColor[0] + nodeColor[1] + nodeColor[1] + nodeColor[2] + nodeColor[2] + nodeColor[3] + nodeColor[3];
+                    }
+                    if (nodeColor == color) {
+                        element.css('opacity', 1);
+                    } else {
+                        element.css('opacity', 0.05);
+                    }
+
+                } else {
+                    element.css('opacity', 0.05);
+                }
+            });
+        },
+        mouseleave: function () {
+            //stuff to do on mouse leave
+            $('.grid-legend').css('opacity', 1);
+            cy.elements().css("opacity", 1);
+        }
+    }, ".grid-legend"); //pass the element as an argument to .on
+
+ 
+
+    $('#color-by a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+        colorByCondition();
+        $("#planexp-cyt-legend").html(""); // Removing legend
+    });
      
 })();

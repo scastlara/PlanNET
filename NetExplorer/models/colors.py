@@ -7,9 +7,15 @@ class ColorProfiles(Enum):
     green = list(Color('#f9fff9').range_to('#42d242', 50))
 
     # Divergent gradients
-    blue_red = list(Color('#1f77b4').range_to('white', 25)) + list(Color('white').range_to("#ff0000", 25))
-    yellow_blue = list(Color('#e4a32d').range_to('white', 25)) + list(Color('white').range_to("#0029ff", 25))
-    red_green = list(Color('#ff0000').range_to('white', 25)) + list(Color('white').range_to("#42d242", 25))
+    blue_white = list(Color('#1f77b4').range_to('#f7f8ff', 25)) 
+    white_red  = list(Color('#fffafa').range_to("#ff0000", 25))
+    blue_red = blue_white[0:-1] + [Color('white'), Color('white')] + white_red[1:25]
+
+    yellow_white = list(Color('#e4a32d').range_to('#fff7ea', 25))
+    yellow_blue = yellow_white[0:-1] + [Color('white'), Color('white')] + list(reversed(blue_white))[1:25]
+
+    white_green = list(Color('#f9fff9').range_to('#42d242', 25))
+    red_green = list(reversed(white_red))[0:-1] + [Color('white'), Color('white')] + white_green[1:25]
 
 class ColorGenerator(object):
     '''
@@ -39,7 +45,7 @@ class ColorGenerator(object):
         thecolor = "#000000"
         if value != "NA":
             normval = int(self.__normalize(value))
-            thecolor = str(self.profile.value[normval])
+            thecolor = str(self.profile.value[normval].hex)
         return thecolor
     
     def __normalize(self, x):
@@ -55,5 +61,27 @@ class ColorGenerator(object):
         else:
             normval = (x - self.min) / (self.max - self.min)
         return normval * 49
+    
+    def __generate_intervals(self):
+        '''
+        Generates interval values for the gradient.
+        '''
+        step = ( abs(self.max - self.min) ) / 50
+        intervals = [ self.min ]
+        while intervals[-1] < self.max:
+            intervals.append( round( (intervals[-1] + step), 5) )
+        return intervals
+
+
+    def get_color_legend(self):
+        '''
+        Returns html of legend for the color gradient
+        '''
+        html = [ "<div class='grid-container grid-legend-contaiener'></div>" ]
+        intervals = list(reversed(self.__generate_intervals()))
+        for color_idx, color in enumerate(reversed(self.profile.value)):
+            html.append("<div class='grid-item grid-legend info-tooltip' title='%s to %s' style='background-color: %s'> </div>" % (intervals[color_idx + 1], intervals[color_idx], color.hex) )
+        html.append("</div>")
+        return "\n".join(html)
     
 
