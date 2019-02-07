@@ -20,7 +20,7 @@ def do_barplot(experiment, dataset, conditions, gene_symbols):
             expression = ExpressionAbsolute.objects.filter(
                 experiment=experiment, dataset=dataset, 
                 sample__in=samples,    gene_symbol=gene_symbol)
-            if expression:
+            if expression.exists():
                 if units is None:
                     units = expression[0].units
                 expression = expression[0].expression_value
@@ -61,7 +61,7 @@ def do_violin(experiment, dataset, conditions, gene_symbols, ctype):
 
             theplot.add_group(condname)
 
-            if expression:
+            if expression.exists():
                 if units is None:
                     units = expression[0].units
                 for exp in expression:
@@ -79,8 +79,8 @@ def is_one_sample(experiment, conditions):
     '''
     Checks if there is only one sample per condition in experiment.
     '''
-    samples_in_condition = SampleCondition.objects.filter(experiment=experiment, condition=conditions[0])
-    if len(samples_in_condition) == 1:
+    samples_in_condition = SampleCondition.objects.filter(experiment=experiment, condition=conditions[0]).count()
+    if samples_in_condition == 1:
         return True
     else:
         return False

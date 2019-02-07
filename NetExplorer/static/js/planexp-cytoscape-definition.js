@@ -28,8 +28,8 @@ $( document ).ready(function() {
         })
     .selector('edge')
         .css({
-            'line-color': '#ddadad',
-            'target-arrow-color': '#ddadad',
+            'line-color': '#9d6cc1',
+            'target-arrow-color': '#9d6cc1',
             'width': 3
         })
     .selector('edge[colorEDGE]')

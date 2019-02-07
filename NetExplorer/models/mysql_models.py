@@ -177,7 +177,6 @@ class Condition(models.Model):
             average_exp=Avg('expression_value')
         ).aggregate(Max('average_exp'))['average_exp__max']
         self.max_expression = round(self.max_expression, 3)
-
         return self.max_expression
         
     def get_color(self, dataset, value, profile="red", max_v=None):
@@ -200,14 +199,14 @@ class Condition(models.Model):
         color_gradient = colors.ColorGenerator(self.max_expression, self.min_expression, profile)
         return color_gradient.map_color(value)
 
-    def get_color_legend(self, profile="red"):
+    def get_color_legend(self, profile="red", units=None):
         '''
         Returns html of color gradient generated for expression in Condition
         '''
         if self.max_expression is None:
             self.__get_max_expression()
         color_gradient = colors.ColorGenerator(self.max_expression, self.min_expression, profile)
-        return color_gradient.get_color_legend()
+        return color_gradient.get_color_legend(units)
 
 
 

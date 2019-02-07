@@ -13,6 +13,7 @@
             <li><a href="#genesearch">Gene Search</a></li>
             <li><a href="#netexplorer">NetExplorer</a></li>
             <li><a href="#pathwayfinder">Pathway Finder</a></li>
+            {% if user.is_authenticated %}<li><a href="#planexp">PlanExp</a></li>{% endif %}
             <hr>
             <li id="back_home"><a href="{% url 'index_view' %}" ><span class="glyphicon glyphicon-triangle-left"></span>Go back Home</a></li>
         </ul>
@@ -132,6 +133,8 @@
                     </ol>
                 </div>
             </div>
+
+            <img class="tutorial-animation" src="{% static 'Images/tutorial/netexplorer-animation-1.gif' %}">
             <p>
                 NetExplorer allows users to explore the predicted networks dinamically, adding and removing nodes from several interactomes.
                 Use the menus on the right to manipulate the graph, which will display on the left side of the screen. Each node on the graph
@@ -370,6 +373,7 @@
                         </ol>
                     </div>
                 </div>
+            <img class="tutorial-animation" src="{% static 'Images/tutorial/pathfinder-animation-1.gif' %}">
             <p>
                 PathwayFinder lets you select two (or more) nodes and retrieve all the possible paths of a given length between them in
                 a particular interactome. Right now, due to performance issues on the client side, the user can only select up to 5 edges
@@ -433,6 +437,36 @@
 
     </div>
 </div>
+
+    {% if user.is_authenticated %}
+        <div class="tutorial-panel panel panel-danger">
+            <div class="panel-heading"><a class="tutorial-title"  name="planexp"><h3>PlanExp</h3></a></div>
+            <div class="panel-body">
+                <div class="panel-body">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            Table of Contents
+                        </div>
+                        <div class="panel-body">
+                            <ol>
+                                <li class="tutorial-li"><a href="#planexp-form">..</a></li>
+                                <li class="tutorial-li"><a href="#planexp-results">..</a></li>
+                            </ol>
+                        </div>
+                    </div>
+                    <img class="tutorial-animation" src="{% static 'Images/tutorial/planexp-animation-1.gif' %}">
+                    <p>
+                        ...
+                    </p>
+                    <br>
+                    <h4 id="planexp-form">Search Form</h4>
+                    <img class="tutorial-subtitle-planexp" src="{% static 'Images/tutorial/underline-planexp.png' %}"/>
+                    <p>...</p>
+                </div>
+            </div>
+
+        </div>
+    {% endif %}
 </div>
 </div>
 

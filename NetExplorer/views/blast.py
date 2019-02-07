@@ -43,7 +43,6 @@ def blast(request):
             return render(request, 'NetExplorer/blast.html', {"error_msg": "Query sequence too long (> 25,000 characters)", 'databases':  Dataset.get_allowed_datasets(request.user)})
 
         # Create temp file with the sequences
-        print(fasta)
         with tempfile.NamedTemporaryFile(mode="w") as temp:
             temp.write(fasta)
             temp.flush()

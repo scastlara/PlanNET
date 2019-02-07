@@ -21,15 +21,18 @@ def map_expression_one(request):
 
         colormap = dict()
         max_expression = 0
+        units = None
         for symbol in symbols:
             expressions = ExpressionAbsolute.objects.filter(
                 experiment=experiment,
                 dataset=dataset,
                 sample__in=samples,
                 gene_symbol=symbol)
-            if expressions:
+            if expressions.exists():
                 # Check if expression is a single value for each gene in the network
                 # or if there are replicates (multiple samples per condition -> multiple expression values)
+                if units is None:
+                    units = expressions[0].units
                 if len(expressions) > 1:
                     expression = mean([ exp.expression_value for exp in expressions ])
                 else:
@@ -54,7 +57,7 @@ def map_expression_one(request):
 
         response = dict()
         response['colormap'] = colormap
-        response['legend'] = condition.get_color_legend(profile)
+        response['legend'] = condition.get_color_legend(profile=profile, units=units)
         response = json.dumps(response)
         return HttpResponse(response, content_type="application/json")
     else:

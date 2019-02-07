@@ -73,14 +73,20 @@ class ColorGenerator(object):
         return intervals
 
 
-    def get_color_legend(self):
+    def get_color_legend(self, units=None):
         '''
         Returns html of legend for the color gradient
         '''
         html = [ "<div class='grid-container grid-legend-contaiener'></div>" ]
         intervals = list(reversed(self.__generate_intervals()))
+        if len(intervals) == 1:
+            # Empty legend because no expression for any genes
+            return "\n"
         for color_idx, color in enumerate(reversed(self.profile.value)):
-            html.append("<div class='grid-item grid-legend info-tooltip' title='%s to %s' style='background-color: %s'> </div>" % (intervals[color_idx + 1], intervals[color_idx], color.hex) )
+            title = "%s to %s" % (intervals[color_idx + 1], intervals[color_idx])
+            if units is not None:
+                title += " (%s)" % str(units)
+            html.append("<div class='grid-item grid-legend info-tooltip' title='%s' style='background-color: %s'> </div>" % (title, color.hex) )
         html.append("</div>")
         return "\n".join(html)
     

@@ -20,6 +20,7 @@ def map_expression_two(request):
 
     colormap = dict()
     color_gradient = colors.ColorGenerator(10, -10, profile)
+    units = "Log Fold Change"
     for symbol in symbols:
         try:
             expression = ExpressionRelative.objects.get(
@@ -52,6 +53,6 @@ def map_expression_two(request):
 
     response = dict()
     response['colormap'] = colormap
-    response['legend'] =  color_gradient.get_color_legend()
+    response['legend'] =  color_gradient.get_color_legend(units=units)
     response = json.dumps(response)
     return HttpResponse(response, content_type="application/json")
