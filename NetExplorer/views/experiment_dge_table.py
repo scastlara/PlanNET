@@ -56,7 +56,7 @@ def experiment_dge_table(request):
         expression = ExpressionRelative.objects.filter(
             experiment=experiment, dataset=dataset, 
             condition1=condition1, condition2=condition2, pvalue__lte=pvalue_threshold)
-        if not expression:
+        if not expression.exists():
             # In case condition1 and condition2 are reversed in Database
             expression = ExpressionRelative.objects.filter(
                 experiment=experiment, dataset=dataset, 
@@ -64,7 +64,7 @@ def experiment_dge_table(request):
 
         expression = expression.annotate(abs_fold_change=Func(F('fold_change'), function='ABS')).order_by('-abs_fold_change')[:max_genes]
         response = dict()
-        if expression:
+        if expression.exists():
             response_to_render = { 'expressions' : expression, 'database': dataset }
             response['table'] = render_to_string('NetExplorer/experiment_dge_table.html', response_to_render)
             response['volcano'] = do_volcano_plot(expression).plot()
