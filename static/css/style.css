@@ -2480,3 +2480,6 @@ summary { display: list-item !important; }
 .tutorial-animation {
     height: 500px;
 }
+
+.tutorial-img { border: 2px solid #E7E7E7; margin-bottom: 5px; margin-top: 5px; }
+.tutorial-animation { border: 2px solid #E7E7E7; margin-bottom: 5px; margin-top: 15px; }
