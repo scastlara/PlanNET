@@ -2476,3 +2476,7 @@ summary { display: list-item !important; }
     width: 25px;
     grid-template-columns: 25px;
 }
+
+.tutorial-animation {
+    height: 500px;
+}
