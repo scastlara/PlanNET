@@ -79,6 +79,9 @@ class ColorGenerator(object):
         '''
         html = [ "<div class='grid-container grid-legend-contaiener'></div>" ]
         intervals = list(reversed(self.__generate_intervals()))
+        if len(intervals) == 1:
+            # Empty legend because no expression for any genes
+            return "\n"
         for color_idx, color in enumerate(reversed(self.profile.value)):
             title = "%s to %s" % (intervals[color_idx + 1], intervals[color_idx])
             if units is not None:

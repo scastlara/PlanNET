@@ -107,8 +107,8 @@ class CyEditor {
                     })
                 .selector('edge')
                     .css({
-                        'line-color': '#ddadad',
-                        'target-arrow-color': '#ddadad',
+                        'line-color': '#9d6cc1',
+                        'target-arrow-color': '#9d6cc1',
                         'width': 3
                     })
                 .selector('edge[colorEDGE]')
@@ -119,17 +119,17 @@ class CyEditor {
                     })
                 .selector('.edgehandles-preview, .edgehandles-ghost-edge')
                     .css({
-                        'line-color': '#ddadad',
-                        'target-arrow-color': '#ddadad'
+                        'line-color': '#9d6cc1',
+                        'target-arrow-color': '#9d6cc1'
                     })
                 .selector('.edgehandles-hover')
                     .css({
-                        'background-color': '#ddadad'
+                        'background-color': '#9d6cc1'
                     })
                 .selector('.edgehandles-handle')
                     .css({
-                        'background-color': '#ddadad',
-                        'color': '#ddadad'
+                        'background-color': '#9d6cc1',
+                        'color': '#9d6cc1'
                     })
                 ;
         }
