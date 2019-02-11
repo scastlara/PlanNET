@@ -178,7 +178,7 @@ class Domain(object):
             database: str, database from which to retrieve the planarian contigs.
         '''
         query = "";
-        if not re.match(Domain.pfam_regexp, self.accession):
+        if not re.match(Domain.pfam_regexp + r'\.\d+', self.accession):
             # Fuzzy pfam accession (no number)
             acc_regex = self.accession + ".*"
             query = neoquery.DOMAIN_TO_CONTIG_FUZZY % (database, acc_regex)
@@ -903,8 +903,6 @@ class oldExperiment(object):
         bins         = list()
         exp_to_color = list()
         range_colors = list()
-        print(from_color)
-        print(to_color)
         s_color = Color(from_color)
         e_color = Color(to_color)
         if comp_type == "one-sample":
