@@ -51,9 +51,9 @@ if ($OPTS{'human'}) {
 }
 
 my %seq_info = ();
-read_fasta(\%seq_info, $OPTS{fasta}, "sequence");
-read_fasta(\%seq_info, $ORF_FILE,    "orf");
-save_transcriptome(\%seq_info);
+#read_fasta(\%seq_info, $OPTS{fasta}, "sequence");
+#read_fasta(\%seq_info, $ORF_FILE,    "orf");
+#save_transcriptome(\%seq_info);
 
 # Right now we can't upload homology information for all the sequences because the file
 # is too big. We should create a "simpler" file with info_joiner so that we can use it here.
@@ -62,11 +62,11 @@ save_homology($HOMOLOGY_FILE);
 save_interactome(\%seq_info, $INT_FILE);
 
 
-if ($PFAM_DBFILE) {
-    my %pfam_info = ();
-    read_pfam(\%pfam_info, $PFAM_DBFILE);
-    save_PFAM(\%pfam_info, $OPTS{'species'}, $PFAM_FILE);
-}
+#if ($PFAM_DBFILE) {
+#    my %pfam_info = ();
+#    read_pfam(\%pfam_info, $PFAM_DBFILE);
+#    save_PFAM(\%pfam_info, $OPTS{'species'}, $PFAM_FILE);
+#}
 
 my $end_time = localtime();
 print STDERR <<EOF
@@ -139,6 +139,7 @@ sub save_homology {
         chomp;
         $n++;
         my ($symbol, $human, $blast_eval, $blast_cov, $blast_brh, $nog_eval, $nog_brh, $pfam_sc, $pfam_brh) = split /\t/;
+	next unless $human;
         print $ofh "$symbol,$human,$blast_eval,$blast_cov,$blast_brh,$nog_eval,$nog_brh,$pfam_sc,$pfam_brh\n";
     }
     close($ofh);
