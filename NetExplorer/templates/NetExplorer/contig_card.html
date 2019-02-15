@@ -383,12 +383,12 @@
                 return {'width': width, 'newstart': newstart}
             };
 
-            function domainTooltip(acc, id,  s_start, s_end, p_start, p_end, perc) {
+            function domainTooltip(acc, id, description, s_start, s_end, p_start, p_end, perc) {
                 // Html of the domain tooltip when hovering over domain line/square
                 return [
                     "'<strong>", id, "</strong>\n",
                     "<div class=\"pfam-line-tooltip-subtitle\">", acc,  "</div>",
-
+                    "<div class=\"pfam-line-tooltip-subtitle\">", description,  "</div>",
                     "<hr>",
                     "<table class=\"domain-table\">",
                         "<tr>",
@@ -425,7 +425,7 @@
                 ].join('');
             };
 
-            function domainRowTemplate(acc, id, s_start, s_end, p_start, p_end, perc, seq_length, mlength) {
+            function domainRowTemplate(acc, id, description, s_start, s_end, p_start, p_end, perc, seq_length, mlength) {
                 // This function returns the HTML code of a pfam domain row in the
                 // visual representation of the domains over a reference line.
                 newcoords = toNewScale(s_start, s_end, seq_length);
@@ -445,6 +445,10 @@
                     ending = "'{% static 'Images/pfam-line.png' %}'";
                 }
 
+                if (p_end == mlength && s_end == seq_length) {
+                    newcoords['width'] -= 0.2;
+                }
+
                 return [
                     "<tr class='pfam-line-table-tr'>",
                         "<td class='pfam-line-table-td-name'>",
@@ -453,7 +457,7 @@
                             "</a>",
                         "</td>",
                         "<td class='pfam-line-table-td-line pfam-line-tooltip' ",
-                            "title=", domainTooltip(acc, id, s_start, s_end, p_start, p_end, perc), ">",
+                            "title=", domainTooltip(acc, id, description, s_start, s_end, p_start, p_end, perc), ">",
                             "<img src=", starting, " style='width: 0.2%; height:12px; margin-left:", newcoords['newstart'], "%; '/>",
                             "<img src='{% static 'Images/pfam-line.png' %}' ",
                                  "style='width:", newcoords['width'], "%; height:12px;'",
@@ -562,6 +566,7 @@
                 newhtml += domainRowTemplate(
                     doms[i]["accession"],
                     doms[i]["identifier"],
+                    doms[i]["description"],
                     doms[i]["s_start"],
                     doms[i]["s_end"],
                     doms[i]["p_start"],

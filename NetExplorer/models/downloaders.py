@@ -34,9 +34,14 @@ class DownloadHandler(object):
         return [(node.symbol, node.orf, node.database)]
 
     def _get_homology_data(node):
-        return [(node.symbol, node.homolog.human.symbol, 
-                node.homolog.blast_eval, node.homolog.blast_cov, 
-                node.homolog.nog_eval, node.homolog.pfam_sc)]
+        if node.homolog is not None:
+            return [(node.symbol, node.homolog.human.symbol, 
+                    node.homolog.blast_eval, node.homolog.blast_cov, 
+                    node.homolog.nog_eval, node.homolog.pfam_sc)]
+        else:
+            return [(node.symbol, "NA", 
+                    "NA", "NA", 
+                    "NA", "NA")]
 
     def _get_pfam_data(node):
         node.get_domains()
