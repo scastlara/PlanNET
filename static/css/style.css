@@ -2483,3 +2483,14 @@ summary { display: list-item !important; }
 
 .tutorial-img { border: 2px solid #E7E7E7; margin-bottom: 5px; margin-top: 5px; }
 .tutorial-animation { border: 2px solid #E7E7E7; margin-bottom: 5px; margin-top: 15px; }
+
+#performance-table {
+    text-align: center;
+    color: #777777;
+}
+#performance-table th {
+    text-align: center;
+}
+
+.about-img { width: 350px; border: 2px solid #E7E7E7; margin-top: 10px; margin-bottom: 25px;}
+.about-img-container { text-align: center; }
