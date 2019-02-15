@@ -49,6 +49,55 @@
 
     <br>
     <br>
+    <h2 id="update-notes">About the PPI predictor</h2>
+    <hr>
+    <p>
+        PlanNET uses a <a href="https://en.wikipedia.org/wiki/Random_forest" target="_blank">Random Forest classifier</a> in order to predict protein-protein interactions for the planaria Schmidtea mediterranea, by using a reference human network. 
+        This predictor takes into account 19 features for each possible pair of interacting proteins, and then it assigns a score to each pair, ranging from 0 to 1. 
+    </p>
+    <p>
+        The prediction of interactions was evaluated using <a href="https://en.wikipedia.org/wiki/Out-of-bag_error" target="_blank">OOB values of performance</a>. 
+        The performance measures for the current version of PlanNET are:
+    </p>
+    <table id="performance-table" class="table table-hover">
+        <thead>
+            <tr>
+                <th data-toggle="tooltip" data-placement="top" title="Fraction of correct interactions among predicted interactions.">Precision</th>
+                <th data-toggle="tooltip" data-placement="top" title="Fraction of correct interactions predicted over total number of interactions.">Recall</th>
+                <th data-toggle="tooltip" data-placement="top" title="Proportion of non-interactions predicted as such.">Specificity</th>
+                <th data-toggle="tooltip" data-placement="top" title="Harmonic mean of precision and recall.">F-measure</th>
+                <th data-toggle="tooltip" data-placement="top" title="Proportion of correct predictions.">Accuracy</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>31.23 %</td>
+                <td>27.80 %</td>
+                <td>99.75 %</td>
+                <td>29.42 %</td>
+                <td>99.46 %</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="row">
+        <div class="about-img-container col-sm-6">
+            <img class="about-img" src="{% static 'Images/roc_curve.png' %}">
+        </div>
+        <div class="col-sm-6"> 
+            <img class="about-img" src="{% static 'Images/var_importance.png' %}">
+        </div>
+    </div>
+
+
+    <p>
+        For more information refer to the <a href="https://academic.oup.com/bioinformatics/article/34/6/1016/4657068" target="_blank">published paper</a>.
+    </p>
+
+
+
+    <br>
+    <br>
     <h2 id="update-notes">Update Notes</h2>
     <hr>
     
