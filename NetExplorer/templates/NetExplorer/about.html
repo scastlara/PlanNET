@@ -82,17 +82,30 @@
 
     <div class="row">
         <div class="about-img-container col-sm-6">
-            <img class="about-img" src="{% static 'Images/roc_curve.png' %}">
+            <figure>
+                <a href="{% static 'Images/roc_curve.png' %}" title="Full screen" alt="Roc curve of PlanNET classifier" target="_blank">
+                    <img class="about-img" src="{% static 'Images/roc_curve.png' %}">
+                </a>
+                <figcaption><b>ROC curve</b> of the random forest classifiers built using the OOB votes of the predictor.</figcaption>
+            </figure>
         </div>
-        <div class="col-sm-6"> 
-            <img class="about-img" src="{% static 'Images/var_importance.png' %}">
+        <div class="about-img-container col-sm-6"> 
+            <figure>
+                <a href="{% static 'Images/var_importance.png' %}" title="Full screen" alt="Variable importance of PlanNET classifier" target="_blank">
+                    <img class="about-img" src="{% static 'Images/var_importance.png' %}">
+                </a>
+                <figcaption><b>Variable importance</b> of the 19 features used for the classification expressed as the mean decrease in <a href="https://en.wikipedia.org/wiki/Gini_coefficient" target="_blank">Gini coefficient</a>.</figcaption>
+            </figure>
         </div>
     </div>
 
+    <br>
 
-    <p>
-        For more information refer to the <a href="https://academic.oup.com/bioinformatics/article/34/6/1016/4657068" target="_blank">published paper</a>.
-    </p>
+    <blockquote>
+        <p>
+            For more information refer to the <a href="https://academic.oup.com/bioinformatics/article/34/6/1016/4657068" target="_blank">published paper</a>.
+        </p>
+    </blockquote>
 
 
 
