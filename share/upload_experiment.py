@@ -62,6 +62,10 @@ def get_options():
         help='TSNE file', required=True
     )
     parser.add_argument(
+        '-c', '--conditions',
+        help="Experiment conditions", required=False
+    )
+    parser.add_argument(
         '-d','--dataset',
         help='Dataset name', required=True
     )
@@ -77,6 +81,7 @@ def get_options():
         '-m','--mysql_db',
         help='Mysql database', required=True
     )
+
     
     options = parser.parse_args()
     return options
@@ -210,7 +215,23 @@ def upload_tsne(opts, experiment, dataset):
             sample_id = r[0]
             cursor.execute("""INSERT INTO NetExplorer_cellplotposition (experiment_id, sample_id, dataset_id, x_position, y_position) 
             VALUES (%s, %s, %s, %s, %s)""", (experiment, sample_id, dataset, x, y))
-            
+
+
+def upload_conditions(opts, experiment):
+    '''
+    Uploads conditions
+    '''
+    with open(opts.conditions, "r") as cond_fh:
+        next(cond_fh)
+        for line in cond_fh:
+            line = line.strip()
+            cols = line.split("\t")
+            cond_type = get_condition_type(cols[1])
+            cursor.execute("""
+            INSERT INTO NetExplorer_condition (name, experiment_id, cond_type_id, defines_cell_type, cell_type, description)
+            VALUES (%s, %s, %s, %s, %s, %s)
+            """, (cols[0], experiment, cond_type, 1, cols[0], cols[3]))
+
 
 # MAIN
 #--------------------------------------------------------------------------------
@@ -227,14 +248,18 @@ experiment = get_experiment(opts, cursor)
 sys.stderr.write("Getting Dataset from database\n")
 dataset = get_dataset(opts, cursor)
 
+if opts.conditions:
+    sys.stderr.write("Uploading conditions\n")
+    upload_conditions(opts, experiment)
+
 sys.stderr.write("Uploading Absolute expression\n")
-#upload_expression_absolute(opts, experiment, dataset)
+upload_expression_absolute(opts, experiment, dataset)
 
 sys.stderr.write("Uploading relative expression\n")
 upload_expression_relative(opts, experiment, dataset)
 
 sys.stderr.write("Uploading cell plot positions (t-SNE)\n")
-#upload_tsne(opts, experiment, dataset)
+upload_tsne(opts, experiment, dataset)
 
 sys.stderr.write("Committing to database\n")
 db.commit()
