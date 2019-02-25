@@ -2449,7 +2449,6 @@ summary:hover { cursor: pointer; opacity: 0.8; }
 summary { display: list-item !important; }
 
 .location-contig {
-    display: block;
     font-size: 14px;
     font-weight: bold;
     color: #396494;
