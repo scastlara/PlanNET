@@ -22,7 +22,16 @@ def map_expression_one(request):
         colormap = dict()
         max_expression = 0
         units = None
+
+        genes_in_experiment = set(ExperimentGene.objects.filter(
+            experiment=experiment,
+            gene_symbol__in=symbols
+        ).values_list("gene_symbol", flat=True))
+        
         for symbol in symbols:
+            if symbol not in genes_in_experiment:
+                # Gene symbol does not belong to the experiment
+                continue
             expressions = ExpressionAbsolute.objects.filter(
                 experiment=experiment,
                 dataset=dataset,
@@ -34,11 +43,20 @@ def map_expression_one(request):
                 if units is None:
                     units = expressions[0].units
                 if len(expressions) > 1:
-                    expression = mean([ exp.expression_value for exp in expressions ])
+                    mean_exp = 0
+                    for exp in expressions:
+                        mean_exp += exp.expression_value
+                    # Add missing zeroes, because zeroes are not stored in DB
+                    for i in range(1, len(samples) - len(expressions)):
+                        mean_exp += 0
+                    mean_exp = mean_exp / len(samples)
+                    expression = mean_exp
                 else:
                     expression = expressions[0].expression_value
             else:
-                expression = "NA"
+                # Gene symbol belongs to the experiment, but does not have expression
+                # in any sample (all of them == 0)
+                expression = 0
             if reference == "Experiment":
                 colormap[symbol] = condition.get_color(dataset, expression, profile)
             else:

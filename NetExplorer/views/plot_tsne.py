@@ -5,6 +5,21 @@ def do_tsne(experiment, dataset, conditions, gene_symbol, ctype, with_color):
     Makes tsne plot
     '''
     theplot = ScatterPlot()
+
+    # Trying to plot gene expression,
+    # check if gene belongs to experiment
+    if with_color is True:
+        genes_in_experiment = ExperimentGene.objects.filter(
+            experiment=experiment,
+            gene_symbol=gene_symbol
+        ).values_list("gene_symbol", flat=True)
+        if len(genes_in_experiment) == 0:
+            theplot = None
+            return
+    # From this point on, gene_symbol BELONGS to experiment,
+    # and if a given cells does not have expression for it,
+    # then it is zero.
+
     for condition in conditions:
         trace_name = condition.name
         if condition.defines_cell_type is True and condition.cell_type != "Unknown":
@@ -36,11 +51,22 @@ def do_tsne(experiment, dataset, conditions, gene_symbol, ctype, with_color):
                 thedict = dict()
                 for cellexp in cell_expression:
                     thedict[cellexp.sample.id] = cellexp.expression_value
-                cell_expression = [ thedict[cell_idx] for cell_idx in cell_order ]
+                
+                cell_expression = list()
+                for cell_idx in cell_order:
+                    if cell_idx not in thedict:
+                        cell_expression.append(0)
+                    else:
+                        cell_expression.append(thedict[cell_idx])
+                # cell_expression = [ thedict[cell_idx] for cell_idx in cell_order ]
                 theplot.add_color_to_trace(trace_name, cell_expression)
+                
             else:
-                theplot = None
-                break
+                # We need to add zeroes to all cells in this condition
+                cell_expression = list()
+                for cell_idx in cell_order:
+                    cell_expression.append(0)
+                theplot.add_color_to_trace(trace_name, cell_expression)
     return theplot
 
 

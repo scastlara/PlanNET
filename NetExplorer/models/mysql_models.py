@@ -255,7 +255,7 @@ class ExpressionAbsolute(Model):
         return name_str
 
     
-    
+# ------------------------------------------------------------------------------
 class CellPlotPosition(models.Model):
     experiment = models.ForeignKey(Experiment, on_delete=models.CASCADE)
     sample = models.ForeignKey(Sample, on_delete=models.CASCADE)
@@ -282,4 +282,15 @@ class ExpressionRelative(models.Model):
         name_str += str(self.gene_symbol) + ": "
         name_str += str(self.fold_change) + " "
         name_str += "(p=" + str(self.pvalue) + ")"
+        return name_str
+
+
+# ------------------------------------------------------------------------------
+class ExperimentGene(models.Model):
+    experiment = models.ForeignKey(Experiment, on_delete=models.CASCADE)
+    gene_symbol =  models.CharField(max_length=50)
+
+    def __str__(self):
+        name_str = self.experiment.name + " - "
+        name_str += self.gene_symbol
         return name_str
