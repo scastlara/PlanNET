@@ -53,7 +53,7 @@ class DownloadHandler(object):
 
     def _get_go_data(node):
         node.get_geneontology()
-        gos = ";".join([ go.accession + "=" + go.domain  for go in node.gene_ontologies ])
+        gos = ";".join([ go.accession + "=" + go.domain + "=" + go.name  for go in node.gene_ontologies ])
         return [(node.symbol, gos)]
 
     def _get_interactions_data(node):
