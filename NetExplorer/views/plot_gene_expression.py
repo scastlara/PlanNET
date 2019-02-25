@@ -17,7 +17,7 @@ def do_barplot(experiment, dataset, conditions, gene_symbols):
         
         for condition in conditions:
             samples = SampleCondition.objects.filter(condition=condition).values('sample')
-            expression = ExpressionAbsolute.objects.filter(
+            expression = ExpressionAbsolute.objects.use_index("NetExplorer_expressionabsolute_c08decf8", "NetExplorer_expressionabsolute_gene_symbol_idx").filter(
                 experiment=experiment, dataset=dataset, 
                 sample__in=samples,    gene_symbol=gene_symbol)
             if expression.exists():
@@ -56,9 +56,11 @@ def do_violin(experiment, dataset, conditions, gene_symbols, ctype):
                 condname = str(condition.name)
 
             samples = SampleCondition.objects.filter(condition=condition).values('sample')
-            expression = ExpressionAbsolute.objects.filter(
+            expression = ExpressionAbsolute.objects.use_index("NetExplorer_expressionabsolute_c08decf8", "NetExplorer_expressionabsolute_gene_symbol_idx").filter(
                 experiment=experiment, dataset=dataset, 
                 sample__in=samples,    gene_symbol=gene_symbol)
+            
+            print(expression.query)
 
             theplot.add_group(condname)
 

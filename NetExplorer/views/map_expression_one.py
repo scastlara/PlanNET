@@ -32,12 +32,12 @@ def map_expression_one(request):
             if symbol not in genes_in_experiment:
                 # Gene symbol does not belong to the experiment
                 continue
-            expressions = ExpressionAbsolute.objects.filter(
+            expressions = ExpressionAbsolute.objects.use_index("NetExplorer_expressionabsolute_c08decf8", "NetExplorer_expressionabsolute_gene_symbol_idx").filter(
                 experiment=experiment,
                 dataset=dataset,
                 sample__in=samples,
                 gene_symbol=symbol)
-            if expressions.exists():
+            if expressions:
                 # Check if expression is a single value for each gene in the network
                 # or if there are replicates (multiple samples per condition -> multiple expression values)
                 if units is None:
@@ -46,9 +46,6 @@ def map_expression_one(request):
                     mean_exp = 0
                     for exp in expressions:
                         mean_exp += exp.expression_value
-                    # Add missing zeroes, because zeroes are not stored in DB
-                    for i in range(1, len(samples) - len(expressions)):
-                        mean_exp += 0
                     mean_exp = mean_exp / len(samples)
                     expression = mean_exp
                 else:
