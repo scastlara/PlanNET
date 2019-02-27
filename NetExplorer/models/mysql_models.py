@@ -169,11 +169,9 @@ class Condition(models.Model):
             experiment=self.experiment,
             dataset=dataset,
             sample__in=samples
-        ).use_index(
-            "NetExplorer_expressionabsolute_c08decf8"
         ).values(
             "gene_symbol"
-        ).annotate(
+        ).use_index('NetExplorer_expressionabsolute_samplegene').annotate(
             average_exp=Avg('expression_value')
         ).aggregate(Max('average_exp'))['average_exp__max']
         self.max_expression = round(self.max_expression, 3)
