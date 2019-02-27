@@ -258,11 +258,6 @@ class ScatterPlot(object):
                 trace_data['text'] = trace.names
             theplot['data'].append(trace_data)
         theplot['layout'] = {'xaxis': dict(), 'yaxis': dict()}
-        if self.limits:
-            if 'x' in self.limits:
-                theplot['layout']['xaxis']['range'] = self.limits['x']
-            if 'y' in self.limits:
-                theplot['layout']['yaxis']['range'] = self.limits['y']
         if self.units:
             for axis, units in self.units.items():
                 axis_name = axis + 'axis'
