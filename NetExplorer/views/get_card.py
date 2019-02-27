@@ -26,7 +26,6 @@ def get_card(request, symbol=None, database=None):
             template = "NetExplorer/smesgene_card.html"
             card_node = gsearch.get_planarian_genes()[0]
             contigs = card_node.get_planarian_contigs()
-            print("YP")
             best_contig = card_node.get_best_transcript()
             graph = GraphCytoscape()
             if best_contig:

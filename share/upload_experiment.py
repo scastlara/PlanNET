@@ -62,6 +62,10 @@ def get_options():
         help='TSNE file', required=True
     )
     parser.add_argument(
+        '-g', '--genes',
+        help="Experiment genes", required=True
+    )
+    parser.add_argument(
         '-c', '--conditions',
         help="Experiment conditions", required=False
     )
@@ -203,7 +207,7 @@ def upload_expression_relative(opts, experiment, dataset):
                 condition2_id, cond_type, dataset, 
                 cols[5], cols[6], cols[7])
 
-
+#--------------------------------------------------------------------------------
 def upload_tsne(opts, experiment, dataset):
     with open(opts.tsne, "r") as tsne_fh:
         for line in tsne_fh:
@@ -216,7 +220,7 @@ def upload_tsne(opts, experiment, dataset):
             cursor.execute("""INSERT INTO NetExplorer_cellplotposition (experiment_id, sample_id, dataset_id, x_position, y_position) 
             VALUES (%s, %s, %s, %s, %s)""", (experiment, sample_id, dataset, x, y))
 
-
+#--------------------------------------------------------------------------------
 def upload_conditions(opts, experiment):
     '''
     Uploads conditions
@@ -232,6 +236,19 @@ def upload_conditions(opts, experiment):
             VALUES (%s, %s, %s, %s, %s, %s)
             """, (cols[0], experiment, cond_type, 1, cols[0], cols[3]))
 
+#--------------------------------------------------------------------------------
+def upload_genes(opts, experiment):
+    '''
+    Uploads genes for which there is expression information 
+    for a particular experiment
+    '''
+    with open(opts.genes, "r") as genes_fh:
+        for line in genes_fh:
+            line = line.strip()
+            cursor.execute("""
+                INSERT INTO NetExplorer_experimentgene (experiment_id, gene_symbol)
+                VALUES (%s, %s)
+            """, (experiment, line))
 
 # MAIN
 #--------------------------------------------------------------------------------
@@ -251,15 +268,21 @@ dataset = get_dataset(opts, cursor)
 if opts.conditions:
     sys.stderr.write("Uploading conditions\n")
     upload_conditions(opts, experiment)
+    db.commit()
 
 sys.stderr.write("Uploading Absolute expression\n")
-upload_expression_absolute(opts, experiment, dataset)
+#upload_expression_absolute(opts, experiment, dataset)
+#db.commit()
+
 
 sys.stderr.write("Uploading relative expression\n")
 upload_expression_relative(opts, experiment, dataset)
 
 sys.stderr.write("Uploading cell plot positions (t-SNE)\n")
 upload_tsne(opts, experiment, dataset)
+
+sys.stderr.write("Uploading genes\n")
+upload_genes(opts, experiment)
 
 sys.stderr.write("Committing to database\n")
 db.commit()

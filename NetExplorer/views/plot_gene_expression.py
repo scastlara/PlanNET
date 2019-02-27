@@ -16,16 +16,17 @@ def do_barplot(experiment, dataset, conditions, gene_symbols):
             theplot.add_trace_name(g_idx, gene_symbol)
         
         for condition in conditions:
-            samples = SampleCondition.objects.filter(condition=condition).values('sample')
+            samples = SampleCondition.objects.filter(condition=condition).values_list('sample', flat=True)
             expression = ExpressionAbsolute.objects.filter(
                 experiment=experiment, dataset=dataset, 
-                sample__in=samples,    gene_symbol=gene_symbol)
+                sample__in=list(samples),    gene_symbol=gene_symbol)
             if expression.exists():
                 if units is None:
                     units = expression[0].units
                 expression = expression[0].expression_value
             else:
                 expression = 0
+
             theplot.add_group(condition.name)
             theplot.add_value(expression, condition.name, g_idx)
             
@@ -49,19 +50,20 @@ def do_violin(experiment, dataset, conditions, gene_symbols, ctype):
             theplot.add_trace_name(g_idx, gene_symbol)
         
         for condition in conditions:
-            if ctype == "Cluster":
+            if ctype == "Cluster" and str(condition.name).isdigit():
                 condname = "c" + str(condition.name)
             else:
                 condname = str(condition.name)
 
-            samples = SampleCondition.objects.filter(condition=condition).values('sample')
+            #print(condname)
+            samples = SampleCondition.objects.filter(condition=condition).values_list('sample', flat=True)
             expression = ExpressionAbsolute.objects.filter(
                 experiment=experiment, dataset=dataset, 
-                sample__in=samples,    gene_symbol=gene_symbol)
-
+                sample__in=list(samples),    gene_symbol=gene_symbol)
             theplot.add_group(condname)
 
-            if expression.exists():
+            added_values = int()
+            if expression:
                 if units is None:
                     units = expression[0].units
                 for exp in expression:
@@ -69,8 +71,17 @@ def do_violin(experiment, dataset, conditions, gene_symbols, ctype):
                         theplot.add_value(exp.expression_value, condname, g_idx)
                     else:
                         theplot.add_value(0, condname, g_idx)
+                    added_values += 1
             else:
-                expression = 0
+                # No expression in any cell/sample for this condition
+                theplot.add_value(0, condname, g_idx)
+                added_values += 1
+            
+            # Add missing values in database: genes don't have expression in some
+            # samples because we don't store zeroes, thus, we have to add the zeroes manually.
+            missing = len(samples) - added_values
+            for i in range(1, missing):
+                theplot.add_value(0, condname, g_idx)
     theplot.add_units('y', units)
     return theplot
 
@@ -84,6 +95,7 @@ def is_one_sample(experiment, conditions):
         return True
     else:
         return False
+
 
 def plot_gene_expression(request):
     """
@@ -100,21 +112,31 @@ def plot_gene_expression(request):
         gene_symbols = list()
         for gene_name in gene_names:
             gene_symbols.extend(disambiguate_gene(gene_name, dataset))
+
         # Get Experiment and conditions
         experiment = Experiment.objects.get(name=exp_name)
         dataset = Dataset.objects.get(name=dataset)
         conditions = Condition.objects.filter(experiment__name=exp_name)
 
-        if is_one_sample(experiment, conditions):
-            theplot = do_barplot(experiment, dataset, conditions, gene_symbols)
-        else:
-            conditions = Condition.objects.filter(
-                experiment__name=exp_name, 
-                cond_type=ConditionType.objects.get(name=ctype))
-            theplot = do_violin(experiment, dataset, conditions, gene_symbols, ctype)
+        # Filter genes to only those in experiment
+        genes_in_experiment = ExperimentGene.objects.filter(
+            experiment=experiment,
+            gene_symbol__in=gene_symbols
+        ).values_list("gene_symbol", flat=True)
+        
+        if len(genes_in_experiment) > 0:
+            if is_one_sample(experiment, conditions):
+                theplot = do_barplot(experiment, dataset, conditions, genes_in_experiment)
+            else:
+                conditions = Condition.objects.filter(
+                    experiment__name=exp_name, 
+                    cond_type=ConditionType.objects.get(name=ctype))
+                theplot = do_violin(experiment, dataset, conditions, genes_in_experiment, ctype)
 
-        if theplot is not None and not theplot.is_empty():
-            response = theplot.plot()
+            if theplot is not None and not theplot.is_empty():
+                response = theplot.plot()
+            else:
+                response = None
         else:
             response = None
 

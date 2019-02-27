@@ -30,10 +30,12 @@
         <h4>Conditions:</h4>
         <div id="planexp-conditions">
             {% for cond_type, condition_list in conditions.items %}
-                <div class='cond-type'>{{ cond_type }}</div>
-                {% for condition in condition_list %}
-                    <div class='cond-name'><b>{{ condition.name }}</b> - {{ condition.description }}</div>
-                {% endfor %}
+                <details>
+                    <summary><div class='cond-type'>{{ cond_type }}</div></summary>
+                    {% for condition in condition_list %}
+                        <div class='cond-name'><b>{{ condition.name }}</b> - {{ condition.description }}</div>
+                    {% endfor %}
+                </details>
             {% endfor %}
             <!-- Conditions here -->
         </div>

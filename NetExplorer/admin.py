@@ -1,5 +1,5 @@
 from django.contrib import admin
-from NetExplorer.models import Dataset, UserDatasetPermission, ExperimentType, ExperimentDataset, Experiment, UserExperimentPermission, ConditionType, Condition, ExpressionAbsolute, ExpressionRelative, Sample, SampleCondition
+from NetExplorer.models import Dataset, UserDatasetPermission, ExperimentType, ExperimentDataset, Experiment, UserExperimentPermission, ConditionType, Condition, ExpressionAbsolute, ExpressionRelative, Sample, SampleCondition, ExperimentGene
 # Register your models here.
 
 admin.site.register(Dataset)
@@ -14,4 +14,5 @@ admin.site.register(ExpressionAbsolute)
 admin.site.register(ExpressionRelative)
 admin.site.register(Sample)
 admin.site.register(SampleCondition)
+admin.site.register(ExperimentGene)
 

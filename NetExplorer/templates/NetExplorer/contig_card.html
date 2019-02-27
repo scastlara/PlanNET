@@ -155,6 +155,16 @@
                                         </td>  </tr>
                                 </table>
                             {% endif %}
+                        
+                        <br>
+                        <h2><span class="glyphicon glyphicon-tag"></span> Genomic location</h2>
+                        <hr class="h2-sep">
+                            
+                        {% if node.database == "Smest" or node.database == "Dresden" %}
+                            <iframe id="jbrowser" width="100%" height="400px" src="https://compgen.bio.ub.edu/jbrowse/index.html?data=dd_Smes_g4&loc={{ node.symbol }}&tracks=Smes_g4_scaffolds,SmesG_v2_genes,Dresden&overview=1&highlight=&tracklist=1&highres=2"></iframe>    
+                        {% else %}
+                            <iframe id="jbrowser" width="100%" height="400px" src="https://compgen.bio.ub.edu/jbrowse/index.html?data=dd_Smes_g4&loc={{ node.symbol }}&tracks=Smes_g4_scaffolds,SmesG_v2_genes,Dresden,{{ node.database }}&overview=1&highlight=&tracklist=1&highres=2"></iframe>
+                        {% endif %}
 
                         <br>
                         <h2><span class="glyphicon glyphicon-tag"></span> Gene Ontologies</h2>

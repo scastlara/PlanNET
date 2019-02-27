@@ -301,7 +301,7 @@ class PlotlyTrace(object):
         self.y = list()
         self.names = list()
         self.mode = 'markers'
-        self.type = 'scatter'
+        self.type = 'scattergl'
         self.color = list()
 
     

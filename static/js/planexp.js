@@ -362,8 +362,8 @@ var PlanExp = (function() {
      *   Returns:
      *     - Nothing
      */
-    plotTSNE = function(expName, dataset, geneName, withcolor, ctype, plotDivId) {
-        $("#tsne-plot-loading").show();
+    plotTSNE = function(expName, dataset, geneName, withcolor, ctype, plotDivId, loadingDiv) {
+        $("#" + loadingDiv).show();
         $("#" + plotDivId).html("");
         $.ajax({
             type: "GET",
@@ -383,7 +383,7 @@ var PlanExp = (function() {
                 } else {
                     $("#tsne-plot-genenotfound").show(250);
                 }
-                $("#tsne-plot-loading").hide();
+                $("#" + loadingDiv).hide();
             }
         });
 
@@ -647,6 +647,8 @@ var PlanExp = (function() {
         $("#planexp-tsne-toc").hide();
         $("#planexp-network").hide();
         $("#planexp-network-toc").hide();
+        $("#tsne-plot-gene").html("");
+        $("#tsne-plot-condition").html("");
     });
 
 
@@ -664,7 +666,8 @@ var PlanExp = (function() {
         $('#planexp-dge-c1').selectpicker('val', '');
         $('#planexp-dge-c2').selectpicker('val', '');
         $("#expression-plot").html("");
-        $("#plot-tsne").html("");
+        $("#tsne-plot-gene").html("");
+        $("#tsne-plot-condition").html("");
         $("#volcano-plot").html("");
         $("#plot-genenotfound").hide();
 
@@ -741,16 +744,20 @@ var PlanExp = (function() {
     });
 
 
-    $("#plot-tsne-btn").on("click", function() {
+    $(".plot-tsne-btn").on("click", function() {
         var expName  = $("#select-experiment").val();
         var dataset  = $("#select-dataset").val();
         var geneName = $("#tsne-search").val();
         var ctype    = $("#tsne-ctype").val();
         var activePanel = $("#planexp-tsne .tab-content .tab-pane.active");
         var withcolor = false;
+        var plotDiv = "tsne-plot-condition";
+        var loadingDiv = "tsne-plot-condition-loading";
         if (activePanel.attr('id') == "tsne-gene-tab") {
             withcolor = true;
             ctype = "Cluster";
+            plotDiv = "tsne-plot-gene";
+            loadingDiv = "tsne-plot-gene-loading";
             if (!geneName) {
                 $("#tsne-plot-genenotfound").show(250);
                 return;
@@ -758,7 +765,8 @@ var PlanExp = (function() {
         }
         
         $("#tsne-plot-genenotfound").hide();
-        plotTSNE(expName, dataset, geneName, withcolor, ctype, "tsne-plot");
+
+        plotTSNE(expName, dataset, geneName, withcolor, ctype, plotDiv, loadingDiv);
     });
 
 

@@ -66,7 +66,7 @@ sub read_and_print_difffile {
     <$fh>; # skip header
     while (<$fh>) {
         chomp;
-        my ($c1, $c2, $gene, $fc, $fdr, $junk) = split /\t/;
+        my ($jk, $c1, $c2, $gene, $fc, $fdr, $junk) = split /\t/;
         print $ofh "$exp_name\t$c1\t$c2\tCluster\t$dataset\t$gene\t$fc\t$fdr\n";
     }
 
