@@ -209,6 +209,8 @@ class ScatterPlot(object):
         self.traces = dict()
         self.limits = { 'x': list(), 'y': list()}
         self.units = dict()
+        self.cmin = 0
+        self.cmax = None
     
     def add_trace(self, name):
         if name not in self.traces:
@@ -251,7 +253,7 @@ class ScatterPlot(object):
             trace_data['type'] = trace.type
             trace_data['mode'] = trace.mode
             if trace.color:
-                trace_data['marker'] = { 'color': list(trace.color) }
+                trace_data['marker'] = { 'color': list(trace.color), 'cmin': self.cmin, 'cmax': self.cmax }
             if trace.names:
                 trace_data['text'] = trace.names
             theplot['data'].append(trace_data)
@@ -265,11 +267,17 @@ class ScatterPlot(object):
             for axis, units in self.units.items():
                 axis_name = axis + 'axis'
                 theplot['layout'][axis_name]['title'] = units
+        
         return theplot
     
     def add_color_to_trace(self, trace_name, colors):
         if trace_name in self.traces:
             self.traces[trace_name].color = colors
+            maxc = max(colors)
+            if self.cmax is None:
+                self.cmax = maxc
+            if maxc > self.cmax:
+                self.cmax = maxc
         else:
             raise(KeyError("Trace %s not found in ScatterPlot!" % trace_name))
 
