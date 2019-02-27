@@ -23,16 +23,18 @@ def do_tsne(experiment, dataset, conditions, gene_symbol, ctype, with_color):
     for condition in conditions:
         trace_name = condition.name
         if condition.defines_cell_type is True and condition.cell_type != "Unknown":
-            trace_name = condition.cell_type + " (Cluster " + str(condition.name) + ")"
+            trace_name = condition.cell_type
         theplot.add_trace(trace_name)
-        samples = Sample.objects.filter(experiment=experiment, samplecondition__condition=condition)
+        samples = Sample.objects.filter(experiment=experiment, samplecondition__condition=condition).values_list('pk', flat=True)
         cell_positions = CellPlotPosition.objects.filter(
             experiment=experiment, dataset=dataset, 
-            sample__in=samples
-        )
+            sample__in=list(samples)
+        ).select_related('sample')
 
+        
         cell_order = list()
         for cell in cell_positions:
+            # NEED TO OPTIMIZE WITH select_related, each cell is calling a query to get sample name!
             theplot.add_x(trace_name, float(cell.x_position))
             theplot.add_y(trace_name, float(cell.y_position))
             cell_name = cell.sample.sample_name
@@ -43,8 +45,9 @@ def do_tsne(experiment, dataset, conditions, gene_symbol, ctype, with_color):
             # Get Gene expression for cells
             cell_expression = ExpressionAbsolute.objects.filter(
                 experiment=experiment, dataset=dataset,
-                sample__in=samples, gene_symbol=gene_symbol
-            )
+                sample__in=list(samples), gene_symbol=gene_symbol
+            ).select_related('sample')
+
             if cell_expression:
                 # We need a dictionary with {cell_id : cell_expression}
                 # so we can keep the same order as cell positions (in cell_order) 

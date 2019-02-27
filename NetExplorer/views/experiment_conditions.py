@@ -16,7 +16,10 @@ def experiment_conditions(request):
         for cond in sorted(conditions, key=lambda x: x.name):
             cond_name = str(cond.name)
             if cond.defines_cell_type and cond.cell_type != "Unknown":
-                cond_name = str(cond.name) + " (" + cond.cell_type + ")"
+                if cond.name.isdigit():
+                    cond_name = str(cond.name) + " (" + cond.cell_type + ")"
+                else:
+                    cond_name = cond.cell_type
             response[cond_name] = cond.cond_type.name
         return HttpResponse(json.dumps(response), content_type="application/json")
     else:

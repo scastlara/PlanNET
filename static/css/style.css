@@ -2143,13 +2143,23 @@ kbd {
     display: inline-block; 
     height: 500px; 
     min-width: 700px; 
+    width: 100%;
     background-color: #f4f4f4; 
 }
 
-#tsne-plot {
+#tsne-plot-condition {
     display: inline-block; 
-    height: 500px; 
+    height: 700px; 
     min-width: 700px; 
+    width: 100%;
+    background-color: #f4f4f4; 
+}
+
+#tsne-plot-gene {
+    display: inline-block; 
+    height: 700px; 
+    min-width: 700px; 
+    width: 100%;
     background-color: #f4f4f4; 
 }
 
@@ -2195,7 +2205,15 @@ kbd {
     margin-top: 175px;
 }
 
-#tsne-plot-loading {
+#tsne-plot-condition-loading {
+    display: none;
+    position: absolute;
+    z-index: 2;
+    left: calc(50% - 75px);
+    margin-top: 175px;
+}
+
+#tsne-plot-gene-loading {
     display: none;
     position: absolute;
     z-index: 2;
@@ -2218,7 +2236,7 @@ kbd {
     background: #E7E7E7;
 }
 
-#plot-tsne-btn    { width: 125px; }
+.plot-tsne-btn    { margin-top: 20px; width: 125px; }
 
 #planexp-toc {
     padding: 8px;

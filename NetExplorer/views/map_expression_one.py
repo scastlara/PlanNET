@@ -17,7 +17,7 @@ def map_expression_one(request):
         experiment = Experiment.objects.get(name=exp_name)
         dataset = Dataset.objects.get(name=dataset)
         condition = Condition.objects.get(name=condition, experiment=experiment)
-        samples = SampleCondition.objects.filter(condition=condition).values('sample')
+        samples = SampleCondition.objects.filter(condition=condition).values_list('sample', flat=True)
 
         colormap = dict()
         max_expression = 0
@@ -32,10 +32,10 @@ def map_expression_one(request):
             if symbol not in genes_in_experiment:
                 # Gene symbol does not belong to the experiment
                 continue
-            expressions = ExpressionAbsolute.objects.use_index("NetExplorer_expressionabsolute_c08decf8", "NetExplorer_expressionabsolute_gene_symbol_idx").filter(
+            expressions = ExpressionAbsolute.objects.filter(
                 experiment=experiment,
                 dataset=dataset,
-                sample__in=samples,
+                sample__in=list(samples),
                 gene_symbol=symbol)
             if expressions:
                 # Check if expression is a single value for each gene in the network

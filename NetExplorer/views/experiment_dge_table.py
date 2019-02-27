@@ -13,7 +13,10 @@ def do_volcano_plot(expression):
     max_y = 0
     for gexp in expression:
         x = gexp.fold_change
-        y = -(math.log10(gexp.pvalue))
+        if gexp.pvalue == 0:
+            y = -(math.log10(1e-303))
+        else:
+            y = -(math.log10(gexp.pvalue))
         theplot.add_x(trace_name, x)
         theplot.add_y(trace_name, y)
         theplot.add_name(trace_name, gexp.gene_symbol)

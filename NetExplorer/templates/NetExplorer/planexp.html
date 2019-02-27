@@ -161,6 +161,24 @@
                         <select id="tsne-ctype" name="tsne-ctype" class="selectpicker ctype-select" title="Select Condition Type">
                             <option value="Experimental" selected>Experimental</option>
                         </select>
+
+                        <span class="input-group-btn input-grp-withlabel">
+                            <button type="submit" value=" Send" class="btn btn-danger plot-tsne-btn" id="submit">Plot tSNE</button>
+                        </span>
+
+                        <br>
+                        <div id="plot-container">
+                            <div id="tsne-plot-genenotfound">
+                                <span class="glyphicon glyphicon-warning-sign"></span>
+                                Gene/Symbol not found
+                            </div>
+                            <div id="tsne-plot-condition-loading">
+                                <img class="planexp-loading-img" src="{% static 'Images/loading-planexp.gif' %}"/>
+                            </div>
+                            <div id="tsne-plot-condition">
+                            </div>
+                        </div>
+
                     </div>
 
                     <!-- Gene Symbol tab -->
@@ -169,26 +187,32 @@
                             <label for="genesymbol">Gene Symbol/s:</label>
                             <input type="text" id="tsne-search" class="form-control" name="genesymbol" placeholder="Enter Gene Symbols">
                         </div>
+
+                        <span class="input-group-btn input-grp-withlabel">
+                            <button type="submit" value=" Send" class="btn btn-danger plot-tsne-btn" id="submit">Plot tSNE</button>
+                        </span>
+
+                        <br>
+                        <div id="plot-container">
+                            <div id="tsne-plot-genenotfound">
+                                <span class="glyphicon glyphicon-warning-sign"></span>
+                                Gene/Symbol not found
+                            </div>
+                            <div id="tsne-plot-gene-loading">
+                                <img class="planexp-loading-img" src="{% static 'Images/loading-planexp.gif' %}"/>
+                            </div>
+                            <div id="tsne-plot-gene">
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <br>
-                <span class="input-group-btn input-grp-withlabel">
-                    <button id="plot-tsne-btn" type="submit" value=" Send" class="btn btn-danger" id="submit">Plot tSNE</button>
-                </span>
+
 
                 
-                <br>
-                <div id="plot-container">
-                    <div id="tsne-plot-genenotfound">
-                        <span class="glyphicon glyphicon-warning-sign"></span>
-                        Gene/Symbol not found
-                    </div>
-                    <div id="tsne-plot-loading">
-                        <img class="planexp-loading-img" src="{% static 'Images/loading-planexp.gif' %}"/>
-                    </div>
-                    <div id="tsne-plot">
-                    </div>
-                </div>
+
+                
+               
 
             </div> <!-- tSNE plot-->
             

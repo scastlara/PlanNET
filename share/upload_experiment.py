@@ -271,7 +271,9 @@ if opts.conditions:
     db.commit()
 
 sys.stderr.write("Uploading Absolute expression\n")
-upload_expression_absolute(opts, experiment, dataset)
+#upload_expression_absolute(opts, experiment, dataset)
+#db.commit()
+
 
 sys.stderr.write("Uploading relative expression\n")
 upload_expression_relative(opts, experiment, dataset)

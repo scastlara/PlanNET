@@ -16,10 +16,10 @@ def do_barplot(experiment, dataset, conditions, gene_symbols):
             theplot.add_trace_name(g_idx, gene_symbol)
         
         for condition in conditions:
-            samples = SampleCondition.objects.filter(condition=condition).values('sample')
-            expression = ExpressionAbsolute.objects.use_index("NetExplorer_expressionabsolute_c08decf8", "NetExplorer_expressionabsolute_gene_symbol_idx").filter(
+            samples = SampleCondition.objects.filter(condition=condition).values_list('sample', flat=True)
+            expression = ExpressionAbsolute.objects.filter(
                 experiment=experiment, dataset=dataset, 
-                sample__in=samples,    gene_symbol=gene_symbol)
+                sample__in=list(samples),    gene_symbol=gene_symbol)
             if expression.exists():
                 if units is None:
                     units = expression[0].units
@@ -50,22 +50,20 @@ def do_violin(experiment, dataset, conditions, gene_symbols, ctype):
             theplot.add_trace_name(g_idx, gene_symbol)
         
         for condition in conditions:
-            if ctype == "Cluster":
+            if ctype == "Cluster" and str(condition.name).isdigit():
                 condname = "c" + str(condition.name)
             else:
                 condname = str(condition.name)
 
-            samples = SampleCondition.objects.filter(condition=condition).values('sample')
-            expression = ExpressionAbsolute.objects.use_index("NetExplorer_expressionabsolute_c08decf8", "NetExplorer_expressionabsolute_gene_symbol_idx").filter(
+            #print(condname)
+            samples = SampleCondition.objects.filter(condition=condition).values_list('sample', flat=True)
+            expression = ExpressionAbsolute.objects.filter(
                 experiment=experiment, dataset=dataset, 
-                sample__in=samples,    gene_symbol=gene_symbol)
-            
-            print(expression.query)
-
+                sample__in=list(samples),    gene_symbol=gene_symbol)
             theplot.add_group(condname)
 
             added_values = int()
-            if expression.exists():
+            if expression:
                 if units is None:
                     units = expression[0].units
                 for exp in expression:
@@ -74,14 +72,16 @@ def do_violin(experiment, dataset, conditions, gene_symbols, ctype):
                     else:
                         theplot.add_value(0, condname, g_idx)
                     added_values += 1
+            else:
+                # No expression in any cell/sample for this condition
+                theplot.add_value(0, condname, g_idx)
+                added_values += 1
             
             # Add missing values in database: genes don't have expression in some
             # samples because we don't store zeroes, thus, we have to add the zeroes manually.
             missing = len(samples) - added_values
             for i in range(1, missing):
                 theplot.add_value(0, condname, g_idx)
-            
-
     theplot.add_units('y', units)
     return theplot
 
