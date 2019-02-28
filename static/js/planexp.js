@@ -649,6 +649,7 @@ var PlanExp = (function() {
         $("#planexp-network-toc").hide();
         $("#tsne-plot-gene").html("");
         $("#tsne-plot-condition").html("");
+
     });
 
 
@@ -962,4 +963,23 @@ var PlanExp = (function() {
         $("#planexp-cyt-legend").html(""); // Removing legend
     });
      
+
+
+    // AUTOCOMPLETE FOR GENE SYMBOL SEARCH
+    $("#gene-expression-search").autocomplete({
+        source: function (request, response) { 
+            autocompletePlanExp(request.term, response, $("#select-experiment").val());
+        
+        },
+        minLength: 2
+    });
+    $("#tsne-search").autocomplete({
+        source: function (request, response) { 
+            autocompletePlanExp(request.term, response, $("#select-experiment").val());
+        
+        },
+        minLength: 2
+    });
+
+
 })();

@@ -2512,3 +2512,12 @@ summary { display: list-item !important; }
 .about-img { width: 350px; border: 2px solid #E7E7E7; margin-top: 10px; margin-bottom: 10px;}
 .about-img:hover { opacity: 0.65; }
 .about-img-container { text-align: center; }
+
+.ui-autocomplete {
+    max-height: 200px;
+    overflow-y: auto;
+    /* prevent horizontal scrollbar */
+    overflow-x: hidden;
+    /* add padding to account for vertical scrollbar */
+    padding-right: 20px;
+} 

@@ -549,6 +549,9 @@ class PlanarianContig(Node):
         self.name = name
         self.gene = gene
 
+        if self.symbol.startswith("_"):
+            self.symbol = "dd_Smed_v6" + self.symbol
+
         if sequence is None and query is True:
             self.__query_node()
             self.get_gene_name()

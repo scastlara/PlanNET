@@ -250,7 +250,7 @@
                         <img class="pfind-form-icon" src="{% static 'Images/starting-node-icon.png' %}"/> Starting Node
                     </div>
                     <div class="panel-body">
-                        <input type="text" class="form-control" name="start" placeholder="Enter Symbol">
+                        <input id="pfind-start" type="text" class="form-control" name="start" placeholder="Enter Symbol">
                     </div>
                 </div>
 
@@ -270,7 +270,7 @@
                         <img class="pfind-form-icon" src="{% static 'Images/ending-node-icon.png' %}"/> Final Node
                     </div>
                     <div class="panel-body">
-                        <input type="text" class="form-control" name="end" placeholder="Enter Symbol">
+                        <input  id="pfind-end" type="text" class="form-control" name="end" placeholder="Enter Symbol">
                     </div>
                 </div>
 
@@ -330,6 +330,24 @@
         <script src="{% static 'js/get-card.js' %}"></script>
         <script src="{% static 'js/cyto-pathway.js' %}"></script>
         <script src="{% static 'js/filter-pathways.js' %}"></script>
+        <script src="{% static 'js/autocomplete.js' %}"></script>
+
+        <script>
+            $("#pfind-start").autocomplete({
+                source: function (request, response) { 
+                    autocompleteContig(request.term, response);
+                
+                },
+                minLength: 2
+            });
+            $("#pfind-end").autocomplete({
+                source: function (request, response) { 
+                    autocompleteContig(request.term, response);
+                
+                },
+                minLength: 2
+            });
+        </script>
         <script>
             $('#pfind-btn').on('click', function(){
                 $('#pfind-results-container').hide();

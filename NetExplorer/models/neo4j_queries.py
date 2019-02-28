@@ -334,3 +334,15 @@ GO_TO_CONTIG = """
            hom.blast_brh  AS blast_brh,
            hom.pfam_brh   AS pfam_brh
 """
+
+AUTOCOMPLETE_CONTIG = """
+    MATCH (n:%s)
+    WHERE n.symbol STARTS WITH "%s"
+    RETURN n.symbol as symbol ORDER BY n.symbol
+"""
+
+AUTOCOMPLETE_ACCESSION = """
+    MATCH (n:%s)
+    WHERE n.accession STARTS WITH "%s"
+    RETURN n.accession AS symbol ORDER BY n.accession
+"""

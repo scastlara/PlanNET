@@ -156,9 +156,18 @@
         <script src="{% static 'js/card-overlay.js' %}"></script>
         <script>$('[data-toggle="tooltip"]').tooltip({container:'body'});</script>
         <script src="{% static 'js/jquery-ui-all.min.js' %}"></script>
+        <script src="{% static 'js/autocomplete.js' %}"></script>
 
 
-
+        <script>
+            $("#genesearch-genesymbol-quick").autocomplete({
+                source: function (request, response) { 
+                    autocompleteContig(request.term, response);
+                
+                },
+                minLength: 2
+            });
+        </script>
         <!-- This function registers a "click event" on a small-searchpanel and
              sends to Django's view "get_card" the variables "symbol" and "database".
           -->

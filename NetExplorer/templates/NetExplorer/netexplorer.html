@@ -716,7 +716,7 @@
         <script src="{% static 'js/FileSaver.js' %}"></script>
         <script src="{% static 'js/bootstrap-switch.min.js' %}"></script>
         <script src="{% static 'js/select-expression.js' %}"></script>
-
+        <script src="{% static 'js/autocomplete.js' %}"></script>
         <script>
             $( function() {
                 $( ".info-tooltip" ).tooltip({
@@ -746,6 +746,16 @@
                     .data('slider');
 
         </script>
+
+    <script>
+        $(".netexplorer-form").autocomplete({
+            source: function (request, response) { 
+                autocompleteContig(request.term, response);
+            
+            },
+            minLength: 2
+        });
+    </script>
 
 
 

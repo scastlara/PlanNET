@@ -46,7 +46,7 @@ def symbol_is_empty(symbol):
     '''
     Checks if the input symbol from the forms is empty or not
     '''
-    if re.match(r"[a-zA-Z0-9]", symbol):
+    if re.match(r"[a-zA-Z0-9_]", symbol):
         return False
     else:
         return True
