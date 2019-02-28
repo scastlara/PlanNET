@@ -14,12 +14,12 @@ def autocomplete(request):
     if 'database' in request.GET:
         # Querying NEO4j
         database = request.GET['database']
-       
         if database == "Pfam" or database == "Go":
             query = neoquery.AUTOCOMPLETE_ACCESSION % (database, s_string)
         else:
             query = neoquery.AUTOCOMPLETE_CONTIG % (database, s_string)
         
+        print(query)
         results = GRAPH.run(query)
         results = results.data()
         results = [ val['symbol'] for val in results ]

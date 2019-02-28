@@ -55,7 +55,6 @@ def do_violin(experiment, dataset, conditions, gene_symbols, ctype):
             else:
                 condname = str(condition.name)
 
-            #print(condname)
             samples = SampleCondition.objects.filter(condition=condition).values_list('sample', flat=True)
             expression = ExpressionAbsolute.objects.filter(
                 experiment=experiment, dataset=dataset, 
@@ -86,6 +85,40 @@ def do_violin(experiment, dataset, conditions, gene_symbols, ctype):
     return theplot
 
 
+def do_heatmap(experiment, dataset, conditions, gene_symbols, ctype):
+    '''
+    Creates a heatmap comparing multiple genes in multiple conditions
+    '''
+    theplot = None
+    units = None
+
+    for g_idx, gene_symbol in enumerate(gene_symbols):
+        if theplot is None:
+            theplot = HeatmapPlot()
+            theplot.add_conditions(conditions)
+        
+        theplot.add_gene(gene_symbol)
+
+        expression_list = list() # holds gene expression list for all conditions (columns)
+        for condition in conditions:
+            if ctype == "Cluster" and str(condition.name).isdigit():
+                condname = "c" + str(condition.name)
+            else:
+                condname = str(condition.name)
+
+            samples = SampleCondition.objects.filter(condition=condition).values_list('sample', flat=True)
+            samples = list(samples)
+            expression = ExpressionAbsolute.objects.filter(
+                experiment=experiment,   dataset=dataset, 
+                sample__in=samples, gene_symbol=gene_symbol).values_list('expression_value', flat=True)
+            mean_exp = sum(expression) / len(samples)
+            expression_list.append(mean_exp)
+        theplot.add_gene_expression(expression_list)
+
+    return theplot
+
+
+
 def is_one_sample(experiment, conditions):
     '''
     Checks if there is only one sample per condition in experiment.
@@ -106,6 +139,7 @@ def plot_gene_expression(request):
         dataset = request.GET['dataset']
         gene_names = request.GET['gene_name']
         ctype = request.GET['ctype']
+        plot_type = request.GET['plot_type']
         gene_names = gene_names.split(",")
 
         # First disambiguate gene names
@@ -125,18 +159,26 @@ def plot_gene_expression(request):
         ).values_list("gene_symbol", flat=True)
         
         if len(genes_in_experiment) > 0:
-            if is_one_sample(experiment, conditions):
-                theplot = do_barplot(experiment, dataset, conditions, genes_in_experiment)
+            if plot_type == "violin":
+                if is_one_sample(experiment, conditions):
+                    theplot = do_barplot(experiment, dataset, conditions, genes_in_experiment)
+                else:
+                    conditions = Condition.objects.filter(
+                        experiment__name=exp_name, 
+                        cond_type=ConditionType.objects.get(name=ctype))
+                    theplot = do_violin(experiment, dataset, conditions, genes_in_experiment, ctype)
             else:
+                # PLOT HEATMAP
                 conditions = Condition.objects.filter(
                     experiment__name=exp_name, 
                     cond_type=ConditionType.objects.get(name=ctype))
-                theplot = do_violin(experiment, dataset, conditions, genes_in_experiment, ctype)
+                theplot = do_heatmap(experiment, dataset, conditions, genes_in_experiment, ctype)
 
             if theplot is not None and not theplot.is_empty():
                 response = theplot.plot()
             else:
                 response = None
+
         else:
             response = None
 

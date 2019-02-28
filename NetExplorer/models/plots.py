@@ -200,10 +200,75 @@ class ViolinPlot(GenExpPlot):
                 theplot['layout'][axis_name]['title'] = units
         return theplot
 
+class HeatmapPlot(object):
+    '''
+    Class for plotly Heatmaps
+
+        y: genes
+        x: clusters
+        z: expression mean
+        
+    '''
+    def __init__(self):
+        self.x = list()
+        self.y = list()
+        self.z = list()
+        self.type = "heatmap"
+    
+    def add_conditions(self, conditions):
+        self.x = [ cond.name for cond in list(conditions) ]
+
+    def add_gene(self, gene_symbol):
+        self.y.append(gene_symbol)
+
+    def add_gene_expression(self, expression):
+        self.z.append(expression)
+
+    def is_empty(self):
+        if self.x and self.y and self.z:
+            return False
+        else:
+            return True
+    
+    def plot(self):
+        theplot = dict()
+        theplot['data'] = list()
+
+        theplot['layout'] = {
+            'margin': {
+                'l': 250,
+                'r': 20,
+                'b': 150,
+                't': 20,
+                'pad': 4
+        }}
+
+        data_dict = dict()
+        data_dict['x'] = self.x
+        data_dict['y'] = self.y
+        data_dict['z'] = self.z
+        data_dict['type'] = "heatmap"
+        theplot['data'].append(data_dict)
+        return theplot
+
+
+    
+
 
 class ScatterPlot(object):
     '''
     Class for Plotly scatterplots
+            var data = [
+        {
+            z: [[1, 20, 30, 50, 1], [20, 1, 60, 80, 30], [30, 60, 1, -10, 20]],
+            x: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+            y: ['Morning', 'Afternoon', 'Evening'],
+            type: 'heatmap'
+        }
+        ];
+
+
+        Plotly.newPlot('myDiv', data);
     '''
     def __init__(self):
         self.traces = dict()

@@ -88,7 +88,9 @@ def plot_tsne(request):
         # First disambiguate gene names
         gene_symbol = str()
         for gene_name in gene_names:
-            gene_symbol = disambiguate_gene(gene_name, dataset)[0]
+            if gene_name.strip():
+                gene_symbol = disambiguate_gene(gene_name, dataset)[0]
+        
 
         # Get Experiment and conditions
         experiment = Experiment.objects.get(name=exp_name)

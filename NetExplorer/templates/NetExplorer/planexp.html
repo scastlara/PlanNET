@@ -121,12 +121,19 @@
                     </span>
                 </div>
                 <br>
+                
                 <label for="gene-expression-ctype">Conditions:</label><br>
                 <select id="gene-expression-ctype" name="gene-expression-ctype" class="selectpicker ctype-select" title="Select Condition Type">
                     <option value="Experimental" selected>Experimental</option>
                 </select>
 
                 <br>
+                <br>
+                <label for="gene-expression-plot-type">Plot:</label><br>
+                <select id="gene-expression-plot-type" name="gene-expression-plot-type" class="selectpicker" title="Select Plot">
+                        <option value="violin" selected>Violin/Bar Plot</option>
+                        <option value="heatmap">HeatMap</option>
+                </select>
                 <div id="plot-container">
                     <div id="plot-genenotfound">
                         <span class="glyphicon glyphicon-warning-sign"></span>

@@ -320,7 +320,7 @@ var PlanExp = (function() {
      *   Returns:
      *     - Nothing
      */
-    plotGeneExpression = function(expName, dataset, geneName, ctype, plotDivId) {
+    plotGeneExpression = function(expName, dataset, geneName, ctype, plotType, plotDivId) {
         $("#expression-plot-loading").show();
         $("#" + plotDivId).html("");
         $.ajax({
@@ -330,6 +330,7 @@ var PlanExp = (function() {
                 'experiment': expName,
                 'dataset'   : dataset,
                 'gene_name' : geneName,
+                'plot_type' : plotType,
                 'ctype'     : ctype,
                 'csrfmiddlewaretoken': '{{ csrf_token }}'
             },
@@ -729,13 +730,14 @@ var PlanExp = (function() {
         var dataset  = $("#select-dataset").val();
         var geneName = $("#gene-expression-search").val();
         var ctype    = $("#gene-expression-ctype").val();
+        var plotType = $("#gene-expression-plot-type").val();
 
         if (!geneName) {
             $("#plot-genenotfound").show(250);
             return;
         }
         $("#plot-genenotfound").hide();
-        plotGeneExpression(expName, dataset, geneName, ctype, "expression-plot");
+        plotGeneExpression(expName, dataset, geneName, ctype, plotType, "expression-plot");
     })
 
 
@@ -968,17 +970,47 @@ var PlanExp = (function() {
     // AUTOCOMPLETE FOR GENE SYMBOL SEARCH
     $("#gene-expression-search").autocomplete({
         source: function (request, response) { 
-            autocompletePlanExp(request.term, response, $("#select-experiment").val());
+            autocompletePlanExp(extractLast( request.term ), response, $("#select-experiment").val());
         
         },
-        minLength: 2
+        minLength: 2,
+            focus: function() {
+                // prevent value inserted on focus
+                return false;
+            },
+            select: function( event, ui ) {
+                var terms = splitSearch( this.value );
+                // remove the current input
+                terms.pop();
+                // add the selected item
+                terms.push( ui.item.value );
+                // add placeholder to get the comma-and-space at the end
+                terms.push( "" );
+                this.value = terms.join( ", " );
+                return false;
+            }
     });
     $("#tsne-search").autocomplete({
         source: function (request, response) { 
-            autocompletePlanExp(request.term, response, $("#select-experiment").val());
+            autocompletePlanExp(extractLast( request.term ), response, $("#select-experiment").val());
         
         },
-        minLength: 2
+        minLength: 2,
+            focus: function() {
+                // prevent value inserted on focus
+                return false;
+            },
+            select: function( event, ui ) {
+                var terms = splitSearch( this.value );
+                // remove the current input
+                terms.pop();
+                // add the selected item
+                terms.push( ui.item.value );
+                // add placeholder to get the comma-and-space at the end
+                terms.push( "" );
+                this.value = terms.join( ", " );
+                return false;
+            }
     });
 
 
