@@ -114,7 +114,6 @@ def do_heatmap(experiment, dataset, conditions, gene_symbols, ctype):
             mean_exp = sum([ exp.expression_value for exp in expression]) / len(samples)
             expression_list.append(mean_exp)
         theplot.add_gene_expression(expression_list)
-
     return theplot
 
 

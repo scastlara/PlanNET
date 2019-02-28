@@ -1012,6 +1012,15 @@ var PlanExp = (function() {
                 return false;
             }
     });
+    $("#editor-add-node-text").autocomplete({
+        source: function (request, response) { 
+            autocompletePlanExp(request.term, response, $("#select-experiment").val());
+        
+        },
+        minLength: 2
+            
+    });
+    $(".ui-autocomplete").css("z-index", "2147483647");
 
-
+    
 })();
