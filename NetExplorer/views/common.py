@@ -16,6 +16,7 @@ from django.core import serializers
 from statistics import stdev, mean
 from sklearn.manifold import TSNE
 from sklearn.decomposition import PCA
+from django.db.models import Sum
 import tempfile
 import textwrap
 import json
