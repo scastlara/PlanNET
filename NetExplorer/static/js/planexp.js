@@ -970,7 +970,7 @@ var PlanExp = (function() {
     // AUTOCOMPLETE FOR GENE SYMBOL SEARCH
     $("#gene-expression-search").autocomplete({
         source: function (request, response) { 
-            autocompletePlanExp(extractLast( request.term ), response, $("#select-experiment").val());
+            autocompleteContig(extractLast( request.term ), response);
         
         },
         minLength: 2,
@@ -992,7 +992,7 @@ var PlanExp = (function() {
     });
     $("#tsne-search").autocomplete({
         source: function (request, response) { 
-            autocompletePlanExp(extractLast( request.term ), response, $("#select-experiment").val());
+            autocompleteContig(extractLast( request.term ), response);
         
         },
         minLength: 2,
@@ -1014,7 +1014,7 @@ var PlanExp = (function() {
     });
     $("#editor-add-node-text").autocomplete({
         source: function (request, response) { 
-            autocompletePlanExp(request.term, response, $("#select-experiment").val());
+            autocompleteContig(request.term, response);
         
         },
         minLength: 2

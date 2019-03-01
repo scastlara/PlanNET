@@ -33,4 +33,5 @@ urlpatterns = [
     url(r'^map_expression_one', views.map_expression_one, name="map_expression_one"),
     url(r'^map_expression_two', views.map_expression_two, name="map_expression_two"),
     url(r'^autocomplete', views.autocomplete, name="autocomplete"),
+    url(r'^get_dataset_regexes', views.get_dataset_regexes, name="get_dataset_regexes"),
 ]

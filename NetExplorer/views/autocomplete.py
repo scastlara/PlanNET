@@ -19,15 +19,8 @@ def autocomplete(request):
         else:
             query = neoquery.AUTOCOMPLETE_CONTIG % (database, s_string)
         
-        print(query)
         results = GRAPH.run(query)
         results = results.data()
         results = [ val['symbol'] for val in results ]
-    elif 'experiment' in request.GET:
-        experiment = request.GET['experiment']
-        experiment = Experiment.objects.get(name=experiment)
-        # Querying PlanExp mysql
-        results = list(ExperimentGene.objects.filter(
-            experiment=experiment, gene_symbol__startswith=s_string
-        ).values_list('gene_symbol', flat=True).distinct())
+        results = sorted(results, key=lambda x: (len(x),x))
     return HttpResponse(json.dumps(results), content_type="application/json")
