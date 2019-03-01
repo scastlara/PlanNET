@@ -23,7 +23,7 @@
 <div class="row row-app">
 
     <!-- Gene Explorer -->
-    <div class="col-sm-6">
+    <div class="col-sm-4">
         <div class="panel panel-info app-container" >
             <div class="panel-body app-panel" >
                 <a title="Go to Gene Search" href="{% url 'gene_search' %}">
@@ -40,16 +40,33 @@
     </div>
 
     <!-- Net Explorer-->
-    <div class="col-sm-6">
+    <div class="col-sm-4">
+        <div class="panel panel-success app-container" >
+            <div class="panel-body app-panel">
+                <a title="Go to Net Explorer" href="{% url 'net_explorer' %}">
+                    <div class="app-btn">
+                        <img class="app-icon" src="{% static 'Images/network-icon.png' %}"/>
+                    </div>
+                </a>
+                <p>Explore the predicted protein-protein interactions network.</p>
+                <a href="{% url 'tutorial' %}#netexplorer" data-toggle="tooltip" data-placement="top" title="Go to Tutorial">
+                    <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!--GENE BROWSER-->
+    <div class="col-sm-4">
             <div class="panel panel-success app-container" >
                 <div class="panel-body app-panel">
-                    <a title="Go to Net Explorer" href="{% url 'net_explorer' %}">
+                    <a title="Go to Net Gene Browser" href="/jbrowse/">
                         <div class="app-btn">
-                            <img class="app-icon" src="{% static 'Images/network-icon.png' %}"/>
+                            <img class="app-icon" src="{% static 'Images/genebrowser-icon.png' %}"/>
                         </div>
                     </a>
-                    <p>Explore the predicted protein-protein interactions network.</p>
-                    <a href="{% url 'tutorial' %}#netexplorer" data-toggle="tooltip" data-placement="top" title="Go to Tutorial">
+                    <p>Navigate through the genome and its annotations.</p>
+                    <a href="{% url 'tutorial' %}#jbrowse" data-toggle="tooltip" data-placement="top" title="Go to Tutorial">
                         <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
                     </a>
                 </div>
