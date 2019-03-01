@@ -161,11 +161,11 @@
                         <hr class="h2-sep">
                             
                         {% if node.database == "Smest" %}
-                        <iframe id="jbrowser" width="100%" height="400px" src="https://compgen.bio.ub.edu/jbrowse/index.html?data=dd_Smes_g4&loc={{ node.symbol }}&tracks=Smes_g4_scaffolds,SmesG_v2_genes,Dresden&overview=1&highlight=&tracklist=1&highres=2&fullviewlink=1"></iframe>
+                        <iframe id="jbrowser" width="100%" height="400px" src="https://compgen.bio.ub.edu/jbrowse/index.html?data=dd_Smes_g4&loc={{ node.symbol }}&tracks=Smes_g4_scaffolds,SmesG_v2_genes,Dresden&overview=1&highlight=&tracklist=1&highres=2&fullviewlink=1&shareLink=0"></iframe>
                         {% elif node.database == "Dresden" %}
-                            <iframe id="jbrowser" width="100%" height="400px" src="https://compgen.bio.ub.edu/jbrowse/index.html?data=dd_Smes_g4&loc={{ node.symbol }}.path1&tracks=Smes_g4_scaffolds,SmesG_v2_genes,Dresden&overview=1&highlight=&tracklist=1&highres=2&fullviewlink=1"></iframe>    
+                            <iframe id="jbrowser" width="100%" height="400px" src="https://compgen.bio.ub.edu/jbrowse/index.html?data=dd_Smes_g4&loc={{ node.symbol }}.path1&tracks=Smes_g4_scaffolds,SmesG_v2_genes,Dresden&overview=1&highlight=&tracklist=1&highres=2&fullviewlink=1&shareLink=0"></iframe>    
                         {% else %}
-                            <iframe id="jbrowser" width="100%" height="400px" src="https://compgen.bio.ub.edu/jbrowse/index.html?data=dd_Smes_g4&loc={{ node.symbol }}.path1&tracks=Smes_g4_scaffolds,SmesG_v2_genes,Dresden,{{ node.database }}&overview=1&highlight=&tracklist=1&highres=2&fullviewlink=1"></iframe>
+                            <iframe id="jbrowser" width="100%" height="400px" src="https://compgen.bio.ub.edu/jbrowse/index.html?data=dd_Smes_g4&loc={{ node.symbol }}.path1&tracks=Smes_g4_scaffolds,SmesG_v2_genes,Dresden,{{ node.database }}&overview=1&highlight=&tracklist=1&highres=2&fullviewlink=1&shareLink=0"></iframe>
                         {% endif %}
 
                         <br>
