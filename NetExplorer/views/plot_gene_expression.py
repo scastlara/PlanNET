@@ -160,18 +160,18 @@ def plot_gene_expression(request):
         if len(genes_in_experiment) > 0:
             if plot_type == "violin":
                 if is_one_sample(experiment, conditions):
-                    theplot = do_barplot(experiment, dataset, conditions, genes_in_experiment)
+                    theplot = do_barplot(experiment, dataset, conditions, list(genes_in_experiment))
                 else:
                     conditions = Condition.objects.filter(
                         experiment__name=exp_name, 
                         cond_type=ConditionType.objects.get(name=ctype))
-                    theplot = do_violin(experiment, dataset, conditions, genes_in_experiment, ctype)
+                    theplot = do_violin(experiment, dataset, conditions, list(genes_in_experiment), ctype)
             else:
                 # PLOT HEATMAP
                 conditions = Condition.objects.filter(
                     experiment__name=exp_name, 
                     cond_type=ConditionType.objects.get(name=ctype))
-                theplot = do_heatmap(experiment, dataset, conditions, genes_in_experiment, ctype)
+                theplot = do_heatmap(experiment, dataset, conditions, list(genes_in_experiment), ctype)
 
             if theplot is not None and not theplot.is_empty():
                 response = theplot.plot()
