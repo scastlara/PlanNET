@@ -36,20 +36,18 @@ def map_expression_one(request):
                 experiment=experiment,
                 dataset=dataset,
                 sample__in=list(samples),
-                gene_symbol=symbol)
+                gene_symbol=symbol).values_list("expression_value", flat=True)
             if expressions:
                 # Check if expression is a single value for each gene in the network
                 # or if there are replicates (multiple samples per condition -> multiple expression values)
-                if units is None:
-                    units = expressions[0].units
                 if len(expressions) > 1:
                     mean_exp = 0
                     for exp in expressions:
-                        mean_exp += exp.expression_value
+                        mean_exp += exp
                     mean_exp = mean_exp / len(samples)
                     expression = mean_exp
                 else:
-                    expression = expressions[0].expression_value
+                    expression = expressions[0]
             else:
                 # Gene symbol belongs to the experiment, but does not have expression
                 # in any sample (all of them == 0)

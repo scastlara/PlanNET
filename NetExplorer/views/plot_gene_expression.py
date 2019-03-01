@@ -19,11 +19,9 @@ def do_barplot(experiment, dataset, conditions, gene_symbols):
             samples = SampleCondition.objects.filter(condition=condition).values_list('sample', flat=True)
             expression = ExpressionAbsolute.objects.filter(
                 experiment=experiment, dataset=dataset, 
-                sample__in=list(samples),    gene_symbol=gene_symbol)
-            if expression.exists():
-                if units is None:
-                    units = expression[0].units
-                expression = expression[0].expression_value
+                sample__in=list(samples),    gene_symbol=gene_symbol).values_list("expression_value", flat=True)
+            if expression:
+                expression = expression[0]
             else:
                 expression = 0
 
@@ -58,16 +56,14 @@ def do_violin(experiment, dataset, conditions, gene_symbols, ctype):
             samples = SampleCondition.objects.filter(condition=condition).values_list('sample', flat=True)
             expression = ExpressionAbsolute.objects.filter(
                 experiment=experiment, dataset=dataset, 
-                sample__in=list(samples),    gene_symbol=gene_symbol)
+                sample__in=list(samples),    gene_symbol=gene_symbol).values_list("expression_value", flat=True)
             theplot.add_group(condname)
 
             added_values = int()
             if expression:
-                if units is None:
-                    units = expression[0].units
                 for exp in expression:
-                    if exp.expression_value:
-                        theplot.add_value(exp.expression_value, condname, g_idx)
+                    if exp:
+                        theplot.add_value(exp, condname, g_idx)
                     else:
                         theplot.add_value(0, condname, g_idx)
                     added_values += 1
@@ -110,8 +106,8 @@ def do_heatmap(experiment, dataset, conditions, gene_symbols, ctype):
             samples = list(samples)
             expression = ExpressionAbsolute.objects.filter(
                 experiment=experiment,   dataset=dataset, 
-                sample__in=samples, gene_symbol=gene_symbol)
-            mean_exp = sum([ exp.expression_value for exp in expression]) / len(samples)
+                sample__in=samples, gene_symbol=gene_symbol).values_list("expression_value", flat=True)
+            mean_exp = sum(list(expression)) / len(samples)
             expression_list.append(mean_exp)
         theplot.add_gene_expression(expression_list)
     return theplot
