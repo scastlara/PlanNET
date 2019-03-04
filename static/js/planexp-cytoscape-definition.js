@@ -59,6 +59,13 @@ $( document ).ready(function() {
             'content': '',
             'opacity': 0.8
         })
+    .selector('edge[colorEDGE]edge[type = "geneLink"]')
+        .css({
+            'content': 'data(score)',
+            'opacity': 0.8,
+            'target-arrow-shape': 'triangle'
+
+        })
     .selector('node[database != "Human"]')
         .css({
             'width': '15',

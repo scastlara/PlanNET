@@ -28,3 +28,4 @@ from .map_expression_one import *
 from .map_expression_two import *
 from .autocomplete import *
 from .get_dataset_regexes import *
+from .regulatory_links import *

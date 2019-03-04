@@ -13,6 +13,7 @@
         <li><a class="planexp-toc-link" id="planexp-dge-table-container-toc" href="#planexp-dge-table-container">DGE table</a></li>
         <li><a class="planexp-toc-link" id="planexp-gene-expression-toc" href="#planexp-gene-expression">Gene Expression Plot</a></li>
         <li><a class="planexp-toc-link" id="planexp-tsne-toc" href="#planexp-tsne">t-SNE Plot</a></li>
+        <li><a class="planexp-toc-link" id="planexp-links-toc" href="#planexp-links">Regulatory Interactions</a></li>
         <li><a class="planexp-toc-link" id="planexp-network-toc" href="#planexp-network">Network</a></li>
         <hr>
         <li id="back_home"><a href="{% url 'index_view' %}" ><span class="glyphicon glyphicon-triangle-left"></span>Go back Home</a></li>
@@ -223,6 +224,36 @@
                
 
             </div> <!-- tSNE plot-->
+
+
+
+            <div id="planexp-links" class="planexp-card">
+                <h2 id="planexp-title">Regulatory Interactions</h2>
+                <hr class="planexp-rule">
+
+                <blockquote>
+                    Predicted gene regulations for this experiment 
+                    using <a target="_blank" href="https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0012776">GENIE3 (Huynh-Thu VA <i>et al</i>.)</a>.
+
+                    <br><br>
+                    Possible regulators were selected by Gene Ontology (those genes having a GO accession indicating that they are transcription factors), 
+                    or by PFAM domain annotations.
+
+                    <br><br>
+                    A random sample of up to 30 cells per cluster was selected for the gene network inference. 
+
+
+                </blockquote>
+
+                <br>
+                <div id="planexp-links-table-container">
+
+                </div>
+
+
+
+            </div> <!-- Regulatory Links Table -->
+
             
             <div id="dialog-confirm" title="Delete Graph?">
                 <p>
@@ -241,6 +272,7 @@
                         <select id="planexp-cyt-layout" name="planexp-cyt-layout" class="selectpicker" title="Layout" >
                                 <option value="Grid">Grid</option>
                                 <option value="Cola">Cola</option>
+                                <option value="Cose">Cose</option>
                                 <option value="Circle">Circle</option>
                                 <option value="Dagre">Dagre</option>
                                 <option value="Random">Random</option>

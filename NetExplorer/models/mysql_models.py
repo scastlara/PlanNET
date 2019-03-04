@@ -292,3 +292,15 @@ class ExperimentGene(models.Model):
         name_str = self.experiment.name + " - "
         name_str += self.gene_symbol
         return name_str
+
+# ------------------------------------------------------------------------------
+class RegulatoryLinks(models.Model):
+    '''
+    Class for regulatory links predicted for a SingleCell Experiment
+    '''
+    experiment = models.ForeignKey(Experiment, on_delete=models.CASCADE)
+    dataset = models.ForeignKey(Dataset, on_delete=models.CASCADE)
+    regulator = models.CharField(max_length=50)
+    target = models.CharField(max_length=50)
+    source = models.CharField(max_length=20)
+    score = models.FloatField()

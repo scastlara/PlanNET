@@ -403,17 +403,17 @@ var PlanExp = (function() {
    /**
     * Add JSON Graph to Cytoscape
     **/
-   addJsonToCy = function(graphelements) {
+   addJsonToCy = function(graphelements, layout="cola") {
         try {
             window.cy = cytoscape({
                 style: window.stylesheet,
-                layout: { name: 'cola' },
+                layout: { name:  layout, animationDuration: 500 },
                 container: document.getElementById('planexp-cyt'),
                 elements: graphelements,
                 wheelSensitivity: 0.25,
                 ready: function() {}
             })
-            cy.layout({'name': 'cola'});
+            cy.layout({'name': layout, animationDuration: 500});
             colorByCondition();
         }
         catch(err) {
@@ -621,6 +621,82 @@ var PlanExp = (function() {
     }
 
 
+    /**
+     * getRegulatoryLinksTable
+     *   Summary:
+     *     Retrieves table with regulatory links for experiment if available
+     *   Arguments: 
+     *     - None
+     *   Returns:
+     *     - Nothing, fills html of table.
+     */
+    var getRegulatoryLinksTable = function(containerId, tocId, tableId) {
+        var expName  = $("#select-experiment").val();
+        var dataset  = $("#select-dataset").val();
+
+        $.ajax({
+            type: "GET",
+            url: window.ROOT + "/regulatory_links",
+            data: {
+                'experiment'    : expName,
+                'dataset'       : dataset,
+                'csrfmiddlewaretoken': csrftoken
+            },
+            success: function(data) {
+                // Change Exp type
+                if (data != "None") {
+                    $(containerId).show(250);
+                    $(tocId).show(250);
+                    $(tableId).html(data);
+                } else {
+                    $(containerId).hide();
+                    $(tocId).hide();
+                }
+            },
+            error: function(data) {
+                console.log(data.responseText);
+            }
+        });
+    }
+
+
+
+    /**
+     * sendToNetwork
+     *   Summary:
+     *     Sends regulatory links table to network viewer in planexp
+     *   Arguments: 
+     *     - None
+     *   Returns:
+     *     - Nothing, fills html of table.
+     */
+    window.sendToNetwork = function(dt) {
+
+        var data = dt.buttons.exportData().body;
+        var toImport = { 'nodes': [], 'edges': [] };
+        for (var row in data) {
+
+            toImport.nodes.push({ data: { id: data[row][0], name: data[row][0], colorNODE: "#404040" } });
+            toImport.nodes.push({ data: { id: data[row][1], name: data[row][1], colorNODE: "#404040" } });
+            toImport.edges.push({ data: { 
+                    source: data[row][0], 
+                    target: data[row][1], 
+                    score: data[row][2], 
+                    colorEDGE: "blue", 
+                    type: "geneLink" 
+                }
+            });
+        }
+
+        toImport.nodes = [ ... new Set(toImport.nodes)];
+        
+        $.scrollTo("#planexp-network", 500);
+        addJsonToCy(toImport, "cose");
+
+    }
+
+
+
     //----------------------------------------------------
     /* BUTTONS AND EVENTS */
 
@@ -650,6 +726,9 @@ var PlanExp = (function() {
         $("#planexp-network-toc").hide();
         $("#tsne-plot-gene").html("");
         $("#tsne-plot-condition").html("");
+        $('#planexp-links-toc').hide();
+        $('#planexp-links').hide();
+        cy.nodes().remove();
 
     });
 
@@ -681,6 +760,15 @@ var PlanExp = (function() {
         var ctype = $("#network-ctype").val();
         showConditionTypes("network-condition-selects", ctype);
 
+        // Get regulatory links if they exist
+        // only if Single Cell
+        if (currentExpType == expType['Single-Cell']) {
+            getRegulatoryLinksTable('#planexp-links', '#planexp-links-toc', '#planexp-links-table-container');
+        } else {
+            $('#planexp-links-toc').hide();
+            $('#planexp-links').hide();
+        }
+
         // Show the necessary cards
         $("#planexp-dge-table-container").show(250);
         $("#planexp-gene-expression").show(250);
@@ -694,7 +782,7 @@ var PlanExp = (function() {
             $("#planexp-tsne").show(250);
             $("#planexp-tsne-toc").show(250);
             $('#planexp-tsne-toc').css('display', 'inline-block');
-        }
+        };
     });
 
 

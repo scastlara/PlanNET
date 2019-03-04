@@ -66,6 +66,10 @@ def get_options():
         help="Experiment genes", required=True
     )
     parser.add_argument(
+        '-l','--links',
+        help='Regulatory links file', required=False
+    )
+    parser.add_argument(
         '-c', '--conditions',
         help="Experiment conditions", required=False
     )
@@ -250,6 +254,20 @@ def upload_genes(opts, experiment):
                 VALUES (%s, %s)
             """, (experiment, line))
 
+def upload_links(opts, experiment, dataset):
+    '''
+    Uploadds predicted regulatory links for single cell experiment
+    using GENIE3
+    '''
+    with open(opts.links, "r") as links_fh:
+        next(links_fh) # skip header
+        for line in links_fh:
+            line = line.strip()
+            regulator, target, score, source = line.split(",")
+            print(experiment)
+            cursor.execute("""INSERT INTO NetExplorer_regulatorylinks (experiment_id, dataset_id, regulator, target, score, source) 
+            VALUES (%s, %s, %s, %s, %s, %s)""", (experiment, dataset, regulator, target, score, source))
+
 # MAIN
 #--------------------------------------------------------------------------------
 sys.stderr.write("Reading options\n")
@@ -271,8 +289,8 @@ if opts.conditions:
     db.commit()
 
 sys.stderr.write("Uploading Absolute expression\n")
-#upload_expression_absolute(opts, experiment, dataset)
-#db.commit()
+upload_expression_absolute(opts, experiment, dataset)
+db.commit()
 
 
 sys.stderr.write("Uploading relative expression\n")
@@ -283,6 +301,10 @@ upload_tsne(opts, experiment, dataset)
 
 sys.stderr.write("Uploading genes\n")
 upload_genes(opts, experiment)
+
+if opts.links:
+    sys.stderr.write("Uploading regulatory links\n")
+    upload_links(opts, experiment, dataset)
 
 sys.stderr.write("Committing to database\n")
 db.commit()
