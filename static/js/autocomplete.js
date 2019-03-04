@@ -60,7 +60,7 @@ var autocompleteContig = function(s_string, response) {
         } 
     }
 
-    if (s_string.length >= 4) {
+    if (s_string.length >= 3) {
         makeQuery(s_string, "Human");
         return;
     } 

@@ -2156,6 +2156,17 @@ kbd {
     background-color: #f4f4f4; 
 }
 
+.yaxislayer-above {
+    cursor: pointer;
+    pointer-events: all;
+}
+
+.yaxislayer-above:hover {
+    text-decoration: underline;
+}
+
+
+
 #tsne-plot-condition {
     display: inline-block; 
     height: 700px; 

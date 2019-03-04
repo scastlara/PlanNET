@@ -1,0 +1,64 @@
+{% load staticfiles %} 
+
+{% if links %}
+    <table id="planexp-links-table" class="table table-hover">
+        <thead>
+            <tr>
+                <th>Regulator</th>
+                <th>Target</th>
+                <th>Score</th>
+                <th>Source</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for link in links %}
+                <tr>
+                        
+                    <td>
+                        <a class="card-trigger"
+                            title="Click to view info card"
+                            target="{{ link.regulator }}"
+                            targetDB="{{ database.name }}">
+                            {{ link.regulator }}
+                        </a>
+                    </td>
+                    <td>
+                        <a class="card-trigger"
+                            title="Click to view info card"
+                            target="{{ link.target }}"
+                            targetDB="{{ database.name }}">
+                            {{ link.target }}
+                        </a>
+                    </td>
+                    <td>{{ link.score }}</td>
+                    <td>{{ link.source }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+
+
+    </table>
+
+    <script src="{% static 'js/root.js' %}"></script>
+    <script>
+        $(document).ready(function(){
+            $("#planexp-links-table").DataTable({
+                "order": [[ 2, "desc" ]],
+                dom: 'Bfrtip',
+                buttons: [
+                    'csv',
+                    {
+                        text: 'Send to Network viewer',
+                        action: function ( e, dt, node, config ) {
+                            sendToNetwork(dt);
+                        }
+                    }
+                ]
+            });
+        });
+    </script>
+    <script src="{% static 'js/get-card.js' %}"></script>
+
+{% else %}
+   
+{% endif %}

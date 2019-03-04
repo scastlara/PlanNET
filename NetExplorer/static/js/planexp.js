@@ -337,7 +337,18 @@ var PlanExp = (function() {
             success: function(data) {
                 if (data) {
                     $("#plot-genenotfound").hide();
-                    Plotly.newPlot(plotDivId, data.data, data.layout);
+                    var thePlot = document.getElementById(plotDivId);
+                    Plotly.newPlot(thePlot, data.data, data.layout);
+                    if (plotType != "violin") {
+                        thePlot.on('plotly_afterplot', function(){
+                            Plotly.d3.selectAll(".yaxislayer-above").selectAll('text')
+                                  .on("click", function(d) {
+                                    getCard({ target: d.text, targetDB: dataset });
+                            });
+    
+                        });
+                    }
+                    
                 } else {
                     $("#plot-genenotfound").show(250);
                 }

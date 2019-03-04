@@ -5,3 +5,4 @@ db/
 plannet.db.dump
 neo4j-*
 pruebas/
+NetExplorer/migrations
