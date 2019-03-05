@@ -61,7 +61,6 @@ $( document ).ready(function() {
         })
     .selector('edge[colorEDGE]edge[type = "geneLink"]')
         .css({
-            'content': 'data(score)',
             'opacity': 0.8,
             'target-arrow-shape': 'triangle'
 
@@ -169,6 +168,7 @@ $( document ).ready(function() {
         layout: { name: 'random' },
         container: document.getElementById('planexp-cyt'),
         wheelSensitivity: 0.25,
+        hideEdgesOnViewport: true,
         ready: function() {}
     })
 });

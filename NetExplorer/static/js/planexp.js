@@ -418,13 +418,14 @@ var PlanExp = (function() {
         try {
             window.cy = cytoscape({
                 style: window.stylesheet,
-                layout: { name:  layout, animationDuration: 500 },
+                layout: { name:  layout, animationDuration: 200 },
                 container: document.getElementById('planexp-cyt'),
                 elements: graphelements,
                 wheelSensitivity: 0.25,
+                hideEdgesOnViewport: true,
                 ready: function() {}
             })
-            cy.layout({'name': layout, animationDuration: 500});
+            cy.layout({'name': layout, animationDuration: 200});
             colorByCondition();
         }
         catch(err) {
@@ -692,7 +693,6 @@ var PlanExp = (function() {
             toImport.edges.push({ data: { 
                     source: data[row][0], 
                     target: data[row][1], 
-                    score: data[row][2], 
                     colorEDGE: "blue", 
                     type: "geneLink" 
                 }
