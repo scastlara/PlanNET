@@ -28,46 +28,30 @@ def map_expression_one(request):
             gene_symbol__in=symbols
         ).values_list("gene_symbol", flat=True))
         
-        for symbol in symbols:
-            if symbol not in genes_in_experiment:
-                # Gene symbol does not belong to the experiment
-                continue
-            expressions = ExpressionAbsolute.objects.filter(
-                experiment=experiment,
-                dataset=dataset,
-                sample__in=list(samples),
-                gene_symbol=symbol).values_list("expression_value", flat=True)
-            if expressions:
-                # Check if expression is a single value for each gene in the network
-                # or if there are replicates (multiple samples per condition -> multiple expression values)
-                if len(expressions) > 1:
-                    mean_exp = 0
-                    for exp in expressions:
-                        mean_exp += exp
-                    mean_exp = mean_exp / len(samples)
-                    expression = mean_exp
-                else:
-                    expression = expressions[0]
-            else:
-                # Gene symbol belongs to the experiment, but does not have expression
-                # in any sample (all of them == 0)
-                expression = 0
-            if reference == "Experiment":
-                colormap[symbol] = condition.get_color(dataset, expression, profile)
-            else:
-                # We only save the expression value and after we have all of them,
-                # we compute the colors in reference to the max expression
-                colormap[symbol] = expression
-                if expression != "NA" and expression > max_expression:
-                    max_expression = expression
-                    
-        
-        if reference == "Network":
-            # If colors are to be computed according to the max expression in the network,
-            # we need to change the expression values to colors now.
-            for symbol, exp in colormap.items():
-                colormap[symbol] = condition.get_color(dataset, exp, profile, max_expression)
+        expression = ExpressionAbsolute.objects.filter(
+            experiment=experiment,   dataset=dataset, 
+            sample__in=list(samples), gene_symbol__in=list(genes_in_experiment)
+        ).values('gene_symbol').annotate(cond_sum = Sum('expression_value'))
 
+        genes_found = set()
+        for exp in expression:
+            genes_found.add(exp['gene_symbol'])
+            if exp['gene_symbol'] not in colormap:
+                exp_mean = exp['cond_sum'] / len(samples)
+                colormap[exp['gene_symbol']] = exp_mean
+                if exp_mean != "NA" and exp_mean > max_expression:
+                    max_expression = exp_mean
+        # Add genes in experiment not found in query (they have expression == 0 for condition)
+        genes_missing = set(list(genes_in_experiment)).difference(genes_found)
+        for missing in genes_missing:
+            if missing not in colormap:
+                colormap[missing] = 0
+        
+        for gene, exp in colormap.items():
+            if reference == "Experiment":
+                colormap[gene] = condition.get_color(dataset, exp, profile)
+            else:
+                colormap[gene] = condition.get_color(dataset, exp, profile, max_expression)
         response = dict()
         response['colormap'] = colormap
         response['legend'] = condition.get_color_legend(profile=profile, units=units)
