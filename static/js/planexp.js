@@ -689,10 +689,10 @@ var PlanExp = (function() {
         for (var row in data) {
 
             toImport.nodes.push({ data: { id: data[row][0], name: data[row][0], colorNODE: "#404040" } });
-            toImport.nodes.push({ data: { id: data[row][1], name: data[row][1], colorNODE: "#404040" } });
+            toImport.nodes.push({ data: { id: data[row][3], name: data[row][3], colorNODE: "#404040" } });
             toImport.edges.push({ data: { 
                     source: data[row][0], 
-                    target: data[row][1], 
+                    target: data[row][3], 
                     colorEDGE: "blue", 
                     type: "geneLink" 
                 }

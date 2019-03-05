@@ -51,6 +51,15 @@
                     {% else %}
                         <td>None</td>
                     {% endif %}
+                    
+                    <td>
+                            <a class="card-trigger"
+                                title="Click to view info card"
+                                target="{{ link.target }}"
+                                targetDB="{{ database.name }}">
+                                {{ link.target }}
+                            </a>
+                    </td>
 
                     {% if link.target_gene %}
                         <td>
@@ -77,14 +86,7 @@
                     {% else %}
                         <td>None</td>
                     {% endif %}
-                    <td>
-                        <a class="card-trigger"
-                            title="Click to view info card"
-                            target="{{ link.target }}"
-                            targetDB="{{ database.name }}">
-                            {{ link.target }}
-                        </a>
-                    </td>
+                    
                     <td>{{ link.score|floatformat:3  }}</td>
                     <td>{{ link.source }}</td>
                 </tr>
