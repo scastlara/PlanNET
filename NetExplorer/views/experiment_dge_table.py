@@ -1,5 +1,9 @@
 from .common import *
 
+#@register.filter
+#def get_item(dictionary, key):
+#    return dictionary.get(key)
+
 
 def do_volcano_plot(expression):
     '''
@@ -67,7 +71,16 @@ def experiment_dge_table(request):
 
         expression = expression.annotate(abs_fold_change=Func(F('fold_change'), function='ABS')).order_by('-abs_fold_change')[:max_genes]
         response = dict()
-        if expression.exists():
+        if expression:
+            contig_list = [ exp.gene_symbol for exp in expression ]
+            homologs = GraphCytoscape.get_homologs_bulk(contig_list, dataset_name)
+            genes = GraphCytoscape.get_genes_bulk(contig_list, dataset_name)
+            for exp in expression:
+                if exp.gene_symbol in homologs:
+                    exp.homolog = homologs[exp.gene_symbol]
+                if exp.gene_symbol in genes:
+                    exp.gene = genes[exp.gene_symbol]['gene']
+                    exp.name = genes[exp.gene_symbol]['name']
             response_to_render = { 'expressions' : expression, 'database': dataset }
             response['table'] = render_to_string('NetExplorer/experiment_dge_table.html', response_to_render)
             response['volcano'] = do_volcano_plot(expression).plot()

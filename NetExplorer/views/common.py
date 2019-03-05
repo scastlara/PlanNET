@@ -29,6 +29,7 @@ import time
 import os
 import numpy as np
 import random
+#from django import template
 
 
 # -----------------------
@@ -37,6 +38,7 @@ import random
 BLAST_DB_DIR    = "/home/sergio/code/PlanNET/blast/"
 MAX_NUMSEQ      = 50
 MAX_CHAR_LENGTH = 25000
+#register = template.Library()
 
 
 # -----------------------

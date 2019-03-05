@@ -346,3 +346,15 @@ AUTOCOMPLETE_ACCESSION = """
     WHERE n.accession STARTS WITH "%s"
     RETURN n.accession AS symbol ORDER BY n.accession
 """
+
+GET_HOMOLOGS_BULK = """
+    MATCH (n:%s)-[r:HOMOLOG_OF]->(m:Human)
+    WHERE n.symbol IN %s
+    RETURN n.symbol AS planarian, m.symbol AS human
+"""
+
+GET_GENES_BULK = """
+    MATCH (n:%s)<-[r:HAS_TRANSCRIPT]->(m:Smesgene)
+    WHERE n.symbol IN %s
+    RETURN n.symbol AS contig, m.symbol AS gene, m.name as name
+"""

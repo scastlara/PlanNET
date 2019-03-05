@@ -571,6 +571,7 @@ class PlanarianContig(Node):
             else:
                 self.gene = None
                 self.name = None
+        return self 
 
     def get_genes(self):
         '''
@@ -1087,7 +1088,39 @@ class GraphCytoscape(object):
                 self.add_elements(node_objects)
             except exceptions.NodeNotFound:
                 continue
-            
+    
+    @classmethod
+    def get_homologs_bulk(cls, symbols, database):
+        """
+        Returns a dictionary of homologous genes to the specified
+        list of planarian contig symbols from database.
+        """
+        query = neoquery.GET_HOMOLOGS_BULK % (database, symbols)
+        results = GRAPH.run(query)
+        results = results.data()
+        homologs = dict()
+        if results:
+            for row in results:
+                homologs[row['planarian']] = row['human']
+        return homologs
+
+        
+    @classmethod
+    def get_genes_bulk(cls, symbols, database):
+        """
+        Returns a dictionary of planarian genes to the specified
+        list of planarian contig symbols from database.
+        """
+        query = neoquery.GET_GENES_BULK % (database, symbols)
+        results = GRAPH.run(query)
+        results = results.data()
+        genes = dict()
+        if results:
+            for row in results:
+                genes[row['contig']] = dict()
+                genes[row['contig']]['gene'] = row['gene']
+                genes[row['contig']]['name'] = row['name']
+        return genes
 
     def __str__(self):
         return self.to_json()

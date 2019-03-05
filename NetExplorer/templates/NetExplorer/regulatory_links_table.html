@@ -5,7 +5,11 @@
         <thead>
             <tr>
                 <th>Regulator</th>
+                <th>Regulator gene</th>
+                <th>Regulator homolog</th>
                 <th>Target</th>
+                <th>Target gene</th>
+                <th>Target homolog</th>
                 <th>Score</th>
                 <th>Source</th>
             </tr>
@@ -22,6 +26,57 @@
                             {{ link.regulator }}
                         </a>
                     </td>
+                    {% if link.regulator_gene %}
+                        <td>
+                            <a class="card-trigger"
+                                title="Click to view info card"
+                                target="{{ link.regulator_gene }}"
+                                targetDB="Smesgene">
+                                {{ link.regulator_gene }} {% if link.regulator_name %} ({{ link.regulator_name }}) {% endif %}
+                            </a>
+                        </td>
+                    {% else %}
+                        <td>None</td>
+                    {% endif %}
+
+                    {% if link.regulator_homolog %}
+                        <td>
+                            <a class="card-trigger"
+                                title="Click to view info card"
+                                target="{{ link.regulator_homolog }}"
+                                targetDB="Human">
+                                {{ link.regulator_homolog }} 
+                            </a>
+                        </td>
+                    {% else %}
+                        <td>None</td>
+                    {% endif %}
+
+                    {% if link.target_gene %}
+                        <td>
+                            <a class="card-trigger"
+                                title="Click to view info card"
+                                target="{{ link.target_gene }}"
+                                targetDB="Smesgene">
+                                {{ link.target_gene }} {% if link.target_name %} ({{ link.target_name }}) {% endif %}
+                            </a>
+                        </td>
+                    {% else %}
+                        <td>None</td>
+                    {% endif %}
+
+                    {% if link.target_homolog %}
+                        <td>
+                            <a class="card-trigger"
+                                title="Click to view info card"
+                                target="{{ link.target_homolog }}"
+                                targetDB="Human">
+                                {{ link.target_homolog }} 
+                            </a>
+                        </td>
+                    {% else %}
+                        <td>None</td>
+                    {% endif %}
                     <td>
                         <a class="card-trigger"
                             title="Click to view info card"
@@ -30,7 +85,7 @@
                             {{ link.target }}
                         </a>
                     </td>
-                    <td>{{ link.score }}</td>
+                    <td>{{ link.score|floatformat:3  }}</td>
                     <td>{{ link.source }}</td>
                 </tr>
             {% endfor %}
@@ -43,7 +98,7 @@
     <script>
         $(document).ready(function(){
             $("#planexp-links-table").DataTable({
-                "order": [[ 2, "desc" ]],
+                "order": [[ 6, "desc" ]],
                 dom: 'Bfrtip',
                 buttons: [
                     'csv',
@@ -57,7 +112,6 @@
             });
         });
     </script>
-    <script src="{% static 'js/get-card.js' %}"></script>
 
 {% else %}
    

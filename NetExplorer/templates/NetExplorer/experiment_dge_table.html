@@ -5,6 +5,8 @@
         <thead>
             <tr>
                 <th>Gene Symbol</th>
+                <th>Gene</th>
+                <th>Homolog</th>
                 <th>Condition 1</th>
                 <th>Condition 2</th>
                 <th>Log Fold Change</th>
@@ -23,10 +25,35 @@
                             {{ exp.gene_symbol }}
                         </a>
                     </td>
+                    {% if exp.gene %}
+                        <td>
+                            <a class="card-trigger"
+                                title="Click to view info card"
+                                target="{{ exp.gene }}"
+                                targetDB="Smesgene">
+                                {{ exp.gene }} {% if exp.name %} ({{ exp.name }}) {% endif %}
+                            </a>
+                        </td>
+                    {% else %}
+                        <td>None</td>
+                    {% endif %}
+
+                    {% if exp.homolog %}
+                        <td>
+                            <a class="card-trigger"
+                                title="Click to view info card"
+                                target="{{ exp.homolog }}"
+                                targetDB="Human">
+                                {{ exp.homolog }} 
+                            </a>
+                        </td>
+                    {% else %}
+                        <td>None</td>
+                    {% endif %}
                     <td>{{ exp.condition1.name }}</td>
                     <td>{{ exp.condition2.name }}</td>
-                    <td>{{ exp.fold_change }}</td>
-                    <td>{{ exp.pvalue }}</td>
+                    <td>{{ exp.fold_change|floatformat:3 }}</td>
+                    <td>{{ exp.pvalue|stringformat:".3e" }}</td>
                 </tr>
             {% endfor %}
         </tbody>
@@ -38,7 +65,7 @@
     <script>
         $(document).ready(function(){
             $("#dge-table").DataTable({
-                "order": [[ 3, "desc" ]],
+                "order": [[ 5, "desc" ]],
                 dom: 'Bfrtip',
                 buttons: [
                     'csv'
@@ -46,7 +73,6 @@
             });
         });
     </script>
-    <script src="{% static 'js/get-card.js' %}"></script>
 
 {% else %}
    

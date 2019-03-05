@@ -13,7 +13,28 @@ def regulatory_links(request):
 
         regulatory_links = RegulatoryLinks.objects.filter(experiment=experiment, dataset=dataset)
         if regulatory_links:
+            all_contigs = set()
+            for link in regulatory_links:
+                all_contigs.add(link.regulator)
+                all_contigs.add(link.target)
+            
+            homologs = GraphCytoscape.get_homologs_bulk(list(all_contigs), dataset_name)
+            genes = GraphCytoscape.get_genes_bulk(list(all_contigs), dataset_name)
+            for link in regulatory_links:
+                # Regulators
+                if link.regulator in homologs:
+                    link.regulator_homolog = homologs[link.regulator]
+                if link.regulator in genes:
+                    link.regulator_gene = genes[link.regulator]['gene']
+                    link.regulator_name = genes[link.regulator]['name']
+                # Targets
+                if link.target in homologs:
+                    link.target_homolog = homologs[link.target]
+                if link.target in genes:
+                    link.target_gene = genes[link.target]['gene']
+                    link.target_name = genes[link.target]['name']
             response_to_render = { 'links' : regulatory_links, 'database': dataset }
+
             response = render_to_string('NetExplorer/regulatory_links_table.html', response_to_render)
         else:
             response = None
