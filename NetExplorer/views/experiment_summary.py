@@ -8,7 +8,10 @@ def experiment_summary(request):
         exp_name = request.GET['experiment']
         # Get Experiment and Conditions
         experiment = Experiment.objects.get(name=exp_name)
-        conditions = Condition.objects.filter(experiment__name=exp_name)
+        conditions = Condition.objects.filter(
+            experiment__name=exp_name, 
+            cond_type__in=ConditionType.objects.filter(is_interaction=0)
+        )
         condition_list = dict()
         for condition in conditions:
             if condition.cond_type.name not in condition_list:

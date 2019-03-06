@@ -85,8 +85,9 @@ var PlanExp = (function() {
     fillConditions = function(expName, conditionSelects) {
 
         conditionRow = function(conditionName, ctype) {
+            conditionClass = ctype.replace(/ /g, "_");
             return "<option class='condition-option " + 
-                    ctype + "'" +
+                    conditionClass + "'" +
                     " value='" + 
                     conditionName + 
                     "'>" + 
@@ -95,21 +96,11 @@ var PlanExp = (function() {
         }
 
         optGroupOpen = function(ctype) {
-            console.log(
-
-                "<optgroup label='" + 
-                    ctype + 
-                    "' " + 
-                    "class='condition-option " + 
-                    ctype + "'" +
-                    ">\n"
-
-            );
             return "<optgroup label='" + 
                     ctype + 
                     "' " + 
                     "class='condition-option " + 
-                    ctype + "'" + 
+                    ctype.replace(/ /g, "_") + "'" + 
                     ">\n";
         }
 
@@ -126,15 +117,17 @@ var PlanExp = (function() {
             },
             success: function(data) {
                 conditionSelects.html(""); // clean previous HTML
-                var keys = Object.keys(data);
+                //data = data.conditions;
+                window.comparisons = data.comparisons;
+                var keys = Object.keys(data.conditions);
 
                 // Group conditions by Condition Type
                 groups = {};
                 for (var i=0; i<keys.length; ++i) {
-                    if (! groups[ data[keys[i]] ]) {
-                        groups[ data[keys[i]] ] = [];
+                    if (! groups[ data.conditions[keys[i]] ]) {
+                        groups[ data.conditions[keys[i]] ] = [];
                     }
-                    groups[ data[keys[i]] ].push(keys[i]);
+                    groups[ data.conditions[keys[i]] ].push(keys[i]);
                 }
                 
                 var html_to_add = "";
@@ -143,8 +136,12 @@ var PlanExp = (function() {
                     html_to_add += optGroupOpen(ctype);
                     var conditions = groups[ctype];
                     conditions.sort();
+
                     for (cond in conditions) {
                         var conditionName = conditions[cond];
+                        if (!conditionName in data.comparisons) {
+                            continue;
+                        }
                         html_to_add += conditionRow(conditionName, ctype);
                     }
                     html_to_add += optGroupClose();
@@ -173,10 +170,10 @@ var PlanExp = (function() {
      *     - Nothing
      */
     fillCtypes = function(expName, ctypeSelects) {
-
         ctypeRow = function(conditionName) {
+            //conditionClass = conditionName.replace(/ /g, "_");
             return "<option class='condition-option' value='" + 
-                    conditionName + 
+                    conditionName  + 
                     "'>" + 
                     conditionName + 
                     "</option>";
@@ -193,7 +190,6 @@ var PlanExp = (function() {
                 ctypeSelects.html(""); // clean previous HTML
                 var first = true;
                 for (const ctype in data) {
-                    
                     ctypeName = data[ctype];
                     ctypeSelects.append(ctypeRow(ctypeName));
                     if (first) {
@@ -403,6 +399,7 @@ var PlanExp = (function() {
 
 
     showConditionTypes = function(selectDivClass, ctype) {
+        ctype = ctype.replace(/ /g, "_");
         $("." + selectDivClass + " option").prop("selected", false);
         $("." + selectDivClass + " option").hide();
         $("." + selectDivClass + " " + "." + ctype).show();
@@ -806,9 +803,56 @@ var PlanExp = (function() {
      */
     $("select.dge-table-condition-selects").on("change", function(){
         var expName = $("#select-experiment").val();
-        var condition1 = $("#planexp-dge-c1").val();
-        var condition2 = $("#planexp-dge-c2").val();
+        var condition1 = $("#planexp-dge-c1").val().replace(/ \(.+\)/, "");
+        var condition2 = $("#planexp-dge-c2").val().replace(/ \(.+\)/, "");
         var dataset = $("#select-dataset").val();
+        if (condition1 && ! condition2) {
+            var availableComparisons = window.comparisons[condition1];
+            // Condition1 provided, must hide some condition2
+            $("#planexp-dge-c2 option").prop("selected", false);
+            $("#planexp-dge-c2 option").hide();
+            if (availableComparisons) {
+                $("#planexp-dge-c2 option").filter(function(){
+                    if (availableComparisons.indexOf($(this).val().replace(/ \(.+\)/, "")) == -1) {
+                        return false;
+                    } else {
+                        return true;
+                    }
+                }).show();
+            }
+            $("#planexp-dge-c2").selectpicker("refresh");
+        } else if (condition1 && condition2) {
+            var availableComparisons = window.comparisons[condition1];
+            if (! availableComparisons) {
+                $("#planexp-dge-c2 option").prop("selected", false);
+                $("#planexp-dge-c2 option").hide();
+                $("#planexp-dge-c2").selectpicker("refresh");
+                return;
+            } else if (availableComparisons.indexOf(condition2) == -1) {
+                $("#planexp-dge-c2 option").prop("selected", false);
+                $("#planexp-dge-c2 option").hide();
+                $("#planexp-dge-c2 option").filter(function(){
+                    if (availableComparisons.indexOf($(this).val().replace(/ \(.+\)/, "")) == -1) {
+                        return false;
+                    } else {
+                        return true;
+                    }
+                }).show();
+                $("#planexp-dge-c2").selectpicker("refresh");
+                return;
+            } else {
+                $("#planexp-dge-c2 option").hide();
+                $("#planexp-dge-c2 option").filter(function(){
+                    if (availableComparisons.indexOf($(this).val().replace(/ \(.+\)/, "")) == -1) {
+                        return false;
+                    } else {
+                        return true;
+                    }
+                }).show();
+                $("#planexp-dge-c2").selectpicker("refresh");
+            }
+        } 
+        
         if ( ! condition1 || ! condition2 ) {
             return;
         } 

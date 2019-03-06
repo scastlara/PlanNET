@@ -7,8 +7,10 @@ def experiment_condition_types(request):
     if request.is_ajax():
         exp_name = request.GET['experiment']
         conditions = Condition.objects.filter(experiment__name=exp_name)
-        ctypes = ConditionType.objects.filter(condition__in=conditions)
-        ctypes = list(set(ctypes.values_list('name', flat=True)))
-        return HttpResponse(json.dumps(sorted(ctypes)), content_type="application/json")
+        ctypes = ConditionType.objects.filter(condition__in=conditions).distinct()
+        ctypes = list(ctypes)
+        ctypes.sort(key= lambda i: (i.is_interaction, i.name))
+
+        return HttpResponse(json.dumps([ ctype.name for ctype in ctypes ]), content_type="application/json")
     else:
         return render(request, 'NetExplorer/404.html')

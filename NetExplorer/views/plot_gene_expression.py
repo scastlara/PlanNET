@@ -16,7 +16,7 @@ def do_barplot(experiment, dataset, conditions, gene_symbols):
             theplot.add_trace_name(g_idx, gene_symbol)
         
         for condition in conditions:
-            samples = SampleCondition.objects.filter(condition=condition).values_list('sample', flat=True)
+            samples = SampleCondition.objects.filter(experiment=experiment, condition=condition).values_list('sample', flat=True)
             expression = ExpressionAbsolute.objects.filter(
                 experiment=experiment, dataset=dataset, 
                 sample__in=list(samples),    gene_symbol=gene_symbol).values_list("expression_value", flat=True)
@@ -41,7 +41,7 @@ def do_violin(experiment, dataset, conditions, gene_symbols, ctype):
     units = None
     condition_samples = dict()
     for condition in conditions:
-        samples = SampleCondition.objects.filter(condition=condition).values_list('sample', flat=True)
+        samples = SampleCondition.objects.filter(experiment=experiment, condition=condition).values_list('sample', flat=True)
         condition_samples[condition] = list(samples)
         
     for g_idx, gene_symbol in enumerate(gene_symbols):
@@ -58,7 +58,7 @@ def do_violin(experiment, dataset, conditions, gene_symbols, ctype):
             else:
                 condname = str(condition.name)
 
-            samples = SampleCondition.objects.filter(condition=condition).values_list('sample', flat=True)
+            samples = SampleCondition.objects.filter(experiment=experiment, condition=condition).values_list('sample', flat=True)
             expression = ExpressionAbsolute.objects.filter(
                 experiment=experiment, dataset=dataset, 
                 sample__in=list(samples),    gene_symbol=gene_symbol).values_list("expression_value", flat=True)
@@ -94,12 +94,11 @@ def do_heatmap(experiment, dataset, conditions, gene_symbols, ctype):
     theplot = HeatmapPlot()
     theplot.add_conditions(conditions)
     for condition in conditions:
-        samples = SampleCondition.objects.filter(condition=condition).values_list('sample', flat=True)
+        samples = SampleCondition.objects.filter(experiment=experiment, condition=condition).values_list('sample', flat=True)
         expression = ExpressionAbsolute.objects.filter(
             experiment=experiment,   dataset=dataset, 
             sample__in=list(samples), gene_symbol__in=gene_symbols
         ).values('gene_symbol').annotate(cond_sum = Sum('expression_value'))
-        
         genes_found = set()
         for exp in expression:
             genes_found.add(exp['gene_symbol'])
@@ -149,7 +148,10 @@ def plot_gene_expression(request):
         # Get Experiment and conditions
         experiment = Experiment.objects.get(name=exp_name)
         dataset = Dataset.objects.get(name=dataset)
-        conditions = Condition.objects.filter(experiment__name=exp_name)
+        conditions = Condition.objects.filter(
+                        experiment__name=exp_name, 
+                        cond_type=ConditionType.objects.get(name=ctype)).order_by("name")
+        conditions = list(conditions)
 
         # Filter genes to only those in experiment
         genes_in_experiment = ExperimentGene.objects.filter(
@@ -162,15 +164,10 @@ def plot_gene_expression(request):
                 if is_one_sample(experiment, conditions):
                     theplot = do_barplot(experiment, dataset, conditions, list(genes_in_experiment))
                 else:
-                    conditions = Condition.objects.filter(
-                        experiment__name=exp_name, 
-                        cond_type=ConditionType.objects.get(name=ctype))
+                    
                     theplot = do_violin(experiment, dataset, conditions, list(genes_in_experiment), ctype)
             else:
                 # PLOT HEATMAP
-                conditions = Condition.objects.filter(
-                    experiment__name=exp_name, 
-                    cond_type=ConditionType.objects.get(name=ctype))
                 theplot = do_heatmap(experiment, dataset, conditions, list(genes_in_experiment), ctype)
 
             if theplot is not None and not theplot.is_empty():
