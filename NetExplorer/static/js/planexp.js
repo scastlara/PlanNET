@@ -699,7 +699,7 @@ var PlanExp = (function() {
         toImport.nodes = [ ... new Set(toImport.nodes)];
         
         $.scrollTo("#planexp-network", 500);
-        addJsonToCy(toImport, "cose");
+        addJsonToCy(toImport, "cola");
 
     }
 
