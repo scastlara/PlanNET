@@ -2548,3 +2548,8 @@ summary { display: list-item !important; }
     padding-right: 20px;
     z-index: 2147483647;
 } 
+
+.planexp-links-table-group {
+    border-right: solid 1px black;
+    text-align: center;
+}
