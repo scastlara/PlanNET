@@ -2550,6 +2550,10 @@ summary { display: list-item !important; }
 } 
 
 .planexp-links-table-group {
-    border-right: solid 1px black;
+    border-right: solid 2px #E7E7E7;
     text-align: center;
+}
+
+.planexp-links-table-limit {
+    border-right: solid 2px #E7E7E7;
 }

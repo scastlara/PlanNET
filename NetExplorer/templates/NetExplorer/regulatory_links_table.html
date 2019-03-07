@@ -11,10 +11,10 @@
             <tr>
                 <th>Regulator id</th>
                 <th>Regulator gene</th>
-                <th>Regulator homolog</th>
+                <th class="planexp-links-table-limit">Regulator homolog</th>
                 <th>Target id</th>
                 <th>Target gene</th>
-                <th>Target homolog</th>
+                <th class="planexp-links-table-limit">Target homolog</th>
                 <th>Score</th>
                 <th>Source</th>
             </tr>
@@ -45,7 +45,7 @@
                     {% endif %}
 
                     {% if link.regulator_homolog %}
-                        <td>
+                        <td class="planexp-links-table-limit">
                             <a class="card-trigger"
                                 title="Click to view info card"
                                 target="{{ link.regulator_homolog }}"
@@ -54,7 +54,7 @@
                             </a>
                         </td>
                     {% else %}
-                        <td>None</td>
+                        <td class="planexp-links-table-limit">None</td>
                     {% endif %}
                     
                     <td>
@@ -80,7 +80,7 @@
                     {% endif %}
 
                     {% if link.target_homolog %}
-                        <td>
+                        <td class="planexp-links-table-limit">
                             <a class="card-trigger"
                                 title="Click to view info card"
                                 target="{{ link.target_homolog }}"
@@ -89,7 +89,7 @@
                             </a>
                         </td>
                     {% else %}
-                        <td>None</td>
+                        <td class="planexp-links-table-limit">None</td>
                     {% endif %}
                     
                     <td>{{ link.score|floatformat:3  }}</td>
