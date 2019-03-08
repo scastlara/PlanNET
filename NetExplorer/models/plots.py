@@ -274,7 +274,7 @@ class LinePlot(GenExpPlot):
     '''
     def __init__(self):
         super(LinePlot, self).__init__()
-        self.type = "scatter"
+        self.type = "scattergl"
 
 
     def plot(self):
