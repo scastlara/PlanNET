@@ -13,6 +13,7 @@
         <li><a class="planexp-toc-link" id="planexp-dge-table-container-toc" href="#planexp-dge-table-container">DGE table</a></li>
         <li><a class="planexp-toc-link" id="planexp-gene-expression-toc" href="#planexp-gene-expression">Gene Expression Plot</a></li>
         <li><a class="planexp-toc-link" id="planexp-tsne-toc" href="#planexp-tsne">t-SNE Plot</a></li>
+        <li><a class="planexp-toc-link" id="planexp-markers-toc" href="#planexp-markers">Marker Genes</a></li>
         <li><a class="planexp-toc-link" id="planexp-links-toc" href="#planexp-links">Regulatory Interactions</a></li>
         <li><a class="planexp-toc-link" id="planexp-network-toc" href="#planexp-network">Network</a></li>
         <hr>
@@ -83,6 +84,11 @@
             <div id="planexp-dge-table-container" class="planexp-card">
                 <h2 id="planexp-title">Differentially expressed genes</h2>
                 <hr class="planexp-rule">
+
+                <blockquote>
+                    Check differentially expressed genes across different conditions.
+                </blockquote>
+
                 <div class="form-group planexp-condition-selects">
                     <h4>Conditions:</h4>
                     <select id="planexp-dge-ctype" name="planexp-dge-ctype" class="selectpicker ctype-select" title="Select Condition Type">
@@ -114,6 +120,14 @@
             <div id="planexp-gene-expression" class="planexp-card">
                 <h2 id="planexp-title">Gene Expression</h2>
                 <hr class="planexp-rule">
+
+
+                <blockquote>
+                    Visualize the expression of one or more genes in the different conditions for this experiment.
+                    <br>
+                    Choose the most appropiate plot type using the dropdown menu.
+                </blockquote>
+
                 <div class="input-group gene-expression-search-container">
                     <label for="genesymbol">Gene Symbol/s:</label>
                     <input type="text" id="gene-expression-search" class="form-control" name="genesymbol" placeholder="Enter Gene Symbols">
@@ -133,7 +147,8 @@
                 <label for="gene-expression-plot-type">Plot:</label><br>
                 <select id="gene-expression-plot-type" name="gene-expression-plot-type" class="selectpicker" title="Select Plot">
                     <option value="heatmap" selected>Heat Map</option>
-                        <option value="violin">Violin-Bar Plot</option>
+                    <option value="violin">Violin-Bar Plot</option>
+                    <option value="line">Line Chart</option>
                 </select>
                 <div id="plot-container">
                     <div id="plot-genenotfound">
@@ -151,8 +166,16 @@
 
             <!-- tSNE plot -->
             <div id="planexp-tsne" class="planexp-card">
-                <h2 id="planexp-title">t-SNE plot</h2>
+                <h2 id="planexp-title">t-SNE Plot</h2>
                 <hr class="planexp-rule">
+
+
+                <blockquote>
+                    Visualize the cells in this experiment in plotted two dimensions, thanks to a <a href="" target="_blank">T-distributed Stochastic Neighbor Embedding</a><div class="">
+                    <br>
+                    Choose to color the cells by condition (clusters of cells, experimental conditions, etc.) or by the expression of a specific gene by
+                    using the different tabs.
+                </blockquote>
 
                 <h4>Color By:</h4>
                 <!-- Condition-vs-GeneSymbol tab header -->
@@ -227,6 +250,37 @@
 
 
 
+            <div id="planexp-markers" class="planexp-card">
+                    <h2 id="planexp-title">Marker Genes</h2>
+                    <hr class="planexp-rule">
+
+                    <blockquote>
+                        Select a cluster and find genes that identify them.
+                        <br>
+                        The selection of markers was computed by building a classifier on genes, and then computing the <a href="https://en.wikipedia.org/wiki/Receiver_operating_characteristic#Area_under_the_curve" target="_blank">Area under the ROC curve (AUC)</a> 
+                        of the predictor. 
+                        <br>
+                        Genes with a high AUC (close to 1), are able to identify the cluster without any uncertainty.
+                        <br>
+                        A high average difference, means that the presence of that gene is a strong indication that a cell belongs to the cluster, but 
+                        a negative difference means that the abscense of expression is the indicator.
+
+                    </blockquote>
+
+                    <select id="markers-select" name="condition" class="selectpicker condition-select markers-condition-selects" title="Select Condition">
+                        <option value="" disabled selected>Select condition</option>
+                    </select>
+                    <br><br>
+                    
+                    <div id="markers-table-notfound">
+                        <span class="glyphicon glyphicon-warning-sign"></span>
+                        No markers for this cluster
+                     </div>
+
+                    <div id="planexp-markers-table-container">
+                    </div>
+            </div>
+
             <div id="planexp-links" class="planexp-card">
                 <h2 id="planexp-title">Gene Regulatory Interactions</h2>
                 <hr class="planexp-rule">
@@ -235,11 +289,11 @@
                     Predicted gene interactions for this experiment 
                     using <a target="_blank" href="https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0012776">GENIE3 (Huynh-Thu, VA <i>et al</i>.)</a>.
 
-                    <br><br>
+                    <br>
                     Possible regulators were selected by Gene Ontology (those genes having a GO accession indicating that they are transcription factors), 
                     or by PFAM domain annotations.
 
-                    <br><br>
+                    <br>
                     A random sample of up to 30 cells per cluster was selected for the gene network inference. 
 
 
@@ -247,7 +301,7 @@
 
                 <br>
                 <div id="planexp-links-table-container">
-
+                    
                 </div>
 
 
@@ -266,6 +320,15 @@
                 <h2 id="planexp-title">Network</h2>
                 <hr class="planexp-rule">
 
+                <blockquote>
+                    Map the expression levels of the different conditions of the experiment onto a network (either protein-protein or gene interaction network).
+                    <br>
+                    Use the import option to use a network from <a href="{% url 'net_explorer' %}" target="_blank">PlanNET Net Explorer</a>. 
+                    <br>
+                    Alternatively, if Gene Regulation Interactions have been predicted for this experiment, use the button "Send to Network viewer" located in the Regulatory Interactions section.
+                    <br>
+                    The network can be edited using our built in Network editor, so that known interactions can be added directly.
+                </blockquote>
                 <!-- PLANEXP CYTOSCAPE BUTTONS -->
                 <div id="planexp-cyt-buttons">
                         <div id="planexp-cyt-center" class="btn btn-default planexp-cyt-btn"><span class="glyphicon glyphicon-fullscreen"></span> Center</div>
@@ -300,8 +363,8 @@
                         <h3>Color Genes:</h3>
 
                         <ul class="nav nav-tabs" id="color-by">
-                            <li class="active" id="one-sample-nav"><a data-toggle="tab" href="#one-sample">One Sample</a></li>
-                            <li id="two-sample-nav"><a data-toggle="tab" href="#two-sample">Two Samples</a></li>
+                            <li class="active" id="one-sample-nav"><a data-toggle="tab" href="#one-sample">One Condition</a></li>
+                            <li id="two-sample-nav"><a data-toggle="tab" href="#two-sample">Two Conditions</a></li>
                         </ul>
                         <div class="tab-content">
                             <div id="one-sample" class="tab-pane fade in active">

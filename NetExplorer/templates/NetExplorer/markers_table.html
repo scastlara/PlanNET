@@ -1,59 +1,58 @@
 {% load staticfiles %} 
 
-{% if expressions %}
-    <table id="dge-table" class="table table-hover">
+{% if markers %}
+    <table id="planexp-markers-table" class="table table-hover">
         <thead>
+    
             <tr>
                 <th>Symbol</th>
                 <th>Gene</th>
                 <th>Homolog</th>
-                <th>Condition 1</th>
-                <th>Condition 2</th>
-                <th>Log Fold Change</th>
-                <th>Adj. P-Value</th>
+                <th>AUC</th>
+                <th>Average Difference</th>
             </tr>
         </thead>
         <tbody>
-            {% for exp in expressions %}
+            {% for mark in markers %}
                 <tr>
                         
                     <td>
                         <a class="card-trigger"
                             title="Click to view info card"
-                            target="{{ exp.gene_symbol }}"
+                            target="{{ mark.gene_symbol }}"
                             targetDB="{{ database.name }}">
-                            {{ exp.gene_symbol }}
+                            {{ mark.gene_symbol }}
                         </a>
                     </td>
-                    {% if exp.gene %}
+                   
+                    {% if mark.gene %}
                         <td>
                             <a class="card-trigger"
                                 title="Click to view info card"
-                                target="{{ exp.gene }}"
+                                target="{{ mark.gene }}"
                                 targetDB="Smesgene">
-                                {{ exp.gene }} {% if exp.name %} ({{ exp.name }}) {% endif %}
+                                {{ mark.gene }} {% if mark.name %} ({{ mark.name }}) {% endif %}
                             </a>
                         </td>
                     {% else %}
                         <td>None</td>
                     {% endif %}
 
-                    {% if exp.homolog %}
+                    {% if mark.homolog %}
                         <td>
                             <a class="card-trigger"
                                 title="Click to view info card"
-                                target="{{ exp.homolog }}"
+                                target="{{ markhomolog }}"
                                 targetDB="Human">
-                                {{ exp.homolog }} 
+                                {{ mark.homolog }} 
                             </a>
                         </td>
                     {% else %}
                         <td>None</td>
                     {% endif %}
-                    <td>{{ exp.condition1.name }}</td>
-                    <td>{{ exp.condition2.name }}</td>
-                    <td>{{ exp.fold_change|floatformat:3 }}</td>
-                    <td>{{ exp.pvalue|stringformat:".3e" }}</td>
+                    
+                    <td>{{ mark.auc  }}</td>
+                    <td>{{ mark.avg_diff|floatformat:3 }}</td>
                 </tr>
             {% endfor %}
         </tbody>
@@ -64,8 +63,8 @@
     <script src="{% static 'js/root.js' %}"></script>
     <script>
         $(document).ready(function(){
-            $("#dge-table").DataTable({
-                "order": [[ 5, "desc" ]],
+            $("#planexp-markers-table").DataTable({
+                "order": [[ 3, "desc" ]],
                 dom: 'Bfrtip',
                 buttons: [
                     'csvHtml5'
@@ -75,5 +74,5 @@
     </script>
 
 {% else %}
-   
+   SUPPP
 {% endif %}

@@ -116,6 +116,72 @@ def do_heatmap(experiment, dataset, conditions, gene_symbols, ctype):
     return theplot
 
 
+def do_linechart(experiment, dataset, conditions, gene_symbols, ctype):
+    '''
+    Creates a linechart with mean expression for each point. 
+    It tries to put any Day/Time factor on the X, and then divide
+    the other factor (if it is an interaction, e.g.: "Time - Cluster" or "Time - RNAi")
+    as subplots.
+    '''
+    theplot = None
+    condition_expression = dict()
+
+    for condition in conditions:
+        samples = SampleCondition.objects.filter(experiment=experiment, condition=condition).values_list('sample', flat=True)
+        expression = ExpressionAbsolute.objects.filter(
+            experiment=experiment,   dataset=dataset, 
+            sample__in=list(samples), gene_symbol__in=gene_symbols
+        ).values('gene_symbol').annotate(cond_sum = Sum('expression_value'))
+        genes_found = set()
+        for exp in expression:
+            genes_found.add(exp['gene_symbol'])
+            if exp['gene_symbol'] not in condition_expression:
+                condition_expression[exp['gene_symbol']] = list()
+            condition_expression[exp['gene_symbol']].append(exp['cond_sum'] / len(samples))
+        genes_missing = set(gene_symbols).difference(genes_found)
+        for missing in genes_missing:
+            if missing not in condition_expression:
+                condition_expression[missing] = list()
+            condition_expression[missing].append(0)
+
+    conditions = [ condition.name for condition in conditions ]
+    theplot = LinePlot()
+    group_idxs = dict()
+    time_idxs = set()
+    if " - " in conditions[0]:
+        # Interaction Factor. Multiple Subplots.
+        for c_idx, condition in enumerate(conditions):
+            c1, c2 = condition.split(" - ")
+            if c1 not in time_idxs:
+                time_idxs.add(c1)
+            if c2 not in group_idxs:
+                group_idxs[c2] = list()
+            group_idxs[c2].append(c_idx)
+    
+    if not group_idxs:
+        for gene in gene_symbols:
+            # Single Factor. Simple Line Chart.
+            theplot.traces.append(PlotlyTrace(name=gene))
+            theplot.traces[-1].x = conditions
+            theplot.traces[-1].y = condition_expression[gene]
+            theplot.traces[-1].type = "scatter"
+    else:
+        # Interaction Factor. Multiple Subplots.
+        subplot_i = 1
+        for group_name, group_i in group_idxs.items():
+            for gene in gene_symbols:
+                theplot.traces.append(PlotlyTrace(name=gene))
+                theplot.traces[-1].x = sorted(list(time_idxs))
+                theplot.traces[-1].y = [ condition_expression[gene][i] for i in group_i ]
+                theplot.traces[-1].xaxis = "x" + str(subplot_i)
+                theplot.traces[-1].yaxis = "y" + str(subplot_i)
+                theplot.traces[-1].type = "scatter"
+                theplot.traces[-1].subplot_title = group_name
+                theplot.traces[-1].legend_group = gene
+            subplot_i += 1
+    
+    return theplot
+
 
 def is_one_sample(experiment, conditions):
     '''
@@ -166,10 +232,12 @@ def plot_gene_expression(request):
                 else:
                     
                     theplot = do_violin(experiment, dataset, conditions, list(genes_in_experiment), ctype)
-            else:
+            elif plot_type == "heatmap":
                 # PLOT HEATMAP
                 theplot = do_heatmap(experiment, dataset, conditions, list(genes_in_experiment), ctype)
-
+            else:
+                # LINE PLOT
+                theplot = do_linechart(experiment, dataset, conditions, list(genes_in_experiment), ctype)
             if theplot is not None and not theplot.is_empty():
                 response = theplot.plot()
             else:

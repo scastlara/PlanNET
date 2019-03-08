@@ -139,15 +139,19 @@ var PlanExp = (function() {
 
                     for (cond in conditions) {
                         var conditionName = conditions[cond];
-                        if (!conditionName in data.comparisons) {
-                            continue;
-                        }
+                        //if (!conditionName in data.comparisons) {
+                        //    continue;
+                        //}
                         html_to_add += conditionRow(conditionName, ctype);
                     }
                     html_to_add += optGroupClose();
                     
                 }
                 conditionSelects.append(html_to_add);
+                // Remove some condition types from only some selects
+                $("#markers-select").children().remove("optgroup[label!='Cluster']");
+                $("#planexp-dge-c1").children().remove("optgroup[label='Technical']");
+                $("#planexp-dge-c2").children().remove("optgroup[label='Technical']");
                 conditionSelects.selectpicker('refresh');
             },
             error: function(data) {
@@ -198,6 +202,7 @@ var PlanExp = (function() {
                     }
                 }
 
+                $("#planexp-dge-ctype").children().remove("option[value='Technical']");
                 ctypeSelects.selectpicker('refresh');
             },
             error: function(data) {
@@ -334,8 +339,9 @@ var PlanExp = (function() {
                 if (data) {
                     $("#plot-genenotfound").hide();
                     var thePlot = document.getElementById(plotDivId);
+                    console.log(data);
                     Plotly.newPlot(thePlot, data.data, data.layout);
-                    if (plotType != "violin") {
+                    if (plotType == "heatmap") {
                         thePlot.on('plotly_afterplot', function(){
                             Plotly.d3.selectAll(".yaxislayer-above").selectAll('text')
                                   .on("click", function(d) {
@@ -669,6 +675,47 @@ var PlanExp = (function() {
     }
 
 
+    /**
+     * getClusterMarkers
+     *   Summary:
+     *     Retrieves table with markers for each cluster
+     *   Arguments: 
+     *     - None
+     *   Returns:
+     *     - Nothing, fills html of table.
+     */
+    var getClusterMarkersTable = function(tableId, experiment, dataset, cluster) {
+
+        $.ajax({
+            type: "GET",
+            url: window.ROOT + "/cluster_markers",
+            data: {
+                'experiment'    : experiment,
+                'dataset'       : dataset,
+                'cluster'       : cluster,
+                'csrfmiddlewaretoken': csrftoken
+            },
+            success: function(data) {
+                // Change Exp type
+                if (data != "None") {
+                    $("#markers-table-notfound").hide();
+                    $(tableId).hide()
+                    $(tableId).html(data);
+                    $(tableId).show(250);
+                } else {
+                    $(tableId).html("");
+                    $("#markers-table-notfound").show(250);
+
+
+                }
+            },
+            error: function(data) {
+                console.log(data.responseText);
+            }
+        });
+
+    }
+
 
     /**
      * sendToNetwork
@@ -730,6 +777,8 @@ var PlanExp = (function() {
         $("#planexp-gene-expression-toc").hide();
         $("#planexp-tsne").hide();
         $("#planexp-tsne-toc").hide();
+        $("#planexp-markers").hide();
+        $("#planexp-markers-toc").hide();
         $("#planexp-network").hide();
         $("#planexp-network-toc").hide();
         $("#tsne-plot-gene").html("");
@@ -790,6 +839,9 @@ var PlanExp = (function() {
             $("#planexp-tsne").show(250);
             $("#planexp-tsne-toc").show(250);
             $('#planexp-tsne-toc').css('display', 'inline-block');
+            $("#planexp-markers").show(250);
+            $("#planexp-markers-toc").show(250);
+            $('#planexp-markers-toc').css('display', 'inline-block');
         };
     });
 
@@ -1003,6 +1055,19 @@ var PlanExp = (function() {
     $("#network-color-condition2").on("change", function(){
         colorByCondition();
     });
+
+
+    // Markers table
+    $("#markers-select").on("change", function(){
+        console.log($(this).val());
+        var expName = $("#select-experiment").val();
+        var dataset = $("#select-dataset").val();
+        var cluster = $(this).val()
+
+        getClusterMarkersTable("#planexp-markers-table-container", expName, dataset, cluster);
+
+    });
+
 
 
 

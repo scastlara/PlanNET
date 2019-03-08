@@ -1,5 +1,20 @@
 from .common import *
 
+
+COLORS = [
+    '#1f77b4',  
+    '#ff7f0e',  
+    '#2ca02c',  
+    '#d62728',  
+    '#9467bd',  
+    '#8c564b',  
+    '#e377c2',  
+    '#7f7f7f',  
+    '#bcbd22',  
+    '#17becf'
+]
+
+
 # ------------------------------------------------------------------------------
 class GenExpPlot(object):
     """
@@ -66,6 +81,7 @@ class GenExpPlot(object):
                 if sum(expression):
                     empty = False
                     break
+
         return empty
     
     def add_units(self, axis, units):
@@ -252,7 +268,79 @@ class HeatmapPlot(object):
         return theplot
 
 
+class LinePlot(GenExpPlot):
+    '''
+    Class for Plotly linecharts
+    '''
+    def __init__(self):
+        super(LinePlot, self).__init__()
+        self.type = "scatter"
+
+
+    def plot(self):
+        theplot = dict()
+        theplot['data'] = list()
+
+        theplot['layout'] = {
+            'margin': {
+                'l': 250,
+                'r': 20,
+                'b': 150,
+                't': 20,
+                'pad': 4
+        }}
+
+        data_list = list()
+        num_subplots = set()
+        subplots = set()
+        annotations = list()
+        i_colors = 0
+        added_genes = dict()
+        for trace in self.traces:
+            trace_dict = { 'x': trace.x, 'y': trace.y, 'type': trace.type, 'name': trace.name }
+            if trace.xaxis is not None:
+                trace_dict['xaxis'] = trace.xaxis
+                trace_dict['yaxis'] = trace.yaxis
+                num_subplots.add(trace.xaxis)
+                if trace.subplot_title not in subplots:
+                    subplots.add(trace.subplot_title)
+                    annotations.append({
+                        'text': trace.subplot_title, 
+                        'align': 'center',
+                        'showarrow': False,
+                        'xref': trace.xaxis,
+                        'yref': trace.yaxis
+                    })
+                if trace.name not in added_genes:
+                    if i_colors >= 10:
+                        i_colors = 0
+                    added_genes[trace.name] = COLORS[i_colors]
+                    i_colors += 1
+                trace_dict['line'] = dict()
+                trace_dict['line']['color'] = added_genes[trace.name]
+                if trace.xaxis != "x1":
+                    trace_dict['showlegend'] = False
+                trace_dict['legendgroup'] = trace.legend_group    
+            data_list.append(trace_dict)
+        
+
+        num_subplots = len(num_subplots)
+        if num_subplots:
+            theplot['layout']['grid'] = { 'rows': num_subplots, 'columns': 1, 'pattern': 'independent', 'roworder': 'top to bottom'}
+            theplot['layout']['height'] = 300 * num_subplots
+            theplot['layout']['annotations'] = annotations
+        theplot['data'] = data_list
+        return theplot
     
+    def is_empty(self):
+        
+        if self.traces[0].x and self.traces[0].y:
+            return False
+        else:
+            return True
+
+
+
 
 
 class ScatterPlot(object):
@@ -371,6 +459,10 @@ class PlotlyTrace(object):
         self.mode = 'markers'
         self.type = 'scattergl'
         self.color = list()
+        self.xaxis = None
+        self.yaxis = None
+        self.subplot_title = None
+        self.legend_group = None
 
     
 

@@ -305,3 +305,18 @@ class RegulatoryLinks(models.Model):
     target = models.CharField(max_length=50)
     source = models.CharField(max_length=20)
     score = models.FloatField()
+
+# ------------------------------------------------------------------------------
+class ClusterMarkers(models.Model):
+    '''
+    Class for cluster marker genes
+    '''
+    experiment = models.ForeignKey(Experiment, on_delete=models.CASCADE)
+    dataset = models.ForeignKey(Dataset, on_delete=models.CASCADE)
+    condition = models.ForeignKey(Condition, on_delete=models.CASCADE)
+    gene_symbol = models.CharField(max_length=50)
+    auc = models.FloatField()
+    avg_diff = models.FloatField()
+
+
+

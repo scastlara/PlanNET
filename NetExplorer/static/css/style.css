@@ -2131,26 +2131,38 @@ kbd {
     font-size: 12px;
 }
 
+#planexp-markers-table {
+    color: #777777;
+    font-size: 12px;
+}
+
 #planexp-links-table {
     color: #777777;
     font-size: 12px;
 }
 
-#planexp-links blockquote {
+.planexp-card blockquote {
     font-size: 14px !important;
 }
 
 #select-dataset { display: none; }
 #planexp-gene-expression { display: none; }
 .gene-expression-search-container { width: 50%; }
+
 #plot-container { 
     width: 100%; 
     margin-top: 50px;
     text-align: center; 
 }
+
+#planexp-gene-expression #expression-plot {
+    overflow-y: scroll;
+    height: 500px;
+}
+
 #expression-plot { 
     display: inline-block; 
-    height: 500px; 
+    min-height: 500px; 
     min-width: 700px; 
     width: 100%;
     background-color: #f4f4f4; 
@@ -2217,6 +2229,15 @@ kbd {
     background-color: #FDD4D4;  
 }
 
+#markers-table-notfound {
+    display: none; 
+    margin: auto;
+    font-size: 18px;
+    padding: 8px;
+    width: 700px; 
+    background-color: #FDD4D4;  
+}
+
 #expression-plot-loading {
     display: none;
     position: absolute;
@@ -2250,6 +2271,8 @@ kbd {
 }
 
 #planexp-tsne { display: none; }
+
+#planexp-markers { display: none; }
 
 
 #planexp-tsne input[type=range]::-moz-range-track { 
@@ -2294,6 +2317,7 @@ kbd {
 #planexp-network     { display: none; }
 #planexp-network-toc { display: none; }
 #planexp-links-toc { display: none; }
+#planexp-markers-toc { display: none; }
 
 #planexp-cyt { background-color: #f4f4f4; width: 100%; height: 720px;}
 
