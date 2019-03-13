@@ -59,6 +59,32 @@ var PlanExp = (function() {
         
     }
 
+
+    conditionRow = function(conditionName, ctype) {
+        conditionClass = ctype.replace(/ /g, "_");
+        return "<option class='condition-option " + 
+                conditionClass + "'" +
+                " value='" + 
+                conditionName + 
+                "'>" + 
+                conditionName + 
+                "</option>\n";
+    }
+
+    optGroupOpen = function(ctype) {
+        return "<optgroup label='" + 
+                ctype + 
+                "' " + 
+                "class='condition-option " + 
+                ctype.replace(/ /g, "_") + "'" + 
+                ">\n";
+    }
+
+    optGroupClose = function() {
+        return "</optgroup>\n";
+    }
+
+
     rgb2hex = function(rgb) {
         if (/^#[0-9A-F]{6}$/i.test(rgb)) return rgb;
     
@@ -83,30 +109,6 @@ var PlanExp = (function() {
      *     - Nothing
      */
     fillConditions = function(expName, conditionSelects) {
-
-        conditionRow = function(conditionName, ctype) {
-            conditionClass = ctype.replace(/ /g, "_");
-            return "<option class='condition-option " + 
-                    conditionClass + "'" +
-                    " value='" + 
-                    conditionName + 
-                    "'>" + 
-                    conditionName + 
-                    "</option>\n";
-        }
-
-        optGroupOpen = function(ctype) {
-            return "<optgroup label='" + 
-                    ctype + 
-                    "' " + 
-                    "class='condition-option " + 
-                    ctype.replace(/ /g, "_") + "'" + 
-                    ">\n";
-        }
-
-        optGroupClose = function() {
-            return "</optgroup>\n";
-        }
 
         $.ajax({
             type: "GET",
@@ -135,7 +137,6 @@ var PlanExp = (function() {
                 for (ctype in groups) {
                     html_to_add += optGroupOpen(ctype);
                     var conditions = groups[ctype];
-                    conditions.sort();
 
                     for (cond in conditions) {
                         var conditionName = conditions[cond];
@@ -808,6 +809,9 @@ var PlanExp = (function() {
         $("#tsne-plot-condition").html("");
         $("#volcano-plot").html("");
         $("#plot-genenotfound").hide();
+        $("#planexp-goea-condition").html("");
+        $("#planexp-goea-condition").selectpicker("refresh");
+        $("#goea-results").html("");
 
         // Change DGE table ConditionType select
         var ctype = $("#planexp-dge-ctype").val();
@@ -858,6 +862,10 @@ var PlanExp = (function() {
         var condition1 = $("#planexp-dge-c1").val().replace(/ \(.+\)/, "");
         var condition2 = $("#planexp-dge-c2").val().replace(/ \(.+\)/, "");
         var dataset = $("#select-dataset").val();
+        $("#planexp-goea-condition").html("");
+        $("#planexp-goea-condition").selectpicker("refresh");
+        $("#goea-results").html("");
+
         if (condition1 && ! condition2) {
             var availableComparisons = window.comparisons[condition1];
             // Condition1 provided, must hide some condition2
@@ -912,6 +920,51 @@ var PlanExp = (function() {
         // Clean volcano plot 
         $("#volcano-plot").html("");
         experimentDGETable(expName, dataset, condition1, condition2, $("#planexp-dge-table"));
+
+        $("#planexp-goea-condition").append(conditionRow(condition1, ""));
+        $("#planexp-goea-condition").append(conditionRow(condition2, ""));
+        $("#planexp-goea-condition").selectpicker("refresh");
+
+    });
+
+
+    $("#run-goea").on("click", function() {
+        var expName = $("#select-experiment").val();
+        var condition1 = $("#planexp-dge-c1").val().replace(/ \(.+\)/, "");
+        var condition2 = $("#planexp-dge-c2").val().replace(/ \(.+\)/, "");
+        var conditionFocus = $("#planexp-goea-condition").val();
+        var dataset = $("#select-dataset").val();
+        
+        if (!expName || !condition1 || !condition2 || !conditionFocus || !dataset) {
+            return;
+        }
+
+        $("#goea-loading").show();
+        $.ajax({
+            type: "GET",
+            url: window.ROOT + "/get_goea",
+            data: {
+                'experiment'    : expName,
+                'dataset'       : dataset,
+                'condition1'    : condition1,
+                'condition2'    : condition2,
+                'condition_focus': conditionFocus,
+                'csrfmiddlewaretoken': csrftoken
+            },
+            success: function(data) {
+                // Change Exp type
+                $("#goea-loading").hide();
+                $("#goea-results").html(data.html);
+
+            },
+
+            error: function(data) {
+                $("#goea-loading").hide();
+                console.log(data.responseText);
+            }
+        });
+
+
 
     });
 

@@ -147,13 +147,13 @@ def do_linechart(experiment, dataset, conditions, gene_symbols, ctype):
     conditions = [ condition.name for condition in conditions ]
     theplot = LinePlot()
     group_idxs = dict()
-    time_idxs = set()
+    time_idxs = list()
     if " - " in conditions[0]:
         # Interaction Factor. Multiple Subplots.
         for c_idx, condition in enumerate(conditions):
             c1, c2 = condition.split(" - ")
-            if c1 not in time_idxs:
-                time_idxs.add(c1)
+            if c1 not in set(time_idxs):
+                time_idxs.append(c1)
             if c2 not in group_idxs:
                 group_idxs[c2] = list()
             group_idxs[c2].append(c_idx)
@@ -171,7 +171,7 @@ def do_linechart(experiment, dataset, conditions, gene_symbols, ctype):
         for group_name, group_i in group_idxs.items():
             for gene in gene_symbols:
                 theplot.traces.append(PlotlyTrace(name=gene))
-                theplot.traces[-1].x = sorted(list(time_idxs))
+                theplot.traces[-1].x = time_idxs
                 theplot.traces[-1].y = [ condition_expression[gene][i] for i in group_i ]
                 theplot.traces[-1].xaxis = "x" + str(subplot_i)
                 theplot.traces[-1].yaxis = "y" + str(subplot_i)
@@ -214,10 +214,13 @@ def plot_gene_expression(request):
         # Get Experiment and conditions
         experiment = Experiment.objects.get(name=exp_name)
         dataset = Dataset.objects.get(name=dataset)
+
+        # WILL NEED TO CHANGE THE ORDER BY TO SORT
+        # USING MIXED SORT
         conditions = Condition.objects.filter(
                         experiment__name=exp_name, 
-                        cond_type=ConditionType.objects.get(name=ctype)).order_by("name")
-        conditions = list(conditions)
+                        cond_type=ConditionType.objects.get(name=ctype))
+        conditions = sorted(conditions, key= lambda x: condition_sort(x))
 
         # Filter genes to only those in experiment
         genes_in_experiment = ExperimentGene.objects.filter(

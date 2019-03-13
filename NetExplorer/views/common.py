@@ -29,6 +29,7 @@ import time
 import os
 import numpy as np
 import random
+
 #from django import template
 
 
@@ -90,3 +91,28 @@ def disambiguate_gene(gene_name, dataset):
     if not gene_symbols:
         gene_symbols = [gene_name]
     return gene_symbols
+
+
+
+def condition_sort(x):
+    '''
+    Sort conditions by 
+        - Single-vs-Interaction, 
+        - Number (if any in name)
+        - Rest of the name.
+    Returns tuple (int, int, string)
+    '''
+    if "-" in x.name:
+        # Interaction condition
+        regex = re.search(r'(\d+).+\-(.+)', x.name)
+        if regex:
+            return (1, int(regex.group(1)), regex.group(2))
+        else:
+            return (1, 0, x.name)
+    else:
+        # Single condition
+        regex = re.search(r'(\d+).+', x.name)
+        if regex:
+            return (0, int(regex.group(1)), "")
+        else:
+            return (0, 0, x.name)

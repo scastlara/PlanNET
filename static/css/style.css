@@ -2202,6 +2202,25 @@ kbd {
     background-color: #f4f4f4; 
 }
 
+#goea-results {
+    display: inline-block; 
+    height: 500px; 
+    min-width: 700px; 
+    width: 100%;
+    margin-top: 10px;
+}
+
+
+
+.goea-plot {
+    display: inline-block;
+    max-height: 500px;
+    width: auto;
+    max-width: 100%;
+    margin-top: 10px;
+
+}
+
 #plot-genenotfound { 
     display: none; 
     margin: auto;
@@ -2247,6 +2266,14 @@ kbd {
 }
 
 #tsne-plot-condition-loading {
+    display: none;
+    position: absolute;
+    z-index: 2;
+    left: calc(50% - 75px);
+    margin-top: 175px;
+}
+
+#goea-loading {
     display: none;
     position: absolute;
     z-index: 2;
@@ -2580,4 +2607,10 @@ summary { display: list-item !important; }
 
 .planexp-links-table-limit {
     border-right: solid 2px #E7E7E7;
+}
+
+#geneontology-analysis-container {
+    text-align: center;
+    margin-top: 25px;
+    margin-bottom: 80px;
 }

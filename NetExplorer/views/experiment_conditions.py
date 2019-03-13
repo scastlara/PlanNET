@@ -33,7 +33,8 @@ def experiment_conditions(request):
         response = dict()
         response['conditions'] = dict()
         response['comparisons'] = get_possible_comparisons(exp_name)
-        for cond in sorted(conditions, key=lambda x: x.name):
+
+        for cond in sorted(conditions, key=lambda x: condition_sort(x)):
             cond_name = str(cond.name)
             if cond.defines_cell_type and cond.cell_type != "Unknown":
                 if cond.name.isdigit():

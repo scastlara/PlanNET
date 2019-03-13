@@ -109,10 +109,32 @@
                 </div>
                 <div id="planexp-dge-table">
                 </div>
-
+                
                 <div id="plot-container">
+                    <hr>
+                    <h4>Volcano Plot</h4>
                     <div id="volcano-plot">
                     </div>
+                </div>
+
+                <div id="geneontology-analysis-container">
+                    <hr>
+                    <h4>Perform Gene Ontology Enrichment Analysis</h4>
+                    
+                    <select id="planexp-goea-condition">
+                        <option value="" disabled selected>Choose DGE Comparison First</option>
+                    </select>
+
+                    <button id="run-goea" type="submit" value=" Send" class="btn btn-danger" id="submit">Run Analysis</button>
+                    <br>
+                    
+                    <div id="goea-loading">
+                        <img class="planexp-loading-img" src="{% static 'Images/loading-planexp.gif' %}"/>
+                    </div>
+                    <div id="goea-results">
+                       
+                    </div>
+
                 </div>
             </div> <!-- Differential expression table -->
 

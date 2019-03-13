@@ -5,3 +5,4 @@ from NetExplorer.models import colors
 from NetExplorer.models.mysql_models import *
 from NetExplorer.models.neo4j_models import *
 from NetExplorer.models.plots import *
+from NetExplorer.models.gene_ontology import *

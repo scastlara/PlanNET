@@ -296,6 +296,8 @@ class LinePlot(GenExpPlot):
         annotations = list()
         i_colors = 0
         added_genes = dict()
+        max_expression = max([ max(trace.y) for trace in self.traces ])
+
         for trace in self.traces:
             trace_dict = { 'x': trace.x, 'y': trace.y, 'type': trace.type, 'name': trace.name }
             if trace.xaxis is not None:
@@ -309,7 +311,8 @@ class LinePlot(GenExpPlot):
                         'align': 'center',
                         'showarrow': False,
                         'xref': trace.xaxis,
-                        'yref': trace.yaxis
+                        'yref': trace.yaxis,
+                        'y': max_expression
                     })
                 if trace.name not in added_genes:
                     if i_colors >= 10:
