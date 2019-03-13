@@ -940,7 +940,10 @@ var PlanExp = (function() {
             return;
         }
 
+        
+        // Show loading and remove images
         $("#goea-loading").show();
+        $(".goea-plot").remove();
         $.ajax({
             type: "GET",
             url: window.ROOT + "/get_goea",

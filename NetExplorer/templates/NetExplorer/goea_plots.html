@@ -15,7 +15,7 @@
         <div id="{{ key }}"  class="tab-pane fade in {% if key == 'BP' %} active {% endif %}">
             
         {% if value %}
-            <a href="data:image/png;base64,{{ value }}" target="_blank">
+            <a target="data:image/png;base64,{{ value }}" href="#" target="_blank">
                 <img class="goea-plot" src="data:image/png;base64,{{ value }}"/>
             </a>
         {% else %}
@@ -27,5 +27,13 @@
         {% endfor %}
     </div>
 
-
+    <script>
+            $(".goea-plot").parent().on("click", function(event) {
+                event.preventDefault();
+                window.open($(this).attr("target"), '_blank');  
+            })
+    
+    </script>
 {% endif %}
+
+    
