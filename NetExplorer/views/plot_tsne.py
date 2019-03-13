@@ -102,20 +102,30 @@ def do_tsne_filter_multiple(experiment, dataset, conditions, gene_symbols, ctype
         filtered_cells = list(ExpressionAbsolute.objects.filter(
             experiment=experiment,   dataset=dataset, 
             sample__in=list(samples), gene_symbol__in=gene_symbols
-        ).values('sample').annotate(gcount=Count('gene_symbol')).filter(gcount = len(gene_symbols)).values_list('sample', flat=True))
+        ).values('sample').annotate(gcount=Count('gene_symbol'), expmean=Avg('expression_value')).filter(gcount = len(gene_symbols)))
+
+        celldict = dict()
+        if not filtered_cells:
+            continue
+
+        for cell in filtered_cells:
+            celldict[cell['sample']] = cell['expmean']
 
         cell_positions = CellPlotPosition.objects.filter(
             experiment=experiment, dataset=dataset, 
-            sample__in=list(filtered_cells)
+            sample__in=list(celldict.keys())
         ).select_related('sample')
         
         cell_order = list()
+        cell_expression = list()
         for cell in cell_positions:
             theplot.add_x(trace_name, float(cell.x_position))
             theplot.add_y(trace_name, float(cell.y_position))
             cell_name = cell.sample.sample_name
             theplot.add_name(trace_name, cell_name)
             cell_order.append(cell.sample.id)
+            cell_expression.append(celldict[cell.sample.id])
+        theplot.add_color_to_trace(trace_name, cell_expression)
     return theplot
 
 
