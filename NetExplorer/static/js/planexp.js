@@ -377,7 +377,7 @@ var PlanExp = (function() {
      *   Returns:
      *     - Nothing
      */
-    plotTSNE = function(expName, dataset, geneName, withcolor, ctype, plotDivId, loadingDiv) {
+    plotTSNE = function(expName, dataset, geneName, withcolor, genePlotType, ctype, plotDivId, loadingDiv) {
         $("#" + loadingDiv).show();
         $("#" + plotDivId).html("");
         $.ajax({
@@ -389,6 +389,7 @@ var PlanExp = (function() {
                 'gene_name' : geneName,
                 'ctype'     : ctype,
                 'withcolor' : withcolor,
+                'gene_plot_type': genePlotType,
                 'csrfmiddlewaretoken': '{{ csrf_token }}'
             },
             success: function(data) {
@@ -1000,6 +1001,8 @@ var PlanExp = (function() {
         var dataset  = $("#select-dataset").val();
         var geneName = $("#tsne-search").val();
         var ctype    = $("#tsne-ctype").val();
+        var genePlotType = $('input[name="planexp-tsne-search-type"]:checked').val()
+        console.log(genePlotType);
         var activePanel = $("#planexp-tsne .tab-content .tab-pane.active");
         var withcolor = false;
         var plotDiv = "tsne-plot-condition";
@@ -1017,7 +1020,7 @@ var PlanExp = (function() {
         
         $("#tsne-plot-genenotfound").hide();
 
-        plotTSNE(expName, dataset, geneName, withcolor, ctype, plotDiv, loadingDiv);
+        plotTSNE(expName, dataset, geneName, withcolor, genePlotType, ctype, plotDiv, loadingDiv);
     });
 
 

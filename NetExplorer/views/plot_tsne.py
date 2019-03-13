@@ -34,7 +34,6 @@ def do_tsne(experiment, dataset, conditions, gene_symbol, ctype, with_color):
         
         cell_order = list()
         for cell in cell_positions:
-            # NEED TO OPTIMIZE WITH select_related, each cell is calling a query to get sample name!
             theplot.add_x(trace_name, float(cell.x_position))
             theplot.add_y(trace_name, float(cell.y_position))
             cell_name = cell.sample.sample_name
@@ -73,6 +72,53 @@ def do_tsne(experiment, dataset, conditions, gene_symbol, ctype, with_color):
     return theplot
 
 
+def do_tsne_filter_multiple(experiment, dataset, conditions, gene_symbols, ctype):
+    '''
+    Plots tsne showing only cells that express gene_symbols > 0
+    '''
+    theplot = ScatterPlot()
+    genes_in_experiment = list(ExperimentGene.objects.filter(
+        experiment=experiment,
+        gene_symbol__in=gene_symbols
+    ).values_list("gene_symbol", flat=True))
+
+    if len(genes_in_experiment) == 0:
+        theplot = None
+        return
+
+    for condition in conditions:
+        trace_name = condition.name
+        if condition.defines_cell_type is True and condition.cell_type != "Unknown":
+            trace_name = condition.cell_type
+
+        theplot.add_trace(trace_name)
+        samples = SampleCondition.objects.filter(
+            experiment=experiment, 
+            condition=condition
+        ).values_list('sample', flat=True)
+        
+
+        # Get cells with num of genes with expression > 0 == len(gene_symbols)
+        filtered_cells = list(ExpressionAbsolute.objects.filter(
+            experiment=experiment,   dataset=dataset, 
+            sample__in=list(samples), gene_symbol__in=gene_symbols
+        ).values('sample').annotate(gcount=Count('gene_symbol')).filter(gcount = len(gene_symbols)).values_list('sample', flat=True))
+
+        cell_positions = CellPlotPosition.objects.filter(
+            experiment=experiment, dataset=dataset, 
+            sample__in=list(filtered_cells)
+        ).select_related('sample')
+        
+        cell_order = list()
+        for cell in cell_positions:
+            theplot.add_x(trace_name, float(cell.x_position))
+            theplot.add_y(trace_name, float(cell.y_position))
+            cell_name = cell.sample.sample_name
+            theplot.add_name(trace_name, cell_name)
+            cell_order.append(cell.sample.id)
+    return theplot
+
+
 def plot_tsne(request):
     '''
     Plots Tsne plot for Single-Cell experiment
@@ -83,14 +129,19 @@ def plot_tsne(request):
         gene_names = request.GET['gene_name']
         ctype = request.GET['ctype']
         with_color = json.loads(request.GET.get('withcolor', 'false'))
+        gene_plot_type = request.GET['gene_plot_type']
         gene_names = gene_names.split(",")
 
         # First disambiguate gene names
         gene_symbol = str()
+        gene_symbols = list()
         for gene_name in gene_names:
             if gene_name.strip():
-                gene_symbol = disambiguate_gene(gene_name, dataset)[0]
-        
+                if with_color and gene_plot_type == "single":
+                    gene_symbol = disambiguate_gene(gene_name, dataset)[0]
+                    break
+                else:
+                    gene_symbols.extend(disambiguate_gene(gene_name, dataset))
 
         # Get Experiment and conditions
         experiment = Experiment.objects.get(name=exp_name)
@@ -100,7 +151,10 @@ def plot_tsne(request):
             cond_type=ConditionType.objects.get(name=ctype))
 
         # Do the plot
-        theplot = do_tsne(experiment, dataset, conditions, gene_symbol, ctype, with_color)
+        if not with_color or gene_plot_type == "single":
+            theplot = do_tsne(experiment, dataset, conditions, gene_symbol, ctype, with_color)
+        else:
+            theplot = do_tsne_filter_multiple(experiment, dataset, conditions, gene_symbols, ctype)
         if theplot is not None:
             response = theplot.plot()
         else:

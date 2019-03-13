@@ -127,7 +127,7 @@
 
                     <button id="run-goea" type="submit" value=" Send" class="btn btn-danger" id="submit">Run Analysis</button>
                     <br>
-                    
+
                     <div id="goea-loading">
                         <img class="planexp-loading-img" src="{% static 'Images/loading-planexp.gif' %}"/>
                     </div>
@@ -205,6 +205,8 @@
                     <li class="active"><a data-toggle="tab" href="#tsne-conditions-tab">Conditions</a></li>
                     <li><a data-toggle="tab" href="#tsne-gene-tab">Gene Symbol</a></li>
                 </ul>
+
+                
                   
 
                 <div class="tab-content">
@@ -237,6 +239,11 @@
                             <label for="genesymbol">Gene Symbol/s:</label>
                             <input type="text" id="tsne-search" class="form-control" name="genesymbol" placeholder="Enter Gene Symbols">
                         </div>
+
+                        <hr>
+                        <input type="radio" name="planexp-tsne-search-type" value="single" checked> Color by expression of <b>one</b> gene.
+                        <br><br>
+                        <input type="radio" name="planexp-tsne-search-type" value="multiple"> Shows only cells expressing <b>all</b> input genes.
 
                         <span class="input-group-btn input-grp-withlabel">
                             <button type="submit" value=" Send" class="btn btn-danger plot-tsne-btn" id="submit">Plot tSNE</button>
