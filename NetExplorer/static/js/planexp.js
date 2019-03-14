@@ -735,7 +735,7 @@ var PlanExp = (function() {
      *     - Nothing, fills html of table.
      */
     window.sendToNetwork = function(dt) {
-
+        $.scrollTo("#planexp-network", 500);
         var data = dt.buttons.exportData().body;
         var toImport = { 'nodes': [], 'edges': [] };
         for (var row in data) {
@@ -752,8 +752,6 @@ var PlanExp = (function() {
         }
 
         toImport.nodes = [ ... new Set(toImport.nodes)];
-        
-        $.scrollTo("#planexp-network", 500);
         addJsonToCy(toImport, "cola");
 
     }
@@ -1237,22 +1235,22 @@ var PlanExp = (function() {
             $('.grid-legend').css('cursor', 'pointer');
             $(this).css('opacity', 1);
             var color = rgb2hex($(this).css('background-color')).toUpperCase();
-            cy.filter(function(i, element){
-                if ( element.isNode() ) {
-                    var nodeColor = element.css("background-color").toUpperCase();
-                    if (nodeColor.length == 4) {
-                       // short hex
-                       nodeColor = nodeColor[0] + nodeColor[1] + nodeColor[1] + nodeColor[2] + nodeColor[2] + nodeColor[3] + nodeColor[3];
-                    }
-                    if (nodeColor == color) {
-                        element.css('opacity', 1);
-                    } else {
-                        element.css('opacity', 0.05);
-                    }
+            cy.elements().css('opacity', 0.05);
+            cy.batch(function(){
+                cy.filter(function(i, element){
+                    if ( element.isNode() ) {
+                        var nodeColor = element.css("background-color").toUpperCase();
+                        if (nodeColor.length == 4) {
+                        // short hex
+                        nodeColor = nodeColor[0] + nodeColor[1] + nodeColor[1] + nodeColor[2] + nodeColor[2] + nodeColor[3] + nodeColor[3];
+                        }
+                        if (nodeColor == color) {
+                            element.css('opacity', 1);
+                        } else {
+                        }
 
-                } else {
-                    element.css('opacity', 0.05);
-                }
+                    }
+                });
             });
         },
         mouseleave: function () {
