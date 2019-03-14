@@ -10,6 +10,7 @@ def experiment_condition_types(request):
         ctypes = ConditionType.objects.filter(condition__in=conditions).distinct()
         ctypes = list(ctypes)
         ctypes.sort(key= lambda i: (i.is_interaction, i.name))
+        print(ctypes)
 
         return HttpResponse(json.dumps([ ctype.name for ctype in ctypes ]), content_type="application/json")
     else:

@@ -98,21 +98,29 @@ def condition_sort(x):
     '''
     Sort conditions by 
         - Single-vs-Interaction, 
+        - Name.
         - Number (if any in name)
-        - Rest of the name.
     Returns tuple (int, int, string)
     '''
     if "-" in x.name:
         # Interaction condition
         regex = re.search(r'(\d+).+\-(.+)', x.name)
         if regex:
-            return (1, int(regex.group(1)), regex.group(2))
+            return (1, regex.group(2), int(regex.group(1)))
         else:
-            return (1, 0, x.name)
+            regex = re.search(r'(.*?)(\d+)', x.name)
+            if regex:
+                return (1, str(regex.group(1)), int(regex.group(2)))
+            else:
+                return (1, x.name, 0)
     else:
         # Single condition
-        regex = re.search(r'(\d+).+', x.name)
+        regex = re.search(r'(\d+)([a-zA-Z]+)', x.name)
         if regex:
-            return (0, int(regex.group(1)), "")
+            return (0, str(regex.group(2)), int(regex.group(1)))
         else:
-            return (0, 0, x.name)
+            regex = re.search(r'(.*?)(\d+)', x.name)
+            if regex:
+                return (0, str(regex.group(1)), int(regex.group(2)))
+            else:
+                return (0, x.name, 0)

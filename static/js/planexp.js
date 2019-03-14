@@ -199,7 +199,7 @@ var PlanExp = (function() {
                     ctypeName = data[ctype];
                     ctypeSelects.append(ctypeRow(ctypeName));
                     if (first) {
-                        $('.condition-option[value=' + ctypeName + ']').attr('selected', 'selected');
+                        $('.condition-option[value="' + ctypeName + '"]').attr('selected', 'selected');
                         first = false;
                     }
                 }

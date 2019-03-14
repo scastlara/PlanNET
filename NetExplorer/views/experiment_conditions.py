@@ -42,7 +42,6 @@ def experiment_conditions(request):
                 else:
                     cond_name = cond.cell_type
             response['conditions'][cond_name] = cond.cond_type.name
-        
         return HttpResponse(json.dumps(response), content_type="application/json")
     else:
         return render(request, 'NetExplorer/404.html')
