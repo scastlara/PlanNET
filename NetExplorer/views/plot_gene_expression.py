@@ -92,24 +92,64 @@ def do_heatmap(experiment, dataset, conditions, gene_symbols, ctype):
     theplot = None
     condition_expression = dict()
     theplot = HeatmapPlot()
-    theplot.add_conditions(conditions)
+    all_samples = list()
+    if ctype != "Samples":
+        # Each column will be a condition
+        theplot.add_conditions(conditions)
     for condition in conditions:
         samples = SampleCondition.objects.filter(experiment=experiment, condition=condition).values_list('sample', flat=True)
-        expression = ExpressionAbsolute.objects.filter(
-            experiment=experiment,   dataset=dataset, 
-            sample__in=list(samples), gene_symbol__in=gene_symbols
-        ).values('gene_symbol').annotate(cond_sum = Sum('expression_value'))
+        if ctype != "Samples":
+            # Plot mean expression per Condition
+            expression = ExpressionAbsolute.objects.filter(
+                experiment=experiment,   dataset=dataset, 
+                sample__in=list(samples), gene_symbol__in=gene_symbols
+            ).values('gene_symbol').annotate(cond_sum = Sum('expression_value'))
+        else:
+            # Plot expression per cell
+            expression = ExpressionAbsolute.objects.filter(
+                experiment=experiment,   dataset=dataset, 
+                sample__in=list(samples), gene_symbol__in=gene_symbols
+            ).values('gene_symbol', 'sample', 'expression_value')
+            all_samples.extend([ condition.name + " - " + str(i) for i in range(len(list(samples))) ])
         genes_found = set()
-        for exp in expression:
-            genes_found.add(exp['gene_symbol'])
-            if exp['gene_symbol'] not in condition_expression:
-                condition_expression[exp['gene_symbol']] = list()
-            condition_expression[exp['gene_symbol']].append(exp['cond_sum'] / len(samples))
-        genes_missing = set(gene_symbols).difference(genes_found)
-        for missing in genes_missing:
-            if missing not in condition_expression:
-                condition_expression[missing] = list()
-            condition_expression[missing].append(0)
+
+        if ctype != "Samples":
+            for exp in expression:
+                genes_found.add(exp['gene_symbol'])
+                if exp['gene_symbol'] not in condition_expression:
+                    condition_expression[exp['gene_symbol']] = list()
+                condition_expression[exp['gene_symbol']].append(exp['cond_sum'] / len(samples))
+            genes_missing = set(gene_symbols).difference(genes_found)
+            for missing in genes_missing:
+                if missing not in condition_expression:
+                    condition_expression[missing] = list()
+                condition_expression[missing].append(0)
+        else:
+            gene_expression_dict = dict()
+            for exp in expression:
+                genes_found.add(exp['gene_symbol'])
+                if exp['gene_symbol'] not in gene_expression_dict:
+                    gene_expression_dict[exp['gene_symbol']] = dict()
+                gene_expression_dict[exp['gene_symbol']][exp['sample']] = exp['expression_value']
+
+            # Add missing genes
+            genes_missing = set(gene_symbols).difference(genes_found)
+            for missing in genes_missing:
+                if missing not in gene_expression_dict:
+                    gene_expression_dict[missing] = dict()
+
+            for gene, sample_exp in gene_expression_dict.items():
+                if gene not in condition_expression:
+                    condition_expression[gene] = list()
+                for sample in samples:
+                    if sample not in sample_exp:
+                        condition_expression[gene].extend([0])
+                    else:
+                        condition_expression[gene].extend([ sample_exp[sample] ])
+    
+    if ctype == "Samples":
+        #print(all_samples)
+        theplot.add_conditions(all_samples)
     for gene in gene_symbols:
         theplot.add_gene(gene)
         theplot.add_gene_expression(condition_expression[gene]) 
@@ -217,9 +257,12 @@ def plot_gene_expression(request):
 
         # WILL NEED TO CHANGE THE ORDER BY TO SORT
         # USING MIXED SORT
+        ctype_tosearch = ctype
+        if ctype == "Samples":
+            ctype_tosearch = "Cluster"
         conditions = Condition.objects.filter(
                         experiment__name=exp_name, 
-                        cond_type=ConditionType.objects.get(name=ctype))
+                        cond_type=ConditionType.objects.get(name=ctype_tosearch))
         conditions = sorted(conditions, key= lambda x: condition_sort(x))
 
         # Filter genes to only those in experiment

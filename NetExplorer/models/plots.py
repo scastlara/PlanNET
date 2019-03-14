@@ -232,7 +232,10 @@ class HeatmapPlot(object):
         self.type = "heatmap"
     
     def add_conditions(self, conditions):
-        self.x = [ cond.name for cond in list(conditions) ]
+        try:
+            self.x = [ cond.name for cond in list(conditions) ]
+        except:
+            self.x = [ cond for cond in conditions ]
 
     def add_gene(self, gene_symbol):
         self.y.append(gene_symbol)

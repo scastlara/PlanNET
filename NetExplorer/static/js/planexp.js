@@ -71,6 +71,15 @@ var PlanExp = (function() {
                 "</option>\n";
     }
 
+    ctypeRow = function(conditionName) {
+        return "<option class='condition-option' value='" + 
+                conditionName  + 
+                "'>" + 
+                conditionName + 
+                "</option>";
+    }
+
+
     optGroupOpen = function(ctype) {
         return "<optgroup label='" + 
                 ctype + 
@@ -175,15 +184,7 @@ var PlanExp = (function() {
      *     - Nothing
      */
     fillCtypes = function(expName, ctypeSelects) {
-        ctypeRow = function(conditionName) {
-            //conditionClass = conditionName.replace(/ /g, "_");
-            return "<option class='condition-option' value='" + 
-                    conditionName  + 
-                    "'>" + 
-                    conditionName + 
-                    "</option>";
-        }
-
+        
         $.ajax({
             type: "GET",
             url: window.ROOT + "/experiment_condition_types",
@@ -817,7 +818,7 @@ var PlanExp = (function() {
         // Change DGE table ConditionType select
         var ctype = $("#planexp-dge-ctype").val();
         showConditionTypes("dge-table-condition-selects", ctype);
-
+        
         // Change Network ConditionType select
         var ctype = $("#network-ctype").val();
         showConditionTypes("network-condition-selects", ctype);
@@ -847,6 +848,12 @@ var PlanExp = (function() {
             $("#planexp-markers").show(250);
             $("#planexp-markers-toc").show(250);
             $('#planexp-markers-toc').css('display', 'inline-block');
+
+            // Add Sample to dropdown in GeneExpressionPlot
+
+            $("#gene-expression-ctype").append(ctypeRow("Samples"));
+            $("#gene-expression-ctype").selectpicker("refresh");
+
         };
     });
 
@@ -991,6 +998,21 @@ var PlanExp = (function() {
         $("#plot-genenotfound").hide();
         plotGeneExpression(expName, dataset, geneName, ctype, plotType, "expression-plot");
     })
+
+
+    $("#gene-expression-ctype").on("change", function(){
+        if ($(this).val() == "Samples") {
+            $("#gene-expression-plot-type option").attr("disabled", "true");
+            $("#gene-expression-plot-type option").prop('selected', false);
+            $("#gene-expression-plot-type option[value='heatmap']").removeAttr('disabled');
+            $("#gene-expression-plot-type option[value='heatmap']").prop('selected', true);
+
+        } else {
+            $("#gene-expression-plot-type option").removeAttr('disabled');
+        }
+        $("#gene-expression-plot-type").selectpicker("refresh");
+    });
+
 
 
     $("#planexp-dge-ctype").on("change", function(){

@@ -13,10 +13,8 @@ def cluster_markers(request):
         condition = Condition.objects.get(experiment=experiment, name=cluster_name)
 
         response = dict()
-
         markers = ClusterMarkers.objects.filter(experiment=experiment, dataset=dataset, condition=condition).order_by("-auc")
         if markers:
-            print("MARKERS")
             all_contigs = [ mark.gene_symbol for mark in markers ]
             homologs = GraphCytoscape.get_homologs_bulk(all_contigs, dataset_name)
             genes = GraphCytoscape.get_genes_bulk(all_contigs, dataset_name)
@@ -26,14 +24,13 @@ def cluster_markers(request):
                 if mark.gene_symbol in homologs:
                     mark.homolog = homologs[mark.gene_symbol]
                 if mark.gene_symbol in genes:
-                    print(genes[mark.gene_symbol])
                     mark.gene = genes[mark.gene_symbol]['gene']
                     mark.name = genes[mark.gene_symbol]['name']
-
             try:
                 response = render_to_string('NetExplorer/markers_table.html', { 'markers': markers, 'experiment': experiment, 'database': dataset })
             except Exception as err:
                 print(err)
+                response = None
         else:
             response = None
         return HttpResponse(response, content_type="application/html")
