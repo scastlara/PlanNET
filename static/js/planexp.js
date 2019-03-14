@@ -417,20 +417,25 @@ var PlanExp = (function() {
     }
 
 
+    initCytoscape = function(graphelements="", layout="cola") {
+        window.cy = cytoscape({
+            style: window.stylesheet,
+            layout: { name:  layout, animationDuration: 200 },
+            container: document.getElementById('planexp-cyt'),
+            elements: graphelements,
+            wheelSensitivity: 0.25,
+            hideEdgesOnViewport: true,
+            ready: function() {}
+        })
+    }
+
+
    /**
     * Add JSON Graph to Cytoscape
     **/
    addJsonToCy = function(graphelements, layout="cola") {
         try {
-            window.cy = cytoscape({
-                style: window.stylesheet,
-                layout: { name:  layout, animationDuration: 200 },
-                container: document.getElementById('planexp-cyt'),
-                elements: graphelements,
-                wheelSensitivity: 0.25,
-                hideEdgesOnViewport: true,
-                ready: function() {}
-            })
+            initCytoscape(graphelements, layout);
             cy.layout({'name': layout, animationDuration: 200});
             colorByCondition();
         }
@@ -788,7 +793,12 @@ var PlanExp = (function() {
         $("#tsne-plot-condition").html("");
         $('#planexp-links-toc').hide();
         $('#planexp-links').hide();
-        cy.nodes().remove();
+
+        try {
+            cy.nodes().remove();
+        } catch {
+            // nothing to do
+        }
 
     });
 
@@ -839,7 +849,10 @@ var PlanExp = (function() {
         $('#planexp-dge-table-container-toc').css('display', 'inline-block');
         $("#planexp-gene-expression-toc").show(250);
         $('#planexp-gene-expression-toc').css('display', 'inline-block');
-        $("#planexp-network").show(250);
+        $("#planexp-network").show(250, function(){
+            // Initialize cytoscape now that the container div is visible
+            initCytoscape();
+        });
         $("#planexp-network-toc").show(250);
         if (currentExpType == expType['Single-Cell']) {
             $("#planexp-tsne").show(250);
@@ -855,6 +868,8 @@ var PlanExp = (function() {
             $("#gene-expression-ctype").selectpicker("refresh");
 
         };
+
+        
     });
 
 

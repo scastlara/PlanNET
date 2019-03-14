@@ -10,7 +10,7 @@
     <ul id="planexp-toc" class="nav nav-pills nav-stacked" data-spy="affix" data-offset-top="420">
         <li><a class="planexp-toc-link" id="select-experiment-div-toc" href="#select-experiment-div">Select Experiment</a></li>
         <li><a class="planexp-toc-link" id="planexp-summary-toc" href="#planexp-summary">Summary</a></li>
-        <li><a class="planexp-toc-link" id="planexp-dge-table-container-toc" href="#planexp-dge-table-container">DGE table</a></li>
+        <li><a class="planexp-toc-link" id="planexp-dge-table-container-toc" href="#planexp-dge-table-container">Differential Expression</a></li>
         <li><a class="planexp-toc-link" id="planexp-gene-expression-toc" href="#planexp-gene-expression">Gene Expression Plot</a></li>
         <li><a class="planexp-toc-link" id="planexp-tsne-toc" href="#planexp-tsne">t-SNE Plot</a></li>
         <li><a class="planexp-toc-link" id="planexp-markers-toc" href="#planexp-markers">Marker Genes</a></li>
@@ -120,6 +120,13 @@
                 <div id="geneontology-analysis-container">
                     <hr>
                     <h4>Perform Gene Ontology Enrichment Analysis</h4>
+
+                    <div style="width: 50%; display: inline-block;">
+                        <blockquote>
+                            Gene Ontology Enrichment analysis is performed using the Gene Ontologies annotated in the homologous human proteins
+                            for the over-expressed planarian transcripts/genes in the selected condition comparison.
+                        </blockquote>
+                    </div><br>
                     
                     <select id="planexp-goea-condition">
                         <option value="" disabled selected>Choose DGE Comparison First</option>

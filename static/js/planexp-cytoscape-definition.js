@@ -163,13 +163,6 @@ $( document ).ready(function() {
 
         });
         
-    window.cy = cytoscape({
-        style: stylesheet,
-        layout: { name: 'random' },
-        container: document.getElementById('planexp-cyt'),
-        wheelSensitivity: 0.25,
-        hideEdgesOnViewport: true,
-        ready: function() {}
-    })
+
 });
 
