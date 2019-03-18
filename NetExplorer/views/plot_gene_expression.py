@@ -24,7 +24,6 @@ def plot_gene_expression(request):
         only_toggle = json.loads(request.GET['only']) # If active, will only show expressed cells in violin plot
         gene_names = gene_names.split(",")
 
-
         # First disambiguate gene names
         gene_symbols = list()
         for gene_name in gene_names:
@@ -46,8 +45,8 @@ def plot_gene_expression(request):
             experiment=experiment,
             gene_symbol__in=gene_symbols
         ).values_list("gene_symbol", flat=True)
-        
-        if is_one_sample(experiment, conditions):
+
+        if plot_type == "violin" and is_one_sample(experiment, conditions):
             plot_type = "bar"
 
         if len(genes_in_experiment) > 0:
