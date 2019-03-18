@@ -866,8 +866,11 @@ var PlanExp = (function() {
             $("#gene-expression-ctype").append(ctypeRow("Samples"));
             $("#gene-expression-ctype").selectpicker("refresh");
 
+        } else {
+            $("#gene-expression-expressed-container").hide();
         };
 
+        $("#gene-expression-expressed").removeAttr("checked");
         
     });
 

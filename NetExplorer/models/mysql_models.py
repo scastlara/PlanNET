@@ -253,7 +253,102 @@ class ExpressionAbsolute(Model):
         name_str += self.units
         return name_str
 
-    
+    @classmethod
+    def get_condition_expression(cls, experiment, dataset, conditions, genes):
+        '''
+        Returns a condition expression dictionary with
+        genes as keys, and a list of values for the MEAN expression
+        of that gene in the multiple conditions.
+        '''
+        condition_expression = dict()
+        for condition in conditions:
+            samples = SampleCondition.objects.filter(
+                experiment=experiment, 
+                condition=condition
+            ).values_list('sample', flat=True)
+            expression = cls.objects.filter(
+                experiment=experiment,   dataset=dataset, 
+                sample__in=list(samples), gene_symbol__in=genes
+            ).values('gene_symbol').annotate(cond_sum = Sum('expression_value'))
+            genes_found = set()
+            for exp in expression:
+                genes_found.add(exp['gene_symbol'])
+                if exp['gene_symbol'] not in condition_expression:
+                    condition_expression[exp['gene_symbol']] = list()
+                condition_expression[exp['gene_symbol']].append(exp['cond_sum'] / len(samples))
+            genes_missing = set(genes).difference(genes_found)
+            for missing in genes_missing:
+                if missing not in condition_expression:
+                    condition_expression[missing] = list()
+                condition_expression[missing].append(0)
+        return condition_expression
+
+    @classmethod
+    def get_sample_expression(cls, experiment, dataset, conditions, genes, only_expressed=False):
+        '''
+        Returns dictionary of sample expression with
+        genes as keys, and a list of values for the ACTUAL expression
+        of that gene in each sample.
+
+        only_expressed=True -> Samples with no expression in DB will not be considered.
+        only_expressed=False -> Will return 0 for samples with no expression in database.
+        '''
+        sample_expression = dict()
+        genes_found = set()
+        gene_conditions = dict()
+        for condition in conditions:
+            samples = SampleCondition.objects.filter(
+                experiment=experiment, 
+                condition=condition
+            ).values_list('sample', flat=True)
+            expression = ExpressionAbsolute.objects.filter(
+                experiment=experiment,   dataset=dataset, 
+                sample__in=list(samples), gene_symbol__in=genes
+            ).values('gene_symbol', 'sample', 'expression_value')
+            
+            genes_found = set()
+            gene_expression_dict = dict()
+            for exp in expression:
+                genes_found.add(exp['gene_symbol'])
+                if exp['gene_symbol'] not in gene_expression_dict:
+                    gene_expression_dict[exp['gene_symbol']] = dict()
+                gene_expression_dict[exp['gene_symbol']][exp['sample']] = exp['expression_value']
+
+            # Add missing genes
+            genes_missing = set(genes).difference(genes_found)
+            for missing in genes_missing:
+                if missing not in gene_expression_dict:
+                    gene_expression_dict[missing] = dict()
+
+            # Add missing cells
+            for gene, sample_exp in gene_expression_dict.items():
+                gcounter = 0
+                if gene not in sample_expression:
+                    sample_expression[gene] = list()
+                    
+                for sample in samples:
+                    if sample not in sample_exp:
+                        if not only_expressed:
+                            sample_expression[gene].extend([0])
+                    else:
+                        if gene not in gene_conditions:
+                            gene_conditions[gene] = list()
+                        sample_expression[gene].extend([ sample_exp[sample] ])
+                        gene_conditions[gene].append(condition.name)
+                        gcounter += 1
+
+                if only_expressed:
+                    if gcounter < 2:
+                        missing = 2 - gcounter 
+                        for i in range(0, missing):
+                            sample_expression[gene].append(0)
+                            if gene not in gene_conditions:
+                                gene_conditions[gene] = list()
+                            gene_conditions[gene].append(condition.name)
+
+        return sample_expression, gene_conditions
+
+
 # ------------------------------------------------------------------------------
 class CellPlotPosition(models.Model):
     experiment = models.ForeignKey(Experiment, on_delete=models.CASCADE)

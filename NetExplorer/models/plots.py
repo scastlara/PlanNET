@@ -37,70 +37,174 @@ class GenExpPlot(object):
         self.title  = str()
         self.ylab   = str()
         self.trace_names = list()
-        self.units = dict()
+     
 
-    def add_group(self, group):
-        if group not in self.groups_set:
-            self.groups.append(group)
-            self.groups_set.add(group)
-        
-        for trace in self.traces:
-            if group not in trace:
-                trace[group] = list()
-        
-        if not self.traces:
-            self.traces.append(dict())
-
-    def add_value(self, value, group, trace=0):
-        if group not in self.traces[trace]:
-            self.add_group(group)
-        self.traces[trace][group].append(value)
-
-    def add_trace(self, trace_idx):
-        self.traces.append(dict())
-        # Clone groups from other traces
-        for group in self.traces[0].keys():
-            self.traces[trace_idx][group] = list()
-
-    def add_trace_name(self, trace_idx, name):
-        if len(self.trace_names) <= trace_idx:
-            self.trace_names.append(name)
-        else:
-            self.trace_names[trace_idx] = name
-
-    def add_title(self, title):
-        self.title = title
-
-    def add_ylab(self, ylab):
-        self.ylab = ylab
-    
     def is_empty(self):
-        empty = True
-        for trace in self.traces:
-            for condition, expression in trace.items():
-                if sum(expression):
-                    empty = False
-                    break
-
-        return empty
-    
-    def add_units(self, axis, units):
-        '''
-        Adds units to one axis of the plot.
-
-        Args:
-            axis: string cointaining 'x' or 'y'.
-            units: string for units.
-        
-        Returns:
-            nothing
-        '''
-        if axis == 'x' or axis == 'y':
-            self.units[axis] = units
+        if self.traces[0].x and self.traces[0].y:
+            return False
         else:
-            raise ValueError("Axis should be a string containing 'x' or 'y'.")
-            
+            return True
 
+
+    @classmethod
+    def __create_violin(cls, **kwargs):
+        plot = ViolinPlot()
+        condition_list = list()
+
+        sample_expression, gene_conditions = ExpressionAbsolute.get_sample_expression(
+            kwargs['experiment'],
+            kwargs['dataset'], 
+            kwargs['conditions'], 
+            kwargs['genes'],
+            only_expressed=kwargs['only_toggle']
+        )
+
+        if not kwargs['only_toggle']:
+            for condition in kwargs['conditions']:
+                samples = SampleCondition.objects.filter(
+                    experiment=kwargs['experiment'], 
+                    condition=condition
+                ).values_list('sample', flat=True)
+                condition_list.extend([ condition.name for sample in samples ])
+
+        for gene in kwargs['genes']:
+            # Single Factor. Simple Line Chart.
+            plot.traces.append(PlotlyTrace(name=gene))
+            if not kwargs['only_toggle']:
+                plot.traces[-1].x = condition_list
+            else:
+                plot.traces[-1].x = gene_conditions[gene]
+            plot.traces[-1].y = sample_expression[gene]
+            plot.traces[-1].type = "violin"
+        
+        return plot
+
+        
+    @classmethod
+    def __create_heatmap(cls, **kwargs):
+        plot = HeatmapPlot()
+
+        if kwargs['ctype'] != "Samples":
+            # Each column corresponds to a condition
+            condition_expression = ExpressionAbsolute.get_condition_expression(
+                kwargs['experiment'], 
+                kwargs['dataset'], 
+                kwargs['conditions'], 
+                kwargs['genes']
+            )
+            plot.add_conditions(kwargs['conditions'])
+        else:
+            # Each column corresponds to a sample
+            condition_expression, gene_conditions = ExpressionAbsolute.get_sample_expression(
+                kwargs['experiment'], 
+                kwargs['dataset'], 
+                kwargs['conditions'], 
+                kwargs['genes']
+            )
+            all_samples = list()
+            for condition in kwargs['conditions']:
+                samples = SampleCondition.objects.filter(
+                    experiment=kwargs['experiment'], 
+                    condition=condition
+                ).values_list('sample', flat=True)
+                all_samples.extend([ condition.name + " - " + str(i) for i in range(len(list(samples))) ])
+            plot.add_conditions(all_samples)
+
+        for gene in kwargs['genes']:
+            plot.add_gene(gene)
+            plot.add_gene_expression(condition_expression[gene]) 
+        
+        return plot
+
+
+    @classmethod
+    def __create_linechart(cls, **kwargs):
+        plot = LinePlot()
+
+        condition_expression = ExpressionAbsolute.get_condition_expression(
+            kwargs['experiment'], 
+            kwargs['dataset'], 
+            kwargs['conditions'], 
+            kwargs['genes']
+        )
+
+        conditions = [ condition.name for condition in kwargs['conditions'] ]
+        group_idxs = dict()
+        time_idxs = list()
+        if " - " in conditions[0]:
+            # Interaction Factor. Multiple Subplots.
+            for c_idx, condition in enumerate(conditions):
+                c1, c2 = condition.split(" - ")
+                if c1 not in set(time_idxs):
+                    time_idxs.append(c1)
+                if c2 not in group_idxs:
+                    group_idxs[c2] = list()
+                group_idxs[c2].append(c_idx)
+        
+        if not group_idxs:
+            for gene in kwargs['genes']:
+                # Single Factor. Simple Line Chart.
+                plot.traces.append(PlotlyTrace(name=gene))
+                plot.traces[-1].x = conditions
+                plot.traces[-1].y = condition_expression[gene]
+                plot.traces[-1].type = "scatter"
+        else:
+            # Interaction Factor. Multiple Subplots.
+            subplot_i = 1
+            for group_name, group_i in group_idxs.items():
+                for gene in kwargs['genes']:
+                    plot.traces.append(PlotlyTrace(name=gene))
+                    plot.traces[-1].x = time_idxs
+                    plot.traces[-1].y = [ condition_expression[gene][i] for i in group_i ]
+                    plot.traces[-1].xaxis = "x" + str(subplot_i)
+                    plot.traces[-1].yaxis = "y" + str(subplot_i)
+                    plot.traces[-1].type = "scatter"
+                    plot.traces[-1].subplot_title = group_name
+                    plot.traces[-1].legend_group = gene
+                subplot_i += 1
+        return plot
+    
+    @classmethod
+    def __create_bar(cls, **kwargs):
+        plot = BarPlot()
+        condition_expression = ExpressionAbsolute.get_condition_expression(
+            kwargs['experiment'], 
+            kwargs['dataset'], 
+            kwargs['conditions'], 
+            kwargs['genes']
+        )
+
+        for gene in kwargs['genes']:
+            # Single Factor. Simple Line Chart.
+            plot.traces.append(PlotlyTrace(name=gene))
+            plot.traces[-1].x = [ condition.name for condition in kwargs['conditions'] ]
+            plot.traces[-1].y = condition_expression[gene]
+            plot.traces[-1].type = "bar"
+        return plot
+        
+
+
+    @classmethod
+    def create_plot(cls, plot_name, **kwargs):
+        required_args = ['experiment', 'dataset', 'conditions', 'genes', 'ctype', 'only_toggle']
+        for req_arg in required_args:
+            try:
+                assert(req_arg in kwargs)
+            except AssertionError:
+                raise TypeError("crate_plot() required arguments: %s" % ",".join(required_args))
+
+        if plot_name == "violin":
+            plot = cls.__create_violin(**kwargs)
+        elif plot_name == "heatmap":
+            plot = cls.__create_heatmap(**kwargs)
+        elif plot_name == "line":
+            plot = cls.__create_linechart(**kwargs)
+        elif plot_name == "bar":
+            plot = cls.__create_bar(**kwargs)
+        else:
+            raise ValueError("Incorrect plot_name: %s - Plot name must be 'violin', 'bar', heatmap' or 'line'." % str(plot_name))
+        
+        return plot
 
 
 # ------------------------------------------------------------------------------
@@ -111,42 +215,26 @@ class BarPlot(GenExpPlot):
     """
     def __init__(self):
         super(BarPlot, self).__init__()
-    
+
     def plot(self):
         theplot = dict()
         theplot['data'] = list()
-        for trace_idx, trace in enumerate(self.traces):
-            trace_data = dict()
-            x = list()
-            y = list()
-            if len(self.trace_names) > trace_idx:
-                trace_data['name'] = self.trace_names[trace_idx]
-            for group in self.groups:
-                x.append(group)
-                
-                y.append(trace[group][0])
-            trace_data['x'] = x
-            trace_data['y'] = y
-            trace_data['type'] = 'bar'
-            theplot['data'].append(trace_data)
         theplot['layout'] = dict()
+        data_list = list()
+
+        for trace in self.traces:
+             trace_dict = { 'x': trace.x, 'y':trace.y, 'type': trace.type, 'name': trace.name }
+             data_list.append(trace_dict)
+        
         if len(self.traces) > 1:
             theplot['layout']['barmode'] = "group"
         
         if self.title:
             theplot['layout']['title'] = self.title
-        if self.ylab:
-            theplot['layout']['yaxis'] = dict()
-            theplot['layout']['yaxis']['title'] = self.ylab
-        
-        if self.units:
-            for axis, units in self.units.items():
-                axis_name = axis + 'axis'
-                theplot['layout'][axis_name] = dict()
-                theplot['layout'][axis_name]['title'] = units
+        theplot['data'] = data_list
+
         return theplot
-    
-    
+
 
 # ------------------------------------------------------------------------------
 class ViolinPlot(GenExpPlot):
@@ -370,9 +458,6 @@ class LinePlot(GenExpPlot):
             return False
         else:
             return True
-
-
-
 
 
 class ScatterPlot(object):
