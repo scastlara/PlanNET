@@ -167,12 +167,12 @@ class Condition(models.Model):
         '''
         samples = SampleCondition.objects.filter(condition=self).values_list('sample', flat=True)
 
-
         self.max_expression = ExpressionAbsolute.objects.filter(
             experiment=self.experiment,
             dataset=dataset,
             sample__in=list(samples)
         ).aggregate(Max('expression_value'))
+
         self.max_expression = self.max_expression['expression_value__max']
 
         self.max_expression = round(self.max_expression, 3)
@@ -243,7 +243,7 @@ class ExpressionAbsolute(Model):
     dataset = models.ForeignKey(Dataset, on_delete=models.CASCADE)
     gene_symbol = models.CharField(max_length=50)
     expression_value = models.FloatField()
-    units = models.CharField(max_length=10)
+    units = models.CharField(max_length=25)
 
     def __str__(self):
         name_str = self.experiment.name + " - "
