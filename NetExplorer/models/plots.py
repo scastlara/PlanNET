@@ -178,10 +178,34 @@ class ViolinPlot(GenExpPlot):
                 newvalues.append(value - jitter)
         return newvalues
 
+    def is_empty(self):
+        if self.traces[0].x and self.traces[0].y:
+            return False
+        else:
+            return True
+
 
     def plot(self):
         theplot = dict()
         theplot['data'] = list()
+        theplot['layout'] = dict()
+        data_list = list()
+
+        for trace in self.traces:
+             trace_dict = { 'x': trace.x, 'y': self.jitter_and_round(trace.y), 'type': trace.type, 'name': trace.name }
+             data_list.append(trace_dict)
+        
+        if len(self.traces) > 1:
+            theplot['layout']['violinmode'] = "group"
+        
+        if self.title:
+            theplot['layout']['title'] = self.title
+        
+        
+        theplot['data'] = data_list
+
+
+        """
         for trace_idx, trace in enumerate(self.traces):
             trace_data = dict()
             trace_data['type'] = 'violin'
@@ -214,7 +238,9 @@ class ViolinPlot(GenExpPlot):
                 axis_name = axis + 'axis'
                 theplot['layout'][axis_name] = dict()
                 theplot['layout'][axis_name]['title'] = units
+        """
         return theplot
+
 
 class HeatmapPlot(object):
     '''

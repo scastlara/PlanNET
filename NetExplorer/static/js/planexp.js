@@ -323,7 +323,7 @@ var PlanExp = (function() {
      *   Returns:
      *     - Nothing
      */
-    plotGeneExpression = function(expName, dataset, geneName, ctype, plotType, plotDivId) {
+    plotGeneExpression = function(expName, dataset, geneName, ctype, plotType, onlyToggle, plotDivId) {
         $("#expression-plot-loading").show();
         $("#" + plotDivId).html("");
         $.ajax({
@@ -335,6 +335,7 @@ var PlanExp = (function() {
                 'gene_name' : geneName,
                 'plot_type' : plotType,
                 'ctype'     : ctype,
+                'only'      : onlyToggle,
                 'csrfmiddlewaretoken': '{{ csrf_token }}'
             },
             success: function(data) {
@@ -1003,13 +1004,14 @@ var PlanExp = (function() {
         var geneName = $("#gene-expression-search").val();
         var ctype    = $("#gene-expression-ctype").val();
         var plotType = $("#gene-expression-plot-type").val();
+        var onlyToggle = $("#gene-expression-expressed").prop("checked");
 
         if (!geneName) {
             $("#plot-genenotfound").show(250);
             return;
         }
         $("#plot-genenotfound").hide();
-        plotGeneExpression(expName, dataset, geneName, ctype, plotType, "expression-plot");
+        plotGeneExpression(expName, dataset, geneName, ctype, plotType, onlyToggle, "expression-plot");
     })
 
 
@@ -1019,11 +1021,21 @@ var PlanExp = (function() {
             $("#gene-expression-plot-type option").prop('selected', false);
             $("#gene-expression-plot-type option[value='heatmap']").removeAttr('disabled');
             $("#gene-expression-plot-type option[value='heatmap']").prop('selected', true);
-
+            $("#gene-expression-expressed-container").hide();
         } else {
             $("#gene-expression-plot-type option").removeAttr('disabled');
         }
         $("#gene-expression-plot-type").selectpicker("refresh");
+    });
+
+    $("#gene-expression-plot-type").on("change", function(){
+        if (currentExpType == expType['Single-Cell']) {
+            if ($(this).val() == "violin") {
+                $("#gene-expression-expressed-container").show();
+            } else {
+                $("#gene-expression-expressed-container").hide();
+            }
+        } 
     });
 
 

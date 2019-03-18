@@ -32,55 +32,89 @@ def do_barplot(experiment, dataset, conditions, gene_symbols):
     return theplot
 
 
-def do_violin(experiment, dataset, conditions, gene_symbols, ctype):
+def do_violin(experiment, dataset, conditions, gene_symbols, ctype, only_toggle):
     '''
     THE CHECK
     dd_Smed_v6_7_0_1,dd_Smed_v6_702_0_1,dd_Smed_v6_659_0_1,dd_Smed_v6_920_0_1
     '''
     theplot = None
     units = None
-    condition_samples = dict()
+    theplot = ViolinPlot()
+    condition_expression = dict()
+    condition_list = list()
+    gene_conditions = dict()
+
     for condition in conditions:
         samples = SampleCondition.objects.filter(experiment=experiment, condition=condition).values_list('sample', flat=True)
-        condition_samples[condition] = list(samples)
-        
-    for g_idx, gene_symbol in enumerate(gene_symbols):
-        if theplot is None:
-            theplot = ViolinPlot()
-            theplot.add_trace_name(g_idx, gene_symbol)
-        else:
-            theplot.add_trace(g_idx)
-            theplot.add_trace_name(g_idx, gene_symbol)
-        
-        for condition in conditions:
-            if ctype == "Cluster" and str(condition.name).isdigit():
-                condname = "c" + str(condition.name)
-            else:
-                condname = str(condition.name)
 
-            samples = SampleCondition.objects.filter(experiment=experiment, condition=condition).values_list('sample', flat=True)
-            expression = ExpressionAbsolute.objects.filter(
-                experiment=experiment, dataset=dataset, 
-                sample__in=list(samples),    gene_symbol=gene_symbol).values_list("expression_value", flat=True)
-            theplot.add_group(condname)
-            added_values = int()
-            if expression:
-                for exp in expression:
-                    if exp:
-                        theplot.add_value(exp, condname, g_idx)
+        expression = ExpressionAbsolute.objects.filter(
+            experiment=experiment,   dataset=dataset, 
+            sample__in=list(samples), gene_symbol__in=gene_symbols
+        ).values('gene_symbol', 'sample', 'expression_value')
+        genes_found = set()
+
+        gene_expression_dict = dict()
+        for exp in expression:
+            genes_found.add(exp['gene_symbol'])
+            if exp['gene_symbol'] not in gene_expression_dict:
+                gene_expression_dict[exp['gene_symbol']] = dict()
+            gene_expression_dict[exp['gene_symbol']][exp['sample']] = exp['expression_value']
+
+        # Add missing genes
+        genes_missing = set(gene_symbols).difference(genes_found)
+        for missing in genes_missing:
+            if missing not in gene_expression_dict:
+                gene_expression_dict[missing] = dict()
+
+        for gene, sample_exp in gene_expression_dict.items():
+            if gene not in condition_expression:
+                condition_expression[gene] = list()
+
+            gcounter = 0 # Counts number of samples per gene
+                         # for only_toggle because plotly 
+                         # needs at least two samples!
+
+            for sample in samples:
+                if not only_toggle:
+                    # We need an expression value for each sample/cell,
+                    # even if not in database / gene_expression_dict
+                    if sample not in sample_exp:
+                        condition_expression[gene].extend([0])
                     else:
-                        theplot.add_value(0, condname, g_idx)
-                    added_values += 1
-            else:
-                # No expression in any cell/sample for this condition
-                theplot.add_value(0, condname, g_idx)
-                added_values += 1
-            
-            # Add missing values in database: genes don't have expression in some
-            # samples because we don't store zeroes, thus, we have to add the zeroes manually.
-            missing = len(samples) - added_values
-            for i in range(1, missing):
-                theplot.add_value(0, condname, g_idx)
+                        condition_expression[gene].extend([ sample_exp[sample] ])
+                if only_toggle:
+                    # Only add expressions in database
+                    if sample in sample_exp:
+                        condition_expression[gene].extend([ sample_exp[sample] ])
+                        if gene not in gene_conditions:
+                            gene_conditions[gene] = list()
+                        gene_conditions[gene].append(condition.name)
+                        gcounter += 1
+            if only_toggle:
+                if gcounter < 2:
+                    missing = 2 - gcounter 
+                    for i in range(0, missing):
+                        condition_expression[gene].extend([ 0 ])
+                        if gene not in gene_conditions:
+                            gene_conditions[gene] = list()
+                        gene_conditions[gene].append(condition.name)
+
+
+        if not only_toggle: 
+            # We need a list of conditions of the same length as
+            # samples, because ALL are included, even if no expression
+            for sample in samples:
+                condition_list.append(condition.name)
+
+    for gene in gene_symbols:
+        # Single Factor. Simple Line Chart.
+        theplot.traces.append(PlotlyTrace(name=gene))
+        if not only_toggle :
+            theplot.traces[-1].x = condition_list
+        else:
+            theplot.traces[-1].x = gene_conditions[gene]
+        theplot.traces[-1].y = condition_expression[gene]
+        theplot.traces[-1].type = "violin"
     theplot.add_units('y', units)
     return theplot
 
@@ -138,6 +172,7 @@ def do_heatmap(experiment, dataset, conditions, gene_symbols, ctype):
                 if missing not in gene_expression_dict:
                     gene_expression_dict[missing] = dict()
 
+            # Add missing cells
             for gene, sample_exp in gene_expression_dict.items():
                 if gene not in condition_expression:
                     condition_expression[gene] = list()
@@ -244,7 +279,9 @@ def plot_gene_expression(request):
         gene_names = request.GET['gene_name']
         ctype = request.GET['ctype']
         plot_type = request.GET['plot_type']
+        only_toggle = json.loads(request.GET['only']) # If active, will only show expressed cells in violin plot
         gene_names = gene_names.split(",")
+
 
         # First disambiguate gene names
         gene_symbols = list()
@@ -277,7 +314,7 @@ def plot_gene_expression(request):
                     theplot = do_barplot(experiment, dataset, conditions, list(genes_in_experiment))
                 else:
                     
-                    theplot = do_violin(experiment, dataset, conditions, list(genes_in_experiment), ctype)
+                    theplot = do_violin(experiment, dataset, conditions, list(genes_in_experiment), ctype, only_toggle)
             elif plot_type == "heatmap":
                 # PLOT HEATMAP
                 theplot = do_heatmap(experiment, dataset, conditions, list(genes_in_experiment), ctype)

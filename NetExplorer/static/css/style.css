@@ -2615,3 +2615,7 @@ summary { display: list-item !important; }
     margin-bottom: 80px;
 }
 
+#gene-expression-expressed-container {
+    display: none;
+    margin-top: 25px;
+}
