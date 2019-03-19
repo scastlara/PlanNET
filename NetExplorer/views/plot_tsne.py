@@ -159,6 +159,8 @@ def plot_tsne(request):
         conditions = Condition.objects.filter(
             experiment=experiment, 
             cond_type=ConditionType.objects.get(name=ctype))
+        
+        conditions = sorted(conditions, key= lambda x: condition_sort(x))
 
         # Do the plot
         if not with_color or gene_plot_type == "single":

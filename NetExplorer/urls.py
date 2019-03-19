@@ -28,6 +28,7 @@ urlpatterns = [
     url(r'^experiment_dge_table', views.experiment_dge_table, name="experiment_dge_table"),
     url(r'^experiment_dataset', views.experiment_dataset, name="experiment_dataset"),
     url(r'^plot_gene_expression', views.plot_gene_expression, name="plot_gene_expression"),
+    url(r'^plot_gene_coexpression', views.plot_gene_coexpression, name="plot_gene_coexpression"),
     url(r'^plot_tsne', views.plot_tsne, name="plot_tsne"),
     url(r'^experiment_condition_types', views.experiment_condition_types, name="experiment_condition_types"),
     url(r'^map_expression_one', views.map_expression_one, name="map_expression_one"),

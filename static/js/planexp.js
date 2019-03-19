@@ -361,6 +361,33 @@ var PlanExp = (function() {
             }
         });
     }
+    plotGeneCoexpression = function(expName, dataset, gene1Name, gene2Name, ctype, plotDivId) {
+        $("#coexpression-plot-loading").show();
+        $("#" + plotDivId).html("");
+        $.ajax({
+            type: "GET",
+            url: window.ROOT + "/plot_gene_coexpression",
+            data: {
+                'experiment': expName,
+                'dataset'   : dataset,
+                'gene1_name' : gene1Name,
+                'gene2_name' : gene2Name,
+                'ctype'     : ctype,
+                'csrfmiddlewaretoken': '{{ csrf_token }}'
+            },
+            success: function(data) {
+                if (data) {
+                    $("#coexpression-plot-genenotfound").hide();
+                    var thePlot = document.getElementById(plotDivId);
+                    console.log(data);
+                    Plotly.newPlot(thePlot, data.data, data.layout);
+                } else {
+                    $("#coexpression-plot-genenotfound").show(250);
+                }
+                $("#coexpression-plot-loading").hide();
+            }
+        });
+    }
 
     /**
      * plotTSNE
@@ -782,6 +809,8 @@ var PlanExp = (function() {
         $("#planexp-dge-table-container-toc").hide();
         $("#planexp-gene-expression").hide();
         $("#planexp-gene-expression-toc").hide();
+        $("#planexp-gene-coexpression").hide();
+        $('#planexp-gene-coexpression-toc').hide();
         $("#planexp-tsne").hide();
         $("#planexp-tsne-toc").hide();
         $("#planexp-markers").hide();
@@ -816,6 +845,7 @@ var PlanExp = (function() {
         $('#planexp-dge-c1').selectpicker('val', '');
         $('#planexp-dge-c2').selectpicker('val', '');
         $("#expression-plot").html("");
+        $("#coexpression-plot").html("");
         $("#tsne-plot-gene").html("");
         $("#tsne-plot-condition").html("");
         $("#volcano-plot").html("");
@@ -848,6 +878,10 @@ var PlanExp = (function() {
         $('#planexp-dge-table-container-toc').css('display', 'inline-block');
         $("#planexp-gene-expression-toc").show(250);
         $('#planexp-gene-expression-toc').css('display', 'inline-block');
+        $("#planexp-gene-coexpression").show(250);
+        $('#planexp-gene-coexpression-toc').css('display', 'inline-block');
+
+
         $("#planexp-network").show(250, function(){
             // Initialize cytoscape now that the container div is visible
             initCytoscape();
@@ -1016,6 +1050,22 @@ var PlanExp = (function() {
         $("#plot-genenotfound").hide();
         plotGeneExpression(expName, dataset, geneName, ctype, plotType, onlyToggle, "expression-plot");
     })
+
+
+    $("#plot-coexpression-btn").on("click", function(){
+        var expName  = $("#select-experiment").val();
+        var dataset  = $("#select-dataset").val();
+        var gene1Name = $("#gene-coexpression-1").val();
+        var gene2Name = $("#gene-coexpression-2").val();
+        var ctype    = $("#coexpression-ctype").val();
+
+        if (!gene1Name || !gene2Name) {
+            return;
+        }
+        $("#coexpression-plot-genenotfound").hide();
+
+        plotGeneCoexpression(expName, dataset, gene1Name, gene2Name, ctype, "coexpression-plot");
+    });
 
 
     $("#gene-expression-ctype").on("change", function(){
@@ -1329,6 +1379,58 @@ var PlanExp = (function() {
                 return false;
             }
     });
+
+
+    $("#gene-coexpression-1").autocomplete({
+        source: function (request, response) { 
+            autocompleteContig(extractLast( request.term ), response);
+        
+        },
+        minLength: 2,
+            focus: function() {
+                // prevent value inserted on focus
+                return false;
+            },
+            select: function( event, ui ) {
+                var terms = splitSearch( this.value );
+                // remove the current input
+                terms.pop();
+                // add the selected item
+                terms.push( ui.item.value );
+                // add placeholder to get the comma-and-space at the end
+                terms.push( "" );
+                this.value = terms.join( ", " );
+                return false;
+            }
+    });
+
+    $("#gene-coexpression-2").autocomplete({
+        source: function (request, response) { 
+            autocompleteContig(extractLast( request.term ), response);
+        
+        },
+        minLength: 2,
+            focus: function() {
+                // prevent value inserted on focus
+                return false;
+            },
+            select: function( event, ui ) {
+                var terms = splitSearch( this.value );
+                // remove the current input
+                terms.pop();
+                // add the selected item
+                terms.push( ui.item.value );
+                // add placeholder to get the comma-and-space at the end
+                terms.push( "" );
+                this.value = terms.join( ", " );
+                return false;
+            }
+    });
+
+
+
+
+
     $("#editor-add-node-text").autocomplete({
         source: function (request, response) { 
             autocompleteContig(request.term, response);

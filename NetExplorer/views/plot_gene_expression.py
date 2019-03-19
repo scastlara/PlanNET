@@ -23,7 +23,8 @@ def plot_gene_expression(request):
         plot_type = request.GET['plot_type']
         only_toggle = json.loads(request.GET['only']) # If active, will only show expressed cells in violin plot
         gene_names = gene_names.split(",")
-
+        response = None
+        
         # First disambiguate gene names
         gene_symbols = list()
         for gene_name in gene_names:

@@ -12,6 +12,7 @@
         <li><a class="planexp-toc-link" id="planexp-summary-toc" href="#planexp-summary">Summary</a></li>
         <li><a class="planexp-toc-link" id="planexp-dge-table-container-toc" href="#planexp-dge-table-container">Differential Expression</a></li>
         <li><a class="planexp-toc-link" id="planexp-gene-expression-toc" href="#planexp-gene-expression">Gene Expression Plot</a></li>
+        <li><a class="planexp-toc-link" id="planexp-gene-coexpression-toc" href="#planexp-gene-coexpression">Gene Co-expression</a></li>
         <li><a class="planexp-toc-link" id="planexp-tsne-toc" href="#planexp-tsne">t-SNE Plot</a></li>
         <li><a class="planexp-toc-link" id="planexp-markers-toc" href="#planexp-markers">Marker Genes</a></li>
         <li><a class="planexp-toc-link" id="planexp-links-toc" href="#planexp-links">Regulatory Interactions</a></li>
@@ -201,6 +202,55 @@
             </div> <!-- Gene Expression Plot -->
 
 
+
+            <!-- Gene Co-Expression-->
+            <div id="planexp-gene-coexpression" class="planexp-card">
+                <h2 id="planexp-title">Gene Co-expression</h2>
+                <hr class="planexp-rule">
+                
+                <blockquote>
+                    Make a scatter plot with the expression of two genes across the different samples in the experiment.
+                    <br>
+                    Color each point (sample) by the desired condition type.
+                </blockquote>
+
+
+                <div class="gene-expression-search-container">
+                    <label for="genesymbol-1">Gene Symbol 1:</label>
+                    <input type="text" id="gene-coexpression-1" class="form-control" name="genesymbol-1" placeholder="Enter Gene Symbol 1">
+                    <br><br>
+                    <label for="genesymbol-2">Gene Symbol 2:</label>
+                    <input type="text" id="gene-coexpression-2" class="form-control" name="genesymbol-2" placeholder="Enter Gene Symbol 2">
+                    <br><br>
+
+
+                    
+                    <label for="coexpression-ctype">Color by:</label><br>
+                    <div class="input-group">
+                        <select id="coexpression-ctype" name="coexpression-ctype" class="selectpicker ctype-select" title="Select Condition Type">
+                            <option value="Experimental" selected>Experimental</option>
+                        </select>
+
+                        <button id="plot-coexpression-btn" type="submit" value=" Send" class="btn btn-danger" id="submit">Plot co-expression</button>
+
+                    </div>
+                </div>
+
+
+                <div id="plot-container">
+                    <div id="coexpression-plot-genenotfound">
+                        <span class="glyphicon glyphicon-warning-sign"></span>
+                        Gene/Symbol not found
+                    </div>
+                    <div id="coexpression-plot-loading">
+                            <img class="planexp-loading-img" src="{% static 'Images/loading-planexp.gif' %}"/>
+                    </div>
+                    <div id="coexpression-plot">
+                    </div>
+                </div>
+            </div>
+
+
             <!-- tSNE plot -->
             <div id="planexp-tsne" class="planexp-card">
                 <h2 id="planexp-title">t-SNE Plot</h2>
@@ -208,8 +258,7 @@
 
 
                 <blockquote>
-                    Visualize the cells in this experiment in plotted two dimensions, thanks to a <a href="https://en.wikipedia.org/wiki/T-distributed_stochastic_neighbor_embedding" target="_blank">T-distributed Stochastic Neighbor Embedding</a><div class="">
-                    <br>
+                    Visualize the cells in this experiment plotted in two dimensions, thanks to a <a href="https://en.wikipedia.org/wiki/T-distributed_stochastic_neighbor_embedding" target="_blank">T-distributed Stochastic Neighbor Embedding</a><div class="">
                     Choose to color the cells by condition (clusters of cells, experimental conditions, etc.) or by the expression of a specific gene by
                     using the different tabs.
                 </blockquote>
@@ -266,10 +315,7 @@
 
                         <br>
                         <div id="plot-container">
-                            <div id="tsne-plot-genenotfound">
-                                <span class="glyphicon glyphicon-warning-sign"></span>
-                                Gene/Symbol not found
-                            </div>
+
                             <div id="tsne-plot-genenotfound">
                                 <span class="glyphicon glyphicon-warning-sign"></span>
                                 Gene/Symbol not found

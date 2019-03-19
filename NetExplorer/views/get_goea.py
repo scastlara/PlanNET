@@ -44,6 +44,7 @@ def get_goea(request):
             html_to_return = render_to_string('NetExplorer/goea_plots.html', { 'plots': plots })
         except Exception as err:
             print(err)
+        
         response['html'] = html_to_return
 
     return HttpResponse(json.dumps(response), content_type="application/json")

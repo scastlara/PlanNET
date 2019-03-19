@@ -330,6 +330,9 @@ class ExpressionAbsolute(Model):
                     if sample not in sample_exp:
                         if not only_expressed:
                             sample_expression[gene].extend([0])
+                            if gene not in gene_conditions:
+                                gene_conditions[gene] = list()
+                            gene_conditions[gene].append(condition.name)
                     else:
                         if gene not in gene_conditions:
                             gene_conditions[gene] = list()

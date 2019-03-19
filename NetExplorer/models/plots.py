@@ -34,8 +34,9 @@ class GenExpPlot(object):
         self.traces_set = set()
         self.groups = list()
         self.groups_set = set()
-        self.title  = str()
-        self.ylab   = str()
+        self.title = str()
+        self.ylab = str()
+        self.xlab = str()
         self.trace_names = list()
      
 
@@ -181,17 +182,44 @@ class GenExpPlot(object):
             plot.traces[-1].y = condition_expression[gene]
             plot.traces[-1].type = "bar"
         return plot
+    
+    
+    @classmethod
+    def __create_coexpression(cls, **kwargs):
+        plot = NewScatterPlot()
+        sample_expression, gene_conditions = ExpressionAbsolute.get_sample_expression(
+            kwargs['experiment'], 
+            kwargs['dataset'], 
+            kwargs['conditions'], 
+            kwargs['genes']
+        )
         
+        # Add first condition to done_condition
+        first_condition = gene_conditions[ kwargs['genes'][0] ][0]
+        done_condition = set(first_condition)
+        condition_trace = PlotlyTrace(name=first_condition)
+        condition_trace.type = "scattergl"
+        plot.xlab = kwargs['genes'][0]
+        plot.ylab = kwargs['genes'][1]
+        for idx, condition in enumerate(gene_conditions[ kwargs['genes'][0] ]):
+            if condition not in done_condition:
+                plot.traces.append(condition_trace)
+                condition_trace = PlotlyTrace(name=condition)
+                condition_trace.type = "scattergl"
+                done_condition.add(condition)
+            condition_trace.x.append(sample_expression[ kwargs['genes'][0] ][idx])
+            condition_trace.y.append(sample_expression[ kwargs['genes'][1] ][idx])
+        return plot
 
 
     @classmethod
     def create_plot(cls, plot_name, **kwargs):
-        required_args = ['experiment', 'dataset', 'conditions', 'genes', 'ctype', 'only_toggle']
+        required_args = ['experiment', 'dataset', 'conditions', 'genes', 'ctype']
         for req_arg in required_args:
             try:
                 assert(req_arg in kwargs)
             except AssertionError:
-                raise TypeError("crate_plot() required arguments: %s" % ",".join(required_args))
+                raise TypeError("crate_plot() required arguments: %s" % ", ".join(required_args))
 
         if plot_name == "violin":
             plot = cls.__create_violin(**kwargs)
@@ -201,8 +229,10 @@ class GenExpPlot(object):
             plot = cls.__create_linechart(**kwargs)
         elif plot_name == "bar":
             plot = cls.__create_bar(**kwargs)
+        elif plot_name == "coexpression":
+            plot = cls.__create_coexpression(**kwargs)
         else:
-            raise ValueError("Incorrect plot_name: %s - Plot name must be 'violin', 'bar', heatmap' or 'line'." % str(plot_name))
+            raise ValueError("Incorrect plot_name: %s - Plot name must be 'violin', 'coexpression', 'bar', heatmap' or 'line'." % str(plot_name))
         
         return plot
 
@@ -286,47 +316,8 @@ class ViolinPlot(GenExpPlot):
         if len(self.traces) > 1:
             theplot['layout']['violinmode'] = "group"
         
-        if self.title:
-            theplot['layout']['title'] = self.title
-        
-        
         theplot['data'] = data_list
 
-
-        """
-        for trace_idx, trace in enumerate(self.traces):
-            trace_data = dict()
-            trace_data['type'] = 'violin'
-            trace_data['box'] = {'visible': True}
-
-            x = list()
-            y = list()
-            if len(self.trace_names) > trace_idx:
-                trace_data['name'] = self.trace_names[trace_idx]
-            for group in sorted(self.traces[trace_idx]):
-                values = self.traces[trace_idx][group]
-                values = self.jitter_and_round(values)
-                for value in values:
-                    x.append(str(group))
-                    y.append(value)
-
-            trace_data['x'] = x
-            trace_data['y'] = y
-            theplot['data'].append(trace_data)
-        theplot['layout'] = dict()
-        if len(self.traces) > 1:
-            theplot['layout']['violinmode'] = "group"
-        if self.title:
-            theplot['layout']['title'] = self.title
-        if self.ylab:
-            theplot['layout']['yaxis'] = dict()
-            theplot['layout']['yaxis']['title'] = self.ylab
-        if self.units:
-            for axis, units in self.units.items():
-                axis_name = axis + 'axis'
-                theplot['layout'][axis_name] = dict()
-                theplot['layout'][axis_name]['title'] = units
-        """
         return theplot
 
 
@@ -458,6 +449,34 @@ class LinePlot(GenExpPlot):
             return False
         else:
             return True
+
+
+class NewScatterPlot(GenExpPlot):
+    def __init__(self):
+        super(NewScatterPlot, self).__init__()
+        self.type = "scattergl"
+    
+    def plot(self):
+        theplot = dict()
+        theplot['data'] = list()
+        theplot['layout'] = dict()
+        
+        for trace in self.traces:
+            trace_dict = { 
+                'x': trace.x, 'y': trace.y, 
+                'type': trace.type, 'name': trace.name, 
+                'mode': 'markers' 
+            }
+            theplot['data'].append(trace_dict)
+        if self.xlab:
+            theplot['layout']['xaxis'] = dict()
+            theplot['layout']['xaxis']['title'] = self.xlab
+        
+        if self.ylab:
+            theplot['layout']['yaxis'] = dict()
+            theplot['layout']['yaxis']['title'] = self.ylab
+        
+        return theplot
 
 
 class ScatterPlot(object):
