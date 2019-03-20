@@ -255,10 +255,18 @@ class ExpressionAbsolute(Model):
 
     @classmethod
     def get_condition_expression(cls, experiment, dataset, conditions, genes):
-        '''
-        Returns a condition expression dictionary with
-        genes as keys, and a list of values for the MEAN expression
-        of that gene in the multiple conditions.
+        '''Method for getting gene expression in a set of conditions.
+
+        Args:
+            experiment (str): Experiment in PlanExp.
+            dataset (str): Dataset in PlanExp.
+            conditions (`list` of `Condition`): Conditions (previously sorted) to use 
+                for the plot.
+            genes (`list` of `str`): Genes to plot. Can be empty depending on the plot.
+        
+        Returns:
+            condition_expression (`dict` of `str`: `list`): Key is gene symbol, value 
+                is vector of expression in each condition, in the same order as `condition`.
         '''
         condition_expression = dict()
         for condition in conditions:
@@ -285,13 +293,24 @@ class ExpressionAbsolute(Model):
 
     @classmethod
     def get_sample_expression(cls, experiment, dataset, conditions, genes, only_expressed=False):
-        '''
-        Returns dictionary of sample expression with
-        genes as keys, and a list of values for the ACTUAL expression
-        of that gene in each sample.
+        '''Method for getting gene expression in all samples.
 
-        only_expressed=True -> Samples with no expression in DB will not be considered.
-        only_expressed=False -> Will return 0 for samples with no expression in database.
+        Args:
+            experiment (str): Experiment in PlanExp.
+            dataset (str): Dataset in PlanExp.
+            conditions (`list` of `Condition`): Conditions (previously sorted) to use 
+                for the plot.
+            genes (`list` of `str`): Genes to plot. Can be empty depending on the plot.
+            only_expressed (bool): Flag, return only expression for samples with expression > 0?
+        
+        Returns:
+            sample_expression (`dict` of `str`: `list`): Key is gene symbol, value 
+                is vector of expression in each sample, sorted by condition.
+            
+            gene_conditions (`dict` of `str`: `list`): Key is gene_symbol, value is
+                vector with samples for which gene has expression, same order as `list`
+                in sample_expression[gene].
+
         '''
         sample_expression = dict()
         genes_found = set()
@@ -300,7 +319,7 @@ class ExpressionAbsolute(Model):
             samples = SampleCondition.objects.filter(
                 experiment=experiment, 
                 condition=condition
-            ).values_list('sample', flat=True)
+            ).order_by('sample').values_list('sample', flat=True)
             expression = ExpressionAbsolute.objects.filter(
                 experiment=experiment,   dataset=dataset, 
                 sample__in=list(samples), gene_symbol__in=genes
@@ -350,6 +369,53 @@ class ExpressionAbsolute(Model):
                             gene_conditions[gene].append(condition.name)
 
         return sample_expression, gene_conditions
+
+    @classmethod
+    def get_mean_expression(cls, experiment, dataset, conditions, genes):
+        '''Return mean gene expression for samples with expression > 0 for all genes.
+
+        Args:
+            experiment (str): Experiment in PlanExp.
+            dataset (str): Dataset in PlanExp.
+            conditions (`list` of `Condition`): Conditions (previously sorted) to use 
+                for the plot.
+            genes (`list` of `str`): Genes to plot. Can be empty depending on the plot.
+        
+        Returns:
+            celldict (`dict` of `str`: `float`): Key is sample name, value is 
+                mean expression for all `genes`. Only samples with expression for all
+                genes in `genes`.
+        '''
+
+        celldict = dict()
+        for condition in conditions:
+            samples = SampleCondition.objects.filter(
+                experiment=experiment, 
+                condition=condition
+            ).select_related('sample').order_by('sample').values('sample', 'sample__sample_name')
+
+            sample_names = { sample['sample']: sample['sample__sample_name'] for sample in samples }
+            samples = [ sample['sample'] for sample in samples ]
+
+            #print(samples)
+            # Get cells with num of genes with expression > 0 == len(gene_symbols)
+            filtered_cells = list(ExpressionAbsolute.objects.filter(
+                experiment=experiment,   
+                dataset=dataset, 
+                sample__in=list(samples), 
+                gene_symbol__in=genes).values('sample').annotate(
+                gcount=Count('gene_symbol'), 
+                expmean=Avg('expression_value')).filter(gcount = len(genes)))
+
+            if not filtered_cells:
+                continue
+
+            for cell in filtered_cells:
+                celldict[ sample_names[cell['sample']] ] = cell['expmean']
+        return celldict
+            
+
+
 
 
 # ------------------------------------------------------------------------------

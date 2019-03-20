@@ -35,7 +35,8 @@ def plot_gene_coexpression(request):
         if len(genes_in_experiment) != 2:
             return HttpResponse(json.dumps(response), content_type="application/json")
         else:
-            theplot = GenExpPlot.create_plot(
+            creator = PlotCreator()
+            theplot = creator.create_plot(
                 'coexpression', 
                 experiment=experiment,
                 dataset=dataset,

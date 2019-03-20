@@ -15,40 +15,21 @@ COLORS = [
 ]
 
 
-# ------------------------------------------------------------------------------
-class GenExpPlot(object):
-    """
-    Class for Plotly barplots and violins.
-    traces = [
-        0 : {
-            group1: [ values ],
-            group2: [ values ],
-            ...
-        },
-        1 :
-            ...
-    ]
-    """
+class PlotCreator(object):
+    
     def __init__(self):
-        self.traces = list()
-        self.traces_set = set()
-        self.groups = list()
-        self.groups_set = set()
-        self.title = str()
-        self.ylab = str()
-        self.xlab = str()
-        self.trace_names = list()
-     
+        '''Class that handles the creation of plots for PlanExp.
 
-    def is_empty(self):
-        if self.traces[0].x and self.traces[0].y:
-            return False
-        else:
-            return True
+        Attributes:
+            None
+        
+        '''
+        pass
 
+    def __create_violin(self, **kwargs):
+        '''
 
-    @classmethod
-    def __create_violin(cls, **kwargs):
+        '''
         plot = ViolinPlot()
         condition_list = list()
 
@@ -80,9 +61,8 @@ class GenExpPlot(object):
         
         return plot
 
-        
-    @classmethod
-    def __create_heatmap(cls, **kwargs):
+    
+    def __create_heatmap(self, **kwargs):
         plot = HeatmapPlot()
 
         if kwargs['ctype'] != "Samples":
@@ -107,7 +87,7 @@ class GenExpPlot(object):
                 samples = SampleCondition.objects.filter(
                     experiment=kwargs['experiment'], 
                     condition=condition
-                ).values_list('sample', flat=True)
+                ).order_by('sample').values_list('sample', flat=True)
                 all_samples.extend([ condition.name + " - " + str(i) for i in range(len(list(samples))) ])
             plot.add_conditions(all_samples)
 
@@ -118,8 +98,7 @@ class GenExpPlot(object):
         return plot
 
 
-    @classmethod
-    def __create_linechart(cls, **kwargs):
+    def __create_linechart(self, **kwargs):
         plot = LinePlot()
 
         condition_expression = ExpressionAbsolute.get_condition_expression(
@@ -165,8 +144,8 @@ class GenExpPlot(object):
                 subplot_i += 1
         return plot
     
-    @classmethod
-    def __create_bar(cls, **kwargs):
+
+    def __create_bar(self, **kwargs):
         plot = BarPlot()
         condition_expression = ExpressionAbsolute.get_condition_expression(
             kwargs['experiment'], 
@@ -184,8 +163,7 @@ class GenExpPlot(object):
         return plot
     
     
-    @classmethod
-    def __create_coexpression(cls, **kwargs):
+    def __create_coexpression(self, **kwargs):
         plot = NewScatterPlot()
         sample_expression, gene_conditions = ExpressionAbsolute.get_sample_expression(
             kwargs['experiment'], 
@@ -195,25 +173,127 @@ class GenExpPlot(object):
         )
         
         # Add first condition to done_condition
-        first_condition = gene_conditions[ kwargs['genes'][0] ][0]
-        done_condition = set(first_condition)
-        condition_trace = PlotlyTrace(name=first_condition)
-        condition_trace.type = "scattergl"
+        done_condition = set()
         plot.xlab = kwargs['genes'][0]
         plot.ylab = kwargs['genes'][1]
         for idx, condition in enumerate(gene_conditions[ kwargs['genes'][0] ]):
             if condition not in done_condition:
-                plot.traces.append(condition_trace)
-                condition_trace = PlotlyTrace(name=condition)
-                condition_trace.type = "scattergl"
+                plot.traces.append(PlotlyTrace(name=condition))
+                plot.traces[-1].type = "scattergl"
                 done_condition.add(condition)
-            condition_trace.x.append(sample_expression[ kwargs['genes'][0] ][idx])
-            condition_trace.y.append(sample_expression[ kwargs['genes'][1] ][idx])
+            plot.traces[-1].x.append(sample_expression[ kwargs['genes'][0] ][idx])
+            plot.traces[-1].y.append(sample_expression[ kwargs['genes'][1] ][idx])
         return plot
 
 
-    @classmethod
-    def create_plot(cls, plot_name, **kwargs):
+    def __create_tsne_simple(self, genes, cell_positions, sample_names, sample_condition, sample_expression):
+        plot = NewScatterPlot()
+        done_condition = set()
+        for idx, sample_name in enumerate(sample_names):
+            condition = sample_condition[sample_name]
+            if condition not in done_condition:
+                plot.traces.append(PlotlyTrace(name=condition))
+                plot.traces[-1] = PlotlyTrace(name=condition)
+                plot.traces[-1].type = "scattergl"
+                done_condition.add(condition) 
+            plot.traces[-1].x.append(cell_positions[sample_name][0])
+            plot.traces[-1].y.append(cell_positions[sample_name][1])
+            plot.traces[-1].names.append(sample_name)
+            if sample_expression:
+                # We also wanto to store gene expression as color
+                plot.traces[-1].color.append(sample_expression[genes[0]][idx])
+        return plot
+
+
+    def __create_tsne_multiple(self, cell_positions, sample_names, sample_condition, sample_mean_expression):
+        plot = NewScatterPlot()
+        done_condition = set()
+        for sample_name in sample_names:
+            condition = sample_condition[sample_name]
+            if sample_name in sample_mean_expression:
+                if condition not in done_condition:
+                    plot.traces.append(PlotlyTrace(name=condition))
+                    plot.traces[-1] = PlotlyTrace(name=condition)
+                    plot.traces[-1].type = "scattergl"
+                    done_condition.add(condition)
+                plot.traces[-1].x.append(cell_positions[sample_name][0])
+                plot.traces[-1].y.append(cell_positions[sample_name][1])
+                plot.traces[-1].names.append(sample_name)
+                plot.traces[-1].color.append(sample_mean_expression[sample_name])
+
+        return plot
+
+
+    def __create_tsne(self, **kwargs):
+
+        # Get cell positions
+        cell_positions = CellPlotPosition.objects.filter(
+            experiment=kwargs['experiment'], 
+            dataset=kwargs['dataset']
+        ).select_related('sample').values('sample__sample_name', 'x_position', 'y_position')
+
+        cell_positions = { cell['sample__sample_name'] : (cell['x_position'], cell['y_position']) for cell in cell_positions }
+        
+        sample_names = list()
+        sample_condition = dict()
+        for condition in kwargs['conditions']:
+            samples = SampleCondition.objects.filter(
+                experiment=kwargs['experiment'], 
+                condition=condition
+            ).order_by('sample').values_list('sample__sample_name', flat=True)
+            
+            sample_names.extend(samples)
+            for sample_name in samples:
+                sample_condition[sample_name] = condition.name
+
+        if len(kwargs['genes']) < 2:
+            sample_expression, gene_conditions = ExpressionAbsolute.get_sample_expression(
+                kwargs['experiment'],
+                kwargs['dataset'],
+                kwargs['conditions'],
+                kwargs['genes'])
+            plot = self.__create_tsne_simple(
+                kwargs['genes'], 
+                cell_positions, 
+                sample_names, 
+                sample_condition, 
+                sample_expression)
+        else:
+            sample_mean_expression = ExpressionAbsolute.get_mean_expression(
+                kwargs['experiment'],
+                kwargs['dataset'],
+                kwargs['conditions'],
+                kwargs['genes'])
+            print(sample_mean_expression)
+            plot = self.__create_tsne_multiple(
+                cell_positions, 
+                sample_names, 
+                sample_condition, 
+                sample_mean_expression)
+        plot.compute_color_limits()
+        return plot
+
+
+    def create_plot(self, plot_name, **kwargs):
+        '''Method for creating plots.
+
+        Args:
+            plot_name (str): Name of the plot. 
+                Can be (`violin`, `tsne`, `coexpression`, `bar`, `heatmap` or `line`)
+            experiment (str): Experiment in PlanExp.
+            dataset (str): Dataset in PlanExp.
+            conditions (`list` of `Condition`): Conditions (previously sorted) to use 
+                for the plot.
+            genes (`list` of `str`): Genes to plot. Can be empty depending on the plot.
+            ctype (str): Condition type of `conditions`.
+            only_toggle (bool, optional): Plot only samples with expression > 0. Used only
+                for plot `violin`.
+        
+        Returns:
+            plot (`GenExpPlot`): Can be of subclass (`ViolinPlot`, `ScatterPlot`, 
+                `BarPlot`, `HeatmapPlot`, or `LinePlot`).
+
+        '''
         required_args = ['experiment', 'dataset', 'conditions', 'genes', 'ctype']
         for req_arg in required_args:
             try:
@@ -222,19 +302,57 @@ class GenExpPlot(object):
                 raise TypeError("crate_plot() required arguments: %s" % ", ".join(required_args))
 
         if plot_name == "violin":
-            plot = cls.__create_violin(**kwargs)
+            plot = self.__create_violin(**kwargs)
         elif plot_name == "heatmap":
-            plot = cls.__create_heatmap(**kwargs)
+            plot = self.__create_heatmap(**kwargs)
         elif plot_name == "line":
-            plot = cls.__create_linechart(**kwargs)
+            plot = self.__create_linechart(**kwargs)
         elif plot_name == "bar":
-            plot = cls.__create_bar(**kwargs)
+            plot = self.__create_bar(**kwargs)
         elif plot_name == "coexpression":
-            plot = cls.__create_coexpression(**kwargs)
+            plot = self.__create_coexpression(**kwargs)
+        elif plot_name == "tsne":
+            plot = self.__create_tsne(**kwargs)
         else:
-            raise ValueError("Incorrect plot_name: %s - Plot name must be 'violin', 'coexpression', 'bar', heatmap' or 'line'." % str(plot_name))
+            raise ValueError("Incorrect plot_name: %s - Plot name must be 'violin', 'tsne', coexpression', 'bar', heatmap' or 'line'." % str(plot_name))
         
         return plot
+
+
+
+
+# ------------------------------------------------------------------------------
+class GenExpPlot(object):
+    """
+    Class for Plotly barplots and violins.
+    traces = [
+        0 : {
+            group1: [ values ],
+            group2: [ values ],
+            ...
+        },
+        1 :
+            ...
+    ]
+    """
+    def __init__(self):
+        self.traces = list()
+        self.traces_set = set()
+        self.groups = list()
+        self.groups_set = set()
+        self.title = str()
+        self.ylab = str()
+        self.xlab = str()
+        self.trace_names = list()
+     
+
+    def is_empty(self):
+        if self.traces[0].x and self.traces[0].y:
+            return False
+        else:
+            return True
+
+
 
 
 # ------------------------------------------------------------------------------
@@ -455,19 +573,30 @@ class NewScatterPlot(GenExpPlot):
     def __init__(self):
         super(NewScatterPlot, self).__init__()
         self.type = "scattergl"
+        self.cmax = None
+        self.cmin = 0
     
     def plot(self):
         theplot = dict()
         theplot['data'] = list()
         theplot['layout'] = dict()
         
+        if self.cmax is None:
+            self.compute_color_limits()
+
         for trace in self.traces:
             trace_dict = { 
                 'x': trace.x, 'y': trace.y, 
                 'type': trace.type, 'name': trace.name, 
                 'mode': 'markers' 
             }
+            if trace.names:
+                trace_dict['text'] = trace.names
+            if trace.color:
+                trace_dict['marker'] = { 'color': list(trace.color), 'cmin': self.cmin, 'cmax': self.cmax }
+                trace_dict['color'] = trace.color
             theplot['data'].append(trace_dict)
+            
         if self.xlab:
             theplot['layout']['xaxis'] = dict()
             theplot['layout']['xaxis']['title'] = self.xlab
@@ -477,6 +606,17 @@ class NewScatterPlot(GenExpPlot):
             theplot['layout']['yaxis']['title'] = self.ylab
         
         return theplot
+    
+    def compute_color_limits(self):
+        self.cmax = 0
+        try:
+            for trace in self.traces:
+                max_in_trace = max(trace.color)
+                if max_in_trace > self.cmax:
+                    self.cmax = max_in_trace
+        except:
+            return
+        
 
 
 class ScatterPlot(object):
