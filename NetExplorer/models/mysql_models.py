@@ -254,7 +254,7 @@ class ExpressionAbsolute(Model):
         return name_str
 
     @classmethod
-    def get_condition_expression(cls, experiment, dataset, conditions, genes):
+    def get_condition_expression(cls, experiment, dataset, conditions, ctype, genes):
         '''Method for getting gene expression in a set of conditions.
 
         Args:
@@ -269,28 +269,52 @@ class ExpressionAbsolute(Model):
                 is vector of expression in each condition, in the same order as `condition`.
         '''
         condition_expression = dict()
+
+        conditions_ctype = Condition.objects.filter(
+            experiment=experiment,
+            cond_type_id=ConditionType.objects.get(name=ctype)
+        )
+
+        sample_condition = SampleCondition.objects.filter(
+            experiment=experiment,
+            condition__in=conditions_ctype
+        ).select_related('condition').select_related('sample').values('sample', 'sample__sample_name', 'condition')
+        
+        sc_dict = defaultdict(lambda: list())
+        for sc in sample_condition:
+            sc_dict[sc['condition']].append(sc['sample'])
+        
+        expression = cls.objects.filter(
+            experiment=experiment, dataset=dataset,
+            gene_symbol__in=list(genes)
+        ).select_related('sample').values(
+            'sample', 
+            'gene_symbol', 
+            'expression_value')
+
+        exp_dict = defaultdict(lambda: defaultdict(float))
+        for exp in expression:
+            exp_dict[exp['sample']][exp['gene_symbol']] = exp['expression_value']
+        
         for condition in conditions:
-            samples = SampleCondition.objects.filter(
-                experiment=experiment, 
-                condition=condition
-            ).values_list('sample', flat=True)
-            expression = cls.objects.filter(
-                experiment=experiment,   dataset=dataset, 
-                sample__in=list(samples), gene_symbol__in=genes
-            ).values('gene_symbol').annotate(cond_sum = Sum('expression_value'))
-            genes_found = set()
-            for exp in expression:
-                genes_found.add(exp['gene_symbol'])
-                if exp['gene_symbol'] not in condition_expression:
-                    condition_expression[exp['gene_symbol']] = list()
-                condition_expression[exp['gene_symbol']].append(exp['cond_sum'] / len(samples))
-            genes_missing = set(genes).difference(genes_found)
-            for missing in genes_missing:
-                if missing not in condition_expression:
-                    condition_expression[missing] = list()
-                condition_expression[missing].append(0)
+            samples_in_condition = sorted(sc_dict[condition.id])
+            exp_in_condition = defaultdict(float)
+            for sample in samples_in_condition:
+                if sample in exp_dict:
+                    for gene, expval in exp_dict[sample].items():
+                        exp_in_condition[gene] += expval
+            
+            for gene in genes:
+                if gene not in condition_expression:
+                    condition_expression[gene] = list()
+
+                if gene not in exp_in_condition:
+                    condition_expression[gene].append(0)
+                else:
+                    condition_expression[gene].append(exp_in_condition[gene]/len(samples_in_condition))
         return condition_expression
 
+        
     @classmethod
     def get_sample_expression(cls, experiment, dataset, conditions, genes, only_expressed=False):
         '''Method for getting gene expression in all samples.
@@ -322,7 +346,7 @@ class ExpressionAbsolute(Model):
             ).order_by('sample').values_list('sample', flat=True)
             expression = ExpressionAbsolute.objects.filter(
                 experiment=experiment,   dataset=dataset, 
-                sample__in=list(samples), gene_symbol__in=genes
+                sample__in=list(samples), gene_symbol__in=list(genes)
             ).values('gene_symbol', 'sample', 'expression_value')
             
             genes_found = set()
@@ -465,6 +489,7 @@ class RegulatoryLinks(models.Model):
     '''
     experiment = models.ForeignKey(Experiment, on_delete=models.CASCADE)
     dataset = models.ForeignKey(Dataset, on_delete=models.CASCADE)
+    group = models.IntegerField(max_length=10, default=1)
     regulator = models.CharField(max_length=50)
     target = models.CharField(max_length=50)
     source = models.CharField(max_length=20)

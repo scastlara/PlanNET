@@ -21,6 +21,7 @@ from django.db.models import Max, Min
 from enum import Enum 
 from NetExplorer.models import colors
 from django.db.models import Count, Sum
+from collections import defaultdict
 
 # GENE ONTOLOGY MODULES
 from goatools.go_enrichment import GOEnrichmentStudy

@@ -67,10 +67,12 @@ class PlotCreator(object):
 
         if kwargs['ctype'] != "Samples":
             # Each column corresponds to a condition
+            print(kwargs['ctype'])
             condition_expression = ExpressionAbsolute.get_condition_expression(
                 kwargs['experiment'], 
                 kwargs['dataset'], 
                 kwargs['conditions'], 
+                kwargs['ctype'],
                 kwargs['genes']
             )
             plot.add_conditions(kwargs['conditions'])
@@ -105,6 +107,7 @@ class PlotCreator(object):
             kwargs['experiment'], 
             kwargs['dataset'], 
             kwargs['conditions'], 
+            kwargs['ctype'],
             kwargs['genes']
         )
 
@@ -151,6 +154,7 @@ class PlotCreator(object):
             kwargs['experiment'], 
             kwargs['dataset'], 
             kwargs['conditions'], 
+            kwargs['ctype'],
             kwargs['genes']
         )
 
