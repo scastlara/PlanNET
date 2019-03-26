@@ -2656,3 +2656,11 @@ summary { display: list-item !important; }
 #coexpression-ctype {
     left: 0 !important;
 }
+
+#planexp-cyt-controls hr {
+    border-top: 4px solid #eee;
+}
+
+#planexp-filter-network {
+    width: 200px;
+}

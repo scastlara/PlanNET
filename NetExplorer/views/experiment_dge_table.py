@@ -18,9 +18,9 @@ def do_volcano_plot(expression):
     for gexp in expression:
         x = gexp.fold_change
         if gexp.pvalue == 0:
-            y = -(math.log10(1e-303))
+            y = -(math.log2(1e-303))
         else:
-            y = -(math.log10(gexp.pvalue))
+            y = -(math.log2(gexp.pvalue))
         theplot.add_x(trace_name, x)
         theplot.add_y(trace_name, y)
         theplot.add_name(trace_name, gexp.gene_symbol)
@@ -40,8 +40,8 @@ def do_volcano_plot(expression):
     bigger_x = max([abs(min_x), abs(max_x)]) + 1
     theplot.set_limits('x', -bigger_x, bigger_x)
     theplot.set_limits('y', 0, max_y + max_y * 0.10) # Add +10% to make plot axis more visible
-    theplot.add_units('x', 'log10 ( Fold Change ) ')
-    theplot.add_units('y', '-log10 ( pvalue ) ')
+    theplot.add_units('x', 'log2 ( Fold Change ) ')
+    theplot.add_units('y', '-log2 ( pvalue ) ')
     return theplot
 
 

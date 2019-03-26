@@ -9,9 +9,13 @@ def regulatory_links(request):
         dataset_name = request.GET['dataset']
         experiment = Experiment.objects.get(name=exp_name)
         dataset = Dataset.objects.get(name=dataset_name)
+        group = request.GET.get('group')
         response = dict()
 
-        regulatory_links = RegulatoryLinks.objects.filter(experiment=experiment, dataset=dataset)
+        if group is None:
+            group = 1
+        regulatory_links = RegulatoryLinks.objects.filter(experiment=experiment, dataset=dataset, group=group)
+        print(regulatory_links)
         if regulatory_links:
             all_contigs = set()
             for link in regulatory_links:

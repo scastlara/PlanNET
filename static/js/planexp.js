@@ -1227,7 +1227,21 @@ var PlanExp = (function() {
 
     });
 
+    
+    // FILTER NETWORK
+    $("#planexp-filter-network").on("click", function(){
+        var expName = $("#select-experiment").val();
+        var dataset = $("#select-dataset").val();
+        var networkConditions = $("#network-conditions").val();
+        var minExp = $("#minExp").val();
 
+        //console.log(networkConditions);
+        //console.log(minExp);
+
+        // AJAX REQUEST TO GET LIST OF GENES THAT SHOULD BE DISPLAYED
+
+
+    });
 
 
 
