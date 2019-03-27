@@ -67,7 +67,6 @@ class PlotCreator(object):
 
         if kwargs['ctype'] != "Samples":
             # Each column corresponds to a condition
-            print(kwargs['ctype'])
             condition_expression = ExpressionAbsolute.get_condition_expression(
                 kwargs['experiment'], 
                 kwargs['dataset'], 

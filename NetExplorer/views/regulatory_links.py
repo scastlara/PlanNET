@@ -15,7 +15,6 @@ def regulatory_links(request):
         if group is None:
             group = 1
         regulatory_links = RegulatoryLinks.objects.filter(experiment=experiment, dataset=dataset, group=group)
-        print(regulatory_links)
         if regulatory_links:
             all_contigs = set()
             for link in regulatory_links:

@@ -268,6 +268,8 @@ class ExpressionAbsolute(Model):
             condition_expression (`dict` of `str`: `list`): Key is gene symbol, value 
                 is vector of expression in each condition, in the same order as `condition`.
         '''
+
+        
         condition_expression = dict()
 
         conditions_ctype = Condition.objects.filter(
@@ -278,40 +280,52 @@ class ExpressionAbsolute(Model):
         sample_condition = SampleCondition.objects.filter(
             experiment=experiment,
             condition__in=conditions_ctype
-        ).select_related('condition').select_related('sample').values('sample', 'sample__sample_name', 'condition')
-        
+        ).values('sample', 'condition')
+
         sc_dict = defaultdict(lambda: list())
+
         for sc in sample_condition:
             sc_dict[sc['condition']].append(sc['sample'])
         
-        expression = cls.objects.filter(
-            experiment=experiment, dataset=dataset,
-            gene_symbol__in=list(genes)
-        ).select_related('sample').values(
-            'sample', 
-            'gene_symbol', 
-            'expression_value')
+        cursor = connection.cursor()
 
-        exp_dict = defaultdict(lambda: defaultdict(float))
-        for exp in expression:
-            exp_dict[exp['sample']][exp['gene_symbol']] = exp['expression_value']
-        
+        cursor.execute(
+            '''
+                SELECT `NetExplorer_samplecondition`.`condition_id`, 
+                    `NetExplorer_expressionabsolute`.`gene_symbol`,   
+                    SUM(`NetExplorer_expressionabsolute`.`expression_value`) 
+                FROM  `NetExplorer_expressionabsolute`
+                INNER JOIN NetExplorer_samplecondition ON NetExplorer_expressionabsolute.sample_id = NetExplorer_samplecondition.sample_id
+                WHERE (`NetExplorer_expressionabsolute`.`experiment_id` = %s 
+                AND `NetExplorer_samplecondition`.experiment_id = %s  
+                AND `NetExplorer_expressionabsolute`.`gene_symbol` IN (%s)   ) 
+                GROUP BY `NetExplorer_samplecondition`.`condition_id`, `NetExplorer_expressionabsolute`.`gene_symbol`;
+            ''' %
+            (experiment.id, experiment.id,', '.join([ "'%s'" % gene for gene in genes ]))
+        )
+
+        data = cursor.fetchall()
+        datadict = defaultdict(lambda: defaultdict(float))
+        for row in data:
+            datadict[row[0]][row[1]] = row[2]
+
         for condition in conditions:
-            samples_in_condition = sorted(sc_dict[condition.id])
-            exp_in_condition = defaultdict(float)
-            for sample in samples_in_condition:
-                if sample in exp_dict:
-                    for gene, expval in exp_dict[sample].items():
-                        exp_in_condition[gene] += expval
-            
-            for gene in genes:
-                if gene not in condition_expression:
-                    condition_expression[gene] = list()
+            cid = condition.id
+            samples_in_condition = len(sc_dict[condition.id])
+            if cid  in datadict:
+                for gene in genes:
+                    if gene not in condition_expression:
+                        condition_expression[gene] = list()
 
-                if gene not in exp_in_condition:
+                    if gene in datadict[cid]:
+                        condition_expression[gene].append(datadict[cid][gene] / samples_in_condition)
+                    else:
+                        condition_expression[gene].append(0)
+            else:
+                for gene in genes:
+                    if gene not in condition_expression:
+                        condition_expression[gene] = list()
                     condition_expression[gene].append(0)
-                else:
-                    condition_expression[gene].append(exp_in_condition[gene]/len(samples_in_condition))
         return condition_expression
 
         
@@ -345,8 +359,9 @@ class ExpressionAbsolute(Model):
                 condition=condition
             ).order_by('sample').values_list('sample', flat=True)
             expression = ExpressionAbsolute.objects.filter(
-                experiment=experiment,   dataset=dataset, 
-                sample__in=list(samples), gene_symbol__in=list(genes)
+                experiment=experiment,  
+                sample__in=list(samples), 
+                gene_symbol__in=list(genes)
             ).values('gene_symbol', 'sample', 'expression_value')
             
             genes_found = set()
