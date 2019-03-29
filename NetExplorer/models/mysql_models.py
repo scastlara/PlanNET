@@ -165,16 +165,14 @@ class Condition(models.Model):
         Gets max expression of samples in this particular condition.
         Assigns it to self.max_expression and returns it.
         '''
-        samples = SampleCondition.objects.filter(condition=self).values_list('sample', flat=True)
-
-        self.max_expression = ExpressionAbsolute.objects.filter(
+        
+        n_samples = SampleCondition.objects.filter(condition=self).count()
+        self.max_expression = ExpressionCondition.objects.filter(
             experiment=self.experiment,
-            dataset=dataset,
-            sample__in=list(samples)
-        ).aggregate(Max('expression_value'))
-
-        self.max_expression = self.max_expression['expression_value__max']
-
+            condition=self
+        ).aggregate(Max('sum_expression'))
+        
+        self.max_expression = self.max_expression['sum_expression__max'] / n_samples
         self.max_expression = round(self.max_expression, 3)
         return self.max_expression
         

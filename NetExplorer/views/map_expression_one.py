@@ -17,9 +17,9 @@ def map_expression_one(request):
         experiment = Experiment.objects.get(name=exp_name)
         dataset = Dataset.objects.get(name=dataset)
         condition = Condition.objects.get(name=condition, experiment=experiment)
-        samples = SampleCondition.objects.filter(condition=condition).values_list('sample', flat=True)
+        num_samples = SampleCondition.objects.filter(condition=condition).count()
 
-        colormap = dict()
+        colormap = defaultdict(int)
         max_expression = 0
         units = None
 
@@ -28,25 +28,24 @@ def map_expression_one(request):
             gene_symbol__in=symbols
         ).values_list("gene_symbol", flat=True))
         
-        expression = ExpressionAbsolute.objects.filter(
-            experiment=experiment,   dataset=dataset, 
-            sample__in=list(samples), gene_symbol__in=list(genes_in_experiment)
-        ).values('gene_symbol').annotate(cond_sum = Sum('expression_value'))
+        expression = ExpressionCondition.objects.filter(
+            experiment=experiment,   
+            condition=condition, 
+            gene_symbol__in=list(genes_in_experiment)
+        ).values('gene_symbol', 'sum_expression')
 
-        genes_found = set()
         for exp in expression:
-            genes_found.add(exp['gene_symbol'])
-            if exp['gene_symbol'] not in colormap:
-                exp_mean = exp['cond_sum'] / len(samples)
-                colormap[exp['gene_symbol']] = exp_mean
-                if exp_mean != "NA" and exp_mean > max_expression:
+            exp_mean = exp['sum_expression'] / num_samples
+            colormap[exp['gene_symbol']] = exp_mean
+            
+            if exp_mean > max_expression:
                     max_expression = exp_mean
+
         # Add genes in experiment not found in query (they have expression == 0 for condition)
-        genes_missing = set(list(genes_in_experiment)).difference(genes_found)
+        genes_missing = set(list(genes_in_experiment)).difference(colormap.keys())
         for missing in genes_missing:
-            if missing not in colormap:
-                colormap[missing] = 0
-        
+            colormap[missing] = 0
+
         for gene, exp in colormap.items():
             if reference == "Experiment":
                 colormap[gene] = condition.get_color(dataset, exp, profile)
