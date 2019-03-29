@@ -293,58 +293,58 @@ class ExpressionAbsolute(Model):
                 is vector of expression in each sample, sorted by condition.
             
             gene_conditions (`dict` of `str`: `list`): Key is gene_symbol, value is
-                vector with samples for which gene has expression, same order as `list`
+                vector with conditions for each sample, same order as `list`
                 in sample_expression[gene].
 
         '''
-        sample_expression = dict()
-        genes_found = set()
-        gene_conditions = dict()
+        sample_expression = defaultdict(list)
+        gene_conditions = defaultdict(list)
+        cursor = connection.cursor()
+        cursor.execute(
+            """
+            SELECT `NetExplorer_samplecondition`.`sample_id`, 
+                   `NetExplorer_expressionabsolute`.`gene_symbol`,   
+                   `NetExplorer_expressionabsolute`.`expression_value`
+            FROM  `NetExplorer_expressionabsolute`
+            INNER JOIN NetExplorer_samplecondition ON NetExplorer_expressionabsolute.sample_id = NetExplorer_samplecondition.sample_id
+            WHERE `NetExplorer_expressionabsolute`.`experiment_id` = %s
+            AND   `NetExplorer_samplecondition`.experiment_id = %s
+            AND   `NetExplorer_samplecondition`.condition_id IN (%s)
+            AND   `NetExplorer_expressionabsolute`.`gene_symbol` IN (%s);
+            """ %
+            (
+                experiment.id, 
+                experiment.id, 
+                ', '.join([ "'%s'" % condition.id for condition in conditions ]), 
+                ', '.join([ "'%s'" % gene for gene in genes ])
+            )
+        )
+        data = cursor.fetchall()
+        datadict = defaultdict(lambda: defaultdict(float))
+        for row in data:
+            datadict[row[1]][row[0]] = row[2]
+        
+        
         for condition in conditions:
             samples = SampleCondition.objects.filter(
                 experiment=experiment, 
                 condition=condition
             ).order_by('sample').values_list('sample', flat=True)
-            expression = ExpressionAbsolute.objects.filter(
-                experiment=experiment,  
-                sample__in=list(samples), 
-                gene_symbol__in=list(genes)
-            ).values('gene_symbol', 'sample', 'expression_value')
-            
-            genes_found = set()
-            gene_expression_dict = dict()
-            for exp in expression:
-                genes_found.add(exp['gene_symbol'])
-                if exp['gene_symbol'] not in gene_expression_dict:
-                    gene_expression_dict[exp['gene_symbol']] = dict()
-                gene_expression_dict[exp['gene_symbol']][exp['sample']] = exp['expression_value']
-
-            # Add missing genes
-            genes_missing = set(genes).difference(genes_found)
-            for missing in genes_missing:
-                if missing not in gene_expression_dict:
-                    gene_expression_dict[missing] = dict()
-
-            # Add missing cells
-            for gene, sample_exp in gene_expression_dict.items():
-                gcounter = 0
-                if gene not in sample_expression:
-                    sample_expression[gene] = list()
-                    
-                for sample in samples:
-                    if sample not in sample_exp:
-                        if not only_expressed:
-                            sample_expression[gene].extend([0])
-                            if gene not in gene_conditions:
-                                gene_conditions[gene] = list()
+            for gene in genes:
+                if gene in datadict:
+                    for sample in samples:
+                        if sample in datadict[gene]:
+                            sample_expression[gene].append(datadict[gene][sample])
                             gene_conditions[gene].append(condition.name)
-                    else:
-                        if gene not in gene_conditions:
-                            gene_conditions[gene] = list()
-                        sample_expression[gene].extend([ sample_exp[sample] ])
+                        else:
+                            sample_expression[gene].append(0)
+                            gene_conditions[gene].append(condition.name)
+                else:
+                    for sample in samples:
+                        sample_expression[gene].append(0)
                         gene_conditions[gene].append(condition.name)
-                        gcounter += 1
 
+                """
                 if only_expressed:
                     if gcounter < 2:
                         missing = 2 - gcounter 
@@ -353,6 +353,7 @@ class ExpressionAbsolute(Model):
                             if gene not in gene_conditions:
                                 gene_conditions[gene] = list()
                             gene_conditions[gene].append(condition.name)
+                """
 
         return sample_expression, gene_conditions
 

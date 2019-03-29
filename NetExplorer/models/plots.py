@@ -250,11 +250,14 @@ class PlotCreator(object):
                 sample_condition[sample_name] = condition.name
 
         if len(kwargs['genes']) < 2:
-            sample_expression, gene_conditions = ExpressionAbsolute.get_sample_expression(
-                kwargs['experiment'],
-                kwargs['dataset'],
-                kwargs['conditions'],
-                kwargs['genes'])
+            if len(kwargs['genes']) > 0:
+                sample_expression, gene_conditions = ExpressionAbsolute.get_sample_expression(
+                    kwargs['experiment'],
+                    kwargs['dataset'],
+                    kwargs['conditions'],
+                    kwargs['genes'])
+            else:
+                sample_expression, gene_conditions = None, None
             plot = self.__create_tsne_simple(
                 kwargs['genes'], 
                 cell_positions, 
