@@ -49,8 +49,6 @@ def experiment_dge_table(request):
     """
     View from PlanExp that returns the HTML of a table comparing two conditions
     """
-    max_genes = 250
-    pvalue_threshold = 0.001
     if request.is_ajax():
         exp_name = request.GET['experiment']
         c1_name = request.GET['condition1']
@@ -62,14 +60,14 @@ def experiment_dge_table(request):
         condition2 = Condition.objects.get(name=c2_name, experiment=experiment)
         expression = ExpressionRelative.objects.filter(
             experiment=experiment, dataset=dataset, 
-            condition1=condition1, condition2=condition2, pvalue__lte=pvalue_threshold)
+            condition1=condition1, condition2=condition2)
         if not expression.exists():
             # In case condition1 and condition2 are reversed in Database
             expression = ExpressionRelative.objects.filter(
                 experiment=experiment, dataset=dataset, 
-                condition1=condition2, condition2=condition1, pvalue__lte=pvalue_threshold)
+                condition1=condition2, condition2=condition1)
 
-        expression = expression.annotate(abs_fold_change=Func(F('fold_change'), function='ABS')).order_by('-abs_fold_change')[:max_genes]
+        expression = expression.annotate(abs_fold_change=Func(F('fold_change'), function='ABS')).order_by('-abs_fold_change')
         response = dict()
         if expression:
             contig_list = [ exp.gene_symbol for exp in expression ]
