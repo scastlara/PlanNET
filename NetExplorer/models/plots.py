@@ -67,7 +67,7 @@ class PlotCreator(object):
 
         if kwargs['ctype'] != "Samples":
             # Each column corresponds to a condition
-            condition_expression = ExpressionAbsolute.get_condition_expression(
+            condition_expression = ExpressionCondition.get_condition_expression(
                 kwargs['experiment'], 
                 kwargs['dataset'], 
                 kwargs['conditions'], 
@@ -102,7 +102,7 @@ class PlotCreator(object):
     def __create_linechart(self, **kwargs):
         plot = LinePlot()
 
-        condition_expression = ExpressionAbsolute.get_condition_expression(
+        condition_expression = ExpressionCondition.get_condition_expression(
             kwargs['experiment'], 
             kwargs['dataset'], 
             kwargs['conditions'], 
@@ -149,7 +149,7 @@ class PlotCreator(object):
 
     def __create_bar(self, **kwargs):
         plot = BarPlot()
-        condition_expression = ExpressionAbsolute.get_condition_expression(
+        condition_expression = ExpressionCondition.get_condition_expression(
             kwargs['experiment'], 
             kwargs['dataset'], 
             kwargs['conditions'], 
@@ -267,7 +267,6 @@ class PlotCreator(object):
                 kwargs['dataset'],
                 kwargs['conditions'],
                 kwargs['genes'])
-            print(sample_mean_expression)
             plot = self.__create_tsne_multiple(
                 cell_positions, 
                 sample_names, 

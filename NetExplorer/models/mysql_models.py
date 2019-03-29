@@ -208,6 +208,29 @@ class Condition(models.Model):
         return color_gradient.get_color_legend(units)
 
 
+    @classmethod
+    def get_samples_per_condition(cls, experiment, ctype):
+        '''Method for getting the number of samples per condition of ctype.
+
+            Args:
+                experiment (str): Experiment name.
+                ctype (str): Condition type. 
+
+            Returns:
+                sc_dict (`dict` of `int` : `int`): Keys are condition ids, 
+                    values are number of samples in that condition.
+        '''
+        condition_expression = dict()
+        conditions_ctype = Condition.objects.filter(
+            experiment=experiment,
+            cond_type_id=ConditionType.objects.get(name=ctype)
+        )
+        sample_condition = SampleCondition.objects.filter(
+            experiment=experiment,
+            condition__in=conditions_ctype
+        ).values('condition').annotate(nsample=Count('sample'))
+        sc_dict = { sc['condition'] : sc['nsample'] for sc in sample_condition }
+        return sc_dict
 
 # ------------------------------------------------------------------------------
 class Sample(models.Model):
@@ -252,82 +275,6 @@ class ExpressionAbsolute(Model):
         name_str += str(self.expression_value) + " "
         name_str += self.units
         return name_str
-
-    @classmethod
-    def get_condition_expression(cls, experiment, dataset, conditions, ctype, genes):
-        '''Method for getting gene expression in a set of conditions.
-
-        Args:
-            experiment (str): Experiment in PlanExp.
-            dataset (str): Dataset in PlanExp.
-            conditions (`list` of `Condition`): Conditions (previously sorted) to use 
-                for the plot.
-            genes (`list` of `str`): Genes to plot. Can be empty depending on the plot.
-        
-        Returns:
-            condition_expression (`dict` of `str`: `list`): Key is gene symbol, value 
-                is vector of expression in each condition, in the same order as `condition`.
-        '''
-
-        
-        condition_expression = dict()
-
-        conditions_ctype = Condition.objects.filter(
-            experiment=experiment,
-            cond_type_id=ConditionType.objects.get(name=ctype)
-        )
-
-        sample_condition = SampleCondition.objects.filter(
-            experiment=experiment,
-            condition__in=conditions_ctype
-        ).values('sample', 'condition')
-
-        sc_dict = defaultdict(lambda: list())
-
-        for sc in sample_condition:
-            sc_dict[sc['condition']].append(sc['sample'])
-        
-        cursor = connection.cursor()
-
-        cursor.execute(
-            '''
-                SELECT `NetExplorer_samplecondition`.`condition_id`, 
-                    `NetExplorer_expressionabsolute`.`gene_symbol`,   
-                    SUM(`NetExplorer_expressionabsolute`.`expression_value`) 
-                FROM  `NetExplorer_expressionabsolute`
-                INNER JOIN NetExplorer_samplecondition ON NetExplorer_expressionabsolute.sample_id = NetExplorer_samplecondition.sample_id
-                WHERE (`NetExplorer_expressionabsolute`.`experiment_id` = %s 
-                AND `NetExplorer_samplecondition`.experiment_id = %s  
-                AND `NetExplorer_expressionabsolute`.`gene_symbol` IN (%s)   ) 
-                GROUP BY `NetExplorer_samplecondition`.`condition_id`, `NetExplorer_expressionabsolute`.`gene_symbol`;
-            ''' %
-            (experiment.id, experiment.id,', '.join([ "'%s'" % gene for gene in genes ]))
-        )
-
-        data = cursor.fetchall()
-        datadict = defaultdict(lambda: defaultdict(float))
-        for row in data:
-            datadict[row[0]][row[1]] = row[2]
-
-        for condition in conditions:
-            cid = condition.id
-            samples_in_condition = len(sc_dict[condition.id])
-            if cid  in datadict:
-                for gene in genes:
-                    if gene not in condition_expression:
-                        condition_expression[gene] = list()
-
-                    if gene in datadict[cid]:
-                        condition_expression[gene].append(datadict[cid][gene] / samples_in_condition)
-                    else:
-                        condition_expression[gene].append(0)
-            else:
-                for gene in genes:
-                    if gene not in condition_expression:
-                        condition_expression[gene] = list()
-                    condition_expression[gene].append(0)
-        return condition_expression
-
         
     @classmethod
     def get_sample_expression(cls, experiment, dataset, conditions, genes, only_expressed=False):
@@ -452,8 +399,74 @@ class ExpressionAbsolute(Model):
             for cell in filtered_cells:
                 celldict[ sample_names[cell['sample']] ] = cell['expmean']
         return celldict
-            
 
+
+
+# ------------------------------------------------------------------------------
+class ExpressionCondition(models.Model):
+    '''
+    To create it:
+
+    CREATE TABLE NetExplorer_expressioncondition
+    SELECT `NetExplorer_expressionabsolute`.`experiment_id`,
+           `NetExplorer_samplecondition`.`condition_id`, 
+           `NetExplorer_expressionabsolute`.`gene_symbol`,   
+            SUM(`NetExplorer_expressionabsolute`.`expression_value`) AS sum_expression
+    FROM  `NetExplorer_expressionabsolute`
+    INNER JOIN NetExplorer_samplecondition ON NetExplorer_expressionabsolute.sample_id = NetExplorer_samplecondition.sample_id
+    GROUP BY `NetExplorer_samplecondition`.`condition_id`, `NetExplorer_expressionabsolute`.`gene_symbol`, `NetExplorer_expressionabsolute`.`experiment_id`;
+    '''
+    experiment = models.ForeignKey(Experiment, on_delete=models.CASCADE)
+    gene_symbol = models.CharField(max_length=50)
+    condition =  models.ForeignKey(Condition, on_delete=models.CASCADE)
+    sum_expression = models.FloatField()
+
+    @classmethod
+    def get_condition_expression(cls, experiment, dataset, conditions, ctype, genes):
+        '''Method for getting gene expression in a set of conditions.
+
+        Args:
+            experiment (str): Experiment in PlanExp.
+            dataset (str): Dataset in PlanExp.
+            conditions (`list` of `Condition`): Conditions (previously sorted) to use 
+                for the plot.
+            genes (`list` of `str`): Genes to plot. Can be empty depending on the plot.
+        
+        Returns:
+            condition_expression (`dict` of `str`: `list`): Key is gene symbol, value 
+                is vector of expression in each condition, in the same order as `conditions`.
+        '''
+
+        condition_expression = dict()
+        sc_dict = Condition.get_samples_per_condition(experiment, ctype)    
+
+        cexpression = cls.objects.filter(
+            experiment=experiment,
+            gene_symbol__in=genes
+        ).values('gene_symbol', 'condition', 'sum_expression')
+
+        datadict = defaultdict(lambda: defaultdict(float))
+        for row in cexpression:
+            datadict[ row['condition'] ][ row['gene_symbol'] ] = row[ 'sum_expression' ]
+
+        for condition in conditions:
+            cid = condition.id
+            samples_in_condition = sc_dict[condition.id]
+            if cid  in datadict:
+                for gene in genes:
+                    if gene not in condition_expression:
+                        condition_expression[gene] = list()
+
+                    if gene in datadict[cid]:
+                        condition_expression[gene].append(datadict[cid][gene] / samples_in_condition)
+                    else:
+                        condition_expression[gene].append(0)
+            else:
+                for gene in genes:
+                    if gene not in condition_expression:
+                        condition_expression[gene] = list()
+                    condition_expression[gene].append(0)
+        return condition_expression
 
 
 
