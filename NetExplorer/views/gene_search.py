@@ -59,7 +59,6 @@ def gene_search(request):
     response = dict()
     response['databases'] = Dataset.get_allowed_datasets(request.user)
     response['valid_query'] = False
-    print("SEARCHING")
     if request.method == "GET" and "genesymbol" in request.GET:
         # Get Form input
         symbols = request.GET['genesymbol']
@@ -82,7 +81,6 @@ def gene_search(request):
             response['valid_query'] = True
             nodes_graph = GraphCytoscape()
             try:
-                print(symbols)
                 nodes_graph.new_nodes(symbols, database)
             except Exception as err:
                 print(err)

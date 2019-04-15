@@ -43,17 +43,16 @@ class DownloadHandler(object):
         return [(node.symbol, node.orf, node.database, gene)]
 
     def _get_homology_data(node):
+        genes = node.get_genes()
+        gene = "NA"
+        if genes:
+            gene = genes[0].symbol
         if node.homolog is not None:
-            genes = node.get_genes()
-            gene = "NA"
-            if genes:
-                gene = genes[0].symbol
-
             return [(node.symbol, gene, node.homolog.human.symbol, 
                     node.homolog.blast_eval, node.homolog.blast_cov, 
                     node.homolog.nog_eval, node.homolog.pfam_sc)]
         else:
-            return [(node.symbol, "NA", "NA", 
+            return [(node.symbol, gene, "NA", 
                     "NA", "NA", 
                     "NA", "NA")]
 
