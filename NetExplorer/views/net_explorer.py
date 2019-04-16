@@ -53,6 +53,7 @@ def net_explorer(request):
             return HttpResponse(status=400)
         symbols  = request.GET['genesymbol']
         symbols  = symbols.split(",")
+        symbols = [ re.sub("[\'\"]", "", symbol) for symbol in symbols ]
         database = request.GET['database']
 
         # ADDING NODES USING CONTIG_IDS, PROTEIN SYMBOLS, GO CODES, OR PFAM IDENTIFIERS

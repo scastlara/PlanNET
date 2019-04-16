@@ -20,11 +20,11 @@ def path_finder(request):
         database   = request.GET['database']
         plen       = request.GET['plen']
         start_nodes = GraphCytoscape()
-        start_nodes.new_nodes([request.GET['start']], database)
+        start_nodes.new_nodes([ re.sub("[\'\"]", "", request.GET['start'])], database)
         end_nodes = GraphCytoscape()
-        end_nodes.new_nodes([request.GET['end']], database)
+        end_nodes.new_nodes([ re.sub("[\'\"]", "", request.GET['end'])], database)
         
-        # Get shortest paths
+        # Get shortest paths symbols = [ re.sub("[\'\"]", "", symbol) for symbol in symbols ]
         graphelements, numpath = get_shortest_paths(
             start_nodes.nodes,
             end_nodes.nodes,

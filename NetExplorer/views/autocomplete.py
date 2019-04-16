@@ -10,7 +10,8 @@ def autocomplete(request):
         return None
     if s_string.startswith("_"):
         s_string = "dd_Smed_v6" + s_string
-
+ 
+    s_string = re.sub("[\'\"]", "", s_string)
     if 'database' in request.GET:
         # Querying NEO4j
         database = request.GET['database']
