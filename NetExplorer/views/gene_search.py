@@ -62,7 +62,6 @@ def gene_search(request):
     if request.method == "GET" and "genesymbol" in request.GET:
         # Get Form input
         symbols = request.GET['genesymbol']
-        symbols = [ re.sub("[\'\"]", "", symbol) for symbol in symbols ]
         database = None
         if "database" in request.GET and request.GET['database']:
             database = request.GET['database']
@@ -74,6 +73,7 @@ def gene_search(request):
             # If there is a search term
             
             symbols = symbols.split(",")
+            symbols = [ re.sub("[\'\"]", "", symbol) for symbol in symbols ]
             if not database:
                 database = "ALL"
                 response['database'] = database
