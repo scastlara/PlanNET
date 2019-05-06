@@ -1030,6 +1030,12 @@ var PlanExp = (function() {
 
     });
 
+    $('body').on('click', "#download-go-csv", function() {
+        var data = $(this).attr("data");
+        var blob = new Blob([data], {type: "text/plain;charset=utf-8"});
+        saveAs(blob, "gene-ontology.csv"); 
+    });
+
     /**
      * Get Gene Expression Plot
      *   Summary:

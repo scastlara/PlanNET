@@ -2664,3 +2664,8 @@ summary { display: list-item !important; }
 #planexp-filter-network {
     width: 200px;
 }
+
+.go-legend {
+    text-align: left;
+    margin-top: 10px;
+}

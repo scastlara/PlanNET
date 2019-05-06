@@ -3,15 +3,19 @@
 <br><br>
 {% if plots %}
 
+    <div class="btn btn-default" id="download-go-csv" data="{{ golist }}">Download CSV</div>
+
     <ul class="nav nav-tabs" id="goea-domain">
             <li class="active"><a data-toggle="tab" href="#BP">Biological Process</a></li>
             <li><a data-toggle="tab" href="#MF">Molecular Function</a></li>
             <li><a data-toggle="tab" href="#CC">Cellular Component</a></li>
     </ul>
 
-    
 
     <div class="tab-content">
+
+        
+
         {% for key, value in plots.items %}
         <div id="{{ key }}"  class="tab-pane fade in {% if key == 'BP' %} active {% endif %}">
             

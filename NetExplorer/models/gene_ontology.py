@@ -48,8 +48,12 @@ class GeneOntologyEnrichment(object):
         return plot_dict
 
     def get_go_list(self):
+        golist = []
         if not self.results:
             return None
+        golist = [ str(res.goterm) for res in self.results ]
+        golist = [ row.replace("\t", ",") for row in golist ]
+        golist = "\n".join(golist)
+        return golist
         
-        # GO list
 

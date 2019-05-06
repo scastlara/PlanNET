@@ -126,6 +126,12 @@
                         <blockquote>
                             Gene Ontology Enrichment analysis is performed using the Gene Ontologies annotated in the homologous human proteins
                             for the over-expressed planarian transcripts/genes in the selected condition comparison.
+
+                        <ul class="go-legend">
+                            <li>pval < 0.005 (light red) </li>
+                            <li>pval < 0.01 (light orange) </li>
+                            <li>pval < 0.05 (yellow) </li>
+                        </ul>
                         </blockquote>
                     </div><br>
                     
@@ -161,9 +167,6 @@
                 <div class="input-group gene-expression-search-container">
                     <label for="genesymbol">Gene Symbol/s:</label>
                     <input type="text" id="gene-expression-search" class="form-control" name="genesymbol" placeholder="Enter Gene Symbols">
-                    <span class="input-group-btn input-grp-withlabel">
-                        <button id="plot-expression-btn" type="submit" value=" Send" class="btn btn-danger" id="submit">Plot expression</button>
-                    </span>
                 </div>
                 <br>
                 
@@ -186,6 +189,10 @@
                     <input type="checkbox" id="gene-expression-expressed" name="gene-expression-expressed"> Show only expressed cells.
                 </div>
                 <br>
+
+                <span class="input-group-btn input-grp-withlabel">
+                    <button id="plot-expression-btn" type="submit" value=" Send" class="btn btn-danger" id="submit">Plot expression</button>
+                </span>
 
                 
                 <div id="plot-container">

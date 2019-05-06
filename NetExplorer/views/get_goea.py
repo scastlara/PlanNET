@@ -39,9 +39,10 @@ def get_goea(request):
         go_analysis.get_enriched_gos(gene_human_set)
 
         plots = go_analysis.get_plots()
-        #print(plots)
+        go_list = go_analysis.get_go_list()
+
         try:
-            html_to_return = render_to_string('NetExplorer/goea_plots.html', { 'plots': plots })
+            html_to_return = render_to_string('NetExplorer/goea_plots.html', { 'plots': plots, 'golist': go_list })
         except Exception as err:
             print(err)
         
