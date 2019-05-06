@@ -160,7 +160,7 @@ class Condition(models.Model):
     def __str__(self):
        return self.name + " - " + self.experiment.name
     
-    def __get_max_expression(self, dataset):
+    def __get_max_expression(self):
         '''
         Gets max expression of samples in this particular condition.
         Assigns it to self.max_expression and returns it.
@@ -189,7 +189,7 @@ class Condition(models.Model):
             # Compute max expression for the whole experiment
             if self.max_expression is None:
                 # Compute only once
-                self.__get_max_expression(dataset)
+                self.__get_max_expression()
         else:
             # Max expression is provided.
             self.max_expression = max_v
