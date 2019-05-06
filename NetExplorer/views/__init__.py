@@ -32,3 +32,4 @@ from .get_dataset_regexes import *
 from .regulatory_links import *
 from .cluster_markers import *
 from .get_goea import *
+from .filter_network import *

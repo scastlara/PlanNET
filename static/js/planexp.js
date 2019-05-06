@@ -787,6 +787,52 @@ var PlanExp = (function() {
     }
 
 
+    var filterNetwork = function(expName, dataset, inclusiveFlag, conditions, nodeIds) {
+
+        $.ajax({
+            type: "GET",
+            url: window.ROOT + "/filter_network",
+            data: {
+                'experiment' : expName,
+                'dataset'    : dataset,
+                'inclusive_flag': inclusiveFlag,
+                'conditions' : JSON.stringify(conditions),
+                'node_ids'   : JSON.stringify(nodeIds),
+                'csrfmiddlewaretoken': csrftoken
+            },
+            success: function(data) {
+                // Change Exp type
+                if (data) {
+                    cy.elements().css('opacity', 0.05);
+                    cy.batch(function(){
+                        cy.filter(function(i, element){
+                            if ( element.isNode() ) {
+                                if (data.includes(element.data("id"))) {
+                                    element.css('opacity', 1);
+                                } else {
+                                    element.css('opacity', 0.05);
+                                }
+                            
+                            } else {
+                                if (data.includes(element.data("source")) && data.includes(element.data("target"))) {
+                                    element.css('opacity', 1);
+                                } else {
+                                    element.css('opacity', 0.05);
+                                }
+                            }
+                        });
+                    });
+                } else {
+                    console.log("no data...");
+                    cy.elements().css('opacity', 1);
+                }
+                
+            },
+            error: function(data) {
+                cy.elements().css('opacity', 1);
+            }
+        });
+    }
 
     //----------------------------------------------------
     /* BUTTONS AND EVENTS */
@@ -1246,12 +1292,20 @@ var PlanExp = (function() {
         var expName = $("#select-experiment").val();
         var dataset = $("#select-dataset").val();
         var networkConditions = $("#network-conditions").val();
-        var minExp = $("#minExp").val();
+        var nodes = cy.nodes();
+        var booleanAndOr = $("input[name='fiter-network-andor']:checked").val();
+        var nodeIds = [];
+        for (var i = 0; i < nodes.length; i++) {
+            nodeIds.push( nodes[i].data("id") );
+        }
+        
+        filterNetwork(expName, dataset, booleanAndOr, networkConditions,nodeIds);
 
         //console.log(networkConditions);
         //console.log(minExp);
 
         // AJAX REQUEST TO GET LIST OF GENES THAT SHOULD BE DISPLAYED
+
 
 
     });

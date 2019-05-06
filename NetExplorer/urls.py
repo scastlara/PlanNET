@@ -38,4 +38,5 @@ urlpatterns = [
     url(r'^regulatory_links', views.regulatory_links, name="regulatory_links"),
     url(r'^cluster_markers', views.cluster_markers, name="cluster_markers"),
     url(r'^get_goea', views.get_goea, name="get_goea"),
+    url(r'^filter_network', views.filter_network, name="filter_network"),
 ]

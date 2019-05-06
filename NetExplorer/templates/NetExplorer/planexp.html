@@ -527,12 +527,19 @@
                             <option value="" disabled selected>Select condition</option>
                         </select>
                         <br><br>
+                        <!--
                         <h4>Select Threshold (<i class="units">normcounts</i>):</h4>
                         <input type="range" name="minExp" id="minExp" value="2.5" min="0.25" max="5" step="0.25" oninput="minExpOutput.value = minExp.value"/>
                         <div class="minExp-container">
                             <output name="minExpOutput" id="minExpOutput">2.5</output>
                         </div>
-                        <br>
+                        -->
+                        <input id="filter-network-inclusive" type="radio" name="fiter-network-andor" value="inclusive" checked>
+                        <label class="color-reference" for="filter-network-inclusive">Inclusive</label>
+                        <input id="filter-network-exclusive" type="radio" name="fiter-network-andor" value="exclusive">
+                        <label class="color-reference" for="filter-network-exclusive">Exclusive</label>
+                        <br><br>
+
                         <div class="text-center">
                             <div id="planexp-filter-network" class="btn btn-default">
                                 Filter Network
