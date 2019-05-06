@@ -684,13 +684,15 @@ var PlanExp = (function() {
     var getRegulatoryLinksTable = function(containerId, tocId, tableId) {
         var expName  = $("#select-experiment").val();
         var dataset  = $("#select-dataset").val();
-
+        var group = $("#links-group").val();
+        
         $.ajax({
             type: "GET",
             url: window.ROOT + "/regulatory_links",
             data: {
                 'experiment'    : expName,
                 'dataset'       : dataset,
+                'group'         : group,
                 'csrfmiddlewaretoken': csrftoken
             },
             success: function(data) {
@@ -1035,6 +1037,11 @@ var PlanExp = (function() {
         var blob = new Blob([data], {type: "text/plain;charset=utf-8"});
         saveAs(blob, "gene-ontology.csv"); 
     });
+
+
+    $("#links-group").on("change", function(){
+        getRegulatoryLinksTable('#planexp-links', '#planexp-links-toc', '#planexp-links-table-container');
+    })
 
     /**
      * Get Gene Expression Plot
