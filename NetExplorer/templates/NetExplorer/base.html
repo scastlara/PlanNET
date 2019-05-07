@@ -65,9 +65,7 @@
                                     <li><a href="/jbrowse/">Gene Browser</a></li>
                                     <li><a href="{% url 'blast' %}">Blast</a></li>
                                     <li><a href="{% url 'path_finder' %}">Pathway Finder</a></li>
-                                    {% if user.is_authenticated %}
                                     <li><a href="{% url 'planexp' %}">PlanExp</a></li>
-                                    {% endif %}
                                 </ul>
                             </li>
                             <li id="navbar-datasets"><a href="{% url 'datasets' %}">Datasets</a></li>

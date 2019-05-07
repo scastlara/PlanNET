@@ -79,9 +79,6 @@
 
 <div class="row row-app">
 
-    {% if not user.is_authenticated %}
-        <div class="col-sm-2"> </div>
-    {% endif %}
     <!-- BLAST -->
     <div class="col-sm-4">
         <div class="panel panel-blast app-container" >
@@ -118,7 +115,6 @@
         </div>
 
     <!-- PlanEXP -->
-    {% if user.is_authenticated %}
         <div class="col-sm-4">
             <div class="panel panel-planexp app-container" >
                 <div class="panel-body app-panel">
@@ -134,9 +130,6 @@
                 </div>
             </div>
         </div>
-    {% else %}
-        <div class="col-sm-2"> </div>
-    {% endif %}
 
 </div>
 
