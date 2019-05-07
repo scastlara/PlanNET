@@ -17,8 +17,7 @@ def downloader(request):
     identifiers = re.split(r"[\n\r,;]+", identifiers)
     identifiers = [ symbol.replace(" ", "") for symbol in identifiers ]
     identifiers = [ re.sub("[\'\"]", "", symbol) for symbol in identifiers ]
-    print(identifiers)
-    if len(identifiers) > MAX_IDS and not request.user.is_authenticated():
+    if len(identifiers) > MAX_IDS and not request.user.is_authenticated:
         identifiers = identifiers[0:MAX_IDS]
     database = request.POST['database']
     data = request.POST['data']
