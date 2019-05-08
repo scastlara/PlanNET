@@ -322,36 +322,38 @@ class ExpressionAbsolute(Model):
         for row in data:
             datadict[row[1]][row[0]] = row[2]
         
-        
         for condition in conditions:
             samples = SampleCondition.objects.filter(
                 experiment=experiment, 
                 condition=condition
             ).order_by('sample').values_list('sample', flat=True)
             for gene in genes:
+                gcounter = 0 # keeps track of the number of times this gene appears in this condition.
+                             # because Plotly is buggy, if there isn't at least TWO samples with an expression
+                             # value for this gene, no violin plot will be displayed (if plotting violins).
+                             # As such, if there is less than 2 samples per gene in this condition, we will need
+                             # to add them as zero...
                 if gene in datadict:
                     for sample in samples:
                         if sample in datadict[gene]:
+                            gcounter += 1
                             sample_expression[gene].append(datadict[gene][sample])
                             gene_conditions[gene].append(condition.name)
                         else:
-                            sample_expression[gene].append(0)
-                            gene_conditions[gene].append(condition.name)
+                            if not only_expressed:
+                                sample_expression[gene].append(0)
+                                gene_conditions[gene].append(condition.name)
                 else:
                     for sample in samples:
-                        sample_expression[gene].append(0)
-                        gene_conditions[gene].append(condition.name)
+                        if not only_expressed:
+                            sample_expression[gene].append(0)
+                            gene_conditions[gene].append(condition.name)
 
-                """
                 if only_expressed:
                     if gcounter < 2:
-                        missing = 2 - gcounter 
-                        for i in range(0, missing):
+                        for i in range(0, 2):
                             sample_expression[gene].append(0)
-                            if gene not in gene_conditions:
-                                gene_conditions[gene] = list()
                             gene_conditions[gene].append(condition.name)
-                """
 
         return sample_expression, gene_conditions
 

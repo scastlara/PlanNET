@@ -25,6 +25,7 @@ def plot_gene_expression(request):
         gene_names = gene_names.split(",")
         response = None
 
+
         # First disambiguate gene names
         gene_symbols = list()
         for gene_name in gene_names:
