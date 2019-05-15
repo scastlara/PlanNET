@@ -1490,6 +1490,11 @@ input[type="file"] {
     display: inline-block;
 }
 
+.tutorial-panel h4 {
+    font-size: 28px;
+    font-weight: bolder;
+}
+
 .affix {
     top: 100px;
 }
@@ -2667,4 +2672,13 @@ summary { display: list-item !important; }
 .go-legend {
     text-align: left;
     margin-top: 10px;
+}
+
+#tutorial-plot-controls-list{
+    list-style-type: none;
+    list-style: none;
+}
+
+#tutorial-plot-controls-list li {
+    margin-bottom: 5px;
 }

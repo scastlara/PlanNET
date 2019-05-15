@@ -448,19 +448,229 @@
                         </div>
                         <div class="panel-body">
                             <ol>
-                                <li class="tutorial-li"><a href="#planexp-form">..</a></li>
-                                <li class="tutorial-li"><a href="#planexp-results">..</a></li>
+                                <li class="tutorial-li"><a href="#planexp-form">Experiment selection</a></li>
+                                <li class="tutorial-li"><a href="#plot-controls">Plot controls</a></li>
+                                <li class="tutorial-li"><a href="#planexp-dge">Differential gene expression</a></li>
+                                <li class="tutorial-li"><a href="#planexp-gplot">Gene expression plot</a></li>
                             </ol>
                         </div>
                     </div>
                     <img class="tutorial-animation" src="{% static 'Images/tutorial/planexp-animation-1.gif' %}">
+  
+                    <br>
+                    <h4 id="planexp-form">Experiment Selection</h4>
+                    <img class="tutorial-subtitle-planexp" src="{% static 'Images/tutorial/underline-planexp.png' %}"/>
+                    <br>
+                    <img class="tutorial-img" src="{% static 'Images/tutorial/planexp-expselection.png'%}" />
                     <p>
-                        ...
+                        Use the first dropdown menu to select the RNA-seq experiment you want to explore. 
+                        Each experiment will be mapped over different datasets (transcriptomes or genome references): 
+                        use the second dropdown to select from the available ones for the selected experiment.
+                    </p>
+
+                    <img class="tutorial-img" src="{% static 'Images/tutorial/planexp-summary.png'%}" />
+                    <p>
+                        Once an experiment has been selected, a summary will appear on the application. 
+                        The conditions on the right side correspond to the different factors of the experiment, which could be 
+                        experimental factors (such as "Section" and "Time", as in the image), or technical ones (such as "Batch" or others).
+                        Click on the conditions names to see the "levels" of that "factor".
+                    </p>
+
+                    <img class="tutorial-img" src="{% static 'Images/tutorial/planexp-toc.png'%}" />
+                    <p>
+                        While selecting the Experiment and the Dataset, different sections will appear in the table of contents section on the right.
+                        Click on the desired section title to scroll automatically to the corresping section in the application.
+                    </p>
+
+                    <br>
+                    <h4 id="plot-controls">Plot Controls</h4>
+                    <img class="tutorial-subtitle-planexp" src="{% static 'Images/tutorial/underline-planexp.png' %}"/>
+                    <br>
+                    <img class="tutorial-img" src="{% static 'Images/tutorial/planexp-plot-controls.png'%}" />
+
+                    <p>
+                        All plots created by PlanExp are made with <a href="https://plot.ly/javascript/" target="_blank">Plotly.js</a>, 
+                        and they all share the controls shown on the image. Click on each button to performed the corresponding action.
+                    </p>
+
+                    <ul id="tutorial-plot-controls-list">
+                        <li><img src="{% static 'Images/tutorial/planexp-plot-img1.png'%}" /> Saves plot as a PNG image.</li>
+                        <li><img src="{% static 'Images/tutorial/planexp-plot-img2.png'%}" /> Edit data in chart studio (external website).</li>
+                        <li><img src="{% static 'Images/tutorial/planexp-plot-img3.png'%}" /> Zoom function (select area of graph to zoom-in).</li>
+                        <li><img src="{% static 'Images/tutorial/planexp-plot-img4.png'%}" /> Pan function (move through the graph area).</li>
+                        <li><img src="{% static 'Images/tutorial/planexp-plot-img5.png'%}" /> Box select.</li>
+                        <li><img src="{% static 'Images/tutorial/planexp-plot-img6.png'%}" /> Lasso select.</li>
+                        <li><img src="{% static 'Images/tutorial/planexp-plot-img7.png'%}" /> Zoom-in button.</li>
+                        <li><img src="{% static 'Images/tutorial/planexp-plot-img8.png'%}" /> Zoom-out button.</li>
+                        <li><img src="{% static 'Images/tutorial/planexp-plot-img9.png'%}" /> Autoscale.</li>
+                        <li><img src="{% static 'Images/tutorial/planexp-plot-img10.png'%}" /> Default zoom level.</li>
+                        <li><img src="{% static 'Images/tutorial/planexp-plot-img11.png'%}" /> Toggle Spike lines.</li>
+                        <li><img src="{% static 'Images/tutorial/planexp-plot-img12.png'%}" /> Show closest data on hover.</li>
+                        <li><img src="{% static 'Images/tutorial/planexp-plot-img13.png'%}" />Compare data on hover.</li>
+                        
+                    </ul>
+
+                    <br>
+                    <p>
+                        When a trace legend appears on the right, either containing gene/transcript symbols or conditions, 
+                        use the controls shown on the image below to controls which plot traces to show or hide.
+                    </p>
+                    <img class="tutorial-img" src="{% static 'Images/tutorial/planexp-plot-controls2.png'%}" />
+                    
+                    
+                    <br>
+                    <br>
+                    <h4 id="planexp-dge">Differential Gene Expression</h4>
+                    <img class="tutorial-subtitle-planexp" src="{% static 'Images/tutorial/underline-planexp.png' %}"/>
+                    <br>
+                    <img class="tutorial-img" src="{% static 'Images/tutorial/planexp-dge1.png'%}" />
+                    <p>
+                        The following section describes how to explore the differentially expressed genes across different conditions.
+                        On the first dropdown "Condition" select the desired condition for which you want to compare levels. 
+                        For example, in a time-course experiment consisting of one condition called "Time", select "Time" on the first dropdown.
+                        Doing so will populate the two following dropdown menus with the appropiate levels.
+                    </p>
+                    <p>
+                        In the case of the experiment "2013 Aboobaker Time-course", there are no comparisons between individual "Hour" levels, only the interaction 
+                        between the conditions "Hour" and "Section" was computed. As such, select "Hour - Section" on the dropdown menu, and then select the levels you want 
+                        to compare. 
+                    </p>
+                    <p>
+                        When choosing one level on one of the two "Select conditions to compare" dropdowns, only the levels for which there are pair-wise comparisons 
+                        available will be visible on the second dropdown menu. When both condition levels have been selected, a table and a volcano plot will appear below.
+                    </p>
+
+                     <img class="tutorial-img" src="{% static 'Images/tutorial/planexp-dge2.png'%}" />
+                    <p>
+                        This table will contain the differentially expressed genes between the two selected levels (in this case, "0h Head" vs "6h Head"). 
+                        The adjusted p-value cut-offs will be the ones described in the respective research article of the experiment.
+                    </p>
+                    <p>
+                        Keep in mind that the order of "Condition 1" and "Condition 2" will determine the meaning of the Log Fold Change direction.
+                        The Log Fold Change will be computed as log ( Condition 1 / Condition 2), thus, 
+                        positive fold changes will indicate over-expression in Condition 1 with respect to Condition 2, and negative fold changes under-expression.
+                    </p>
+
+                    <p>
+                        Click on the names of transcripts, planarian genes or Human proteins to get a gene card with thorough information about its annotations, see <a href="#genesearch-card">information card</a>. 
+                        Download the table by clicking on the <span class="tutorial-btn">CSV</span> button.
+                    </p>
+
+                    <img class="tutorial-img" src="{% static 'Images/tutorial/planexp-dge3.png'%}" />
+                    
+                    <p>
+                        This volcano plot shows each differentially expressed gene in relation to its Fold change (x-axis) and its P-Value (y-axis). 
+                        The higher the y-axis, the more significant the gene is in the comparison. 
+                        Hover on the points of the plot to see the specific gene/transcript name and its values.
+                        The plot controls are located on the top right of the visualization, see <a href="#plot-controls">plot controls</a>. 
+                    </p>
+
+                    <img class="tutorial-img" src="{% static 'Images/tutorial/planexp-goea.png'%}" />
+
+                    <p>
+                        Select a particular level from the previously selected comparison and click on the Run Analysis button 
+                        to perform a Gene Ontology Enrichment Analysis. Download the results using the <span class="tutorial-btn">Download CSV</span> button, 
+                        or download the images in each of the three available tabs (Biological Process, Molecular Function, and Cellular Component). 
+                        The nodes in the networks, which represent the Gene Ontology Terms, are colored depending on their significance in the performed Fisher test.
+
+                    </p>
+
+                    <br>
+                    <h4 id="planexp-gplot">Gene Expression Plot</h4>
+                    <img class="tutorial-subtitle-planexp" src="{% static 'Images/tutorial/underline-planexp.png' %}"/>
+                    <br>
+
+                    <p>
+                        The Gene Expression Plot section will allow us to plot the gene expression of one, or several, genes 
+                        across the different conditions of the selected experiment. For this tutorial, we will use the experiment "2018 Rajewsky Cell Atlas". 
+                        Check how to interact with these plots in the <a href="#plot-controls">Plot Controls section</a>.
+                    </p>
+
+                    <img class="tutorial-img" src="{% static 'Images/tutorial/planexp-gplot1.png'%}" />
+
+                    <p>
+                        Write the genes you want to plot in the text input field. You can use planarian contig identifiers for the selected Dataset, 
+                        planarian genes (SMESG...), human gene symbols from the <a href="https://www.genenames.org/" target="_blank">HGNC database</a>, PFAM domains (PF...), or Gene Ontology codes (GO:...). 
+                    </p>
+                    <p>
+                        Select the Condition you want to visualize the expression values for, and each level of that condition 
+                        will be positioned in the x-axis of the visualizations.
                     </p>
                     <br>
-                    <h4 id="planexp-form">Search Form</h4>
+
+                    <h3>1. Heatmap</h4>
+                    <img class="tutorial-img" src="{% static 'Images/tutorial/planexp-gplot2.png'%}" />
+
+                    <p>
+                        The Heatmap visualization will display the mean expression of each gene (row) in each condition (column) as a color gradient (right legend). 
+                        Hover over the heatmap cells to see the expression values, and click on the transcript names to get a gene card and check their annotations.
+                    </p>
+
+                    <p>
+                        Keep in mind that, if plotting many genes at the same time (> 30), not all row names will be displayed, 
+                        and you will have to use the Zoom-in function to explore the graph efectively, see <a href="#plot-controls">plot controls</a>. 
+                    </p>
+                    
+                    <img class="tutorial-img" src="{% static 'Images/tutorial/planexp-gplot8.png'%}" />
+                    <p>
+                        In the case of Single-Cell experiments, the Condition option "Samples" will appear in the Condition dropdown menu. 
+                        When selecting it and plotting it, a heatmap where each column corresponds to a single cell will be shown. This visualization 
+                        is useful for identifying genes that are co-expressed in specific cells, and for comparing their expression levels. Contrary to the 
+                        section <a href="#planexp-coexpression">Gene Co-expression</a>, this heatmap visualization allows for users to check more than two genes at the same time.
+                    </p>
+
+                    
+                    <br>
+                    <h3>2. Violin/Bar plot</h4>
+                    <img class="tutorial-img" src="{% static 'Images/tutorial/planexp-gplot3.png'%}" />
+
+                    <p>
+                        The violin plot visualization allows users to see the distribution of expression values (y-axis) in each given condition (x-axis). 
+                        It is equivalent to a flipped density plot. Because Single-Cell experiments tend to have many cells with zero expression for many genes, 
+                        when exploring a single-cell experiment the option "Show only expressing cells" will appear. This option will remove cells that don't express 
+                        the given genes, allowing the comparison of expression values in only those cells that are already expressing the genes.
+                    </p>
+                    <img class="tutorial-img" src="{% static 'Images/tutorial/planexp-gplot4.png'%}" />
+                    <p>
+                        When hovering on the violins, several statistics will be displayed: the 3rd quartile, the median and the minimum value.
+                    </p>
+
+                    <img class="tutorial-img" src="{% static 'Images/tutorial/planexp-gplot5.png'%}" />
+                    <p>
+                        In the case of experiments with only one sample per condition level (that is, without replicates) instead of a violin plot 
+                        a bar plot will be displayed. The above bar plot was created by performing the same search in the "2015 Abril DGE" experiment 
+                        on the Dataset "Adamidi".
+                    <p>
+
+                    <br>
+                    <h3>3. Line Chart</h4>
+                    <img class="tutorial-img" src="{% static 'Images/tutorial/planexp-gplot6.png'%}" />
+
+                    <p>
+                        When visualizing conditions that can be ordered (as is the case of the condition "Regenerating Day" of "2018 Rajewsky Cell Atlas"), 
+                        it is useful to use the plot type "Line Chart".
+                    </p>
+
+                    <img class="tutorial-img" src="{% static 'Images/tutorial/planexp-gplot7.png'%}" />
+                    <p>
+                        When selecting an interaction Condition that includes an ordered condition (like time), and plotting a Line Chart, 
+                        several line charts will be created for each level of the interaction. In the image above, where the condition 
+                        "Day - Cluster" was selected, a line chart for each Cluster will be shown.  
+                    </p>
+
+
+                    <br>
+                    <h4 id="planexp-coexpression">Gene Co-expression</h4>
                     <img class="tutorial-subtitle-planexp" src="{% static 'Images/tutorial/underline-planexp.png' %}"/>
-                    <p>...</p>
+                    <img class="tutorial-img" src="{% static 'Images/tutorial/planexp-coexpression.png'%}" />
+                    <br>
+
+                    <p>
+                        The section Gene Co-expression will allow you to plot the expression of two genes in each sample of a Single-Cell Experiment 
+                        and color it by a particular condition. Use the plot trace legend on the right to hide or show the desired conditions, see <a href="#plot-controls">plot controls</a>. 
+                    </p>
+
+
                 </div>
             </div>
 
