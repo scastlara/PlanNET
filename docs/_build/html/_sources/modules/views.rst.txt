@@ -1,6 +1,0 @@
-Views
-======
-
-.. automodule:: NetExplorer.views
-   :members:
-   :undoc-members:
