@@ -1,0 +1,1242 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Neo4j Models &mdash; PlanNET 1.3 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Mysql Models" href="mysql_models.html" />
+    <link rel="prev" title="Indices and tables" href="../../index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> PlanNET
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Models:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Neo4j Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mysql_models.html">Mysql Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="downloaders.html">Downloaders</a></li>
+<li class="toctree-l1"><a class="reference internal" href="colors.html">Colors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plots.html">Plots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gene_ontology.html">Gene Ontology</a></li>
+<li class="toctree-l1"><a class="reference internal" href="neo4j_queries.html">Neo4j Queries</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Page views:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../views/index_view.html">Index_view</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/datasets.html">Datasets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/downloads.html">Downloads</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/about.html">About</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/account_view.html">Account_view</a></li>
+</ul>
+<p class="caption"><span class="caption-text">App views:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../views/gene_search.html">Gene_search</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/net_explorer.html">Net_explorer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/blast.html">Blast</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/path_finder.html">Path_finder</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/planexp.html">Planexp</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Other views:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../views/common.html">Common</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/get_card.html">Get_card</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/autocomplete.html">Autocomplete</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/cluster_markers.html">Cluster_markers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/downloader.html">Downloader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/error_handler.html">Error_handler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/experiment_conditions.html">Experiment_conditions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/experiment_condition_types.html">Experiment_condition_types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/experiment_dataset.html">Experiment_dataset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/experiment_dge_table.html">Experiment_dge_table</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/experiment_summary.html">Experiment_summary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/filter_network.html">Filter_network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/get_dataset_regexes.html">Get_dataset_regexes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/get_fasta.html">Get_fasta</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/get_goea.html">Get_goea</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/logout_view.html">Logout_view</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/map_expression_one.html">Map_expression_one</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/map_expression.html">Map_expression</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/map_expression_two.html">Map_expression_two</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/plot_gene_coexpression.html">Plot_gene_coexpression</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/plot_gene_expression.html">Plot_gene_expression</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/plot_tsne.html">Plot_tsne</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/register.html">Register</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/regulatory_links.html">Regulatory_links</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/show_connections.html">Show_connections</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">PlanNET</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+      <li>Neo4j Models</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/modules/models/neo4j_models.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="neo4j-models">
+<h1>Neo4j Models<a class="headerlink" href="#neo4j-models" title="Permalink to this headline">¶</a></h1>
+<span class="target" id="module-NetExplorer.models.neo4j_models"></span><dl class="class">
+<dt id="NetExplorer.models.neo4j_models.Document">
+<em class="property">class </em><code class="descclassname">NetExplorer.models.neo4j_models.</code><code class="descname">Document</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#NetExplorer.models.neo4j_models.Document" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class for Documents uploaded to the server.</p>
+<dl class="exception">
+<dt id="NetExplorer.models.neo4j_models.Document.DoesNotExist">
+<em class="property">exception </em><code class="descname">DoesNotExist</code><a class="headerlink" href="#NetExplorer.models.neo4j_models.Document.DoesNotExist" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="exception">
+<dt id="NetExplorer.models.neo4j_models.Document.MultipleObjectsReturned">
+<em class="property">exception </em><code class="descname">MultipleObjectsReturned</code><a class="headerlink" href="#NetExplorer.models.neo4j_models.Document.MultipleObjectsReturned" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="NetExplorer.models.neo4j_models.Document.docfile">
+<code class="descname">docfile</code><a class="headerlink" href="#NetExplorer.models.neo4j_models.Document.docfile" title="Permalink to this definition">¶</a></dt>
+<dd><p>The descriptor for the file attribute on the model instance. Return a
+FieldFile when accessed so you can write code like:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">myapp.models</span> <span class="k">import</span> <span class="n">MyModel</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">instance</span> <span class="o">=</span> <span class="n">MyModel</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">pk</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">instance</span><span class="o">.</span><span class="n">file</span><span class="o">.</span><span class="n">size</span>
+</pre></div>
+</div>
+<p>Assign a file object on assignment so you can do:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;/path/to/hello.world&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="n">instance</span><span class="o">.</span><span class="n">file</span> <span class="o">=</span> <span class="n">File</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="NetExplorer.models.neo4j_models.Document.id">
+<code class="descname">id</code><a class="headerlink" href="#NetExplorer.models.neo4j_models.Document.id" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="NetExplorer.models.neo4j_models.Document.objects">
+<code class="descname">objects</code><em class="property"> = &lt;django.db.models.manager.Manager object&gt;</em><a class="headerlink" href="#NetExplorer.models.neo4j_models.Document.objects" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="NetExplorer.models.neo4j_models.Domain">
+<em class="property">class </em><code class="descclassname">NetExplorer.models.neo4j_models.</code><code class="descname">Domain</code><span class="sig-paren">(</span><em>accession</em>, <em>description=None</em>, <em>identifier=None</em>, <em>mlength=None</em><span class="sig-paren">)</span><a class="headerlink" href="#NetExplorer.models.neo4j_models.Domain" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class for PFAM domains.</p>
+<dl class="attribute">
+<dt id="NetExplorer.models.neo4j_models.Domain.accession">
+<code class="descname">accession</code><a class="headerlink" href="#NetExplorer.models.neo4j_models.Domain.accession" title="Permalink to this definition">¶</a></dt>
+<dd><p>String with accession for pfam domain (PFXXXXX).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="NetExplorer.models.neo4j_models.Domain.description">
+<code class="descname">description</code><a class="headerlink" href="#NetExplorer.models.neo4j_models.Domain.description" title="Permalink to this definition">¶</a></dt>
+<dd><p>String with description for pfam domain.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="NetExplorer.models.neo4j_models.Domain.identifier">
+<code class="descname">identifier</code><a class="headerlink" href="#NetExplorer.models.neo4j_models.Domain.identifier" title="Permalink to this definition">¶</a></dt>
+<dd><p>String with identifier for pfam domain.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="NetExplorer.models.neo4j_models.Domain.mlength">
+<code class="descname">mlength</code><a class="headerlink" href="#NetExplorer.models.neo4j_models.Domain.mlength" title="Permalink to this definition">¶</a></dt>
+<dd><p>Integer with domain length.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="NetExplorer.models.neo4j_models.Domain.pfam_regexp">
+<code class="descname">pfam_regexp</code><a class="headerlink" href="#NetExplorer.models.neo4j_models.Domain.pfam_regexp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class attribute. Regex for PFAM domain accessions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="NetExplorer.models.neo4j_models.Domain.get_planarian_contigs">
+<code class="descname">get_planarian_contigs</code><span class="sig-paren">(</span><em>database</em><span class="sig-paren">)</span><a class="headerlink" href="#NetExplorer.models.neo4j_models.Domain.get_planarian_contigs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of PlanarianContigs of ‘database’.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>database</strong> – str, database from which to retrieve the planarian contigs.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>PlanarianContigs with this domain</dt><dd><p>annotated.</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><cite>list</cite> of <cite>PlanarianContigs</cite></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>NodeNotFound</strong> – raised if there are no planarian contigs with this Domain.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="NetExplorer.models.neo4j_models.Domain.is_symbol_valid">
+<em class="property">classmethod </em><code class="descname">is_symbol_valid</code><span class="sig-paren">(</span><em>symbol</em><span class="sig-paren">)</span><a class="headerlink" href="#NetExplorer.models.neo4j_models.Domain.is_symbol_valid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Classmethod for checking if accession is a valid PFAM accession.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>symbol</strong> (<em>str</em>) – Symbol to check if it’s a valid PFAM accession.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><cite>True</cite> if is valid, <cite>False</cite> otherwise.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">pfam_regexp</code><em class="property"> = 'PF\\d{5}'</em></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="NetExplorer.models.neo4j_models.ExperimentList">
+<em class="property">class </em><code class="descclassname">NetExplorer.models.neo4j_models.</code><code class="descname">ExperimentList</code><span class="sig-paren">(</span><em>user</em><span class="sig-paren">)</span><a class="headerlink" href="#NetExplorer.models.neo4j_models.ExperimentList" title="Permalink to this definition">¶</a></dt>
+<dd><p>Maps a list of experiment objects with all its available samples in the DB</p>
+<dl class="method">
+<dt id="NetExplorer.models.neo4j_models.ExperimentList.get_datasets">
+<code class="descname">get_datasets</code><span class="sig-paren">(</span><em>experiment</em><span class="sig-paren">)</span><a class="headerlink" href="#NetExplorer.models.neo4j_models.ExperimentList.get_datasets" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a set for the given experiment</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="NetExplorer.models.neo4j_models.ExperimentList.get_samples">
+<code class="descname">get_samples</code><span class="sig-paren">(</span><em>experiment</em><span class="sig-paren">)</span><a class="headerlink" href="#NetExplorer.models.neo4j_models.ExperimentList.get_samples" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a set for the given experiment</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="NetExplorer.models.neo4j_models.GeneOntology">
+<em class="property">class </em><code class="descclassname">NetExplorer.models.neo4j_models.</code><code class="descname">GeneOntology</code><span class="sig-paren">(</span><em>accession</em>, <em>domain=None</em>, <em>name=None</em>, <em>human=False</em>, <em>query=True</em><span class="sig-paren">)</span><a class="headerlink" href="#NetExplorer.models.neo4j_models.GeneOntology" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class for GeneOntology nodes</p>
+<dl class="method">
+<dt id="NetExplorer.models.neo4j_models.GeneOntology.get_human_genes">
+<code class="descname">get_human_genes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#NetExplorer.models.neo4j_models.GeneOntology.get_human_genes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets Human nodes symbols with annotated GO</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="NetExplorer.models.neo4j_models.GeneOntology.get_planarian_contigs">
+<code class="descname">get_planarian_contigs</code><span class="sig-paren">(</span><em>database</em><span class="sig-paren">)</span><a class="headerlink" href="#NetExplorer.models.neo4j_models.GeneOntology.get_planarian_contigs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets planarian contigs whose homolog has the GO annotated. (GO)&lt;-(Human)&lt;-(Contig)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>database</strong> – str, database string from which to retrieve the PlanarianContigs.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>List of PlanarianContig objects.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="NetExplorer.models.neo4j_models.GeneOntology.go_regexp">
+<code class="descname">go_regexp</code><em class="property"> = 'GO:\\d{7}'</em><a class="headerlink" href="#NetExplorer.models.neo4j_models.GeneOntology.go_regexp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="NetExplorer.models.neo4j_models.GeneOntology.is_symbol_valid">
+<em class="property">classmethod </em><code class="descname">is_symbol_valid</code><span class="sig-paren">(</span><em>symbol</em><span class="sig-paren">)</span><a class="headerlink" href="#NetExplorer.models.neo4j_models.GeneOntology.is_symbol_valid" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="NetExplorer.models.neo4j_models.GeneSearch">
+<em class="property">class </em><code class="descclassname">NetExplorer.models.neo4j_models.</code><code class="descname">GeneSearch</code><span class="sig-paren">(</span><em>sterm</em>, <em>database</em><span class="sig-paren">)</span><a class="headerlink" href="#NetExplorer.models.neo4j_models.GeneSearch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class for node/gene searches</p>
+<dl class="attribute">
+<dt id="NetExplorer.models.neo4j_models.GeneSearch.sterm">
+<code class="descname">sterm</code><a class="headerlink" href="#NetExplorer.models.neo4j_models.GeneSearch.sterm" title="Permalink to this definition">¶</a></dt>
+<dd><p>string, term to search.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="NetExplorer.models.neo4j_models.GeneSearch.database">
+<code class="descname">database</code><a class="headerlink" href="#NetExplorer.models.neo4j_models.GeneSearch.database" title="Permalink to this definition">¶</a></dt>
+<dd><p>string, database to search for sterm.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="NetExplorer.models.neo4j_models.GeneSearch.sterm_database">
+<code class="descname">sterm_database</code><a class="headerlink" href="#NetExplorer.models.neo4j_models.GeneSearch.sterm_database" title="Permalink to this definition">¶</a></dt>
+<dd><p>string, database to which sterm belongs to.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="NetExplorer.models.neo4j_models.GeneSearch.get_human_genes">
+<code class="descname">get_human_genes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#NetExplorer.models.neo4j_models.GeneSearch.get_human_genes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns HumanNode objects indepdendently of the search term used.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="NetExplorer.models.neo4j_models.GeneSearch.get_planarian_contigs">
+<code class="descname">get_planarian_contigs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#NetExplorer.models.neo4j_models.GeneSearch.get_planarian_contigs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns PlanarianContig objects independently of the search term used.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="NetExplorer.models.neo4j_models.GeneSearch.get_planarian_genes">
+<code class="descname">get_planarian_genes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#NetExplorer.models.neo4j_models.GeneSearch.get_planarian_genes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns PlanarianGene object from search term.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="NetExplorer.models.neo4j_models.GeneSearch.infer_symbol_database">
+<code class="descname">infer_symbol_database</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#NetExplorer.models.neo4j_models.GeneSearch.infer_symbol_database" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compares the symbol in self.sterm to the valid
+patterns for each NodeType.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="NetExplorer.models.neo4j_models.GeneSearch.quick_search">
+<code class="descname">quick_search</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#NetExplorer.models.neo4j_models.GeneSearch.quick_search" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Retrieves given symbol in all databases:</dt><dd><p>Human + PlanarianGene + PlanarianContigs</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="NetExplorer.models.neo4j_models.GraphCytoscape">
+<em class="property">class </em><code class="descclassname">NetExplorer.models.neo4j_models.</code><code class="descname">GraphCytoscape</code><a class="headerlink" href="#NetExplorer.models.neo4j_models.GraphCytoscape" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class for a graph object</p>
+<dl class="method">
+<dt id="NetExplorer.models.neo4j_models.GraphCytoscape.add_elements">
+<code class="descname">add_elements</code><span class="sig-paren">(</span><em>elements</em><span class="sig-paren">)</span><a class="headerlink" href="#NetExplorer.models.neo4j_models.GraphCytoscape.add_elements" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method that takes a list of node or PredInteraction objects and adds them
+to the graph.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="NetExplorer.models.neo4j_models.GraphCytoscape.add_interaction">
+<code class="descname">add_interaction</code><span class="sig-paren">(</span><em>interaction</em><span class="sig-paren">)</span><a class="headerlink" href="#NetExplorer.models.neo4j_models.GraphCytoscape.add_interaction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds a single interaction to the graph</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="NetExplorer.models.neo4j_models.GraphCytoscape.add_node">
+<code class="descname">add_node</code><span class="sig-paren">(</span><em>node</em><span class="sig-paren">)</span><a class="headerlink" href="#NetExplorer.models.neo4j_models.GraphCytoscape.add_node" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds a single node to the graph</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="NetExplorer.models.neo4j_models.GraphCytoscape.define_important">
+<code class="descname">define_important</code><span class="sig-paren">(</span><em>vip_nodes</em><span class="sig-paren">)</span><a class="headerlink" href="#NetExplorer.models.neo4j_models.GraphCytoscape.define_important" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets a list/set of nodes and defines them as important</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="NetExplorer.models.neo4j_models.GraphCytoscape.filter">
+<code class="descname">filter</code><span class="sig-paren">(</span><em>including</em><span class="sig-paren">)</span><a class="headerlink" href="#NetExplorer.models.neo4j_models.GraphCytoscape.filter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Filters nodes and edges from the graph</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="NetExplorer.models.neo4j_models.GraphCytoscape.get_connections">
+<code class="descname">get_connections</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#NetExplorer.models.neo4j_models.GraphCytoscape.get_connections" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function that looks for the edges between the nodes in the graph</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="NetExplorer.models.neo4j_models.GraphCytoscape.get_expression">
+<code class="descname">get_expression</code><span class="sig-paren">(</span><em>experiment</em>, <em>samples</em><span class="sig-paren">)</span><a class="headerlink" href="#NetExplorer.models.neo4j_models.GraphCytoscape.get_expression" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the expression for all the node objects in the graph.
+Returns a dictionary: expression_data[node.symbol][sample]</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="NetExplorer.models.neo4j_models.GraphCytoscape.get_genes_bulk">
+<em class="property">classmethod </em><code class="descname">get_genes_bulk</code><span class="sig-paren">(</span><em>symbols</em>, <em>database</em><span class="sig-paren">)</span><a class="headerlink" href="#NetExplorer.models.neo4j_models.GraphCytoscape.get_genes_bulk" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a dictionary of planarian genes to the specified
+list of planarian contig symbols from database.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="NetExplorer.models.neo4j_models.GraphCytoscape.get_homologs_bulk">
+<em class="property">classmethod </em><code class="descname">get_homologs_bulk</code><span class="sig-paren">(</span><em>symbols</em>, <em>database</em><span class="sig-paren">)</span><a class="headerlink" href="#NetExplorer.models.neo4j_models.GraphCytoscape.get_homologs_bulk" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a dictionary of homologous genes to the specified
+list of planarian contig symbols from database.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="NetExplorer.models.neo4j_models.GraphCytoscape.is_empty">
+<code class="descname">is_empty</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#NetExplorer.models.neo4j_models.GraphCytoscape.is_empty" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if the graph is empty or not.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="NetExplorer.models.neo4j_models.GraphCytoscape.new_nodes">
+<code class="descname">new_nodes</code><span class="sig-paren">(</span><em>symbols</em>, <em>database</em><span class="sig-paren">)</span><a class="headerlink" href="#NetExplorer.models.neo4j_models.GraphCytoscape.new_nodes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes a list of symbols and returns the necessary GraphCytoscape with Human or PlanarianContig objects</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>symbols</strong> – List of strings with gene/contig/pfam/go/kegg symbols.</p></li>
+<li><p><strong>database</strong> – String with database.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="NetExplorer.models.neo4j_models.GraphCytoscape.to_json">
+<code class="descname">to_json</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#NetExplorer.models.neo4j_models.GraphCytoscape.to_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts the graph to a json string to add it to cytoscape.js</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="NetExplorer.models.neo4j_models.HasDomain">
+<em class="property">class </em><code class="descclassname">NetExplorer.models.neo4j_models.</code><code class="descname">HasDomain</code><span class="sig-paren">(</span><em>domain</em>, <em>node</em>, <em>p_start</em>, <em>p_end</em>, <em>s_start</em>, <em>s_end</em>, <em>perc</em><span class="sig-paren">)</span><a class="headerlink" href="#NetExplorer.models.neo4j_models.HasDomain" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class for relationships between a node and a Pfam domain annotated on the sequence.</p>
+<dl class="attribute">
+<dt id="NetExplorer.models.neo4j_models.HasDomain.domain">
+<code class="descname">domain</code><a class="headerlink" href="#NetExplorer.models.neo4j_models.HasDomain.domain" title="Permalink to this definition">¶</a></dt>
+<dd><p>Domain object.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="NetExplorer.models.neo4j_models.HasDomain.node">
+<code class="descname">node</code><a class="headerlink" href="#NetExplorer.models.neo4j_models.HasDomain.node" title="Permalink to this definition">¶</a></dt>
+<dd><p>Node object.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="NetExplorer.models.neo4j_models.HasDomain.p_start">
+<code class="descname">p_start</code><a class="headerlink" href="#NetExplorer.models.neo4j_models.HasDomain.p_start" title="Permalink to this definition">¶</a></dt>
+<dd><p>integer describing the start coordinate (1-indexed) on the PFAM domain.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="NetExplorer.models.neo4j_models.HasDomain.p_end">
+<code class="descname">p_end</code><a class="headerlink" href="#NetExplorer.models.neo4j_models.HasDomain.p_end" title="Permalink to this definition">¶</a></dt>
+<dd><p>integer describing the end coordinate (1-indexed) on the PFAM domain.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="NetExplorer.models.neo4j_models.HasDomain.s_start">
+<code class="descname">s_start</code><a class="headerlink" href="#NetExplorer.models.neo4j_models.HasDomain.s_start" title="Permalink to this definition">¶</a></dt>
+<dd><p>integer describing the start coordinate (1-indexed) on the sequence.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="NetExplorer.models.neo4j_models.HasDomain.s_end">
+<code class="descname">s_end</code><a class="headerlink" href="#NetExplorer.models.neo4j_models.HasDomain.s_end" title="Permalink to this definition">¶</a></dt>
+<dd><p>integer describing the end coordinate (1-indexed) on the sequence.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="NetExplorer.models.neo4j_models.HasDomain.perc">
+<code class="descname">perc</code><a class="headerlink" href="#NetExplorer.models.neo4j_models.HasDomain.perc" title="Permalink to this definition">¶</a></dt>
+<dd><p>float with % of domain in sequence.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="NetExplorer.models.neo4j_models.HasDomain.to_jsondict">
+<code class="descname">to_jsondict</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#NetExplorer.models.neo4j_models.HasDomain.to_jsondict" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="NetExplorer.models.neo4j_models.Homology">
+<em class="property">class </em><code class="descclassname">NetExplorer.models.neo4j_models.</code><code class="descname">Homology</code><span class="sig-paren">(</span><em>human</em>, <em>blast_cov=None</em>, <em>blast_eval=None</em>, <em>nog_brh=None</em>, <em>pfam_sc=None</em>, <em>nog_eval=None</em>, <em>blast_brh=None</em>, <em>pfam_brh=None</em>, <em>prednode=None</em><span class="sig-paren">)</span><a class="headerlink" href="#NetExplorer.models.neo4j_models.Homology" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class for homology relationships between a PlanarianContig and a HumanNode.</p>
+<dl class="attribute">
+<dt id="NetExplorer.models.neo4j_models.Homology.prednode">
+<code class="descname">prednode</code><a class="headerlink" href="#NetExplorer.models.neo4j_models.Homology.prednode" title="Permalink to this definition">¶</a></dt>
+<dd><p>PlanarianContig object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>PlanatianContig</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="NetExplorer.models.neo4j_models.Homology.human">
+<code class="descname">human</code><a class="headerlink" href="#NetExplorer.models.neo4j_models.Homology.human" title="Permalink to this definition">¶</a></dt>
+<dd><p>Human object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>Human</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="NetExplorer.models.neo4j_models.Homology.blast_cov">
+<code class="descname">blast_cov</code><a class="headerlink" href="#NetExplorer.models.neo4j_models.Homology.blast_cov" title="Permalink to this definition">¶</a></dt>
+<dd><p>Float with BLAST coverage value in %.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="NetExplorer.models.neo4j_models.Homology.blast_eval">
+<code class="descname">blast_eval</code><a class="headerlink" href="#NetExplorer.models.neo4j_models.Homology.blast_eval" title="Permalink to this definition">¶</a></dt>
+<dd><p>Float with BLAST e-value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="NetExplorer.models.neo4j_models.Homology.nog_brh">
+<code class="descname">nog_brh</code><a class="headerlink" href="#NetExplorer.models.neo4j_models.Homology.nog_brh" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bool flag indicating if homology is best reciprocal
+hit in EggNOG alignment.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="NetExplorer.models.neo4j_models.Homology.nog_eval">
+<code class="descname">nog_eval</code><a class="headerlink" href="#NetExplorer.models.neo4j_models.Homology.nog_eval" title="Permalink to this definition">¶</a></dt>
+<dd><p>Float with EggNOG alignment e-value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="NetExplorer.models.neo4j_models.Homology.pfam_sc">
+<code class="descname">pfam_sc</code><a class="headerlink" href="#NetExplorer.models.neo4j_models.Homology.pfam_sc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Float with pfam meta-alignment score.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="NetExplorer.models.neo4j_models.Homology.pfam_brh">
+<code class="descname">pfam_brh</code><a class="headerlink" href="#NetExplorer.models.neo4j_models.Homology.pfam_brh" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bool flag indicating if homology is best reciprocal
+hit in pfam alignment.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="NetExplorer.models.neo4j_models.HumanNode">
+<em class="property">class </em><code class="descclassname">NetExplorer.models.neo4j_models.</code><code class="descname">HumanNode</code><span class="sig-paren">(</span><em>symbol</em>, <em>database</em>, <em>query=True</em><span class="sig-paren">)</span><a class="headerlink" href="#NetExplorer.models.neo4j_models.HumanNode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Human node class definition. Inherits from ‘Node’.</p>
+<dl class="attribute">
+<dt id="NetExplorer.models.neo4j_models.HumanNode.summary">
+<code class="descname">summary</code><a class="headerlink" href="#NetExplorer.models.neo4j_models.HumanNode.summary" title="Permalink to this definition">¶</a></dt>
+<dd><p>String with gene summary.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="NetExplorer.models.neo4j_models.HumanNode.summary_source">
+<code class="descname">summary_source</code><a class="headerlink" href="#NetExplorer.models.neo4j_models.HumanNode.summary_source" title="Permalink to this definition">¶</a></dt>
+<dd><p>String with the source of the summary.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="NetExplorer.models.neo4j_models.HumanNode.allowed_databases">
+<code class="descname">allowed_databases</code><em class="property"> = {'Human'}</em><a class="headerlink" href="#NetExplorer.models.neo4j_models.HumanNode.allowed_databases" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="NetExplorer.models.neo4j_models.HumanNode.get_homologs">
+<code class="descname">get_homologs</code><span class="sig-paren">(</span><em>database='ALL'</em><span class="sig-paren">)</span><a class="headerlink" href="#NetExplorer.models.neo4j_models.HumanNode.get_homologs" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Gets all homologs of the specified database. Returns a dictionary of the form:</dt><dd><p>dict[‘database’] = [ Homology() ]</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>key=’database’, value=List of Homology objects.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>dictionary</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="NetExplorer.models.neo4j_models.HumanNode.get_neighbours">
+<code class="descname">get_neighbours</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#NetExplorer.models.neo4j_models.HumanNode.get_neighbours" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="NetExplorer.models.neo4j_models.HumanNode.get_planarian_contigs">
+<code class="descname">get_planarian_contigs</code><span class="sig-paren">(</span><em>database</em><span class="sig-paren">)</span><a class="headerlink" href="#NetExplorer.models.neo4j_models.HumanNode.get_planarian_contigs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets all PlanarianContigs homologous to HumanNode.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>database</strong> – str, Database from which to retrieve planarian contigs.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>PlanarianContigs objects.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="NetExplorer.models.neo4j_models.HumanNode.get_planarian_genes">
+<code class="descname">get_planarian_genes</code><span class="sig-paren">(</span><em>database</em><span class="sig-paren">)</span><a class="headerlink" href="#NetExplorer.models.neo4j_models.HumanNode.get_planarian_genes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets planarian gene objects (PlanarianGene) connected to HumanNode
+through contigs of dataset ‘database’, e.g.: (Human)-&gt;(Dresden)-&gt;(Smesgene)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>database</strong> – string, database of contigs to get PlanarianGene</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="NetExplorer.models.neo4j_models.HumanNode.get_summary">
+<code class="descname">get_summary</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#NetExplorer.models.neo4j_models.HumanNode.get_summary" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves gene summary when available</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="NetExplorer.models.neo4j_models.HumanNode.to_jsondict">
+<code class="descname">to_jsondict</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#NetExplorer.models.neo4j_models.HumanNode.to_jsondict" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="NetExplorer.models.neo4j_models.KeggPathway">
+<em class="property">class </em><code class="descclassname">NetExplorer.models.neo4j_models.</code><code class="descname">KeggPathway</code><span class="sig-paren">(</span><em>symbol</em>, <em>database</em><span class="sig-paren">)</span><a class="headerlink" href="#NetExplorer.models.neo4j_models.KeggPathway" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class for KeggPathways</p>
+<dl class="method">
+<dt id="NetExplorer.models.neo4j_models.KeggPathway.connect_to_kegg">
+<code class="descname">connect_to_kegg</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#NetExplorer.models.neo4j_models.KeggPathway.connect_to_kegg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Connects to KEGG and extracts the elements of the pathway</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="NetExplorer.models.neo4j_models.KeggPathway.is_empty">
+<code class="descname">is_empty</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#NetExplorer.models.neo4j_models.KeggPathway.is_empty" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if the KeggPathway is empty</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="NetExplorer.models.neo4j_models.Node">
+<em class="property">class </em><code class="descclassname">NetExplorer.models.neo4j_models.</code><code class="descname">Node</code><span class="sig-paren">(</span><em>symbol</em>, <em>database</em><span class="sig-paren">)</span><a class="headerlink" href="#NetExplorer.models.neo4j_models.Node" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base class for all the nodes in the database.</p>
+<dl class="attribute">
+<dt id="NetExplorer.models.neo4j_models.Node.symbol">
+<code class="descname">symbol</code><a class="headerlink" href="#NetExplorer.models.neo4j_models.Node.symbol" title="Permalink to this definition">¶</a></dt>
+<dd><p>String containing the symbol attribute in Neo4j of a given node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="NetExplorer.models.neo4j_models.Node.database">
+<code class="descname">database</code><a class="headerlink" href="#NetExplorer.models.neo4j_models.Node.database" title="Permalink to this definition">¶</a></dt>
+<dd><p>The Label for the symbol in Neo4j.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="NetExplorer.models.neo4j_models.Node.neighbours">
+<code class="descname">neighbours</code><a class="headerlink" href="#NetExplorer.models.neo4j_models.Node.neighbours" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of Interaction objects
+connecting nodes adjacent to the Node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><cite>list</cite> of <cite>Interaction</cite></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="NetExplorer.models.neo4j_models.Node.domains">
+<code class="descname">domains</code><a class="headerlink" href="#NetExplorer.models.neo4j_models.Node.domains" title="Permalink to this definition">¶</a></dt>
+<dd><p>HasDomain objects describing domains
+in the sequence/node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><cite>list</cite> of <cite>HasDomain</cite></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="NetExplorer.models.neo4j_models.Node.allowed_databases">
+<code class="descname">allowed_databases</code><a class="headerlink" href="#NetExplorer.models.neo4j_models.Node.allowed_databases" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class attribute. Set of allowed
+Labels for Node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><cite>set</cite> of <cite>str</cite></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="NetExplorer.models.neo4j_models.Node.domains_to_json">
+<code class="descname">domains_to_json</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#NetExplorer.models.neo4j_models.Node.domains_to_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function will return a json string with the information about
+the domains of the node. You have to call “get_domains()” before!</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="NetExplorer.models.neo4j_models.Node.get_domains">
+<code class="descname">get_domains</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#NetExplorer.models.neo4j_models.Node.get_domains" title="Permalink to this definition">¶</a></dt>
+<dd><p>This will return a list of Has_domain objects or, if the sequence has no Pfam domains,
+a None object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="NetExplorer.models.neo4j_models.Node.path_to_node">
+<code class="descname">path_to_node</code><span class="sig-paren">(</span><em>target</em>, <em>plen</em><span class="sig-paren">)</span><a class="headerlink" href="#NetExplorer.models.neo4j_models.Node.path_to_node" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a target node object, this method finds all the shortest paths to that node,
+if there aren’t any, it returns None.
+It returns a list of dictionaries, each of them with two keys:</p>
+<blockquote>
+<div><p>‘graph’: GraphCytoscape object with the graph of the path
+‘score’: Score of the given path.</p>
+</div></blockquote>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="NetExplorer.models.neo4j_models.Pathway">
+<em class="property">class </em><code class="descclassname">NetExplorer.models.neo4j_models.</code><code class="descname">Pathway</code><span class="sig-paren">(</span><em>graph</em><span class="sig-paren">)</span><a class="headerlink" href="#NetExplorer.models.neo4j_models.Pathway" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class for pathways. They are basically GraphCytoscape objects with more attributes.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="NetExplorer.models.neo4j_models.PlanarianContig">
+<em class="property">class </em><code class="descclassname">NetExplorer.models.neo4j_models.</code><code class="descname">PlanarianContig</code><span class="sig-paren">(</span><em>symbol</em>, <em>database</em>, <em>sequence=None</em>, <em>name=None</em>, <em>gene=None</em>, <em>orf=None</em>, <em>homolog=None</em>, <em>important=False</em>, <em>degree=None</em>, <em>query=True</em><span class="sig-paren">)</span><a class="headerlink" href="#NetExplorer.models.neo4j_models.PlanarianContig" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class for planarian nodes.</p>
+<dl class="attribute">
+<dt id="NetExplorer.models.neo4j_models.PlanarianContig.symbol">
+<code class="descname">symbol</code><a class="headerlink" href="#NetExplorer.models.neo4j_models.PlanarianContig.symbol" title="Permalink to this definition">¶</a></dt>
+<dd><p>String with Node symbol.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="NetExplorer.models.neo4j_models.PlanarianContig.database">
+<code class="descname">database</code><a class="headerlink" href="#NetExplorer.models.neo4j_models.PlanarianContig.database" title="Permalink to this definition">¶</a></dt>
+<dd><p>String with label for Neo4j.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="NetExplorer.models.neo4j_models.PlanarianContig.homolog">
+<code class="descname">homolog</code><a class="headerlink" href="#NetExplorer.models.neo4j_models.PlanarianContig.homolog" title="Permalink to this definition">¶</a></dt>
+<dd><p>‘Homology’ object with human homolog gene.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="NetExplorer.models.neo4j_models.PlanarianContig.important">
+<code class="descname">important</code><a class="headerlink" href="#NetExplorer.models.neo4j_models.PlanarianContig.important" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bool indicating if Node should be marked on graph visualization.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="NetExplorer.models.neo4j_models.PlanarianContig.degree">
+<code class="descname">degree</code><a class="headerlink" href="#NetExplorer.models.neo4j_models.PlanarianContig.degree" title="Permalink to this definition">¶</a></dt>
+<dd><p>Integer with the degree (number of connections) of the node.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="NetExplorer.models.neo4j_models.PlanarianContig.allowed_databases">
+<code class="descname">allowed_databases</code><a class="headerlink" href="#NetExplorer.models.neo4j_models.PlanarianContig.allowed_databases" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class attribute, dictionary with names of neo4j
+labels for planarian genes.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">allowed_databases</code><em class="property"> = {'Adamidi', 'Blythe', 'Consolidated', 'Cthulhu', 'Dresden', 'Gbrna', 'Graveley', 'Illuminaplus', 'Pearson', 'Smed454', 'Smedgd', 'Smest'}</em></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="NetExplorer.models.neo4j_models.PlanarianContig.get_all_information">
+<code class="descname">get_all_information</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#NetExplorer.models.neo4j_models.PlanarianContig.get_all_information" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fills all attributes of PlanarianContig by querying the database</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="NetExplorer.models.neo4j_models.PlanarianContig.get_expression">
+<code class="descname">get_expression</code><span class="sig-paren">(</span><em>experiment</em>, <em>sample</em><span class="sig-paren">)</span><a class="headerlink" href="#NetExplorer.models.neo4j_models.PlanarianContig.get_expression" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets expression data for a particular node, a particular experiment and a particular sample</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="NetExplorer.models.neo4j_models.PlanarianContig.get_gene_name">
+<code class="descname">get_gene_name</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#NetExplorer.models.neo4j_models.PlanarianContig.get_gene_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets gene name if possible</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="NetExplorer.models.neo4j_models.PlanarianContig.get_geneontology">
+<code class="descname">get_geneontology</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#NetExplorer.models.neo4j_models.PlanarianContig.get_geneontology" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets Gene Ontologies of the homologous human protein.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="NetExplorer.models.neo4j_models.PlanarianContig.get_genes">
+<code class="descname">get_genes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#NetExplorer.models.neo4j_models.PlanarianContig.get_genes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets Genes to which this contig maps.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="NetExplorer.models.neo4j_models.PlanarianContig.get_graphelements">
+<code class="descname">get_graphelements</code><span class="sig-paren">(</span><em>including=None</em><span class="sig-paren">)</span><a class="headerlink" href="#NetExplorer.models.neo4j_models.PlanarianContig.get_graphelements" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of nodes and edges adjacent to the node.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="NetExplorer.models.neo4j_models.PlanarianContig.get_homolog">
+<code class="descname">get_homolog</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#NetExplorer.models.neo4j_models.PlanarianContig.get_homolog" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tries to get the homologous human gene of this planarian transcript</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="NetExplorer.models.neo4j_models.PlanarianContig.get_neighbours">
+<code class="descname">get_neighbours</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#NetExplorer.models.neo4j_models.PlanarianContig.get_neighbours" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method to get the adjacent nodes in the graph and all the information about
+those connections (including the homology information, etc.).
+Fills attribute neighbours, which will be a list of PredInteraction objects.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="NetExplorer.models.neo4j_models.PlanarianContig.get_neighbours_shallow">
+<code class="descname">get_neighbours_shallow</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#NetExplorer.models.neo4j_models.PlanarianContig.get_neighbours_shallow" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method to get adjacent nodes (and their degree) in the graph without
+homology information and only with path_length and probability for the interaction information.
+It also retrieves the degree of the neighbour nodes.
+Fills attribute neighbours, which will be a list of PredInteraction objects.
+Used by NetExplorer add_connection/expand</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="NetExplorer.models.neo4j_models.PlanarianContig.get_summary">
+<code class="descname">get_summary</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#NetExplorer.models.neo4j_models.PlanarianContig.get_summary" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fills attribute values that are not mandatory, with a summary of several
+features of the node</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="NetExplorer.models.neo4j_models.PlanarianContig.to_jsondict">
+<code class="descname">to_jsondict</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#NetExplorer.models.neo4j_models.PlanarianContig.to_jsondict" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function takes a node object and returns a dictionary with the necessary
+structure to convert it to json and be read by cytoscape.js</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="NetExplorer.models.neo4j_models.PlanarianGene">
+<em class="property">class </em><code class="descclassname">NetExplorer.models.neo4j_models.</code><code class="descname">PlanarianGene</code><span class="sig-paren">(</span><em>symbol</em>, <em>database</em>, <em>name=None</em>, <em>start=None</em>, <em>end=None</em>, <em>strand=None</em>, <em>sequence=None</em>, <em>homolog=None</em>, <em>chromosome=None</em>, <em>query=True</em><span class="sig-paren">)</span><a class="headerlink" href="#NetExplorer.models.neo4j_models.PlanarianGene" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class for PlanarianGenes (genes from Planmine 3.0 gene annotation)</p>
+<dl class="attribute">
+<dt id="NetExplorer.models.neo4j_models.PlanarianGene.allowed_databases">
+<code class="descname">allowed_databases</code><em class="property"> = {'Smesgene'}</em><a class="headerlink" href="#NetExplorer.models.neo4j_models.PlanarianGene.allowed_databases" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="NetExplorer.models.neo4j_models.PlanarianGene.get_best_transcript">
+<code class="descname">get_best_transcript</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#NetExplorer.models.neo4j_models.PlanarianGene.get_best_transcript" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves the longest transcript of preferred_database.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="NetExplorer.models.neo4j_models.PlanarianGene.get_homolog">
+<code class="descname">get_homolog</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#NetExplorer.models.neo4j_models.PlanarianGene.get_homolog" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets homologous gene of longest transcript associated with this PlanarianGene.
+Fills attribute ‘homolog’. Returns the HumanNode object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="NetExplorer.models.neo4j_models.PlanarianGene.get_planarian_contigs">
+<code class="descname">get_planarian_contigs</code><span class="sig-paren">(</span><em>database=None</em><span class="sig-paren">)</span><a class="headerlink" href="#NetExplorer.models.neo4j_models.PlanarianGene.get_planarian_contigs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns list PlanarianContig objects of database or all databases that map to
+the PlanarianGene genomic location.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>database</strong> – string, optional, database from which to retrieve planarian contigs.
+if not defined will get all planarian contigs.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>PlanarianContig objects.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="NetExplorer.models.neo4j_models.PlanarianGene.is_symbol_valid">
+<em class="property">classmethod </em><code class="descname">is_symbol_valid</code><span class="sig-paren">(</span><em>symbol</em><span class="sig-paren">)</span><a class="headerlink" href="#NetExplorer.models.neo4j_models.PlanarianGene.is_symbol_valid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if symbol is valid</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>symbol</strong> – string, symbol to check if follows PlanarianGene naming convention.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="NetExplorer.models.neo4j_models.PlanarianGene.preferred_database">
+<code class="descname">preferred_database</code><em class="property"> = 'Smest'</em><a class="headerlink" href="#NetExplorer.models.neo4j_models.PlanarianGene.preferred_database" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="NetExplorer.models.neo4j_models.PlanarianGene.smesgene_regexp">
+<code class="descname">smesgene_regexp</code><em class="property"> = 'SMESG\\d+'</em><a class="headerlink" href="#NetExplorer.models.neo4j_models.PlanarianGene.smesgene_regexp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="NetExplorer.models.neo4j_models.PredInteraction">
+<em class="property">class </em><code class="descclassname">NetExplorer.models.neo4j_models.</code><code class="descname">PredInteraction</code><span class="sig-paren">(</span><em>source_symbol</em>, <em>target</em>, <em>database</em>, <em>parameters=None</em>, <em>query=True</em><span class="sig-paren">)</span><a class="headerlink" href="#NetExplorer.models.neo4j_models.PredInteraction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class for predicted interactions.
+Source and target are PlanarianContig attributes.</p>
+<dl class="attribute">
+<dt id="NetExplorer.models.neo4j_models.PredInteraction.source_symbol">
+<code class="descname">source_symbol</code><a class="headerlink" href="#NetExplorer.models.neo4j_models.PredInteraction.source_symbol" title="Permalink to this definition">¶</a></dt>
+<dd><p>Symbol of parent node of interaction.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="NetExplorer.models.neo4j_models.PredInteraction.target">
+<code class="descname">target</code><a class="headerlink" href="#NetExplorer.models.neo4j_models.PredInteraction.target" title="Permalink to this definition">¶</a></dt>
+<dd><p>Node object of the child node of the interaction.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="NetExplorer.models.neo4j_models.PredInteraction.database">
+<code class="descname">database</code><a class="headerlink" href="#NetExplorer.models.neo4j_models.PredInteraction.database" title="Permalink to this definition">¶</a></dt>
+<dd><p>Neo4j label of parent and child nodes.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="NetExplorer.models.neo4j_models.PredInteraction.parameters">
+<code class="descname">parameters</code><a class="headerlink" href="#NetExplorer.models.neo4j_models.PredInteraction.parameters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dictionary containing the interaction properties.
+{‘int_prob’, ‘path_length’,
+‘cellcom_nto’, ‘molfun_nto’,
+‘bioproc_nto’, ‘dom_int_sc’}</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="NetExplorer.models.neo4j_models.PredInteraction.to_jsondict">
+<code class="descname">to_jsondict</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#NetExplorer.models.neo4j_models.PredInteraction.to_jsondict" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function takes a PredInteraction object and returns a dictionary with the necessary
+structure to convert it to json and be read by cytoscape.js</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="NetExplorer.models.neo4j_models.WildCard">
+<em class="property">class </em><code class="descclassname">NetExplorer.models.neo4j_models.</code><code class="descname">WildCard</code><span class="sig-paren">(</span><em>search</em>, <em>database</em><span class="sig-paren">)</span><a class="headerlink" href="#NetExplorer.models.neo4j_models.WildCard" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class for wildcard searches. Returns a list of symbols.</p>
+<dl class="attribute">
+<dt id="NetExplorer.models.neo4j_models.WildCard.search">
+<code class="descname">search</code><a class="headerlink" href="#NetExplorer.models.neo4j_models.WildCard.search" title="Permalink to this definition">¶</a></dt>
+<dd><p>String to search.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="NetExplorer.models.neo4j_models.WildCard.database">
+<code class="descname">database</code><a class="headerlink" href="#NetExplorer.models.neo4j_models.WildCard.database" title="Permalink to this definition">¶</a></dt>
+<dd><p>Database (label in neo4j) for the search.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="NetExplorer.models.neo4j_models.WildCard.get_human_genes">
+<code class="descname">get_human_genes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#NetExplorer.models.neo4j_models.WildCard.get_human_genes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns list of HumanNode objects matching the wildcard query.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>HumanNode objects.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="NetExplorer.models.neo4j_models.WildCard.get_planarian_genes">
+<code class="descname">get_planarian_genes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#NetExplorer.models.neo4j_models.WildCard.get_planarian_genes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns list of PlanarianGene objects matching the wildcard query.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="NetExplorer.models.neo4j_models.oldExperiment">
+<em class="property">class </em><code class="descclassname">NetExplorer.models.neo4j_models.</code><code class="descname">oldExperiment</code><span class="sig-paren">(</span><em>identifier</em>, <em>url=None</em>, <em>reference=None</em><span class="sig-paren">)</span><a class="headerlink" href="#NetExplorer.models.neo4j_models.oldExperiment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class for gene expresssion experiments</p>
+<dl class="method">
+<dt id="NetExplorer.models.neo4j_models.oldExperiment.color_gradient">
+<code class="descname">color_gradient</code><span class="sig-paren">(</span><em>from_color</em>, <em>to_color</em>, <em>comp_type</em><span class="sig-paren">)</span><a class="headerlink" href="#NetExplorer.models.neo4j_models.oldExperiment.color_gradient" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method returns a color gradient of length bins from “from_color” to “to_color”.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="NetExplorer.models.neo4j_models.oldExperiment.to_json">
+<code class="descname">to_json</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#NetExplorer.models.neo4j_models.oldExperiment.to_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a json string with the info about the experiment</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="mysql_models.html" class="btn btn-neutral float-right" title="Mysql Models" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../../index.html" class="btn btn-neutral float-left" title="Indices and tables" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Sergio Castillo-Lara
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

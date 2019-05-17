@@ -1,0 +1,467 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Downloaders &mdash; PlanNET 1.3 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Colors" href="colors.html" />
+    <link rel="prev" title="Mysql Models" href="mysql_models.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> PlanNET
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Models:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="neo4j_models.html">Neo4j Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mysql_models.html">Mysql Models</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Downloaders</a></li>
+<li class="toctree-l1"><a class="reference internal" href="colors.html">Colors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plots.html">Plots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gene_ontology.html">Gene Ontology</a></li>
+<li class="toctree-l1"><a class="reference internal" href="neo4j_queries.html">Neo4j Queries</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Page views:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../views/index_view.html">Index_view</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/datasets.html">Datasets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/downloads.html">Downloads</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/about.html">About</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/account_view.html">Account_view</a></li>
+</ul>
+<p class="caption"><span class="caption-text">App views:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../views/gene_search.html">Gene_search</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/net_explorer.html">Net_explorer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/blast.html">Blast</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/path_finder.html">Path_finder</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/planexp.html">Planexp</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Other views:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../views/common.html">Common</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/get_card.html">Get_card</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/autocomplete.html">Autocomplete</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/cluster_markers.html">Cluster_markers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/downloader.html">Downloader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/error_handler.html">Error_handler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/experiment_conditions.html">Experiment_conditions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/experiment_condition_types.html">Experiment_condition_types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/experiment_dataset.html">Experiment_dataset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/experiment_dge_table.html">Experiment_dge_table</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/experiment_summary.html">Experiment_summary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/filter_network.html">Filter_network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/get_dataset_regexes.html">Get_dataset_regexes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/get_fasta.html">Get_fasta</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/get_goea.html">Get_goea</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/logout_view.html">Logout_view</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/map_expression_one.html">Map_expression_one</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/map_expression.html">Map_expression</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/map_expression_two.html">Map_expression_two</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/plot_gene_coexpression.html">Plot_gene_coexpression</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/plot_gene_expression.html">Plot_gene_expression</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/plot_tsne.html">Plot_tsne</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/register.html">Register</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/regulatory_links.html">Regulatory_links</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/show_connections.html">Show_connections</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">PlanNET</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+      <li>Downloaders</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/modules/models/downloaders.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="downloaders">
+<h1>Downloaders<a class="headerlink" href="#downloaders" title="Permalink to this headline">¶</a></h1>
+<span class="target" id="module-NetExplorer.models.downloaders"></span><dl class="class">
+<dt id="NetExplorer.models.downloaders.DownloadHandler">
+<em class="property">class </em><code class="descclassname">NetExplorer.models.downloaders.</code><code class="descname">DownloadHandler</code><a class="headerlink" href="#NetExplorer.models.downloaders.DownloadHandler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class that handles downloadable files.</p>
+<dl class="attribute">
+<dt>
+<code class="descname">data_from_node (`dict` of `str`</code></dt>
+<dd><p><cite>fun</cite>): Class attribute, dictionary mapping data type keywords,
+to the methods that handle them.</p>
+</dd></dl>
+
+<dl class="simple">
+<dt>Usage:</dt><dd><p>dhandler = DownloadHandler()
+the_file = dhandler.download_data(identifiers, database, data)
+response = the_file.to_response()</p>
+</dd>
+</dl>
+<p>Methods get_*_data returns a list of tuples, each tuple being a line, and each
+element of the tuple being a column.</p>
+<dl class="attribute">
+<dt id="NetExplorer.models.downloaders.DownloadHandler.data_from_node">
+<code class="descname">data_from_node</code><em class="property"> = {'contig': &lt;function DownloadHandler._get_contig_data&gt;, 'go': &lt;function DownloadHandler._get_go_data&gt;, 'homology': &lt;function DownloadHandler._get_homology_data&gt;, 'interactions': &lt;function DownloadHandler._get_interactions_data&gt;, 'orf': &lt;function DownloadHandler._get_orf_data&gt;, 'pfam': &lt;function DownloadHandler._get_pfam_data&gt;}</em><a class="headerlink" href="#NetExplorer.models.downloaders.DownloadHandler.data_from_node" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="NetExplorer.models.downloaders.DownloadHandler.download_data">
+<code class="descname">download_data</code><span class="sig-paren">(</span><em>identifiers</em>, <em>database</em>, <em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#NetExplorer.models.downloaders.DownloadHandler.download_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates file object with the specified data for the
+specified identifiers.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>identifiers</strong> (<cite>list</cite> of <cite>str</cite>) – List of gene/transcript identifiers.</p></li>
+<li><p><strong>database</strong> (<em>str</em>) – Database name of desired results to download.</p></li>
+<li><p><strong>data</strong> (<em>str</em>) – Desired data to download.
+Can be [‘contig’, ‘orf’, ‘homology’, ‘pfam’, ‘go’, ‘interactions’]</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>ServedFile object with the file ready to download.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#NetExplorer.models.downloaders.ServedFile" title="NetExplorer.models.downloaders.ServedFile">ServedFile</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="NetExplorer.models.downloaders.DownloadHandler.get_filename">
+<code class="descname">get_filename</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#NetExplorer.models.downloaders.DownloadHandler.get_filename" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns filename string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>str</em>) – Desired data to download.
+Can be [‘contig’, ‘orf’, ‘homology’, ‘pfam’, ‘go’, ‘interactions’]</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>String with filename according to the data to download.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="NetExplorer.models.downloaders.DownloadHandler.get_header">
+<code class="descname">get_header</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#NetExplorer.models.downloaders.DownloadHandler.get_header" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns header string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>str</em>) – Desired data to download.
+Can be [‘contig’, ‘orf’, ‘homology’, ‘pfam’, ‘go’, ‘interactions’]</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>String with first line (header) of the file.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="NetExplorer.models.downloaders.ServedFile">
+<em class="property">class </em><code class="descclassname">NetExplorer.models.downloaders.</code><code class="descname">ServedFile</code><span class="sig-paren">(</span><em>oname</em>, <em>fformat='csv'</em>, <em>header=None</em><span class="sig-paren">)</span><a class="headerlink" href="#NetExplorer.models.downloaders.ServedFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class of served files for download.</p>
+<dl class="attribute">
+<dt id="NetExplorer.models.downloaders.ServedFile.oname">
+<code class="descname">oname</code><a class="headerlink" href="#NetExplorer.models.downloaders.ServedFile.oname" title="Permalink to this definition">¶</a></dt>
+<dd><p>String with output filename.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="NetExplorer.models.downloaders.ServedFile.fformat">
+<code class="descname">fformat</code><a class="headerlink" href="#NetExplorer.models.downloaders.ServedFile.fformat" title="Permalink to this definition">¶</a></dt>
+<dd><p>String with file format, can be ‘csv’ or ‘fasta’.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="NetExplorer.models.downloaders.ServedFile.header">
+<code class="descname">header</code><a class="headerlink" href="#NetExplorer.models.downloaders.ServedFile.header" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bool describing if file should have a header.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="NetExplorer.models.downloaders.ServedFile.filename">
+<code class="descname">filename</code><a class="headerlink" href="#NetExplorer.models.downloaders.ServedFile.filename" title="Permalink to this definition">¶</a></dt>
+<dd><p>NamedTemporaryFile object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>NamedTemporaryFile</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="NetExplorer.models.downloaders.ServedFile.elements">
+<code class="descname">elements</code><a class="headerlink" href="#NetExplorer.models.downloaders.ServedFile.elements" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of tuples. Each tuple contains the
+data for each line.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><cite>list</cite> of <cite>tuple</cite></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="NetExplorer.models.downloaders.ServedFile.written">
+<code class="descname">written</code><a class="headerlink" href="#NetExplorer.models.downloaders.ServedFile.written" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bool describing if the file has data on it or not.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>oname</strong> (<em>str</em>) – String with output filename.</p></li>
+<li><p><strong>fformat</strong> (<em>str</em><em>, </em><em>optional</em>) – String with file format, can be ‘csv’ or ‘fasta’.
+Defaults to ‘csv’.</p></li>
+<li><p><strong>header</strong> (<em>str</em><em>, </em><em>optional</em>) – Header string to write on the first line of the file.
+Defaults to <cite>None</cite>.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="method">
+<dt id="NetExplorer.models.downloaders.ServedFile.add_elements">
+<code class="descname">add_elements</code><span class="sig-paren">(</span><em>elem</em><span class="sig-paren">)</span><a class="headerlink" href="#NetExplorer.models.downloaders.ServedFile.add_elements" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds a register to the list of elements.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>elem</strong> (<cite>list</cite> of <cite>tuple</cite>) – List of tuples.
+Each tuple corresponds to a line.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="NetExplorer.models.downloaders.ServedFile.to_response">
+<code class="descname">to_response</code><span class="sig-paren">(</span><em>what=None</em><span class="sig-paren">)</span><a class="headerlink" href="#NetExplorer.models.downloaders.ServedFile.to_response" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a response object to be served to the user for download.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>what</strong> (<em>None</em>) – Nothing.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>HttpResponse object with the file to be returned</dt><dd><p>in a request.</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><cite>HttpResponse</cite></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="NetExplorer.models.downloaders.ServedFile.write">
+<code class="descname">write</code><span class="sig-paren">(</span><em>what=None</em><span class="sig-paren">)</span><a class="headerlink" href="#NetExplorer.models.downloaders.ServedFile.write" title="Permalink to this definition">¶</a></dt>
+<dd><p>Writes to temp file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>what</strong> (<em>None</em>) – Nothing.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="colors.html" class="btn btn-neutral float-right" title="Colors" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="mysql_models.html" class="btn btn-neutral float-left" title="Mysql Models" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Sergio Castillo-Lara
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,417 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Colors &mdash; PlanNET 1.3 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Plots" href="plots.html" />
+    <link rel="prev" title="Downloaders" href="downloaders.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> PlanNET
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Models:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="neo4j_models.html">Neo4j Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mysql_models.html">Mysql Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="downloaders.html">Downloaders</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Colors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plots.html">Plots</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gene_ontology.html">Gene Ontology</a></li>
+<li class="toctree-l1"><a class="reference internal" href="neo4j_queries.html">Neo4j Queries</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Page views:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../views/index_view.html">Index_view</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/datasets.html">Datasets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/downloads.html">Downloads</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/about.html">About</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/account_view.html">Account_view</a></li>
+</ul>
+<p class="caption"><span class="caption-text">App views:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../views/gene_search.html">Gene_search</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/net_explorer.html">Net_explorer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/blast.html">Blast</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/path_finder.html">Path_finder</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/planexp.html">Planexp</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Other views:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../views/common.html">Common</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/get_card.html">Get_card</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/autocomplete.html">Autocomplete</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/cluster_markers.html">Cluster_markers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/downloader.html">Downloader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/error_handler.html">Error_handler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/experiment_conditions.html">Experiment_conditions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/experiment_condition_types.html">Experiment_condition_types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/experiment_dataset.html">Experiment_dataset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/experiment_dge_table.html">Experiment_dge_table</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/experiment_summary.html">Experiment_summary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/filter_network.html">Filter_network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/get_dataset_regexes.html">Get_dataset_regexes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/get_fasta.html">Get_fasta</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/get_goea.html">Get_goea</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/logout_view.html">Logout_view</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/map_expression_one.html">Map_expression_one</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/map_expression.html">Map_expression</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/map_expression_two.html">Map_expression_two</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/plot_gene_coexpression.html">Plot_gene_coexpression</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/plot_gene_expression.html">Plot_gene_expression</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/plot_tsne.html">Plot_tsne</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/register.html">Register</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/regulatory_links.html">Regulatory_links</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../views/show_connections.html">Show_connections</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">PlanNET</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+      <li>Colors</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/modules/models/colors.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-NetExplorer.models.colors">
+<span id="colors"></span><h1>Colors<a class="headerlink" href="#module-NetExplorer.models.colors" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="NetExplorer.models.colors.ColorGenerator">
+<em class="property">class </em><code class="descclassname">NetExplorer.models.colors.</code><code class="descname">ColorGenerator</code><span class="sig-paren">(</span><em>max_v</em>, <em>min_v</em>, <em>profile='red'</em><span class="sig-paren">)</span><a class="headerlink" href="#NetExplorer.models.colors.ColorGenerator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a color gradient given a maximum value and a minimum value, using
+min-max normalization in a 0-50 scale.</p>
+<dl class="attribute">
+<dt id="NetExplorer.models.colors.ColorGenerator.profile">
+<code class="descname">profile</code><a class="headerlink" href="#NetExplorer.models.colors.ColorGenerator.profile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Color profile enum element.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#NetExplorer.models.colors.ColorProfiles" title="NetExplorer.models.colors.ColorProfiles">ColorProfiles</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="NetExplorer.models.colors.ColorGenerator.max">
+<code class="descname">max</code><a class="headerlink" href="#NetExplorer.models.colors.ColorGenerator.max" title="Permalink to this definition">¶</a></dt>
+<dd><p>Maximum value to generate color gradient.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="NetExplorer.models.colors.ColorGenerator.min">
+<code class="descname">min</code><a class="headerlink" href="#NetExplorer.models.colors.ColorGenerator.min" title="Permalink to this definition">¶</a></dt>
+<dd><p>Minimum value to generate color gradient.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>max_v</strong> (<em>float</em>) – Maximum value to generate color gradient.</p></li>
+<li><p><strong>min_v</strong> (<em>float</em>) – Minimum value to generate color gradient.</p></li>
+<li><p><strong>profile</strong> (<em>string</em>) – Valid color profile string, see ColorProfiles
+for a list of the valid color profiles.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="method">
+<dt id="NetExplorer.models.colors.ColorGenerator.get_color_legend">
+<code class="descname">get_color_legend</code><span class="sig-paren">(</span><em>units=None</em><span class="sig-paren">)</span><a class="headerlink" href="#NetExplorer.models.colors.ColorGenerator.get_color_legend" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns html of legend for the color gradient.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>units</strong> (<em>str</em>) – Units for the values in the legend.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>html string with the legend for the generated color gradient.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="NetExplorer.models.colors.ColorGenerator.map_color">
+<code class="descname">map_color</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#NetExplorer.models.colors.ColorGenerator.map_color" title="Permalink to this definition">¶</a></dt>
+<dd><p>Assigns a color to the provided value by using the max and min attributes as
+the scale and normalizing the provided value using min-max normalization.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>value</strong> (<em>float</em>) – Value to transform to a color in the generated gradient
+between min and max attributes.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>hex color value.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="NetExplorer.models.colors.ColorProfiles">
+<em class="property">class </em><code class="descclassname">NetExplorer.models.colors.</code><code class="descname">ColorProfiles</code><a class="headerlink" href="#NetExplorer.models.colors.ColorProfiles" title="Permalink to this definition">¶</a></dt>
+<dd><p>ColorProfiles enum.
+Stores the following color profiles:</p>
+<blockquote>
+<div><dl class="simple">
+<dt>LINEAR GRADIENTS:</dt><dd><ul class="simple">
+<li><p>red: 50 colors form white to red.</p></li>
+<li><p>blue: 50 colors from white to blue.</p></li>
+<li><p>green: 50 colors from white to blue.</p></li>
+</ul>
+</dd>
+<dt>DIVERGENT GRADIENTS:</dt><dd><ul class="simple">
+<li><p>blue_white: 25 colors from blue to white.</p></li>
+<li><p>white_red: 25 colors from white to red.</p></li>
+<li><p>blue_red: 50 colors from blue to white to red.</p></li>
+<li><p>yellow_white: 25 colors from yellow to white.</p></li>
+<li><p>yellow_blue: 50 colors from yellow to white to blue.</p></li>
+<li><p>white_green: 25 colors from white to green.</p></li>
+<li><p>red_green: 50 colors from red to white to green.</p></li>
+</ul>
+</dd>
+</dl>
+</div></blockquote>
+<dl class="attribute">
+<dt id="NetExplorer.models.colors.ColorProfiles.blue">
+<code class="descname">blue</code><em class="property"> = [&lt;Color #f7f8ff&gt;, &lt;Color #f2f4ff&gt;, &lt;Color #edefff&gt;, &lt;Color #e8ebff&gt;, &lt;Color #e3e6ff&gt;, &lt;Color #dee2ff&gt;, &lt;Color #d9deff&gt;, &lt;Color #d4d9ff&gt;, &lt;Color #cfd5ff&gt;, &lt;Color #cad1ff&gt;, &lt;Color #c5ccff&gt;, &lt;Color #c0c8ff&gt;, &lt;Color #bbc4ff&gt;, &lt;Color #b5bfff&gt;, &lt;Color #b0bbff&gt;, &lt;Color #abb7ff&gt;, &lt;Color #a6b2ff&gt;, &lt;Color #a1aeff&gt;, &lt;Color #9caaff&gt;, &lt;Color #97a6ff&gt;, &lt;Color #92a1ff&gt;, &lt;Color #8d9dff&gt;, &lt;Color #89f&gt;, &lt;Color #8395ff&gt;, &lt;Color #7e90ff&gt;, &lt;Color #798cff&gt;, &lt;Color #7488ff&gt;, &lt;Color #6f84ff&gt;, &lt;Color #6a80ff&gt;, &lt;Color #657bff&gt;, &lt;Color #6077ff&gt;, &lt;Color #5b73ff&gt;, &lt;Color #566fff&gt;, &lt;Color #516bff&gt;, &lt;Color #4c66ff&gt;, &lt;Color #4762ff&gt;, &lt;Color #425eff&gt;, &lt;Color #3c5aff&gt;, &lt;Color #3756ff&gt;, &lt;Color #3252ff&gt;, &lt;Color #2d4eff&gt;, &lt;Color #284aff&gt;, &lt;Color #2345ff&gt;, &lt;Color #1e41ff&gt;, &lt;Color #193dff&gt;, &lt;Color #1439ff&gt;, &lt;Color #0f35ff&gt;, &lt;Color #0a31ff&gt;, &lt;Color #052dff&gt;, &lt;Color #0029ff&gt;]</em><a class="headerlink" href="#NetExplorer.models.colors.ColorProfiles.blue" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="NetExplorer.models.colors.ColorProfiles.blue_red">
+<code class="descname">blue_red</code><em class="property"> = [&lt;Color #1f77b4&gt;, &lt;Color #1f7bc0&gt;, &lt;Color #207fcc&gt;, &lt;Color #2082d8&gt;, &lt;Color #2384e0&gt;, &lt;Color #2c87e3&gt;, &lt;Color #3689e6&gt;, &lt;Color #3f8ce9&gt;, &lt;Color #4990eb&gt;, &lt;Color #5393ee&gt;, &lt;Color #5c97f0&gt;, &lt;Color #679bf2&gt;, &lt;Color #71a0f4&gt;, &lt;Color #7ba5f5&gt;, &lt;Color #86aaf7&gt;, &lt;Color #90b0f9&gt;, &lt;Color #9bb6fa&gt;, &lt;Color #a6bcfb&gt;, &lt;Color #b1c3fc&gt;, &lt;Color #bccbfd&gt;, &lt;Color #c8d3fe&gt;, &lt;Color #d3dbfe&gt;, &lt;Color #dfe4ff&gt;, &lt;Color #ebeeff&gt;, &lt;Color white&gt;, &lt;Color white&gt;, &lt;Color #fff0f0&gt;, &lt;Color #ffe5e5&gt;, &lt;Color #ffdbdb&gt;, &lt;Color #ffd0d0&gt;, &lt;Color #ffc6c6&gt;, &lt;Color #fbb&gt;, &lt;Color #ffb1b1&gt;, &lt;Color #ffa7a7&gt;, &lt;Color #ff9c9c&gt;, &lt;Color #ff9292&gt;, &lt;Color #ff8787&gt;, &lt;Color #ff7d7d&gt;, &lt;Color #ff7373&gt;, &lt;Color #ff6868&gt;, &lt;Color #ff5e5e&gt;, &lt;Color #ff5353&gt;, &lt;Color #ff4949&gt;, &lt;Color #ff3e3e&gt;, &lt;Color #ff3434&gt;, &lt;Color #ff2a2a&gt;, &lt;Color #ff1f1f&gt;, &lt;Color #ff1515&gt;, &lt;Color #ff0a0a&gt;, &lt;Color red&gt;]</em><a class="headerlink" href="#NetExplorer.models.colors.ColorProfiles.blue_red" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="NetExplorer.models.colors.ColorProfiles.blue_white">
+<code class="descname">blue_white</code><em class="property"> = [&lt;Color #1f77b4&gt;, &lt;Color #1f7bc0&gt;, &lt;Color #207fcc&gt;, &lt;Color #2082d8&gt;, &lt;Color #2384e0&gt;, &lt;Color #2c87e3&gt;, &lt;Color #3689e6&gt;, &lt;Color #3f8ce9&gt;, &lt;Color #4990eb&gt;, &lt;Color #5393ee&gt;, &lt;Color #5c97f0&gt;, &lt;Color #679bf2&gt;, &lt;Color #71a0f4&gt;, &lt;Color #7ba5f5&gt;, &lt;Color #86aaf7&gt;, &lt;Color #90b0f9&gt;, &lt;Color #9bb6fa&gt;, &lt;Color #a6bcfb&gt;, &lt;Color #b1c3fc&gt;, &lt;Color #bccbfd&gt;, &lt;Color #c8d3fe&gt;, &lt;Color #d3dbfe&gt;, &lt;Color #dfe4ff&gt;, &lt;Color #ebeeff&gt;, &lt;Color #f7f8ff&gt;]</em><a class="headerlink" href="#NetExplorer.models.colors.ColorProfiles.blue_white" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="NetExplorer.models.colors.ColorProfiles.green">
+<code class="descname">green</code><em class="property"> = [&lt;Color #f9fff9&gt;, &lt;Color #f4fff4&gt;, &lt;Color honeydew&gt;, &lt;Color #ebffeb&gt;, &lt;Color #e7ffe7&gt;, &lt;Color #e2fee2&gt;, &lt;Color #defede&gt;, &lt;Color #d9fed9&gt;, &lt;Color #d5fed5&gt;, &lt;Color #d1fdd1&gt;, &lt;Color #cdfdcd&gt;, &lt;Color #c8fdc8&gt;, &lt;Color #c4fcc4&gt;, &lt;Color #c0fcc0&gt;, &lt;Color #bcfbbc&gt;, &lt;Color #b8fbb8&gt;, &lt;Color #b4fab4&gt;, &lt;Color #b0f9b0&gt;, &lt;Color #acf9ac&gt;, &lt;Color #a8f8a8&gt;, &lt;Color #a4f7a4&gt;, &lt;Color #a0f6a0&gt;, &lt;Color #9cf69c&gt;, &lt;Color #98f598&gt;, &lt;Color #94f494&gt;, &lt;Color #91f391&gt;, &lt;Color #8df28d&gt;, &lt;Color #89f189&gt;, &lt;Color #86f086&gt;, &lt;Color #82ef82&gt;, &lt;Color #7fee7f&gt;, &lt;Color #7bed7b&gt;, &lt;Color #78ec78&gt;, &lt;Color #74ea74&gt;, &lt;Color #71e971&gt;, &lt;Color #6de86d&gt;, &lt;Color #6ae66a&gt;, &lt;Color #67e567&gt;, &lt;Color #63e463&gt;, &lt;Color #60e260&gt;, &lt;Color #5de15d&gt;, &lt;Color #5adf5a&gt;, &lt;Color #57de57&gt;, &lt;Color #54dc54&gt;, &lt;Color #51db51&gt;, &lt;Color #4ed94e&gt;, &lt;Color #4bd74b&gt;, &lt;Color #48d648&gt;, &lt;Color #45d445&gt;, &lt;Color #42d242&gt;]</em><a class="headerlink" href="#NetExplorer.models.colors.ColorProfiles.green" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="NetExplorer.models.colors.ColorProfiles.red">
+<code class="descname">red</code><em class="property"> = [&lt;Color snow&gt;, &lt;Color #fff5f5&gt;, &lt;Color #fff0f0&gt;, &lt;Color #ffebeb&gt;, &lt;Color #ffe6e6&gt;, &lt;Color #ffe0e0&gt;, &lt;Color #ffdbdb&gt;, &lt;Color #ffd6d6&gt;, &lt;Color #ffd1d1&gt;, &lt;Color #fcc&gt;, &lt;Color #ffc7c7&gt;, &lt;Color #ffc2c2&gt;, &lt;Color #ffbdbd&gt;, &lt;Color #ffb8b8&gt;, &lt;Color #ffb3b3&gt;, &lt;Color #ffadad&gt;, &lt;Color #ffa8a8&gt;, &lt;Color #ffa3a3&gt;, &lt;Color #ff9e9e&gt;, &lt;Color #f99&gt;, &lt;Color #ff9494&gt;, &lt;Color #ff8f8f&gt;, &lt;Color #ff8a8a&gt;, &lt;Color #ff8585&gt;, &lt;Color #ff8080&gt;, &lt;Color #ff7a7a&gt;, &lt;Color #ff7575&gt;, &lt;Color #ff7070&gt;, &lt;Color #ff6b6b&gt;, &lt;Color #f66&gt;, &lt;Color #ff6161&gt;, &lt;Color #ff5c5c&gt;, &lt;Color #ff5757&gt;, &lt;Color #ff5252&gt;, &lt;Color #ff4d4d&gt;, &lt;Color #ff4747&gt;, &lt;Color #ff4242&gt;, &lt;Color #ff3d3d&gt;, &lt;Color #ff3838&gt;, &lt;Color #f33&gt;, &lt;Color #ff2e2e&gt;, &lt;Color #ff2929&gt;, &lt;Color #ff2424&gt;, &lt;Color #ff1f1f&gt;, &lt;Color #ff1a1a&gt;, &lt;Color #ff1414&gt;, &lt;Color #ff0f0f&gt;, &lt;Color #ff0a0a&gt;, &lt;Color #ff0505&gt;, &lt;Color red&gt;]</em><a class="headerlink" href="#NetExplorer.models.colors.ColorProfiles.red" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="NetExplorer.models.colors.ColorProfiles.red_green">
+<code class="descname">red_green</code><em class="property"> = [&lt;Color red&gt;, &lt;Color #ff0a0a&gt;, &lt;Color #ff1515&gt;, &lt;Color #ff1f1f&gt;, &lt;Color #ff2a2a&gt;, &lt;Color #ff3434&gt;, &lt;Color #ff3e3e&gt;, &lt;Color #ff4949&gt;, &lt;Color #ff5353&gt;, &lt;Color #ff5e5e&gt;, &lt;Color #ff6868&gt;, &lt;Color #ff7373&gt;, &lt;Color #ff7d7d&gt;, &lt;Color #ff8787&gt;, &lt;Color #ff9292&gt;, &lt;Color #ff9c9c&gt;, &lt;Color #ffa7a7&gt;, &lt;Color #ffb1b1&gt;, &lt;Color #fbb&gt;, &lt;Color #ffc6c6&gt;, &lt;Color #ffd0d0&gt;, &lt;Color #ffdbdb&gt;, &lt;Color #ffe5e5&gt;, &lt;Color #fff0f0&gt;, &lt;Color white&gt;, &lt;Color white&gt;, &lt;Color honeydew&gt;, &lt;Color #e6ffe6&gt;, &lt;Color #ddfedd&gt;, &lt;Color #d4fed4&gt;, &lt;Color #ccfdcc&gt;, &lt;Color #c3fcc3&gt;, &lt;Color #bbfbbb&gt;, &lt;Color #b2fab2&gt;, &lt;Color #aaf8aa&gt;, &lt;Color #a2f7a2&gt;, &lt;Color #9af59a&gt;, &lt;Color #93f393&gt;, &lt;Color #8bf28b&gt;, &lt;Color #84ef84&gt;, &lt;Color #7ced7c&gt;, &lt;Color #75eb75&gt;, &lt;Color #6ee86e&gt;, &lt;Color #68e568&gt;, &lt;Color #61e361&gt;, &lt;Color #5ae05a&gt;, &lt;Color #54dc54&gt;, &lt;Color #4ed94e&gt;, &lt;Color #48d648&gt;, &lt;Color #42d242&gt;]</em><a class="headerlink" href="#NetExplorer.models.colors.ColorProfiles.red_green" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="NetExplorer.models.colors.ColorProfiles.white_green">
+<code class="descname">white_green</code><em class="property"> = [&lt;Color #f9fff9&gt;, &lt;Color honeydew&gt;, &lt;Color #e6ffe6&gt;, &lt;Color #ddfedd&gt;, &lt;Color #d4fed4&gt;, &lt;Color #ccfdcc&gt;, &lt;Color #c3fcc3&gt;, &lt;Color #bbfbbb&gt;, &lt;Color #b2fab2&gt;, &lt;Color #aaf8aa&gt;, &lt;Color #a2f7a2&gt;, &lt;Color #9af59a&gt;, &lt;Color #93f393&gt;, &lt;Color #8bf28b&gt;, &lt;Color #84ef84&gt;, &lt;Color #7ced7c&gt;, &lt;Color #75eb75&gt;, &lt;Color #6ee86e&gt;, &lt;Color #68e568&gt;, &lt;Color #61e361&gt;, &lt;Color #5ae05a&gt;, &lt;Color #54dc54&gt;, &lt;Color #4ed94e&gt;, &lt;Color #48d648&gt;, &lt;Color #42d242&gt;]</em><a class="headerlink" href="#NetExplorer.models.colors.ColorProfiles.white_green" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="NetExplorer.models.colors.ColorProfiles.white_red">
+<code class="descname">white_red</code><em class="property"> = [&lt;Color snow&gt;, &lt;Color #fff0f0&gt;, &lt;Color #ffe5e5&gt;, &lt;Color #ffdbdb&gt;, &lt;Color #ffd0d0&gt;, &lt;Color #ffc6c6&gt;, &lt;Color #fbb&gt;, &lt;Color #ffb1b1&gt;, &lt;Color #ffa7a7&gt;, &lt;Color #ff9c9c&gt;, &lt;Color #ff9292&gt;, &lt;Color #ff8787&gt;, &lt;Color #ff7d7d&gt;, &lt;Color #ff7373&gt;, &lt;Color #ff6868&gt;, &lt;Color #ff5e5e&gt;, &lt;Color #ff5353&gt;, &lt;Color #ff4949&gt;, &lt;Color #ff3e3e&gt;, &lt;Color #ff3434&gt;, &lt;Color #ff2a2a&gt;, &lt;Color #ff1f1f&gt;, &lt;Color #ff1515&gt;, &lt;Color #ff0a0a&gt;, &lt;Color red&gt;]</em><a class="headerlink" href="#NetExplorer.models.colors.ColorProfiles.white_red" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="NetExplorer.models.colors.ColorProfiles.yellow_blue">
+<code class="descname">yellow_blue</code><em class="property"> = [&lt;Color #e4a32d&gt;, &lt;Color #e6a734&gt;, &lt;Color #e8aa3b&gt;, &lt;Color #eaae42&gt;, &lt;Color #ecb149&gt;, &lt;Color #eeb550&gt;, &lt;Color #efb858&gt;, &lt;Color #f1bc5f&gt;, &lt;Color #f2c067&gt;, &lt;Color #f4c36e&gt;, &lt;Color #f5c776&gt;, &lt;Color #f6ca7e&gt;, &lt;Color #f8ce85&gt;, &lt;Color #f9d18d&gt;, &lt;Color #fad595&gt;, &lt;Color #fbd89d&gt;, &lt;Color #fbdba6&gt;, &lt;Color #fcdfae&gt;, &lt;Color #fde2b6&gt;, &lt;Color #fde6bf&gt;, &lt;Color #fee9c7&gt;, &lt;Color #feedd0&gt;, &lt;Color #fff0d8&gt;, &lt;Color #fff4e1&gt;, &lt;Color white&gt;, &lt;Color white&gt;, &lt;Color #ebeeff&gt;, &lt;Color #dfe4ff&gt;, &lt;Color #d3dbfe&gt;, &lt;Color #c8d3fe&gt;, &lt;Color #bccbfd&gt;, &lt;Color #b1c3fc&gt;, &lt;Color #a6bcfb&gt;, &lt;Color #9bb6fa&gt;, &lt;Color #90b0f9&gt;, &lt;Color #86aaf7&gt;, &lt;Color #7ba5f5&gt;, &lt;Color #71a0f4&gt;, &lt;Color #679bf2&gt;, &lt;Color #5c97f0&gt;, &lt;Color #5393ee&gt;, &lt;Color #4990eb&gt;, &lt;Color #3f8ce9&gt;, &lt;Color #3689e6&gt;, &lt;Color #2c87e3&gt;, &lt;Color #2384e0&gt;, &lt;Color #2082d8&gt;, &lt;Color #207fcc&gt;, &lt;Color #1f7bc0&gt;, &lt;Color #1f77b4&gt;]</em><a class="headerlink" href="#NetExplorer.models.colors.ColorProfiles.yellow_blue" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="NetExplorer.models.colors.ColorProfiles.yellow_white">
+<code class="descname">yellow_white</code><em class="property"> = [&lt;Color #e4a32d&gt;, &lt;Color #e6a734&gt;, &lt;Color #e8aa3b&gt;, &lt;Color #eaae42&gt;, &lt;Color #ecb149&gt;, &lt;Color #eeb550&gt;, &lt;Color #efb858&gt;, &lt;Color #f1bc5f&gt;, &lt;Color #f2c067&gt;, &lt;Color #f4c36e&gt;, &lt;Color #f5c776&gt;, &lt;Color #f6ca7e&gt;, &lt;Color #f8ce85&gt;, &lt;Color #f9d18d&gt;, &lt;Color #fad595&gt;, &lt;Color #fbd89d&gt;, &lt;Color #fbdba6&gt;, &lt;Color #fcdfae&gt;, &lt;Color #fde2b6&gt;, &lt;Color #fde6bf&gt;, &lt;Color #fee9c7&gt;, &lt;Color #feedd0&gt;, &lt;Color #fff0d8&gt;, &lt;Color #fff4e1&gt;, &lt;Color #fff7ea&gt;]</em><a class="headerlink" href="#NetExplorer.models.colors.ColorProfiles.yellow_white" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="plots.html" class="btn btn-neutral float-right" title="Plots" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="downloaders.html" class="btn btn-neutral float-left" title="Downloaders" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Sergio Castillo-Lara
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
