@@ -1,0 +1,4 @@
+django
+goatools
+py2neo
+numpy
