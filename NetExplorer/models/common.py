@@ -66,7 +66,7 @@ ALL_DATABASES = set([
 
 # UTILITIES
 def query_node(symbol, database):
-    '''
+    """
     This simple function takes a symbol and a database and tries to get it from
     the DB.
 
@@ -75,7 +75,7 @@ def query_node(symbol, database):
     
     Returns:
         Node: HumanNode or PlanarianContig object.
-    '''
+    """
     node   = None
     symbol = symbol.replace(" ", "")
     symbol = symbol.replace("'", "")

@@ -5,7 +5,7 @@ from django.db.models import Avg
 # MODELS
 # ------------------------------------------------------------------------------
 class Dataset(models.Model):
-    '''
+    """
     Model that describes the table for storing information about 
     the transcriptome Datasets available in PlanExp and PlanNET.
 
@@ -19,7 +19,7 @@ class Dataset(models.Model):
         identifier_regex: Regular expression of the identifiers used 
             for this dataset.
         public: Boolean to define if it is a public dataset (`True`) or private (`False`).
-    '''
+    """
     name = models.CharField(max_length=50)
     year = models.IntegerField(max_length=4)
     citation = models.CharField(max_length=512)
@@ -30,7 +30,7 @@ class Dataset(models.Model):
     public = models.BooleanField()
 
     def is_symbol_valid(self, symbol):
-        '''
+        """
         Checks if a given symbol belongs to Dataset based on 
         the symbol naming convention.
 
@@ -41,7 +41,7 @@ class Dataset(models.Model):
         Returns:
             bool: `True` if symbol belongs to this Dataset, 
                 otherwise `False`.
-        '''
+        """
         if re.match(self.identifier_regex, symbol):
             return True
         else:
@@ -49,7 +49,7 @@ class Dataset(models.Model):
 
     @classmethod
     def get_allowed_datasets(cls, user):
-        '''
+        """
         Classmethod that returns QuerySet of allowed datasets for a given user.
 
         Args:
@@ -58,7 +58,7 @@ class Dataset(models.Model):
         Returns:
             `list` of `Dataset`: List of Dataset objects sorted by year 
                 to which `user` has permissions to.
-        '''
+        """
         public_datasets = cls.objects.filter(public=True).order_by('-year')
         if not user.is_authenticated:
             # Return only public datasets
@@ -75,13 +75,13 @@ class Dataset(models.Model):
 
 # ------------------------------------------------------------------------------
 class UserDatasetPermission(models.Model):
-    '''
+    """
     Table with user permissions to Datasets.
 
     Attributes:
         user: ForeignKey to User.
         dataset: ForeignKey to Dataset.
-    '''
+    """
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     dataset = models.ForeignKey(Dataset, on_delete=models.CASCADE)
 
@@ -91,13 +91,13 @@ class UserDatasetPermission(models.Model):
 
 # ------------------------------------------------------------------------------
 class ExperimentType(models.Model):
-    '''
+    """
     Table with experiment types in PlanExp.
 
     Attributes:
         exp_type: Name of the experiment type.
         description: Description of the experiment type.
-    '''
+    """
     exp_type = models.CharField(max_length=50)
     description = models.TextField()
 
@@ -107,7 +107,7 @@ class ExperimentType(models.Model):
 
 # ------------------------------------------------------------------------------
 class Experiment(models.Model):
-    '''
+    """
     Table with RNA-seq and scRNA-seq Experiment information.
 
     Attributes:
@@ -117,7 +117,7 @@ class Experiment(models.Model):
         url: Url of the publication.
         exp_type: Foreign Key to the corresponding ExperimentType.
         public: Boolean to define if it is a public experiment (`True`) or private (`False`).
-    '''
+    """
     name = models.CharField(max_length=50)
     description = models.TextField()
     citation = models.CharField(max_length=512)
@@ -127,7 +127,7 @@ class Experiment(models.Model):
 
     @classmethod
     def get_allowed_experiments(cls, user):
-        '''
+        """
         Returns QuerySet of allowed experiments for a given user.
 
         Args:
@@ -136,7 +136,7 @@ class Experiment(models.Model):
         Returns:
             QuerySet: QuerySet of allowed experiments to which user has 
                 permission to.
-        '''
+        """
         public_experiments = cls.objects.filter(public=True).order_by('name')
         if not user.is_authenticated:
             # Return only public datasets
@@ -148,7 +148,7 @@ class Experiment(models.Model):
             return all_allowed
 
     def to_json(self):
-        '''
+        """
         Returns json string with info about experiment.
 
         Returns:
@@ -158,7 +158,7 @@ class Experiment(models.Model):
                 - 'citation'
                 - 'url'
                 - 'type'
-        '''
+        """
         json_dict = {
             'name': self.name,
             'description': self.description,
@@ -182,13 +182,13 @@ class Experiment(models.Model):
 
 # ------------------------------------------------------------------------------
 class ExperimentDataset(models.Model):
-    '''
+    """
     Table with Datasets available for a particular experiment.
     
     Attributes:
         dataset: Foreign Key to Dataset.
         experiment: Foreign Key to Experiment.
-    '''
+    """
     dataset = models.ForeignKey(Dataset, on_delete=models.CASCADE)
     experiment = models.ForeignKey(Experiment, on_delete=models.CASCADE)
 
@@ -198,13 +198,13 @@ class ExperimentDataset(models.Model):
 
 # ------------------------------------------------------------------------------
 class UserExperimentPermission(models.Model):
-    '''
+    """
     Table with user permissions to experiments in PlanExp.
 
     Attributes:
         user: Foreign Key to User.
         experiment: Foreign Key to Experiment.
-    '''
+    """
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     experiment = models.ForeignKey(Experiment, on_delete=models.CASCADE)
 
@@ -214,7 +214,7 @@ class UserExperimentPermission(models.Model):
 
 # ------------------------------------------------------------------------------
 class ConditionType(models.Model):
-    '''
+    """
     Types of conditions for a PlanExp experiment.
     1 Batch (technical condition).
     2 Experimental condition.
@@ -225,7 +225,7 @@ class ConditionType(models.Model):
         description: Description for condition type.
         is_interaction: Bool to define if it results from an interaction 
             of other condition types.
-    '''
+    """
     name = models.CharField(max_length=50)
     description = models.TextField()
     is_interaction = models.BooleanField(default=False)
@@ -236,7 +236,7 @@ class ConditionType(models.Model):
 
 # ------------------------------------------------------------------------------
 class Condition(models.Model):
-    '''
+    """
     Table with PlanExp experiment conditions. Technical conditions, 
     Experimental conditions, Clusters, etc. will be stored here.
 
@@ -254,7 +254,7 @@ class Condition(models.Model):
         max_expression: Maximum expression value in this condition (defaults to `None`).
         min_expression: Minimum expression value in this condition (default to 0).
 
-    '''
+    """
     name = models.CharField(max_length=50)
     experiment = models.ForeignKey(Experiment, on_delete=models.CASCADE)
     cond_type = models.ForeignKey(ConditionType, on_delete=models.CASCADE)
@@ -268,10 +268,10 @@ class Condition(models.Model):
        return self.name + " - " + self.experiment.name
     
     def __get_max_expression(self):
-        '''
+        """
         Gets max expression of samples in this particular condition.
         Assigns it to self.max_expression and returns it.
-        '''
+        """
         
         n_samples = SampleCondition.objects.filter(condition=self).count()
         self.max_expression = ExpressionCondition.objects.filter(
@@ -284,14 +284,14 @@ class Condition(models.Model):
         return self.max_expression
         
     def get_color(self, dataset, value, profile="red", max_v=None):
-        '''
+        """
         Returns expression color for a given expression value. 
         Will use one of the saved color profiles 'red', 'green' or 'blue'.
 
         If max_v is provided, the color will be determined using a scale from 0 to max_v. 
         Otherwise, max_v will be computed as the maximum expression value for a 
         particular experiment + condition.
-        '''
+        """
         if max_v is None:
             # Compute max expression for the whole experiment
             if self.max_expression is None:
@@ -304,9 +304,9 @@ class Condition(models.Model):
         return color_gradient.map_color(value)
 
     def get_color_legend(self, profile="red", units=None):
-        '''
+        """
         Returns html of color gradient generated for expression in Condition
-        '''
+        """
         if self.max_expression is None:
             self.__get_max_expression()
         color_gradient = colors.ColorGenerator(self.max_expression, self.min_expression, profile)
@@ -315,7 +315,7 @@ class Condition(models.Model):
 
     @classmethod
     def get_samples_per_condition(cls, experiment, ctype):
-        '''Method for getting the number of samples per condition of ctype.
+        """Method for getting the number of samples per condition of ctype.
 
             Args:
                 experiment (str): Experiment name.
@@ -325,7 +325,7 @@ class Condition(models.Model):
                 sc_dict (`dict`): Dictionary with conditions and samples mapping.
                     Keys are condition ids (`int`) values are number of samples (`int`) in that condition.
 
-        '''
+        """
         condition_expression = dict()
         conditions_ctype = Condition.objects.filter(
             experiment=experiment,
@@ -340,13 +340,13 @@ class Condition(models.Model):
 
 # ------------------------------------------------------------------------------
 class Sample(models.Model):
-    '''
+    """
     Table for storing samples.
 
     Attributes:
         experiment: Foreign Key to experiment to which sample belongs to.
         sample_name: Sample name.
-    '''
+    """
     experiment = models.ForeignKey(Experiment, on_delete=models.CASCADE)
     sample_name  = models.CharField(max_length=50)
 
@@ -356,14 +356,14 @@ class Sample(models.Model):
 
 # ------------------------------------------------------------------------------
 class SampleCondition(models.Model):
-    '''
+    """
     Table with Conditions to which each sample belongs.
 
     Attributes:
         experiment: Foreign Key to Experiment.
         sample: Foreign Key to Sample.
         condition: Foreign Key to Condition.
-    '''
+    """
     experiment = models.ForeignKey(Experiment, on_delete=models.CASCADE)
     sample = models.ForeignKey(Sample, on_delete=models.CASCADE)
     condition = models.ForeignKey(Condition, on_delete=models.CASCADE)
@@ -373,7 +373,7 @@ class SampleCondition(models.Model):
 
 # ------------------------------------------------------------------------------
 class ExpressionAbsolute(Model):
-    '''
+    """
     Stores expression for a particular gene in a particular sample. 
     Only stores NON-ZERO values.
 
@@ -384,7 +384,7 @@ class ExpressionAbsolute(Model):
         gene_symbol: String with gene symbol.
         expression_value: Float with the expression value for gene_symbol in sample.
         units: Units in which expression_value are stored (usually logCPM).
-    '''
+    """
     experiment = models.ForeignKey(Experiment, on_delete=models.CASCADE)
     sample = models.ForeignKey(Sample, on_delete=models.CASCADE)
     dataset = models.ForeignKey(Dataset, on_delete=models.CASCADE)
@@ -402,7 +402,7 @@ class ExpressionAbsolute(Model):
         
     @classmethod
     def get_sample_expression(cls, experiment, dataset, conditions, genes, only_expressed=False):
-        '''
+        """
         Method for getting gene expression in all samples.
 
         Args:
@@ -431,7 +431,7 @@ class ExpressionAbsolute(Model):
                         ...
                     }
 
-        '''
+        """
         sample_expression = defaultdict(list)
         gene_conditions = defaultdict(list)
         cursor = connection.cursor()
@@ -496,7 +496,7 @@ class ExpressionAbsolute(Model):
 
     @classmethod
     def get_mean_expression(cls, experiment, dataset, conditions, genes):
-        '''Return mean gene expression for samples with expression > 0 for all genes.
+        """Return mean gene expression for samples with expression > 0 for all genes.
 
         Args:
             experiment (str): Experiment in PlanExp.
@@ -510,7 +510,7 @@ class ExpressionAbsolute(Model):
                 Key is sample name (`str`), value is 
                 mean expression (`float`) for each gene in `genes`. Only samples with expression for all
                 genes in `genes`.
-        '''
+        """
 
         celldict = dict()
         for condition in conditions:
@@ -543,7 +543,7 @@ class ExpressionAbsolute(Model):
 
 # ------------------------------------------------------------------------------
 class ExpressionCondition(models.Model):
-    '''
+    """
     Table that stores the sum of expression values in a particular condition.
     Note that we store the sum, and not the mean, because the 0 values of expression 
     are not stored in ExpressionAbsolute, and thus can't be computed without taking into 
@@ -571,7 +571,7 @@ class ExpressionCondition(models.Model):
                 `NetExplorer_expressionabsolute`.`gene_symbol`, 
                 `NetExplorer_expressionabsolute`.`experiment_id`;
 
-    '''
+    """
     experiment = models.ForeignKey(Experiment, on_delete=models.CASCADE)
     gene_symbol = models.CharField(max_length=50)
     condition =  models.ForeignKey(Condition, on_delete=models.CASCADE)
@@ -579,7 +579,7 @@ class ExpressionCondition(models.Model):
 
     @classmethod
     def get_condition_expression(cls, experiment, dataset, conditions, ctype, genes):
-        '''Method for getting gene expression in a set of conditions.
+        """Method for getting gene expression in a set of conditions.
 
         Args:
             experiment (str): Experiment in PlanExp.
@@ -592,7 +592,7 @@ class ExpressionCondition(models.Model):
             `dict`: Dictionary with expression for each condition.
                 Key is gene symbol (`str`), value is vector of expression in each condition (`list` of `float`), 
                 in the same order as `conditions`.
-        '''
+        """
 
         condition_expression = dict()
         sc_dict = Condition.get_samples_per_condition(experiment, ctype)    
@@ -629,7 +629,7 @@ class ExpressionCondition(models.Model):
 
 # ------------------------------------------------------------------------------
 class CellPlotPosition(models.Model):
-    '''
+    """
     Table with Cell position in a 2-dimensional space,
     usually computed with t-SNE. 
 
@@ -639,7 +639,7 @@ class CellPlotPosition(models.Model):
         dataset: Foreign Key to Dataset.
         x_position: Float with x-axis coordinate.
         y_position: Float with y-axis coordinate.
-    '''
+    """
     experiment = models.ForeignKey(Experiment, on_delete=models.CASCADE)
     sample = models.ForeignKey(Sample, on_delete=models.CASCADE)
     dataset = models.ForeignKey(Dataset, on_delete=models.CASCADE)
@@ -649,7 +649,7 @@ class CellPlotPosition(models.Model):
 
 # ------------------------------------------------------------------------------
 class ExpressionRelative(models.Model):
-    '''
+    """
     Table for storing comparisons of expression between two conditions.
     Only stores significant results.
 
@@ -662,7 +662,7 @@ class ExpressionRelative(models.Model):
         gene_symbol: String with gene symbol.
         fold_change: Float with log2(Fold Change).
         pvalue: Float with adjusted p-value.
-    '''
+    """
     experiment = models.ForeignKey(Experiment, on_delete=models.CASCADE)
     condition1 = models.ForeignKey(Condition, on_delete=models.CASCADE, related_name='condition1_expressionrelative_set')
     condition2 = models.ForeignKey(Condition, on_delete=models.CASCADE, related_name='condition1_expressionrelative_setsubcondition')
@@ -684,7 +684,7 @@ class ExpressionRelative(models.Model):
 
 # ------------------------------------------------------------------------------
 class ExperimentGene(models.Model):
-    '''
+    """
     Table with genes that appear in a particular experiment.
     Useful for deciding if a gene has expression == 0.
         If gene is in ExperimentGene but not in ExpressionAbsolute: expression == 0.
@@ -693,7 +693,7 @@ class ExperimentGene(models.Model):
     Attributes:
         experiment: Foreign Key to Experiment.
         gene_symbol: String with gene symbol.
-    '''
+    """
     experiment = models.ForeignKey(Experiment, on_delete=models.CASCADE)
     gene_symbol =  models.CharField(max_length=50)
 
@@ -704,7 +704,7 @@ class ExperimentGene(models.Model):
 
 # ------------------------------------------------------------------------------
 class RegulatoryLinks(models.Model):
-    '''
+    """
     Class for regulatory links predicted for a SingleCell Experiment.
 
     Attributes:
@@ -718,7 +718,7 @@ class RegulatoryLinks(models.Model):
         source: String indicating if the regulator was selected by 
             PFAM domain or by GO term.
         score: Score of the regulatory link as reported by GENIE3.
-    '''
+    """
     experiment = models.ForeignKey(Experiment, on_delete=models.CASCADE)
     dataset = models.ForeignKey(Dataset, on_delete=models.CASCADE)
     group = models.IntegerField(max_length=10, default=1)
@@ -729,7 +729,7 @@ class RegulatoryLinks(models.Model):
 
 # ------------------------------------------------------------------------------
 class ClusterMarkers(models.Model):
-    '''
+    """
     Class for cluster marker genes.
 
     Attributes:
@@ -740,7 +740,7 @@ class ClusterMarkers(models.Model):
         auc: Area under the curve of the marker used as a classifier.
         avg_diff: Average difference in expression of the marker between this condition 
             and all the others.
-    '''
+    """
     experiment = models.ForeignKey(Experiment, on_delete=models.CASCADE)
     dataset = models.ForeignKey(Dataset, on_delete=models.CASCADE)
     condition = models.ForeignKey(Condition, on_delete=models.CASCADE)

@@ -2,7 +2,7 @@ from .common import *
 
 # ------------------------------------------------------------------------------
 class DownloadHandler(object):
-    '''
+    """
     Class that handles downloadable files.
 
     Attributes:
@@ -18,10 +18,10 @@ class DownloadHandler(object):
 
     Methods get_*_data returns a list of tuples, each tuple being a line, and each
     element of the tuple being a column.
-    '''
+    """
 
     def _get_contig_data(node):
-        '''
+        """
         Function to return a line with the contig sequence.
         
         Args:
@@ -34,7 +34,7 @@ class DownloadHandler(object):
                     2. Contig sequence.
                     3. Contig database.
                     4. Gene symbol (if available, otherwise "NA").
-        '''
+        """
         if not node.sequence:
             node.get_all_information()
 
@@ -45,7 +45,7 @@ class DownloadHandler(object):
         return [(node.symbol, node.sequence, node.database, gene)]
 
     def _get_orf_data(node):
-        '''
+        """
         Function to return line with contig Open Reading Frame (ORF) 
         and other data.
 
@@ -59,7 +59,7 @@ class DownloadHandler(object):
                     2. Contig ORF sequence.
                     3. Contig database.
                     4. Gene symbol (if available, otherwise "NA").
-        '''
+        """
         if not node.orf:
             node.get_all_information()
         genes = node.get_genes()
@@ -69,7 +69,7 @@ class DownloadHandler(object):
         return [(node.symbol, node.orf, node.database, gene)]
 
     def _get_homology_data(node):
-        '''
+        """
         Function to return line with Homology data for a contig.
 
         Args:
@@ -85,7 +85,7 @@ class DownloadHandler(object):
                     5. Blast Coverage (if available, otherwise "NA").
                     6. EggNOG HMMER E-Value (if available, otherwise "NA").
                     7. PFAM meta-alignment score (if available, otherwise "NA").
-        '''
+        """
         genes = node.get_genes()
         gene = "NA"
         if genes:
@@ -100,7 +100,7 @@ class DownloadHandler(object):
                     "NA", "NA")]
 
     def _get_pfam_data(node):
-        '''
+        """
         Function to return line with PFAM domain data for a contig.
 
         Args:
@@ -112,7 +112,7 @@ class DownloadHandler(object):
                     1. Contig symbol.
                     2. Gene symbol (if available, otherwise "NA").
                     3. PFAM domains, in the form of (`accession`:`start`-`end`), separated by `;`.
-        '''
+        """
         node.get_domains()
         genes = node.get_genes()
         gene = "NA"
@@ -127,7 +127,7 @@ class DownloadHandler(object):
         return([(node.symbol, gene, domains)])
 
     def _get_go_data(node):
-        '''
+        """
         Function to return line with GO for a contig.
 
         Args:
@@ -139,7 +139,7 @@ class DownloadHandler(object):
                     1. Contig symbol.
                     2. Gene symbol (if available, otherwise "NA").
                     3. GO terms, in the form of (`accession`=`domain`=`name`), separated by `;`.
-        '''
+        """
         node.get_geneontology()
         genes = node.get_genes()
         gene = "NA"
@@ -151,7 +151,7 @@ class DownloadHandler(object):
         return [(node.symbol, gene, gos)]
 
     def _get_interactions_data(node):
-        '''
+        """
         Function to return several line with interactions for a contig.
 
         Args:
@@ -165,7 +165,7 @@ class DownloadHandler(object):
                     3. Interactor contig symbol.
                     4. Interactor gene symbol (if available, otherwise "NA").
                     5. Interaction score (if available, otherwise "NA")
-        '''
+        """
         node.get_neighbours()
         genes1 = node.get_genes()
         gene1 = "NA"
@@ -195,7 +195,7 @@ class DownloadHandler(object):
     }
 
     def download_data(self, identifiers, database, data):
-        '''
+        """
         Creates file object with the specified data for the
         specified identifiers.
 
@@ -207,7 +207,7 @@ class DownloadHandler(object):
         
         Returns:
             ServedFile: ServedFile object with the file ready to download.
-        '''
+        """
         fformat = 'csv'
         if data == "contig" or data == "orf":
             fformat = 'fasta'
@@ -223,7 +223,7 @@ class DownloadHandler(object):
         return dfile
 
     def get_filename(self, data):
-        '''
+        """
         Returns filename string.
 
         Args:
@@ -232,7 +232,7 @@ class DownloadHandler(object):
         
         Returns:
             str: String with filename according to the data to download.
-        '''
+        """
         if data == "contig" or data=="orf":
             filename = "fasta.fa"
         elif data == "homology":
@@ -246,7 +246,7 @@ class DownloadHandler(object):
         return filename
 
     def get_header(self, data):
-        '''
+        """
         Returns header string.
 
         Args:
@@ -255,7 +255,7 @@ class DownloadHandler(object):
         
         Return:
             str: String with first line (header) of the file.
-        '''
+        """
         if data == "homology":
             header = "NAME,GENE,HUMAN,BLAST_EVALUE,BLAST_COVERAGE,EGGNOG_EVALUE,META_ALIGNMENT_SCORE\n"
         else:
@@ -265,7 +265,7 @@ class DownloadHandler(object):
 
 # ------------------------------------------------------------------------------
 class ServedFile(object):
-    '''
+    """
     Class of served files for download.
 
     Attributes:
@@ -284,7 +284,7 @@ class ServedFile(object):
         header (str, optional): Header string to write on the first line of the file.
             Defaults to `None`.
 
-    '''
+    """
     def __init__(self, oname, fformat='csv', header=None):
         self.oname = oname
         self.fformat = fformat
@@ -294,25 +294,25 @@ class ServedFile(object):
         self.written = False
 
     def add_elements(self, elem):
-        '''
+        """
         Adds a register to the list of elements.
 
         Args:
             elem (`list` of `tuple`): List of tuples. 
                 Each tuple corresponds to a line.
 
-        '''
+        """
         self.elements.extend(elem)
         return self
 
     def write(self, what=None):
-        '''
+        """
         Writes to temp file.
 
         Args:
             what (None): Nothing.
 
-        '''
+        """
         with open(self.filename.name, "w") as fh:
             if self.header is not None:
                 fh.write(self.header)
@@ -328,7 +328,7 @@ class ServedFile(object):
         return self
 
     def to_response(self, what=None):
-        '''
+        """
         Creates a response object to be served to the user for download.
 
         Args:
@@ -338,7 +338,7 @@ class ServedFile(object):
             `HttpResponse`: HttpResponse object with the file to be returned 
                 in a request.
                     
-        '''
+        """
         if self.written is False:
             self.write(what)
         wrapper = FileWrapper(open(self.filename.name))

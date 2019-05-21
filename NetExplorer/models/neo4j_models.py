@@ -214,7 +214,7 @@ class Domain(object):
 
     @classmethod
     def is_symbol_valid(cls, symbol):
-        '''
+        """
         Classmethod for checking if accession is a valid PFAM accession.
 
         Args:
@@ -222,11 +222,11 @@ class Domain(object):
 
         Returns:
             bool: `True` if it is valid, `False` otherwise.
-        '''
+        """
         return re.match(cls.pfam_regexp, symbol)
 
     def get_planarian_contigs(self, database):
-        '''
+        """
         Returns a list of PlanarianContigs of 'database'.
 
         Args:
@@ -238,7 +238,7 @@ class Domain(object):
 
         Raises:
             NodeNotFound: raised if there are no planarian contigs with this Domain.
-        '''
+        """
         query = "";
         if not re.match(Domain.pfam_regexp + r'\.\d+', self.accession):
             # Fuzzy pfam accession (no number)
@@ -283,7 +283,7 @@ class HasDomain(object):
         self.perc    = perc
 
     def to_jsondict(self):
-        '''
+        """
         Transforms data for Sequence-Domain relationship to a JSON string.
 
         Returns:
@@ -301,7 +301,7 @@ class HasDomain(object):
                     'perc': 'Percentage of Domain in sequence'
                 }
 
-        '''
+        """
         json_dict = dict()
         json_dict['accession']   = self.domain.accession
         json_dict['description'] = self.domain.description
@@ -387,7 +387,7 @@ class PredInteraction(object):
                 self.parameters['dom_int_sc']  = row['dom_int_sc']
 
     def to_jsondict(self):
-        '''
+        """
         This function takes a PredInteraction object and returns a dictionary with the necessary
         structure to convert it to json and be read by cytoscape.js.
 
@@ -408,7 +408,7 @@ class PredInteraction(object):
                         }
                 }
 
-        '''
+        """
         element         = dict()
         element['data'] = dict()
         element['data']['id']          = "-".join(sorted((self.source_symbol, self.target.symbol)))
@@ -464,13 +464,13 @@ class HumanNode(Node):
             raise exceptions.NodeNotFound(self.symbol, self.database)
 
     def get_neighbours(self):
-        '''
+        """
         Gets HumanNodes that interact with this HumanNode. Not implemented yet.
-        '''
+        """
         pass
 
     def to_jsondict(self):
-        '''
+        """
         Serializes HumanNode to a dictionary for converting it to JSON.
 
         Returns:
@@ -487,7 +487,7 @@ class HumanNode(Node):
                             }
                     }
 
-        '''
+        """
         element                     = dict()
         element['data']             = dict()
         element['data']['id']       = self.symbol
@@ -496,7 +496,7 @@ class HumanNode(Node):
         return element
 
     def get_planarian_genes(self, database):
-        '''
+        """
         Gets planarian gene objects (PlanarianGene) connected to HumanNode
         through contigs of dataset 'database', i.e.: (:Human)->(:Database)->(:Smesgene)
 
@@ -505,7 +505,7 @@ class HumanNode(Node):
         
         Returns:
             list: List of :obj:`PlanarianGene` instances.
-        '''
+        """
         query = neoquery.GET_GENES_FROMHUMAN_QUERY % (database, self.symbol)
         results = GRAPH.run(query)
         results = results.data()
@@ -556,7 +556,7 @@ class HumanNode(Node):
         return self            
 
     def get_planarian_contigs(self, database):
-        '''
+        """
         Gets all PlanarianContigs homologous to HumanNode.
 
         Args:
@@ -564,7 +564,7 @@ class HumanNode(Node):
 
         Returns:
             `list`: :obj:`PlanarianContig` objects.
-        '''
+        """
         homologs = self.get_homologs(database)
         planarian_contigs = list()
         for db, homologies in homologs.items():
@@ -653,12 +653,12 @@ class WildCard(object):
         self.database = database
 
     def get_human_genes(self):
-        '''
+        """
         Gets list of :obj:`HumanNode` objects matching the wildcard query.
 
         Returns:
             `list`: :obj:`HumanNode` objects.
-        '''
+        """
         query   = neoquery.SYMBOL_WILDCARD % (self.database, self.search)
         results = GRAPH.run(query)
         results = results.data()
@@ -669,12 +669,12 @@ class WildCard(object):
         return list_of_nodes
 
     def get_planarian_genes(self):
-        '''
+        """
         Gets list of :obj:`PlanarianGene` objects matching the wildcard query.
 
         Returns:
             `list`: :obj:`PlanarianGene` objects.
-        '''
+        """
         query = neoquery.NAME_WILDCARD % (self.database, self.search)
         results = GRAPH.run(query)
         results = results.data()
@@ -748,9 +748,9 @@ class PlanarianContig(Node):
             self.get_gene_name()
 
     def get_gene_name(self):
-        '''
+        """
         Gets gene name if possible and loads `gene` and `name` attributes.
-        '''
+        """
         if self.gene is None:
             query = neoquery.GET_GENE % (self.database, self.symbol)
             results = GRAPH.run(query)
@@ -765,13 +765,13 @@ class PlanarianContig(Node):
         return self 
 
     def get_genes(self):
-        '''
+        """
         Gets Genes to which this contig maps.
 
         Returns:
             `list`: List of :obj:`PlanarianGene` objects that this contig is 
                 associated with.
-        '''
+        """
         query = neoquery.GET_GENES_QUERY % (self.database, self.symbol)
         results = GRAPH.run(query)
         results = results.data()
@@ -794,10 +794,10 @@ class PlanarianContig(Node):
 
 
     def get_summary(self):
-        '''
+        """
         Fills attribute values that are not mandatory, with a summary of several
         features of the node. Fills attributes "length" and "orflength".
-        '''
+        """
         self.length    = len(self.sequence)
         self.orflength = len(self.orf)
 
@@ -852,19 +852,19 @@ class PlanarianContig(Node):
                 raise exceptions.NodeNotFound(self.symbol, self.database)
 
     def get_all_information(self):
-        '''
+        """
         Fills all attributes of PlanarianContig by querying the database
-        '''
+        """
         self.__query_node()
 
     def get_homolog(self):
-        '''
+        """
         Tries to get the homologous human gene of this planarian transcript
-        '''
+        """
         self.__query_node()
 
     def to_jsondict(self):
-        '''
+        """
         This function takes a node object and returns a dictionary with the necessary
         structure to convert it to json and be read by cytoscape.js
 
@@ -887,7 +887,7 @@ class PlanarianContig(Node):
                             
                         } 
                         
-        '''
+        """
         element                     = dict()
         element['data']             = dict()
         element['data']['id']       = self.symbol
@@ -905,13 +905,13 @@ class PlanarianContig(Node):
         return element
 
     def get_neighbours_shallow(self):
-        '''
+        """
         Method to get adjacent nodes (and their degree) in the graph without 
         homology information and only with path_length and probability for the interaction information.
         It also retrieves the degree of the neighbour nodes.
         Fills attribute neighbours, which will be a list of PredInteraction objects.
         Used by NetExplorer add_connection/expand
-        '''
+        """
         query = neoquery.NEIGHBOURS_QUERY_SHALLOW % (self.database, self.database, self.symbol)
         results = GRAPH.run(query)
         results = results.data()
@@ -1532,12 +1532,12 @@ class ExperimentList(object):
         if user.is_authenticated:
             try:
                 cursor = connection.cursor()
-                cursor.execute('''
+                cursor.execute("""
                     SELECT auth_user.username, user_exp_permissions.experiment
                     FROM auth_user
                     INNER JOIN user_exp_permissions ON auth_user.id=user_exp_permissions.user_id
                     WHERE auth_user.username = %s;
-                ''', [user.username])
+                """, [user.username])
                 rows = cursor.fetchall()
                 access_to.update([row[1] for row in rows])
             except Exception:
@@ -1612,7 +1612,7 @@ class ExperimentList(object):
 
 # ------------------------------------------------------------------------------
 class KeggPathway(object):
-    '''
+    """
     Class for KeggPathways. Encapsulates a GraphCytoscape object in `graphelements`. Will query Kegg on creation.
 
     Attributes:
@@ -1626,7 +1626,7 @@ class KeggPathway(object):
     Args:
         symbol (str): Symbol for Kegg Pathway.
         database (str): Planarian database to which this KeggPathway will be mapped to.
-    '''
+    """
     def __init__(self, symbol, database):
         self.symbol = symbol
         self.database = database
@@ -1634,7 +1634,7 @@ class KeggPathway(object):
         self.graphelements = self.connect_to_kegg()
 
     def connect_to_kegg(self):
-        '''
+        """
         Connects to KEGG and extracts the elements of the pathway.
 
         Returns:
@@ -1643,7 +1643,7 @@ class KeggPathway(object):
                 neo4j database. If Kegg can't be reached or the pathway does not have 
                 any equivalent in PlanNET, the :obj:`GraphCytoscape` will be empty.
 
-        '''
+        """
         r = requests.get(self.kegg_url)
         if r.status_code == 200:
             if r.json():
@@ -1658,9 +1658,9 @@ class KeggPathway(object):
             return GraphCytoscape()
 
     def is_empty(self):
-        '''
+        """
         Checks if the KeggPathway is empty
-        '''
+        """
         return self.graphelements.is_empty()
                 
 # ------------------------------------------------------------------------------
@@ -1833,10 +1833,10 @@ class GeneSearch(object):
         self.sterm_database = None
     
     def infer_symbol_database(self):
-        '''
+        """
         Guesses to which database `sterm` belongs to. Compares the symbol in 
         `sterm` to the valid patterns for each NodeType. Saves result in `sterm_database`.
-        '''
+        """
         datasets = Dataset.objects.all()
         for dataset in datasets:
             if dataset.is_symbol_valid(self.sterm):
@@ -1855,7 +1855,7 @@ class GeneSearch(object):
         return self
     
     def get_planarian_contigs(self):
-        '''
+        """
         Returns PlanarianContig objects that match sterm independently of the search term used.
 
         Returns:
@@ -1863,7 +1863,7 @@ class GeneSearch(object):
                 PlanarianContigs retrieved from `sterm`. It is able to work with sterm of the type: 
                 'Smesgene', 'PFAM', 'GO', 'Human', 'PlanarianContig'.
 
-        '''
+        """
         if self.sterm_database is None:
             self.infer_symbol_database()
 
@@ -1897,14 +1897,14 @@ class GeneSearch(object):
         return planarian_contigs
 
     def get_planarian_genes(self):
-        '''
+        """
         Returns PlanarianGene objects that match sterm independently of the search term used.
 
         Returns:
             `list` of :obj:`PlanarianGene`: List of :obj:`PlanarianGene` instances. 
                 PlanarianGene retrieved from `sterm`. It is able to work with sterm of the type: 
                 'Smesgene', 'PFAM', 'GO', 'Human', 'PlanarianContig'.
-        '''
+        """
         if self.sterm_database is None:
             self.infer_symbol_database()
         planarian_genes = list()
@@ -1938,7 +1938,7 @@ class GeneSearch(object):
         return planarian_genes
 
     def get_human_genes(self):
-        '''
+        """
         Returns HumanNode objects independently of the search term used.
 
         Returns:
@@ -1946,7 +1946,7 @@ class GeneSearch(object):
                 HumanNode retrieved from `sterm`. It is able to work with sterm of the type: 
                 'Human', 'GO'.
 
-        '''
+        """
         if self.sterm_database is None:
             self.infer_symbol_database()
 
@@ -1961,12 +1961,12 @@ class GeneSearch(object):
         return human_nodes
 
     def quick_search(self):
-        '''
+        """
         Retrieves given search term in all databases: PlanarianGene + PlanarianContigs
 
         Returns:
             `list` of `Node`: List of `Node` of the type :obj:`PlanarianGene` or :obj:`PlanarianContig`.
-        '''
+        """
         all_results = list()
 
         # Get Planarian Genes
@@ -2038,7 +2038,7 @@ class PlanarianGene(Node):
 
     @classmethod
     def is_symbol_valid(cls, symbol):
-        '''
+        """
         Checks if symbol is valid
 
         Args:
@@ -2046,16 +2046,16 @@ class PlanarianGene(Node):
         
         Returns:
             bool: True if symbol is a valid gene identifier. False otherwise.
-        '''
+        """
         return re.match(cls.smesgene_regexp, symbol.upper())
 
     def __query_node(self):
-        '''
+        """
         Queries PlanarianGene to get and fill the attributes from the database.
 
         Raises:
             NodeNotFound: If gene is not in database.
-        '''
+        """
         query = neoquery.SMESGENE_QUERY % (self.symbol)
         results = GRAPH.run(query)
         results = results.data()
@@ -2076,13 +2076,13 @@ class PlanarianGene(Node):
 
 
     def get_homolog(self):
-        '''
+        """
         Gets homologous gene of longest transcript associated with this PlanarianGene.
         Fills attribute 'homolog'. Returns the HumanNode object.
 
         Returns:
             :obj:`HumanNode` or `None`: Homologous :obj:`HumanNode` if there is any, otherwise `None`.
-        '''
+        """
         best_transcript = self.get_best_transcript()
         if best_transcript:
             best_transcript.get_homolog()
@@ -2096,13 +2096,13 @@ class PlanarianGene(Node):
 
 
     def get_best_transcript(self):
-        '''
+        """
         Retrieves the longest transcript of preferred_database.
 
         Returns:
             :obj:`PlanarianContig`: PlanarianContig from preferred database annotated 
                 as being transcribed from this gene.
-        '''
+        """
         best = None
         try:
             best = self.get_planarian_contigs(PlanarianGene.preferred_database)
@@ -2114,7 +2114,7 @@ class PlanarianGene(Node):
 
 
     def get_planarian_contigs(self, database=None):
-        '''
+        """
         Returns list PlanarianContig objects of database or all databases that map to
         the PlanarianGene genomic location.
         
@@ -2125,7 +2125,7 @@ class PlanarianGene(Node):
         Returns:
             `list` of :obj:`PlanarianContig`: PlanarianContig objects associated with this
                 gene.
-        '''
+        """
         if database is None:
             query = neoquery.SMESGENE_GET_ALL_CONTIGS_QUERY % (self.symbol)
         else:
