@@ -6,15 +6,11 @@ class DownloadHandler(object):
     Class that handles downloadable files.
 
     Attributes:
-        data_from_node: Class attribute, dictionary mapping data type keywords, 
+        data_from_node (`dict` of `str`: `fun`): Class attribute, dictionary mapping data type keywords, 
             to the methods that handle them.
-            {'contig'
-             'orf'
-             'homology'
-             'pfam'
-             'go'
-             'interactions'}
-    Usage:
+
+    Example::
+    
         dhandler = DownloadHandler()
         the_file = dhandler.download_data(identifiers, database, data)
         response = the_file.to_response()
@@ -23,7 +19,22 @@ class DownloadHandler(object):
     Methods get_*_data returns a list of tuples, each tuple being a line, and each
     element of the tuple being a column.
     '''
+
     def _get_contig_data(node):
+        '''
+        Function to return a line with the contig sequence.
+        
+        Args:
+            node (PlanarianContig): PlanarianContig object.
+
+        Returns:
+            `list` of `tuple` of `str`: List with data for a row in the downloadable
+                file. Contains: 
+                    1. Contig symbol.
+                    2. Contig sequence.
+                    3. Contig database.
+                    4. Gene symbol (if available, otherwise "NA").
+        '''
         if not node.sequence:
             node.get_all_information()
 
@@ -34,6 +45,21 @@ class DownloadHandler(object):
         return [(node.symbol, node.sequence, node.database, gene)]
 
     def _get_orf_data(node):
+        '''
+        Function to return line with contig Open Reading Frame (ORF) 
+        and other data.
+
+        Args:
+            node (PlanarianContig): PlanarianContig object.
+        
+        Returns:
+            `list` of `tuple` of `str`: List with data for a row in the downloadable
+                file. Contains: 
+                    1. Contig symbol.
+                    2. Contig ORF sequence.
+                    3. Contig database.
+                    4. Gene symbol (if available, otherwise "NA").
+        '''
         if not node.orf:
             node.get_all_information()
         genes = node.get_genes()
@@ -43,6 +69,23 @@ class DownloadHandler(object):
         return [(node.symbol, node.orf, node.database, gene)]
 
     def _get_homology_data(node):
+        '''
+        Function to return line with Homology data for a contig.
+
+        Args:
+             node (PlanarianContig): PlanarianContig object.
+            
+        Returns:
+            `list` of `tuple` of `str`: List with data for a row in the downloadable
+                file. Contains: 
+                    1. Contig symbol.
+                    2. Gene symbol (if available, otherwise "NA")..
+                    3. Homolog symbol (if available, otherwise "NA").
+                    4. Blast E-Value (if available, otherwise "NA").
+                    5. Blast Coverage (if available, otherwise "NA").
+                    6. EggNOG HMMER E-Value (if available, otherwise "NA").
+                    7. PFAM meta-alignment score (if available, otherwise "NA").
+        '''
         genes = node.get_genes()
         gene = "NA"
         if genes:
@@ -57,6 +100,19 @@ class DownloadHandler(object):
                     "NA", "NA")]
 
     def _get_pfam_data(node):
+        '''
+        Function to return line with PFAM domain data for a contig.
+
+        Args:
+            node (PlanarianContig): PlanarianContig object.
+        
+        Returns:
+            `list` of `tuple` of `str`: List with data for a row in the downloadable
+                file. Contains: 
+                    1. Contig symbol.
+                    2. Gene symbol (if available, otherwise "NA").
+                    3. PFAM domains, in the form of (`accession`:`start`-`end`), separated by `;`.
+        '''
         node.get_domains()
         genes = node.get_genes()
         gene = "NA"
@@ -71,6 +127,19 @@ class DownloadHandler(object):
         return([(node.symbol, gene, domains)])
 
     def _get_go_data(node):
+        '''
+        Function to return line with GO for a contig.
+
+        Args:
+            node (PlanarianContig): PlanarianContig object.
+        
+        Returns:
+            `list` of `tuple` of `str`: List with data for a row in the downloadable
+                file. Contains: 
+                    1. Contig symbol.
+                    2. Gene symbol (if available, otherwise "NA").
+                    3. GO terms, in the form of (`accession`=`domain`=`name`), separated by `;`.
+        '''
         node.get_geneontology()
         genes = node.get_genes()
         gene = "NA"
@@ -82,6 +151,21 @@ class DownloadHandler(object):
         return [(node.symbol, gene, gos)]
 
     def _get_interactions_data(node):
+        '''
+        Function to return several line with interactions for a contig.
+
+        Args:
+            node (PlanarianContig): PlanarianContig object.
+        
+        Returns:
+            `list` of `tuple` of `str`: List with data for a row in the downloadable
+                file. Contains: 
+                    1. Contig symbol.
+                    2. Gene symbol (if available, otherwise "NA").
+                    3. Interactor contig symbol.
+                    4. Interactor gene symbol (if available, otherwise "NA").
+                    5. Interaction score (if available, otherwise "NA")
+        '''
         node.get_neighbours()
         genes1 = node.get_genes()
         gene1 = "NA"
@@ -114,6 +198,15 @@ class DownloadHandler(object):
         '''
         Creates file object with the specified data for the
         specified identifiers.
+
+        Args: 
+            identifiers (`list` of `str`): List of gene/transcript identifiers.
+            database (str): Database name of desired results to download.
+            data (str): Desired data to download. 
+                Can be ['contig', 'orf', 'homology', 'pfam', 'go', 'interactions']
+        
+        Returns:
+            ServedFile: ServedFile object with the file ready to download.
         '''
         fformat = 'csv'
         if data == "contig" or data == "orf":
@@ -131,7 +224,14 @@ class DownloadHandler(object):
 
     def get_filename(self, data):
         '''
-        Returns filename string
+        Returns filename string.
+
+        Args:
+            data (str): Desired data to download. 
+                Can be ['contig', 'orf', 'homology', 'pfam', 'go', 'interactions']
+        
+        Returns:
+            str: String with filename according to the data to download.
         '''
         if data == "contig" or data=="orf":
             filename = "fasta.fa"
@@ -147,7 +247,14 @@ class DownloadHandler(object):
 
     def get_header(self, data):
         '''
-        Returns header string
+        Returns header string.
+
+        Args:
+            data (str): Desired data to download. 
+                Can be ['contig', 'orf', 'homology', 'pfam', 'go', 'interactions']
+        
+        Return:
+            str: String with first line (header) of the file.
         '''
         if data == "homology":
             header = "NAME,GENE,HUMAN,BLAST_EVALUE,BLAST_COVERAGE,EGGNOG_EVALUE,META_ALIGNMENT_SCORE\n"
@@ -162,10 +269,21 @@ class ServedFile(object):
     Class of served files for download.
 
     Attributes:
-        oname: String with output filename.
-        fformat: String with file format, can be 'csv' or 'fasta'.
-        header: Bool describing if file should have a header.
-        written: Bool describing if the file has data on it or not.
+        oname (str): String with output filename.
+        fformat (str): String with file format, can be 'csv' or 'fasta'.
+        header (bool): Bool describing if file should have a header.
+        filename (NamedTemporaryFile): NamedTemporaryFile object.
+        elements (`list` of `tuple`): List of tuples. Each tuple contains the
+            data for each line.
+        written (bool): Bool describing if the file has data on it or not.
+
+    Args:
+        oname (str): String with output filename.
+        fformat (str, optional): String with file format, can be 'csv' or 'fasta'. 
+            Defaults to 'csv'.
+        header (str, optional): Header string to write on the first line of the file.
+            Defaults to `None`.
+
     '''
     def __init__(self, oname, fformat='csv', header=None):
         self.oname = oname
@@ -177,13 +295,23 @@ class ServedFile(object):
 
     def add_elements(self, elem):
         '''
-        Adds a register to the list of elements
+        Adds a register to the list of elements.
+
+        Args:
+            elem (`list` of `tuple`): List of tuples. 
+                Each tuple corresponds to a line.
+
         '''
         self.elements.extend(elem)
+        return self
 
     def write(self, what=None):
         '''
-        Writes to temp file
+        Writes to temp file.
+
+        Args:
+            what (None): Nothing.
+
         '''
         with open(self.filename.name, "w") as fh:
             if self.header is not None:
@@ -197,10 +325,19 @@ class ServedFile(object):
                 else:
                     raise InvalidFormat(self.fformat)
         self.written = True
+        return self
 
     def to_response(self, what=None):
         '''
-        Creates a response object to be served to the user for download
+        Creates a response object to be served to the user for download.
+
+        Args:
+            what (None): Nothing.
+
+        Returns:
+            `HttpResponse`: HttpResponse object with the file to be returned 
+                in a request.
+                    
         '''
         if self.written is False:
             self.write(what)

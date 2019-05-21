@@ -7,11 +7,14 @@ class Node(object):
     Base class for all the nodes in the database.
 
     Attributes:
-        symbol: String containing the symbol attribute in Neo4j of a given node.
-        database: The Label for the symbol in Neo4j.
-        neighbours: List of Interaction objects connecting nodes adjacent to the Node.
-        domains: HasDomain objects describing domains in the sequence/node. 
-        allowed_databases: Class attribute. Set of allowed Labels for Node.
+        symbol (str): String containing the symbol attribute in Neo4j of a given node.
+        database (str): The Label for the symbol in Neo4j.
+        neighbours (:obj:`list` of :obj:`PredInteraction`): List of Interaction objects 
+            connecting nodes adjacent to the Node.
+        domains (`list` of `HasDomain`): HasDomain objects describing domains 
+            in the sequence/node. 
+        allowed_databases (`set` of `str`): Class attribute. Set of allowed 
+            Labels for Node.
     """
 
     def __init__(self, symbol, database):
@@ -33,11 +36,17 @@ class Node(object):
 
     def path_to_node(self, target, plen):
         """
-        Given a target node object, this method finds all the shortest paths to that node,
-        if there aren't any, it returns None.
-        It returns a list of dictionaries, each of them with two keys:
-            'graph': GraphCytoscape object with the graph of the path
-            'score': Score of the given path.
+        Given a target node object, this method finds all the shortest paths to 
+        that node of length plen. If there aren't any, it returns None.
+        
+        Args:
+            target (PlanarianContig): Target gene in the graph.
+            plen (int): Path length to consider. All paths from `self` to `target
+                will be of length = `plen`.
+
+        Returns:
+            Union([Pathway, None]): Pathway between `self` and `target` or None 
+            if no pathway exists. 
         """
         query = neoquery.PATH_QUERY % (self.database, plen, target.database, self.symbol, target.symbol)
         results = GRAPH.run(query)
@@ -71,8 +80,12 @@ class Node(object):
 
     def get_domains(self):
         """
-        This will return a list of Has_domain objects or, if the sequence has no Pfam domains,
-        a None object.
+        Gets domains annotated for a particular Node. It updates the Node attribute
+        and it also returns the domain.
+
+        Returns:
+            Union([`list` of `Domain`, None]): List of domains annotated for 
+            this Node. None if there are no domain annotations.
         """
         query = neoquery.DOMAIN_QUERY % (self.database, self.symbol)
 
@@ -109,6 +122,9 @@ class Node(object):
         """
         This function will return a json string with the information about
         the domains of the node. You have to call "get_domains()" before!
+
+        Returns:
+            str: JSON string with Domains data, see Domain.to_jsondict().
         """
         if self.domains is None:
             return None
@@ -123,17 +139,38 @@ class Homology(object):
     Class for homology relationships between a PlanarianContig and a HumanNode.
 
     Attributes:
-        prednode: PlanarianContig object.
-        human: Human object.
-        blast_cov: Float with BLAST coverage value in %.
-        blast_eval: Float with BLAST e-value. 
-        nog_brh: 1/0 flag indicating if homology is best reciprocal hit in EggNOG alignment.
-        nog_eval: Float with EggNOG alignment e-value.
-        pfam_sc: Float with pfam meta-alignment score.
-        pfam_brh: 1/0 flag indicating if homology is best reciprocal hit in pfam alignment.
+        human (Human): Human object.
+        blast_cov (float): Float with BLAST coverage value in %.
+        blast_eval (float): Float with BLAST e-value. 
+        blast_brh (bool): Bool flag indicating if homology is best reciprocal
+            hit in BLAST alignment. 
+        nog_brh (bool): Bool flag indicating if homology is best reciprocal 
+            hit in EggNOG alignment.
+        nog_eval (float): Float with EggNOG alignment e-value.
+        pfam_sc (float): Float with pfam meta-alignment score.
+        pfam_brh (bool): Bool flag indicating if homology is best reciprocal 
+            hit in pfam alignment.
+        prednode (PlanarianContig): PlanarianContig object.
+    
+    Args:
+        human (Human): Human object.
+        blast_cov (float, optional): Float with BLAST coverage value in %.
+        blast_eval (float, optional): Float with BLAST e-value. 
+        blast_brh (bool, optional): Bool flag indicating if homology is best reciprocal
+            hit in BLAST alignment. 
+        nog_brh (bool, optional): Bool flag indicating if homology is best reciprocal 
+            hit in EggNOG alignment.
+        nog_eval (float, optional): Float with EggNOG alignment e-value.
+        pfam_sc (float, optional): Float with pfam meta-alignment score.
+        pfam_brh (bool, optional): Bool flag indicating if homology is best reciprocal 
+            hit in pfam alignment.
+        prednode (PlanarianContig, optional): PlanarianContig object.
     """
 
-    def __init__(self,  human, blast_cov=None, blast_eval=None, nog_brh=None,  pfam_sc=None, nog_eval=None, blast_brh=None, pfam_brh=None, prednode=None):
+    def __init__(
+            self,  human, blast_cov=None, blast_eval=None, 
+            nog_brh=None, pfam_sc=None, nog_eval=None, 
+            blast_brh=None, pfam_brh=None, prednode=None):
         self.prednode   = prednode
         self.human      = human
         self.blast_cov  = blast_cov
@@ -151,13 +188,22 @@ class Domain(object):
     Class for PFAM domains.
 
     Attributes:
-        accession: String with accession for pfam domain (PFXXXXX).
-        description: String with description for pfam domain.
-        identifier: String with identifier for pfam domain.
-        mlength: Integer with domain length.
+        accession (str): String with accession for pfam domain (PFXXXXX).
+        description (str): String with description for pfam domain.
+        identifier (str): String with identifier for pfam domain.
+        mlength (int): Integer with domain length.
+        pfam_regexp (str): Class attribute. Regex for PFAM domain accessions.
+
+    Args:
+        accession (str): String with accession for pfam domain (PFXXXXX).
+        description (str, optional): String with description for pfam domain.
+        identifier (str, optional): String with identifier for pfam domain.
+        mlength (int, optional): Integer with domain length.
+        pfam_regexp (str, optional): Class attribute. Regex for PFAM domain accessions.
     """
 
     pfam_regexp = r'PF\d{5}'
+
     def __init__(self, accession, description=None, identifier=None, mlength=None):
         if not re.match(Domain.pfam_regexp, accession):
             raise exceptions.NotPFAMAccession(accession)
@@ -168,6 +214,15 @@ class Domain(object):
 
     @classmethod
     def is_symbol_valid(cls, symbol):
+        '''
+        Classmethod for checking if accession is a valid PFAM accession.
+
+        Args:
+            symbol (str): Symbol to check if it's a valid PFAM accession.
+
+        Returns:
+            bool: `True` if it is valid, `False` otherwise.
+        '''
         return re.match(cls.pfam_regexp, symbol)
 
     def get_planarian_contigs(self, database):
@@ -176,6 +231,13 @@ class Domain(object):
 
         Args:
             database: str, database from which to retrieve the planarian contigs.
+        
+        Returns:
+            `list` of `PlanarianContigs`: PlanarianContigs with this domain 
+            annotated.
+
+        Raises:
+            NodeNotFound: raised if there are no planarian contigs with this Domain.
         '''
         query = "";
         if not re.match(Domain.pfam_regexp + r'\.\d+', self.accession):
@@ -202,13 +264,13 @@ class HasDomain(object):
     Class for relationships between a node and a Pfam domain annotated on the sequence.
 
     Attributes:
-        domain: Domain object.
-        node: Node object.
-        p_start: integer describing the start coordinate (1-indexed) on the PFAM domain.
-        p_end: integer describing the end coordinate (1-indexed) on the PFAM domain.
-        s_start: integer describing the start coordinate (1-indexed) on the sequence.
-        s_end: integer describing the end coordinate (1-indexed) on the sequence.
-        perc: float with % of domain in sequence.
+        domain (Domain): Domain object.
+        node (Node): Node object.
+        p_start (int): Integer describing the start coordinate (1-indexed) on the PFAM domain.
+        p_end (int): Integer describing the end coordinate (1-indexed) on the PFAM domain.
+        s_start (int): Integer describing the start coordinate (1-indexed) on the sequence.
+        s_end (int): Integer describing the end coordinate (1-indexed) on the sequence.
+        perc (float): Float with % of domain in sequence.
 
     """
     def __init__(self, domain, node, p_start, p_end, s_start, s_end, perc):
@@ -221,6 +283,25 @@ class HasDomain(object):
         self.perc    = perc
 
     def to_jsondict(self):
+        '''
+        Transforms data for Sequence-Domain relationship to a JSON string.
+
+        Returns:
+            dict: Dictionary with JSON structure. Has the following keys::
+
+                {
+                    'accession': 'Domain accession',
+                    'description': 'Domain description',
+                    'identifier': 'Domain identifier',
+                    'mlength': 'Length (in aa) of PFAM domain',
+                    'p_start': 'PFAM domain start coordinate',
+                    'p_end': 'PFAM domain end coordinate',
+                    's_start': 'PFAM domain sequence start coordinate',
+                    's_end': 'PFAM domain sequence start coordinate',
+                    'perc': 'Percentage of Domain in sequence'
+                }
+
+        '''
         json_dict = dict()
         json_dict['accession']   = self.domain.accession
         json_dict['description'] = self.domain.description
@@ -237,16 +318,43 @@ class HasDomain(object):
 class PredInteraction(object):
     """
     Class for predicted interactions.
-    Source and target are PlanarianContig attributes.
+    Source and target are :obj:`PlanarianContig` attributes.
 
     Attributes:
-        source_symbol: Symbol of parent node of interaction.
-        target: Node object of the child node of the interaction.
-        database: Neo4j label of parent and child nodes.
-        parameters: Dictionary containing the interaction properties.
-                    {'int_prob', 'path_length', 
-                    'cellcom_nto', 'molfun_nto', 
-                    'bioproc_nto', 'dom_int_sc'}
+        source_symbol (str): Symbol of parent node of interaction.
+        target (Node): :obj:`Node` object of the child node of the interaction.
+        database (str): Neo4j label of parent and child nodes.
+        parameters (`dict`): Dictionary containing the interaction properties.
+            Has following structure::
+
+                {
+                    'int_prob': float, 
+                    'path_length': int, 
+                    'cellcom_nto': float, 
+                    'molfun_nto': float, 
+                    'bioproc_nto': float, 
+                    'dom_int_sc': float
+                }
+    
+    Args:
+        source_symbol (str): Symbol of parent node of interaction.
+        target (Node): :obj:`Node` object of the child node of the interaction.
+        database (str): Neo4j label of parent and child nodes.
+        parameters (:obj:`dict`, optional): Dictionary containing the 
+            interaction properties. Defaults to None::
+            
+                {
+                    'int_prob': float, 
+                    'path_length': int, 
+                    'cellcom_nto': float, 
+                    'molfun_nto': float, 
+                    'bioproc_nto': float, 
+                    'dom_int_sc': float
+                }
+
+        query (bool): Bool flag indicating if interaction should be queried to 
+            database on creation. Defaults to True. Query will only be performed
+            if query = `True` and parameters = None.
     """
 
     def __init__(self, source_symbol, target, database, parameters=None, query=True):
@@ -259,7 +367,10 @@ class PredInteraction(object):
 
     def __query_interaction(self):
         """
-        This private method will fetch the interaction from the DB.
+        This private method will fetch the interaction from the DB. It will fill 
+        the attributes ['int_prob', 'path_length', 'cellcom_nto', 'molfun_nto', 'bioproc_nto', 'dom_int_sc'] 
+        of the :obj:`PredInteraction` instance. If interaction is not found, they all will 
+        be `None`.
         """
         query = neoquery.PREDINTERACTION_QUERY % (self.database, self.database, self.source_symbol, self.target.symbol)
 
@@ -278,7 +389,25 @@ class PredInteraction(object):
     def to_jsondict(self):
         '''
         This function takes a PredInteraction object and returns a dictionary with the necessary
-        structure to convert it to json and be read by cytoscape.js
+        structure to convert it to json and be read by cytoscape.js.
+
+        Returns:
+            `dict`: Serialized `PredInteraction`.
+
+            .. code-block:: python
+
+                {
+                    'data': 
+                        {
+                            'id': 'edge identifier',
+                            'source': 'node identifier',
+                            'target': 'node identifier',
+                            'pathlength': int,
+                            'probability': float,
+                            'colorEdge': 'HEX color code',
+                        }
+                }
+
         '''
         element         = dict()
         element['data'] = dict()
@@ -335,9 +464,30 @@ class HumanNode(Node):
             raise exceptions.NodeNotFound(self.symbol, self.database)
 
     def get_neighbours(self):
+        '''
+        Gets HumanNodes that interact with this HumanNode. Not implemented yet.
+        '''
         pass
 
     def to_jsondict(self):
+        '''
+        Serializes HumanNode to a dictionary for converting it to JSON.
+
+        Returns:
+            `dict`: Serialized HumanNode.
+
+                .. code-block:: python
+
+                    {
+                        'data': 
+                            {
+                                'id': 'node identifier',
+                                'name': 'node name',
+                                'database': 'Human'
+                            }
+                    }
+
+        '''
         element                     = dict()
         element['data']             = dict()
         element['data']['id']       = self.symbol
@@ -348,10 +498,13 @@ class HumanNode(Node):
     def get_planarian_genes(self, database):
         '''
         Gets planarian gene objects (PlanarianGene) connected to HumanNode
-        through contigs of dataset 'database', e.g.: (Human)->(Dresden)->(Smesgene)
+        through contigs of dataset 'database', i.e.: (:Human)->(:Database)->(:Smesgene)
 
         Args:
-            database: string, database of contigs to get PlanarianGene
+            database (str): Database of contigs to get PlanarianGene
+        
+        Returns:
+            list: List of :obj:`PlanarianGene` instances.
         '''
         query = neoquery.GET_GENES_FROMHUMAN_QUERY % (database, self.symbol)
         results = GRAPH.run(query)
@@ -389,7 +542,7 @@ class HumanNode(Node):
 
     def get_summary(self):
         """
-        Retrieves gene summary when available
+        Retrieves gene summary when available and saves it into attribute.
         """
         query = neoquery.SUMMARY_QUERY % (self.symbol)
         results = GRAPH.run(query)
@@ -407,10 +560,10 @@ class HumanNode(Node):
         Gets all PlanarianContigs homologous to HumanNode.
 
         Args:
-            database: str, Database from which to retrieve planarian contigs.
+            database (str): Database from which to retrieve planarian contigs.
 
         Returns:
-            list: PlanarianContigs objects.
+            `list`: :obj:`PlanarianContig` objects.
         '''
         homologs = self.get_homologs(database)
         planarian_contigs = list()
@@ -421,11 +574,20 @@ class HumanNode(Node):
 
     def get_homologs(self, database="ALL"):
         """
-        Gets all homologs of the specified database. Returns a dictionary of the form:
-            dict['database'] = [ Homology() ]
+        Gets all homologs of the specified database.
 
+        Args:
+            database (str): Database of desired homologous planarian contigs. Defaults to "ALL".
         Returns:
-            dictionary: key='database', value=List of Homology objects.
+            `dict`: Dictionary with homologous contigs to HumanNode.
+            
+                .. code-block:: python
+
+                    {
+                        'database1': [Homology, Homology, ...],
+                        ...
+                    } 
+
         """
         # Initialize homologs dictionary
         homologs         = dict()
@@ -477,9 +639,13 @@ class WildCard(object):
     """
     Class for wildcard searches. Returns a list of symbols.
 
+    Args:
+        search (str): String to search.
+        database (str): Database (label in neo4j) for the search.
+
     Attributes:
-        search: String to search.
-        database: Database (label in neo4j) for the search.
+        search (str): String to search.
+        database (str): Database (label in neo4j) for the search.
     """
     def __init__(self, search, database):
         search = search.upper()
@@ -488,10 +654,10 @@ class WildCard(object):
 
     def get_human_genes(self):
         '''
-        Returns list of HumanNode objects matching the wildcard query.
+        Gets list of :obj:`HumanNode` objects matching the wildcard query.
 
         Returns:
-            list: HumanNode objects.
+            `list`: :obj:`HumanNode` objects.
         '''
         query   = neoquery.SYMBOL_WILDCARD % (self.database, self.search)
         results = GRAPH.run(query)
@@ -504,7 +670,10 @@ class WildCard(object):
 
     def get_planarian_genes(self):
         '''
-        Returns list of PlanarianGene objects matching the wildcard query.
+        Gets list of :obj:`PlanarianGene` objects matching the wildcard query.
+
+        Returns:
+            `list`: :obj:`PlanarianGene` objects.
         '''
         query = neoquery.NAME_WILDCARD % (self.database, self.search)
         results = GRAPH.run(query)
@@ -521,13 +690,35 @@ class PlanarianContig(Node):
     """
     Class for planarian nodes.
 
+    Args:
+        symbol (str): Node symbol.
+        database (str): Label for Neo4j.
+        sequence (str): Contig nucleotide sequence.
+        orf (str): Open Reading Frame aa sequence.
+        name (str): Name of the contig according to its gene annotation.
+        gene (:obj:`PlanarianGene`): Gene predicted to have this transcript as a product.
+        homolog (:obj:`Homology`): :obj:`Homology` object with human homolog gene.
+        important (bool): Bool indicating if Node should be marked on graph visualization. 
+            Defaults to `False`.
+        degree (int): Integer with the degree (number of connections) of the node.
+        query (bool): Flat to indicate if database should be queried. Defaults to `False`.
+
     Attributes:
-        symbol: String with Node symbol.
-        database: String with label for Neo4j.
-        homolog: 'Homology' object with human homolog gene.
-        important: Bool indicating if Node should be marked on graph visualization.
-        degree: Integer with the degree (number of connections) of the node.
-        allowed_databases: Class attribute, dictionary with names of neo4j 
+        symbol (str): Node symbol.
+        database (str): Label for Neo4j.
+        sequence (str): Contig nucleotide sequence.
+        orf (str): Open Reading Frame aa sequence.
+        orflength (int): Length of Open Reading Frame.
+        gccount (float): % of GC in contig sequence.
+        gene_ontologies (`list`): List of `GeneOntology` objects that its HumanNode has 
+            annotated.
+        name (str): Name of the contig according to its gene annotation.
+        gene (:obj:`PlanarianGene`): Gene predicted to have this transcript as a product.
+        homolog (:obj:`Homology`): :obj:`Homology` object with human homolog gene.
+        important (bool): Bool indicating if Node should be marked on graph visualization. 
+            Defaults to `False`.
+        degree (int): Integer with the degree (number of connections) of the node.
+        allowed_databases (`dict`): Class attribute, dictionary with names of neo4j 
             labels for planarian genes.
     """
     allowed_databases = ALL_DATABASES
@@ -558,7 +749,7 @@ class PlanarianContig(Node):
 
     def get_gene_name(self):
         '''
-        Gets gene name if possible
+        Gets gene name if possible and loads `gene` and `name` attributes.
         '''
         if self.gene is None:
             query = neoquery.GET_GENE % (self.database, self.symbol)
@@ -576,6 +767,10 @@ class PlanarianContig(Node):
     def get_genes(self):
         '''
         Gets Genes to which this contig maps.
+
+        Returns:
+            `list`: List of :obj:`PlanarianGene` objects that this contig is 
+                associated with.
         '''
         query = neoquery.GET_GENES_QUERY % (self.database, self.symbol)
         results = GRAPH.run(query)
@@ -601,14 +796,19 @@ class PlanarianContig(Node):
     def get_summary(self):
         '''
         Fills attribute values that are not mandatory, with a summary of several
-        features of the node
+        features of the node. Fills attributes "length" and "orflength".
         '''
         self.length    = len(self.sequence)
         self.orflength = len(self.orf)
-        self.gccont = ( self.sequence.count("G") + self.sequence.count("C") ) / self.length
+
 
     def __query_node(self):
-        "Gets node from neo4j and fills sequence, orf and length attributes."
+        """
+        Gets node from neo4j and fills sequence, orf, length and homology attributes.
+
+        Raises:
+            NodeNotFound: If node is not in database.
+        """
         query = neoquery.PREDNODE_QUERY % (self.database, self.symbol)
 
         results = GRAPH.run(query)
@@ -667,6 +867,26 @@ class PlanarianContig(Node):
         '''
         This function takes a node object and returns a dictionary with the necessary
         structure to convert it to json and be read by cytoscape.js
+
+        Returns:
+            `dict`: Dictionary with serialized PlanarianContig.
+
+                .. code-block:: python
+
+                        {
+                            'data': 
+                                {
+                                    'id': 'contig id',
+                                    'name': 'contig name',
+                                    'database': 'contig database',
+                                    'homolog': 'human homolog symbol',
+                                    'degree': int,
+                                    'colorNode': '#404040',
+                                },
+                            'classes': 'null or important'
+                            
+                        } 
+                        
         '''
         element                     = dict()
         element['data']             = dict()
@@ -857,7 +1077,22 @@ class PlanarianContig(Node):
 # ------------------------------------------------------------------------------
 class oldExperiment(object):
     """
-    Class for gene expresssion experiments
+    Legacy class for gene expresssion experiments. Mantained until PlanExp is published.
+
+    Attributes:
+        id (str): Experiment identifier.
+        url (str): Experiment publication URL.
+        reference (str): Formatted publication reference.
+        minexp (float): Minimum expression value in whole experiment.
+        maxexp (float): Maximum expression value in whole experiment.
+        percentiles (`list` of `int`): List of floats indicating the expression value 
+            at each percentile (15 in total). 
+    
+    Args:
+        id (str): Experiment identifier.
+        url (str, optional): Experiment publication URL. If not passed on creation,
+            will query the database to get the data for this experiment.
+        reference (str, optional): Formatted publication reference.
     """
     def __init__(self, identifier, url=None, reference=None):
         self.id        = identifier
@@ -872,8 +1107,8 @@ class oldExperiment(object):
 
     def __get_minmax(self):
         """
-        Checks if the specified experiment exists in the database and gets the max and min expression
-        ranges defined aswell as the reference.
+        Checks if the specified experiment exists in the database and gets the 
+        max, min expression ranges and the reference defined.
         """
         query   = neoquery.EXPERIMENT_QUERY % (self.id)
         results = GRAPH.run(query)
@@ -887,7 +1122,26 @@ class oldExperiment(object):
 
     def to_json(self):
         """
-        Returns a json string with the info about the experiment
+        Returns a json string with the info about the experiment.
+
+        Returns:
+            str: JSON string with the following structure.
+
+                .. code-block:: python
+
+                    {
+                        'data': 
+                            {
+                                'id': 'experiment identifier',
+                                'url': 'url of experiment' ,
+                                'reference': 'formatted reference',
+                                'minexp': float,
+                                'maxexp': float,
+                                'percentiles': [ float, float, float, ...]
+
+                            }
+                    }
+
         """
         json_dict = dict()
         json_dict['id']        = self.id
@@ -903,6 +1157,12 @@ class oldExperiment(object):
     def color_gradient(self, from_color, to_color, comp_type):
         """
         This method returns a color gradient of length bins from "from_color" to "to_color".
+
+        Args:
+            from_color (str): Hex value of initial color for gradient.
+            to_color (str): Hex value of final color for gradient.
+            comp_time (str): "one-sample" or "two-sample", indicating if gradient 
+                should be linear ("one-sample") or divergent "two-sample".
         """
         bins         = list()
         exp_to_color = list()
@@ -931,12 +1191,18 @@ class oldExperiment(object):
         for i in bins:
             exp_to_color.append((i,  range_colors.pop().get_hex()))
         self.gradient = exp_to_color
+        return self
 
 
 # ------------------------------------------------------------------------------
 class GraphCytoscape(object):
     """
-    Class for a graph object
+    Class for a graph object. Holds nodes and edges of any type as long as they have 
+    a common interface (symbol attribute and to_jsondict() method).
+
+    Attributes:
+        nodes (set): Set of :obj:`Node` objects.
+        edges (set): Set of :obj:`PredInteraction` objects.
     """
     def __init__(self):
         self.nodes = set()
@@ -946,6 +1212,13 @@ class GraphCytoscape(object):
         """
         Method that takes a list of node or PredInteraction objects and adds them
         to the graph.
+
+        Args:
+            elements (`list` of :obj:`PredInteraction` or :obj:`Node`): List of 
+                :obj:`PredInteraction` objects or :obj:`Node` objects to add to the graph.
+        
+        Raises:
+            ValueError: If any element in `elements` is not a :obj:`Node` or a :obj:`PredInteraction`. 
         """
         for element in elements:
             if isinstance(element, Node):
@@ -953,11 +1226,14 @@ class GraphCytoscape(object):
             elif isinstance(element, PredInteraction):
                 self.edges.add( element )
             else:
-                raise exceptions.WrongGraphObject(element)
+                raise ValueError("Should provide only Node or PredInteraction instances.")
 
     def is_empty(self):
         """
         Checks if the graph is empty or not.
+
+        Returns:
+            bool: True if empty (no nodes or edges), False otherwise.
         """
         if not self.nodes and not self.edges:
             return True
@@ -966,27 +1242,86 @@ class GraphCytoscape(object):
 
     def add_node(self, node):
         """
-        Adds a single node to the graph
+        Adds a single node to the graph.
+
+        Args:
+            node (:obj:`Node`): Node instance to add to the graph.
         """
         self.add_elements([node])
 
     def add_interaction(self, interaction):
         """
-        Adds a single interaction to the graph
+        Adds a single interaction to the graph.
+
+        Args:
+            node (:obj:`PredInteraction`): PredInteraction instance to add to the graph.
         """
         self.add_elements([interaction])
 
     def define_important(self, vip_nodes):
         """
-        Gets a list/set of nodes and defines them as important
+        Gets a list/set of nodes and defines them as important.
+
+        Args:
+            vip_nodes (`list`): List of :obj:`Node` instances.
         """
         for node in self.nodes:
             if node.symbol in vip_nodes:
                 node.important = True
+        return self
 
     def to_json(self):
         """
-        Converts the graph to a json string to add it to cytoscape.js
+        Converts the graph to a json string to add it to cytoscape.js.
+
+        Returns:
+            str: JSON string with data for this graph for cytoscape.js. 
+                Follows the structure (example):
+
+                 .. code-block:: python
+
+                    {
+                        "nodes": 
+                            [
+                                {
+                                    "data": 
+                                        {
+                                            "id": "dd_Smed_v6_11363_0_1", 
+                                            "name": "dd_Smed_v6_11363_0_1", 
+                                            "database": "Dresden",
+                                            "homolog": "LIG4",
+                                            "degree": 27,
+                                            "colorNODE": "#404040"
+                                        }
+                                    },
+                                {
+                                    "data": 
+                                        {
+                                            "id": "dd_Smed_v6_9219_0_1",
+                                            "name": "dd_Smed_v6_9219_0_1", 
+                                            "database": "Dresden", 
+                                            "homolog": "FAM214A", 
+                                            "colorNODE": "#404040"
+                                        }, 
+                                        "classes": "important"
+                                    }, 
+                                }
+                            ],
+                        "edges": 
+                            [
+                                {
+                                    "data": {
+                                        "id": "dd_Smed_v6_11363_0_1-dd_Smed_v6_9219_0_1", 
+                                        "source": "dd_Smed_v6_9219_0_1", 
+                                        "target": "dd_Smed_v6_11363_0_1", 
+                                        "pathlength": 1, 
+                                        "probability": 0.67, 
+                                        "colorEDGE": "#72a555"
+                                    }
+                                },
+                            ]
+                    }
+
         """
         graphelements = {
             'nodes': [node.to_jsondict() for node in self.nodes],
@@ -997,7 +1332,11 @@ class GraphCytoscape(object):
 
     def filter(self, including):
         """
-        Filters nodes and edges from the graph
+        Filters nodes and edges from the graph.
+
+        Args:
+            including (set): Set of `Node` instances that has to be kept. Only 
+                interactions where both nodes are in `including` will be kept.
         """
         nodes_to_keep = list()
         edges_to_keep = list()
@@ -1013,12 +1352,21 @@ class GraphCytoscape(object):
                 continue
         self.nodes = nodes_to_keep
         self.edges = edges_to_keep
-        return
+        return self
 
     def get_expression(self, experiment, samples):
         """
         Gets the expression for all the node objects in the graph.
         Returns a dictionary: expression_data[node.symbol][sample]
+
+        Args:
+            experiment (str): :obj:`oldExperiment instance.
+            samples (list): List of samples for which to get expression.
+
+        Returns:
+            `dict` of `dict`: Dictionary with expression data.
+                Primary key is node symbol, secondary key is sample name and value 
+                is expression value (float).
         """
         node_list     = ",".join(map(lambda x: '"' + x + '"', [node.symbol for node in self.nodes ]))
         node_selector = "[" + node_list + "]"
@@ -1035,7 +1383,8 @@ class GraphCytoscape(object):
 
     def get_connections(self):
         """
-        Function that looks for the edges between the nodes in the graph
+        Function that looks for the edges between the nodes in the graph and 
+        adds them to the attribute `edges`.
         """
         node_q_string = str(list([str(node.symbol) for node in self.nodes]))
         query = neoquery.GET_CONNECTIONS_QUERY % (node_q_string, node_q_string)
@@ -1060,14 +1409,15 @@ class GraphCytoscape(object):
                     parameters    = parameters
                 )
                 self.add_interaction(newinteraction)
+        return self
 
     def new_nodes(self, symbols, database):
         """
         Takes a list of symbols and returns the necessary GraphCytoscape with Human or PlanarianContig objects
 
         Args:
-            symbols: List of strings with gene/contig/pfam/go/kegg symbols.
-            database: String with database.
+            symbols (`list` of `str`): List of strings with gene/contig/pfam/go/kegg symbols.
+            database (str): String with database.
         """
         for symbol in symbols:
             symbol = symbol.replace(" ", "")
@@ -1094,6 +1444,14 @@ class GraphCytoscape(object):
         """
         Returns a dictionary of homologous genes to the specified
         list of planarian contig symbols from database.
+
+        Args:
+            symbols (`list` of `str`): List of node symbols.
+            database (`str`): Database string.
+
+        Returns:
+            `dict`: Dictionary with homology information. 
+                Key is planarian contig symbol, value is human gene symbol.
         """
         query = neoquery.GET_HOMOLOGS_BULK % (database, symbols)
         results = GRAPH.run(query)
@@ -1110,6 +1468,16 @@ class GraphCytoscape(object):
         """
         Returns a dictionary of planarian genes to the specified
         list of planarian contig symbols from database.
+
+        Args:
+            symbols (`list` of `str`): List of node symbols.
+            database (`str`): Database string.
+
+        Returns:
+            `dict` of `dict`: Dictionary with contig-gene mapping. 
+                Primary key is planarian contig symbol, secondary key is either 
+                'gene' or 'name', value is gene symbol or gene name respectively.
+
         """
         query = neoquery.GET_GENES_BULK % (database, symbols)
         results = GRAPH.run(query)
@@ -1135,7 +1503,19 @@ class GraphCytoscape(object):
 # ------------------------------------------------------------------------------
 class ExperimentList(object):
     """
-    Maps a list of experiment objects with all its available samples in the DB
+    Maps a list of experiment objects with all its available samples in the DB.
+
+    Attributes:
+        experiments (`set` of `oldExperiment`): Set of oldExperiment instances.
+        samples (`dict`): Experiments to sample names mapping. Key is experiment 
+            identifier, value is set of sample names (`str`).
+        datasets (`dict`): Dictionary with list of datasets for which experiment 
+            has data for.
+
+    Args:
+        user (`models.user`): User that requests the ExperimentList.
+
+
     """
     def __init__(self, user):
         self.experiments = set()
@@ -1186,14 +1566,38 @@ class ExperimentList(object):
                 self.datasets[exp] = sorted(list(self.datasets[exp]))
 
     def get_samples(self, experiment):
-        """ Returns a set for the given experiment"""
+        """ 
+        Returns a set for the given experiment.
+
+        Args:
+            experiment (str): Experiment name.
+        
+        Returns:
+            set: Samples for which experiment has expression data for.
+        
+        Raises:
+            ExperimentNotFound: If experiment is not in ExperimentList.
+
+        """
         if experiment in self.samples:
             return self.samples[experiment]
         else:
             raise exceptions.ExperimentNotFound
 
     def get_datasets(self, experiment):
-        """ Returns a set for the given experiment"""
+        """ 
+        Returns a set for the given experiment
+        
+        Args:
+            experiment (str): Experiment name.
+
+        Returns:
+            list: Dataset names for which experiment has data for.
+        
+        Raises:
+            ExperimentNotFound: If experiment is not in ExperimentList.
+
+        """
         if experiment in self.samples:
             return self.datasets[experiment]
         else:
@@ -1209,7 +1613,19 @@ class ExperimentList(object):
 # ------------------------------------------------------------------------------
 class KeggPathway(object):
     '''
-    Class for KeggPathways
+    Class for KeggPathways. Encapsulates a GraphCytoscape object in `graphelements`. Will query Kegg on creation.
+
+    Attributes:
+        symbol (str): Symbol for Kegg Pathway.
+        database (str): Planarian database to which this KeggPathway will be mapped to.
+        kegg_url (str): Url to the pathway in Kegg.
+        graphelements (:obj:`GraphCytoscape`): GraphCytoscape object that results from 
+            looking at the genes and interactions in the Pathway that appear in the 
+            neo4j database.
+        
+    Args:
+        symbol (str): Symbol for Kegg Pathway.
+        database (str): Planarian database to which this KeggPathway will be mapped to.
     '''
     def __init__(self, symbol, database):
         self.symbol = symbol
@@ -1219,7 +1635,14 @@ class KeggPathway(object):
 
     def connect_to_kegg(self):
         '''
-        Connects to KEGG and extracts the elements of the pathway
+        Connects to KEGG and extracts the elements of the pathway.
+
+        Returns:
+            :obj:`GraphCytoscape`: GraphCytoscape object that results from 
+                looking at the genes and interactions in the Pathway that appear in the 
+                neo4j database. If Kegg can't be reached or the pathway does not have 
+                any equivalent in PlanNET, the :obj:`GraphCytoscape` will be empty.
+
         '''
         r = requests.get(self.kegg_url)
         if r.status_code == 200:
@@ -1243,7 +1666,24 @@ class KeggPathway(object):
 # ------------------------------------------------------------------------------
 class GeneOntology(object):
     """
-    Class for GeneOntology nodes
+    Class for GeneOntology nodes.
+
+    Attributes:
+        accession (str): GO accession, of the form "GO:...".
+        domain (str): GO domain ("molecular function", "cellular component", "biological process").
+        name (str): GO name.
+        human_nodes (`list` of :obj:`HumanNode`): List of HumanNode instances that 
+            have this GO annotated.
+
+    Args:
+        accession (str): GO accession, of the form "GO:...".
+        domain (str, optional): GO domain ("molecular function", "cellular component", "biological process"). Defaults to None
+        name (str, optional): GO name. Defaults to None
+        human (`list` of :obj:`HumanNode`, optional): List of HumanNode instances that 
+            have this GO annotated. Defaults to False
+        query (bool, optional): Flag to query database on creation to retrieve 
+            all attributes.
+
     """
     go_regexp = r"GO:\d{7}"
 
@@ -1263,11 +1703,23 @@ class GeneOntology(object):
 
     @classmethod
     def is_symbol_valid(cls, symbol):
+        """
+        Checks if provided symbol is a valid GO accession.
+
+        Args:
+            symbol (str): Symbol to check if it's a valid GO accession.
+        
+        Returns:
+            bool: True if valid, false otherwise.
+        """
         return re.match(cls.go_regexp, symbol)
 
     def __query_go(self):
         """
-        Query DB and get domain
+        Query DB and get domain.
+
+        Raises:
+            NodeNotFound: If GO does not exist in database.
         """
         query   = neoquery.GO_QUERY % self.accession
         results = GRAPH.run(query)
@@ -1280,7 +1732,10 @@ class GeneOntology(object):
 
     def get_human_genes(self):
         """
-        Gets Human nodes symbols with annotated GO
+        Gets Human nodes symbols with annotated GO. Fills human_nodes attribute.
+
+        Raises:
+            NodeNotFound: If GO does not exist in database.
         """
         query   = neoquery.GO_HUMAN_NODE_QUERY % self.accession
         results = GRAPH.run(query)
@@ -1299,10 +1754,10 @@ class GeneOntology(object):
         Gets planarian contigs whose homolog has the GO annotated. (GO)<-(Human)<-(Contig)
 
         Args:
-            database: str, database string from which to retrieve the PlanarianContigs.
+            database (str): Database string from which to retrieve the PlanarianContigs.
 
         Returns:
-            list: List of PlanarianContig objects.
+            list: List of :obj:`PlanarianContig` objects.
         """
         query = neoquery.GO_TO_CONTIG % (database, self.accession)
         results = GRAPH.run(query)
@@ -1333,6 +1788,14 @@ class GeneOntology(object):
 class Pathway(object):
     """
     Class for pathways. They are basically GraphCytoscape objects with more attributes.
+
+    Attributes:
+        graph (:obj:`GraphCytoscape): Graphcytoscape object of the pathway.
+        score (float): Score of the pathway (computed as the mean score of each interaction).
+
+    Args:
+        graph (:obj:`GraphCytoscape): Graphcytoscape object of the pathway.
+     
     """
     def __init__(self, graph):
         self.graph = graph
@@ -1355,27 +1818,24 @@ class GeneSearch(object):
     Class for node/gene searches
 
     Attributes:
-        sterm: string, term to search.
-        database: string, database to search for sterm.
-        sterm_database: string, database to which sterm belongs to.
+        sterm (str): Term to search.
+        database (str): Database to search for sterm.
+        sterm_database (str): Database to which sterm belongs to.
+
+    Args:
+        sterm (str): Term to search.
+        database (str): Database to search for sterm.
+
     """
-
     def __init__(self, sterm, database):
-        '''
-        Constructor for GeneSearch.
-
-        Args:
-            sterm: string, search term.
-            database: string, database string to search for sterm.
-        '''
         self.sterm = sterm
         self.database = database
         self.sterm_database = None
     
     def infer_symbol_database(self):
         '''
-        Compares the symbol in self.sterm to the valid
-        patterns for each NodeType.
+        Guesses to which database `sterm` belongs to. Compares the symbol in 
+        `sterm` to the valid patterns for each NodeType. Saves result in `sterm_database`.
         '''
         datasets = Dataset.objects.all()
         for dataset in datasets:
@@ -1392,10 +1852,17 @@ class GeneSearch(object):
                 self.sterm_database = "GO"
             else:
                 self.sterm_database = "Human"
+        return self
     
     def get_planarian_contigs(self):
         '''
-        Returns PlanarianContig objects independently of the search term used.
+        Returns PlanarianContig objects that match sterm independently of the search term used.
+
+        Returns:
+            `list` of :obj:`PlanarianContig`: List of :obj:`PlanarianContig` instances. 
+                PlanarianContigs retrieved from `sterm`. It is able to work with sterm of the type: 
+                'Smesgene', 'PFAM', 'GO', 'Human', 'PlanarianContig'.
+
         '''
         if self.sterm_database is None:
             self.infer_symbol_database()
@@ -1431,7 +1898,12 @@ class GeneSearch(object):
 
     def get_planarian_genes(self):
         '''
-        Returns PlanarianGene object from search term.
+        Returns PlanarianGene objects that match sterm independently of the search term used.
+
+        Returns:
+            `list` of :obj:`PlanarianGene`: List of :obj:`PlanarianGene` instances. 
+                PlanarianGene retrieved from `sterm`. It is able to work with sterm of the type: 
+                'Smesgene', 'PFAM', 'GO', 'Human', 'PlanarianContig'.
         '''
         if self.sterm_database is None:
             self.infer_symbol_database()
@@ -1467,7 +1939,13 @@ class GeneSearch(object):
 
     def get_human_genes(self):
         '''
-        Returns HumanNode objects indepdendently of the search term used.
+        Returns HumanNode objects independently of the search term used.
+
+        Returns:
+            `list` of :obj:`HumanNode`: List of :obj:`HumanNode` instances. 
+                HumanNode retrieved from `sterm`. It is able to work with sterm of the type: 
+                'Human', 'GO'.
+
         '''
         if self.sterm_database is None:
             self.infer_symbol_database()
@@ -1484,8 +1962,10 @@ class GeneSearch(object):
 
     def quick_search(self):
         '''
-        Retrieves given symbol in all databases:
-            Human + PlanarianGene + PlanarianContigs
+        Retrieves given search term in all databases: PlanarianGene + PlanarianContigs
+
+        Returns:
+            `list` of `Node`: List of `Node` of the type :obj:`PlanarianGene` or :obj:`PlanarianContig`.
         '''
         all_results = list()
 
@@ -1504,15 +1984,36 @@ class GeneSearch(object):
             except exceptions.NodeNotFound:
                 continue
         self.database = "ALL"
-
         return all_results
-
-
 
 
 class PlanarianGene(Node):
     """
     Class for PlanarianGenes (genes from Planmine 3.0 gene annotation)
+
+    Attributes:
+        symbol (str): Gene symbol (SMESG...).
+        database (str): 'Smesgene'.
+        name (str): Gene name (if any).
+        start (int): Start coordinate in chromosome.
+        end (int): End coordinate in chromosome.
+        strand (int): Strand in chromosome (+1: Forward , -1: Reverse)
+        sequence (str): Nucleotide sequence of gene.
+        homolog (:obj:`HumanNode`): Homologous gene.
+        chromosome (str): Chromosome name where gene is located.
+    
+    Args:
+        symbol (str): Gene symbol (SMESG...).
+        database (str): 'Smesgene'.
+        name (str, optional): Gene name (if any). Defaults to None.
+        start (int): Start coordinate in chromosome. Defaults to None.
+        end (int, optional): End coordinate in chromosome. Defaults to None.
+        strand (int, optional): Strand in chromosome (+1: Forward , -1: Reverse). Defaults to None.
+        sequence (str, optional): Nucleotide sequence of gene. Defaults to None.
+        homolog (:obj:`HumanNode`, optional): Homologous gene. Defaults to None.
+        chromosome (str, optional): Chromosome name where gene is located. Defaults to None.
+        query (bool, optional): Flag to decide if gene should be queried on creation.
+            Defaults to False.
     """
     smesgene_regexp = r'SMESG\d+'
     preferred_database = "Smest"
@@ -1541,13 +2042,19 @@ class PlanarianGene(Node):
         Checks if symbol is valid
 
         Args:
-            symbol: string, symbol to check if follows PlanarianGene naming convention.
+            symbol (str): Symbol to check if follows PlanarianGene naming convention.
+        
+        Returns:
+            bool: True if symbol is a valid gene identifier. False otherwise.
         '''
         return re.match(cls.smesgene_regexp, symbol.upper())
 
     def __query_node(self):
         '''
-        Queries PlanarianGene to get the attributes from the database.
+        Queries PlanarianGene to get and fill the attributes from the database.
+
+        Raises:
+            NodeNotFound: If gene is not in database.
         '''
         query = neoquery.SMESGENE_QUERY % (self.symbol)
         results = GRAPH.run(query)
@@ -1572,6 +2079,9 @@ class PlanarianGene(Node):
         '''
         Gets homologous gene of longest transcript associated with this PlanarianGene.
         Fills attribute 'homolog'. Returns the HumanNode object.
+
+        Returns:
+            :obj:`HumanNode` or `None`: Homologous :obj:`HumanNode` if there is any, otherwise `None`.
         '''
         best_transcript = self.get_best_transcript()
         if best_transcript:
@@ -1588,6 +2098,10 @@ class PlanarianGene(Node):
     def get_best_transcript(self):
         '''
         Retrieves the longest transcript of preferred_database.
+
+        Returns:
+            :obj:`PlanarianContig`: PlanarianContig from preferred database annotated 
+                as being transcribed from this gene.
         '''
         best = None
         try:
@@ -1605,11 +2119,12 @@ class PlanarianGene(Node):
         the PlanarianGene genomic location.
         
         Args:
-            database: string, optional, database from which to retrieve planarian contigs.
-                      if not defined will get all planarian contigs.
+            database (str, optional): Database from which to retrieve planarian contigs.
+                if not defined will get planarian contigs from all databases.
 
         Returns:
-            list: PlanarianContig objects.
+            `list` of :obj:`PlanarianContig`: PlanarianContig objects associated with this
+                gene.
         '''
         if database is None:
             query = neoquery.SMESGENE_GET_ALL_CONTIGS_QUERY % (self.symbol)

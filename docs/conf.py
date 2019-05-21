@@ -60,3 +60,9 @@ html_theme = 'sphinx_rtd_theme'
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
+
+
+napoleon_google_docstring = True
+napoleon_include_private_with_doc = True
+html_baseurl = "docs/"
+site_url = "docs"

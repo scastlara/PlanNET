@@ -1,6 +1,22 @@
 from .common import *
 
 class ColorProfiles(Enum):
+    """
+    ColorProfiles enum.
+    Stores the following color profiles:
+        LINEAR GRADIENTS:
+            - red: 50 colors form white to red.
+            - blue: 50 colors from white to blue.
+            - green: 50 colors from white to blue.
+        DIVERGENT GRADIENTS:
+            - blue_white: 25 colors from blue to white.
+            - white_red: 25 colors from white to red.
+            - blue_red: 50 colors from blue to white to red.
+            - yellow_white: 25 colors from yellow to white.
+            - yellow_blue: 50 colors from yellow to white to blue.
+            - white_green: 25 colors from white to green.
+            - red_green: 50 colors from red to white to green.
+    """
     # Linear gradients
     red = list(Color('#fffafa').range_to('#ff0000', 50))
     blue = list(Color('#f7f8ff').range_to('#0029ff', 50))
@@ -17,18 +33,24 @@ class ColorProfiles(Enum):
     white_green = list(Color('#f9fff9').range_to('#42d242', 25))
     red_green = list(reversed(white_red))[0:-1] + [Color('white'), Color('white')] + white_green[1:25]
 
+
 class ColorGenerator(object):
-    '''
+    """
     Generates a color gradient given a maximum value and a minimum value, using
     min-max normalization in a 0-50 scale.
-    Contains color profiles:
-        red
-        blue
-        green
-        blue_red
-        yellow_blue
-        red_green
-    '''
+    
+    Attributes:
+        profile (ColorProfiles): Color profile enum element.
+        max (float): Maximum value to generate color gradient.
+        min (float): Minimum value to generate color gradient.
+
+    Args:
+        max_v (float): Maximum value to generate color gradient.
+        min_v (float): Minimum value to generate color gradient.
+        profile (string): Valid color profile string, see ColorProfiles
+            for a list of the valid color profiles.
+
+    """
 
     def __init__(self,  max_v, min_v, profile="red"):
         self.profile = ColorProfiles[profile]
@@ -36,12 +58,17 @@ class ColorGenerator(object):
         self.min = min_v
     
     def map_color(self, value):
-        '''
+        """
         Assigns a color to the provided value by using the max and min attributes as
         the scale and normalizing the provided value using min-max normalization.
         
-        Returns the hex value of the computed color.
-        '''
+        Args:
+            value (float): Value to transform to a color in the generated gradient
+                between min and max attributes.
+        
+        Returns:
+            string: hex color value.
+        """
         thecolor = "#000000"
         if value != "NA":
             normval = int(self.__normalize(value))
@@ -49,9 +76,15 @@ class ColorGenerator(object):
         return thecolor
     
     def __normalize(self, x):
-        '''
+        """
         Min-Max normalization for normalizing values to 0-50 scale.
-        '''
+
+        Args:
+            x (float): value to normalize to a min-max scale using min-max
+                normalization.
+        Returns:
+            float: normalized value.
+        """
         x = float(x)
         normval = float()
         if x >= self.max:
@@ -63,9 +96,13 @@ class ColorGenerator(object):
         return normval * 49
     
     def __generate_intervals(self):
-        '''
+        """
         Generates interval values for the gradient.
-        '''
+
+        Returns:
+            `list` of `float`: List of 50 floats defining the intervals for 
+                the gradient.
+        """
         step = ( abs(self.max - self.min) ) / 50
         intervals = [ self.min ]
         while intervals[-1] < self.max:
@@ -74,9 +111,15 @@ class ColorGenerator(object):
 
 
     def get_color_legend(self, units=None):
-        '''
-        Returns html of legend for the color gradient
-        '''
+        """
+        Returns html of legend for the color gradient.
+
+        Args:
+            units (str): Units for the values in the legend.
+        
+        Returns:
+            str: html string with the legend for the generated color gradient.
+        """
         html = [ "<div class='grid-container grid-legend-contaiener'></div>" ]
         intervals = list(reversed(self.__generate_intervals()))
         if len(intervals) == 1:

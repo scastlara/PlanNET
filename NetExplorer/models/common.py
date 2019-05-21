@@ -68,7 +68,13 @@ ALL_DATABASES = set([
 def query_node(symbol, database):
     '''
     This simple function takes a symbol and a database and tries to get it from
-    the DB
+    the DB.
+
+    Args:
+        database (string): Database name to query the node in Neo4j.
+    
+    Returns:
+        Node: HumanNode or PlanarianContig object.
     '''
     node   = None
     symbol = symbol.replace(" ", "")
