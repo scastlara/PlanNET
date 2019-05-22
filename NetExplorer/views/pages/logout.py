@@ -1,8 +1,8 @@
 from ..helpers.common import *
 
-def logout_view(request):
+def logout(request):
     """
     Logout view
     """
-    logout(request)
+    django_logout(request)
     return render(request, 'NetExplorer/index.html')

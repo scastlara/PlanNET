@@ -8,7 +8,8 @@ from django.db.models import Func, F
 from subprocess import Popen, PIPE, STDOUT
 from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login
+from django.contrib.auth import logout as django_logout
 from django.contrib.auth.decorators import login_required
 from django.db import connection
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
