@@ -4,7 +4,7 @@ from django.contrib import admin
 
 
 urlpatterns = [
-    url(r'^$', views.index_view, name='index_view'),
+    url(r'^$', views.index, name='index'),
     url(r'^gene_search', views.gene_search, name="gene_search"),
     url(r'^net_explorer',  views.net_explorer,  name="net_explorer" ),
     url(r'^planexp',  views.planexp,  name="planexp" ),
@@ -21,8 +21,8 @@ urlpatterns = [
     url(r'^about', views.about, name="about"),
     url(r'^datasets', views.datasets, name="datasets"),
     url(r'^login', views.register, name="login"),
-    url(r'^logout', views.logout_view, name="logout"),
-    url(r'^account', views.account_view, name="account"),
+    url(r'^logout', views.logout, name="logout"),
+    url(r'^account', views.account, name="account"),
     url(r'^experiment_summary', views.experiment_summary, name="experiment_summary"),
     url(r'^experiment_conditions', views.experiment_conditions, name="experiment_conditions"),
     url(r'^experiment_dge_table', views.experiment_dge_table, name="experiment_dge_table"),

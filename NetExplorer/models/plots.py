@@ -822,7 +822,7 @@ class ScatterPlot(GeneExpPlot):
                 if max_in_trace > self.cmax:
                     self.cmax = max_in_trace
         except:
-            raise exceptions.EmptyPlotError("Cannot compute color limits on empty plot!")
+            return
         
 
 class PlotlyTrace(object):
