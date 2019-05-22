@@ -9,7 +9,7 @@ def do_volcano_plot(expression):
     '''
     Creates a Volcano plot with a given comparison of conditions.
     '''
-    theplot = ScatterPlot()
+    theplot = VolcanoPlot()
     trace_name = "Volcano Plot"
     theplot.add_trace(trace_name)
     max_x = 0

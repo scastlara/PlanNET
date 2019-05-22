@@ -73,8 +73,8 @@ def get_shortest_paths(startnodes, endnodes, plen):
             else:
                 for path in paths:
                     graphelements.append( GraphCytoscape() )
-                    graphelements[numpath].add_elements(path.graph.nodes)
-                    graphelements[numpath].add_elements(path.graph.edges)
+                    graphelements[numpath].add_elements(path.nodes)
+                    graphelements[numpath].add_elements(path.edges)
                     graphelements[numpath] = (graphelements[numpath].to_json, round(path.score, 2))
                     numpath += 1
     return graphelements, numpath

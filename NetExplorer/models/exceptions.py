@@ -89,3 +89,5 @@ class InvalidFormat(Exception):
         return "Invalid file format: %s ." % (self.fformat)
 
 
+class EmptyPlotError(Exception):
+    """Raised when performing operations on an empty Plot."""

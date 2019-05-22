@@ -16,20 +16,23 @@ COLORS = [
 
 
 class PlotCreator(object):
-    
-    def __init__(self):
-        '''Class that handles the creation of plots for PlanExp.
+    """
+    Class that handles the creation of plots for PlanExp.
+    """
 
-        Attributes:
-            None
-        
-        '''
+    def __init__(self):
         pass
 
     def __create_violin(self, **kwargs):
-        '''
+        """
+        Creates a violin plot.
 
-        '''
+        Args:
+            **kwargs: Arbitrary keyword arguments passed from create_plot.
+
+        Returns:
+            :obj:`ViolinPlot`: Violin plot instance.
+        """
         plot = ViolinPlot()
         condition_list = list()
 
@@ -63,6 +66,16 @@ class PlotCreator(object):
 
     
     def __create_heatmap(self, **kwargs):
+        """
+        Creates a heatmap plot.
+
+        Args:
+            **kwargs: Arbitrary keyword arguments passed from create_plot.
+
+        Returns:
+            :obj:`HeatmapPlot`: Heatmap plot instance.
+        """
+
         plot = HeatmapPlot()
 
         if kwargs['ctype'] != "Samples":
@@ -100,6 +113,16 @@ class PlotCreator(object):
 
 
     def __create_linechart(self, **kwargs):
+        """
+        Creates a linechart plot.
+
+        Args:
+            **kwargs: Arbitrary keyword arguments passed from create_plot.
+
+        Returns:
+            :obj:`LinePlot`: Line chart plot instance.
+        """
+
         plot = LinePlot()
 
         condition_expression = ExpressionCondition.get_condition_expression(
@@ -148,6 +171,16 @@ class PlotCreator(object):
     
 
     def __create_bar(self, **kwargs):
+        """
+        Creates a bar plot.
+
+        Args:
+            **kwargs: Arbitrary keyword arguments passed from create_plot.
+
+        Returns:
+            :obj:`BarPlot`: Bar plot instance.
+        """
+
         plot = BarPlot()
         condition_expression = ExpressionCondition.get_condition_expression(
             kwargs['experiment'], 
@@ -167,7 +200,19 @@ class PlotCreator(object):
     
     
     def __create_coexpression(self, **kwargs):
-        plot = NewScatterPlot()
+        """
+        Creates a co-expression plot, a plot where x and y axis are expression values 
+        for two genes, and each point is a cell.
+
+        Args:
+            **kwargs: Arbitrary keyword arguments passed from create_plot.
+
+        Returns:
+            :obj:`ScatterPlot`: ScatterPlot plot instance with co-expression plot.
+        """
+
+
+        plot = ScatterPlot()
         sample_expression, gene_conditions = ExpressionAbsolute.get_sample_expression(
             kwargs['experiment'], 
             kwargs['dataset'], 
@@ -190,7 +235,28 @@ class PlotCreator(object):
 
 
     def __create_tsne_simple(self, genes, cell_positions, sample_names, sample_condition, sample_expression):
-        plot = NewScatterPlot()
+        """
+        Creates a t-SNE plot with one (or none) gene expression mapped onto it.
+
+        Args:
+            genes (`list` of `str`): List of gene symbols.
+            cell_positions (`dict`): Dictionary with cell positions in t-SNE space. 
+                Key is cell/sample name, value is tuple with (x, y) positions (float, float).
+            sample_names (`list` of `str`): List of sample names.
+            sample_condition (`dict`): Dictionary with sample-condition relationships. 
+                Key is cell/sample name, value is condition identifier (int).
+            sample_expression (`dict`):  Key is gene symbol (`str`), value is vector of 
+                expression in each sample (`list` of `float`), sorted by condition. 
+        
+        Warning:
+            `sample_expression` values have to be in the same order as `sample_names`! 
+            We sort them by sample identifier using `order('sample')` in Django models.
+
+        Returns:
+            :obj:`ScatterPlot`: ScatterPlot plot instance.
+        """
+
+        plot = ScatterPlot()
         done_condition = set()
         for idx, sample_name in enumerate(sample_names):
             condition = sample_condition[sample_name]
@@ -209,7 +275,25 @@ class PlotCreator(object):
 
 
     def __create_tsne_multiple(self, cell_positions, sample_names, sample_condition, sample_mean_expression):
-        plot = NewScatterPlot()
+        """
+        Creates a t-SNE plot withmore than one gene expression mapped onto it.
+
+        Args:
+            genes (`list` of `str`): List of gene symbols.
+            cell_positions (`dict`): Dictionary with cell positions in t-SNE space. 
+                Key is cell/sample name, value is tuple with (x, y) positions (float, float).
+            sample_names (`list` of `str`): List of sample names.
+            sample_condition (`dict`): Dictionary with sample-condition relationships. 
+                Key is cell/sample name, value is condition identifier (int).
+            sample_mean_expression (`dict`): Dictionary with mean expession for condition.
+                Key is sample name (`str`), value is mean expression (`float`) 
+                for each gene in `genes` in that cell.
+
+        Returns:
+            :obj:`ScatterPlot`: ScatterPlot plot instance.
+        """
+
+        plot = ScatterPlot()
         done_condition = set()
         for sample_name in sample_names:
             condition = sample_condition[sample_name]
@@ -228,6 +312,15 @@ class PlotCreator(object):
 
 
     def __create_tsne(self, **kwargs):
+        """
+        Creates either a simple t-SNE (zero or one gene) or a multiple t-SNE (>1 gene).
+
+        Args:
+            **kwargs: Arbitrary keyword arguments passed from create_plot.
+
+        Returns:
+            :obj:`ScatterPlot`: Scatter plot t-SNE visualization.
+        """
 
         # Get cell positions
         cell_positions = CellPlotPosition.objects.filter(
@@ -280,7 +373,7 @@ class PlotCreator(object):
 
 
     def create_plot(self, plot_name, **kwargs):
-        '''Method for creating plots.
+        """Method for creating plots.
 
         Args:
             plot_name (str): Name of the plot. 
@@ -295,16 +388,16 @@ class PlotCreator(object):
                 for plot `violin`.
         
         Returns:
-            plot (`GenExpPlot`): Can be of subclass (`ViolinPlot`, `ScatterPlot`, 
+            plot (`GeneExpPlot`): Can be of subclass (`ViolinPlot`, `ScatterPlot`, 
                 `BarPlot`, `HeatmapPlot`, or `LinePlot`).
 
-        '''
+        """
         required_args = ['experiment', 'dataset', 'conditions', 'genes', 'ctype']
         for req_arg in required_args:
             try:
                 assert(req_arg in kwargs)
             except AssertionError:
-                raise TypeError("crate_plot() required arguments: %s" % ", ".join(required_args))
+                raise TypeError("create_plot() required arguments: %s" % ", ".join(required_args))
 
         if plot_name == "violin":
             plot = self.__create_violin(**kwargs)
@@ -324,52 +417,68 @@ class PlotCreator(object):
         return plot
 
 
-
-
 # ------------------------------------------------------------------------------
-class GenExpPlot(object):
+class GeneExpPlot(object):
     """
-    Class for Plotly barplots and violins.
-    traces = [
-        0 : {
-            group1: [ values ],
-            group2: [ values ],
-            ...
-        },
-        1 :
-            ...
-    ]
+    Parent class for Plotly barplots and violins.
+    
+    Attributes:
+        traces (`list` of :obj:`PlotlyTrace`): List of plotly traces that define 
+            the data to be plotted.
+        title (`str`): Title for plot.
+        xlab(`str`): Label for plot x-axis.
+        ylab(`str`): Label for plot y-axis.
+        trace_names (`list` of `str`): Name for traces, if any.
     """
+
     def __init__(self):
         self.traces = list()
-        self.traces_set = set()
-        self.groups = list()
-        self.groups_set = set()
         self.title = str()
-        self.ylab = str()
         self.xlab = str()
+        self.ylab = str()
         self.trace_names = list()
      
-
     def is_empty(self):
-        if self.traces[0].x and self.traces[0].y:
-            return False
+        """
+        Checks if plot is empty by looking at its traces.
+
+        Returns:
+            bool: True if empty, False otherwise.
+        """
+
+        if self.traces:
+            if self.traces[0].x and self.traces[0].y:
+                return False
+            else:
+                return True
         else:
             return True
-
-
+    
+    def plot(self):
+        """
+        Method to be provided by child classes to convert plot to JSON string for 
+        plotting.
+        """
+        raise NotImplementedError("GeneExpPlot is a parent class and cannot be plotted!")
 
 
 # ------------------------------------------------------------------------------
-class BarPlot(GenExpPlot):
+class BarPlot(GeneExpPlot):
     """
-    Class for Plotly bar plots.
-    Each bar (group) consists of only one value.
+    Class for Plotly bar plots where each bar (group) consists of only one value. 
+    Inherits from GenExpPlot.
     """
     def __init__(self):
         super(BarPlot, self).__init__()
 
     def plot(self):
+        """
+        Converts plot to a JSON string ready to be drawn by Plotly.js.
+
+        Returns:
+            str: JSON string with plot data for Plotly.js.
+        """
+
         theplot = dict()
         theplot['data'] = list()
         theplot['layout'] = dict()
@@ -390,26 +499,26 @@ class BarPlot(GenExpPlot):
 
 
 # ------------------------------------------------------------------------------
-class ViolinPlot(GenExpPlot):
+class ViolinPlot(GeneExpPlot):
     """
-    Class for Plotly violinplots.
-    Each violin (group) is made of multiple values.
-    Class for Plotly barplots.
-    traces = [
-        0 : {
-            group1: [ values ],
-            group2: [ values ],
-            ...
-        },
-        1 :
-            ...
-    ]
+    Class for Plotly violinplots. Each violin (group) is made of multiple values. 
+    Inherits from GenExpPlot.
     """
+
     def __init__(self):
         super(ViolinPlot, self).__init__()
-    
 
     def jitter_and_round(self, values, jitter=0.01):
+        """
+        Jitters the y-values of the Violin plot so that Plotly can plot them 
+        because Plotly.js is buggy as hell, and if the standard deviation is 
+        equal to zero it will REFUSE to plot the violin.
+
+        Args:
+            values (`list` of `float`): Values to be jittered.
+            jitter (`float`): How much to jitter the y-values. 
+        """
+
         newvalues = list()
         for idx, value in enumerate(values):
             value = round(value, 3)
@@ -419,22 +528,26 @@ class ViolinPlot(GenExpPlot):
                 newvalues.append(value - jitter)
         return newvalues
 
-    def is_empty(self):
-        if self.traces[0].x and self.traces[0].y:
-            return False
-        else:
-            return True
-
-
     def plot(self):
+        """
+        Converts plot to a JSON string ready to be drawn by Plotly.js.
+
+        Returns:
+            str: JSON string with plot data for Plotly.js.
+        """
         theplot = dict()
         theplot['data'] = list()
         theplot['layout'] = dict()
         data_list = list()
 
         for trace in self.traces:
-             trace_dict = { 'x': trace.x, 'y': self.jitter_and_round(trace.y), 'type': trace.type, 'name': trace.name }
-             data_list.append(trace_dict)
+            trace_dict = { 
+                 'x': trace.x, 
+                 'y': self.jitter_and_round(trace.y), 
+                 'type': trace.type, 
+                 'name': trace.name 
+            }
+            data_list.append(trace_dict)
         
         if len(self.traces) > 1:
             theplot['layout']['violinmode'] = "group"
@@ -445,14 +558,49 @@ class ViolinPlot(GenExpPlot):
 
 
 class HeatmapPlot(object):
-    '''
-    Class for plotly Heatmaps
+    """
+    Class for plotly Heatmaps. They are not GeneExpPlot because they function 
+    very differently.
 
-        y: genes
-        x: clusters
-        z: expression mean
-        
-    '''
+    Attributes:
+        x (`list` of `str`): x-values for data (condition names).
+        y (`list` of `str`): y-values for data (gene names).
+        z (`list` of `list`): z-values for data (expression that will be 
+            mapped to color). Each element of `z` corresponds to a list 
+            with expression values for one gene. `z` is a 2-D matrix where 
+            rows are genes (same order as `y`) and columns are conditions (same 
+            order as `x`).
+        type (`str`): Defines type for Plotly ("heatmap").
+
+    Warning:
+        add_gene and add_gene_expression should be used syncronously. Each time 
+        a gene is added, all gene_expressions will be added for THAT gene. 
+        Those should be added in the same order as the provided conditions in the 
+        `add_condition` call previously. See the example for more information.
+    
+    Example:
+
+        .. code-block:: python
+
+            # Data to be added
+            genes = ["A", "B"]
+            expressions = [
+                [2.5, 3.5, 4.5], # for A
+                [1, 3, 1] # for B
+            ]
+            conditions = ["c1", "c2", "c3"]
+            
+            # Initialize the plot
+            the_plot = HeatMapPlot()
+            theplot.add_conditions(conditions)
+            
+            # Add genes and expression
+            for gene, expression in zip(genes, expressions):
+                theplot.add_gene(gene)
+                theplot.add_gene_expression(expression)
+
+    """
+
     def __init__(self):
         self.x = list()
         self.y = list()
@@ -460,24 +608,55 @@ class HeatmapPlot(object):
         self.type = "heatmap"
     
     def add_conditions(self, conditions):
+        """
+        Adds conditions to x-axis.
+
+        Args:
+            conditions (`list` of :obj:`Condition` or `str`): Conditions to be added.
+        """
         try:
             self.x = [ cond.name for cond in list(conditions) ]
         except:
             self.x = [ cond for cond in conditions ]
 
     def add_gene(self, gene_symbol):
+        """
+        Adds gene symbol to y-axis.
+        
+        Args:
+            gene_symbol (`str`): Gene symbol to be added to y-axis.
+        """
         self.y.append(gene_symbol)
 
     def add_gene_expression(self, expression):
+        """
+        Adds gene expression to z-axis.
+
+        Args:
+            expression (`float`): Expression value to be added to the LAST gene.
+
+        """
         self.z.append(expression)
 
     def is_empty(self):
+        """
+        Checks if plot is empty by looking at its traces.
+
+        Returns:
+            bool: True if empty, False otherwise.
+        """
         if self.x and self.y and self.z:
             return False
         else:
             return True
     
     def plot(self):
+        """
+        Converts plot to a JSON string ready to be drawn by Plotly.js.
+
+        Returns:
+            str: JSON string with plot data for Plotly.js.
+        """
         theplot = dict()
         theplot['data'] = list()
 
@@ -499,16 +678,25 @@ class HeatmapPlot(object):
         return theplot
 
 
-class LinePlot(GenExpPlot):
-    '''
-    Class for Plotly linecharts
-    '''
+class LinePlot(GeneExpPlot):
+    """
+    Class for Plotly linecharts. Inherits from GenExpPlot.
+
+    Attributes:
+        type (`str`): Type for Plotlyjs (scattergl).
+    """
     def __init__(self):
         super(LinePlot, self).__init__()
         self.type = "scattergl"
 
 
     def plot(self):
+        """
+        Converts plot to a JSON string ready to be drawn by Plotly.js.
+
+        Returns:
+            str: JSON string with plot data for Plotly.js.
+        """
         theplot = dict()
         theplot['data'] = list()
 
@@ -565,23 +753,30 @@ class LinePlot(GenExpPlot):
             theplot['layout']['annotations'] = annotations
         theplot['data'] = data_list
         return theplot
-    
-    def is_empty(self):
-        
-        if self.traces[0].x and self.traces[0].y:
-            return False
-        else:
-            return True
 
 
-class NewScatterPlot(GenExpPlot):
+class ScatterPlot(GeneExpPlot):
+    """
+    Class for scatter plots. Inherits from GenExpPlot.
+
+    Attributes:
+        type (`str`): Type for Plotlyjs (scattergl).
+        cmax (`float`): Maximum value to compute color gradient. Defaults to None.
+        cmin (int): Minimum value to compute color gradient. Defaults to 0.
+    """
     def __init__(self):
-        super(NewScatterPlot, self).__init__()
+        super(ScatterPlot, self).__init__()
         self.type = "scattergl"
         self.cmax = None
         self.cmin = 0
     
     def plot(self):
+        """
+        Converts plot to a JSON string ready to be drawn by Plotly.js.
+
+        Returns:
+            str: JSON string with plot data for Plotly.js.
+        """
         theplot = dict()
         theplot['data'] = list()
         theplot['layout'] = dict()
@@ -613,6 +808,13 @@ class NewScatterPlot(GenExpPlot):
         return theplot
     
     def compute_color_limits(self):
+        """
+        Computes color limits according to stored trace values and fills `cmax` 
+        attribute.
+
+        Raises:
+            EmptyPlotError: raised when no values are found in traces.
+        """
         self.cmax = 0
         try:
             for trace in self.traces:
@@ -620,13 +822,36 @@ class NewScatterPlot(GenExpPlot):
                 if max_in_trace > self.cmax:
                     self.cmax = max_in_trace
         except:
-            return
+            raise exceptions.EmptyPlotError("Cannot compute color limits on empty plot!")
         
 
+class PlotlyTrace(object):
+    """
+    Class for plotly traces.
 
-class ScatterPlot(object):
-    '''
-    Class for Plotly scatterplots
+    Attributes:
+        name (str): 
+    """
+    def __init__(self, name):
+        self.name = name
+        self.order = int()
+        self.x = list()
+        self.y = list()
+        self.names = list()
+        self.mode = 'markers'
+        self.type = 'scattergl'
+        self.color = list()
+        self.xaxis = None
+        self.yaxis = None
+        self.subplot_title = None
+        self.legend_group = None
+
+
+
+class VolcanoPlot(object):
+    """
+    Class for Plotly volcano scatterplots. Legacy code that should be converted 
+    to ScatterPlot at some point.
             var data = [
         {
             z: [[1, 20, 30, 50, 1], [20, 1, 60, 80, 30], [30, 60, 1, -10, 20]],
@@ -638,7 +863,7 @@ class ScatterPlot(object):
 
 
         Plotly.newPlot('myDiv', data);
-    '''
+    """
     def __init__(self):
         self.traces = dict()
         self.limits = { 'x': list(), 'y': list()}
@@ -711,7 +936,7 @@ class ScatterPlot(object):
             raise(KeyError("Trace %s not found in ScatterPlot!" % trace_name))
 
     def add_units(self, axis, units):
-        '''
+        """
         Adds units to one axis of the plot.
 
         Args:
@@ -720,32 +945,13 @@ class ScatterPlot(object):
         
         Returns:
             nothing
-        '''
+        """
         if axis == 'x' or axis == 'y':
             self.units[axis] = units
         else:
             raise ValueError("Axis should be a string containing 'x' or 'y'.")
 
 
-class PlotlyTrace(object):
-    '''
-    Class for plotly traces
-    '''
-    def __init__(self, name):
-        self.name = name
-        self.order = int()
-        self.x = list()
-        self.y = list()
-        self.names = list()
-        self.mode = 'markers'
-        self.type = 'scattergl'
-        self.color = list()
-        self.xaxis = None
-        self.yaxis = None
-        self.subplot_title = None
-        self.legend_group = None
-
-    
 
 
 

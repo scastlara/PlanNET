@@ -1,13 +1,13 @@
 from .common import *
 
 def sort_results(datasets, results):
-    '''
+    """
     Sorts gene/node results by:
         1- Dataset (Smesgene - Human - AllContigs by year)
         2- Gene Name.
         3- Contig/Gene symbol.
     Also removes results from not allowed datasets
-    '''
+    """
     dataset_names = set([ dat.name for dat in datasets ])
     dataset_names.add("Smesgene")
     dataset_names.add("Human")
@@ -25,6 +25,19 @@ def sort_results(datasets, results):
     return sorted_results
 
 def get_search_summary(datasets, results):
+    """
+    Cretes a summary of the searched performed in gene_search.
+
+    Args:
+        datasets (`list` of `str`): List of all datasets to which User 
+            has permissions to.
+        results (`list` of `Node`): List of Node objects that match the serach.
+
+    Returns:
+        `list` of `tuple`: List of tuples with each one of them having the name 
+        of the Dataset and the second having the number of hits for that 
+        dataset. 
+    """
     dataset_order = [ dat.name for dat in datasets ]
     dataset_order.insert(0, 'Smesgene')
     dataset_order.insert(1, 'Human')
@@ -46,16 +59,28 @@ def get_search_summary(datasets, results):
 
 
 def gene_search(request):
-    '''
-    This is the text-based database search function.
-    response:
-        - symbols
-        - database
-        - databases
-        - search_error
-        - res
-        - valid_query
-    '''
+    """
+    Search for planarian genes and transcripts using their identifiers or any 
+    of their annotations (PFAM, GO, homologs).
+
+    Accepts:
+        * **GET**
+
+    Args:
+        genesymbol (str): Search term with gene symbol(s).
+        database (str): Database in which to search for gene symbol(s).
+
+    Response:
+        * **res** (`list` of `Nodes`): Results to be displayed.
+        * **summary** (str): Summary of the search.
+        * **search_error** (int): Indicates if there was an error in the search.
+        * **valid_query** (bool): Indicates if query is valid.
+
+    Template:
+        * **NetExplorer/gene_search.html**
+
+
+    """
     response = dict()
     response['databases'] = Dataset.get_allowed_datasets(request.user)
     response['valid_query'] = False

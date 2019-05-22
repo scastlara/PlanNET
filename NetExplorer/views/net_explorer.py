@@ -24,10 +24,10 @@ def upload_graph(request, json_text):
         try: # Check if JSON is a graph declaration
             json_graph[u'nodes']
         except KeyError:
-            logging.info("ERROR: Json is not a graph declaration (no nodes) in upload_graph")
+            logging.info("ERROR: JSON is not a graph declaration (no nodes) in upload_graph")
             return render(request, 'NetExplorer/netexplorer.html', {'json_err': True,'databases': Dataset.get_allowed_datasets(request.user), 'experiments': all_experiments})
     except ValueError as err:
-        logging.info("ERROR: Not a valid Json File %s in upload_graph\n" % (err))
+        logging.info("ERROR: Not a valid JSON File %s in upload_graph\n" % (err))
         return render(request, 'NetExplorer/netexplorer.html', {'json_err': True,'databases': Dataset.get_allowed_datasets(request.user)})
     
     # Check if homologs are defined... 
@@ -80,7 +80,7 @@ def net_explorer(request):
         else:
             kegg = KeggPathway(symbol=symbols[0], database=database)
             if not kegg.is_empty():
-                return HttpResponse(kegg.graphelements, content_type="application/json")
+                return HttpResponse(kegg, content_type="application/json")
             else:
                 return HttpResponse(status=404)
     elif request.method == "POST":

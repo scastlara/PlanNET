@@ -32,52 +32,6 @@ class Node(object):
         It will query the Neo4j database and it will get the required node.
         """
 
-
-
-    def path_to_node(self, target, plen):
-        """
-        Given a target node object, this method finds all the shortest paths to 
-        that node of length plen. If there aren't any, it returns None.
-        
-        Args:
-            target (PlanarianContig): Target gene in the graph.
-            plen (int): Path length to consider. All paths from `self` to `target
-                will be of length = `plen`.
-
-        Returns:
-            Union([Pathway, None]): Pathway between `self` and `target` or None 
-            if no pathway exists. 
-        """
-        query = neoquery.PATH_QUERY % (self.database, plen, target.database, self.symbol, target.symbol)
-        results = GRAPH.run(query)
-        results = results.data()
-        if results:
-            paths = list()
-            for path in results:
-                nodes_in_path  = [ PlanarianContig(node, self.database, query=False) for node in path['symbols']]
-                relationships  = list()
-                path_graph_obj = GraphCytoscape()
-                for idx, val in enumerate(path['int_prob']):
-                    parameters = dict()
-                    parameters['int_prob']    = path['int_prob'][idx]
-                    parameters['path_length'] = path['path_length'][idx]
-                    relationships.append(
-                        PredInteraction(
-                            database      = self.database,
-                            source_symbol = path['symbols'][idx],
-                            target        = nodes_in_path[idx + 1],
-                            parameters    = parameters
-                        )
-                    )
-                path_graph_obj.add_elements(nodes_in_path)
-                path_graph_obj.add_elements(relationships)
-                paths.append(Pathway(graph=path_graph_obj))
-            return paths
-        else:
-            # No results
-            logging.info("No paths")
-            return None
-
     def get_domains(self):
         """
         Gets domains annotated for a particular Node. It updates the Node attribute
@@ -949,6 +903,50 @@ class PlanarianContig(Node):
             self.degree     = 0
         return self.neighbours
 
+    def path_to_node(self, target, plen):
+        """
+        Given a target node object, this method finds all the shortest paths to 
+        that node of length plen. If there aren't any, it returns None.
+        
+        Args:
+            target (PlanarianContig): Target gene in the graph.
+            plen (int): Path length to consider. All paths from `self` to `target
+                will be of length = `plen`.
+
+        Returns:
+            Union([Pathway, None]): Pathway between `self` and `target` or None 
+            if no pathway exists. 
+        """
+        query = neoquery.PATH_QUERY % (self.database, plen, target.database, self.symbol, target.symbol)
+        results = GRAPH.run(query)
+        results = results.data()
+        if results:
+            paths = list()
+            for path in results:
+                nodes_in_path  = [ PlanarianContig(node, self.database, query=False) for node in path['symbols']]
+                relationships  = list()
+                path_graph_obj = GraphCytoscape()
+                for idx, val in enumerate(path['int_prob']):
+                    parameters = dict()
+                    parameters['int_prob']    = path['int_prob'][idx]
+                    parameters['path_length'] = path['path_length'][idx]
+                    relationships.append(
+                        PredInteraction(
+                            database      = self.database,
+                            source_symbol = path['symbols'][idx],
+                            target        = nodes_in_path[idx + 1],
+                            parameters    = parameters
+                        )
+                    )
+                path_graph_obj.add_elements(nodes_in_path)
+                path_graph_obj.add_elements(relationships)
+                paths.append(Pathway(graph=path_graph_obj))
+            return paths
+        else:
+            # No results
+            logging.info("No paths")
+            return None
+
     def get_neighbours(self):
         """
         Method to get the adjacent nodes in the graph and all the information about 
@@ -1248,7 +1246,7 @@ class GraphCytoscape(object):
             node (:obj:`Node`): Node instance to add to the graph.
         """
         self.add_elements([node])
-
+    
     def add_interaction(self, interaction):
         """
         Adds a single interaction to the graph.
@@ -1257,6 +1255,19 @@ class GraphCytoscape(object):
             node (:obj:`PredInteraction`): PredInteraction instance to add to the graph.
         """
         self.add_elements([interaction])
+
+    def add_graph(self, graph):
+        """
+        Adds elements of graph to this graph instance.
+
+        Args:
+            graph (:obj:`GraphCytoscape`): Graph to be merged.
+        """
+        if graph.nodes:
+            self.add_elements(graph.nodes)
+        if graph.edges:
+            self.add_elements(graph.edges)
+        return self
 
     def define_important(self, vip_nodes):
         """
@@ -1462,7 +1473,8 @@ class GraphCytoscape(object):
                 homologs[row['planarian']] = row['human']
         return homologs
 
-        
+    
+    
     @classmethod
     def get_genes_bulk(cls, symbols, database):
         """
@@ -1611,7 +1623,37 @@ class ExperimentList(object):
 
 
 # ------------------------------------------------------------------------------
-class KeggPathway(object):
+class Pathway(GraphCytoscape):
+    """
+    Class for pathways. They are basically GraphCytoscape objects with score property.
+
+    Attributes:
+        graph (:obj:`GraphCytoscape): Graphcytoscape object of the pathway.
+
+    Args:
+        graph (:obj:`GraphCytoscape): Graphcytoscape object of the pathway.
+     
+    """
+    def __init__(self, graph):
+        super(Pathway, self).__init__()
+        self.add_graph(graph)
+
+    @property
+    def score(self):
+        """
+        float: Mean score of interactions in pathway.
+        """
+        computed_score = 0
+        if self.edges:
+            computed_score = sum(
+                [edge.parameters['int_prob'] for edge in self.edges ]
+            ) / len(self.edges)
+        return computed_score
+
+
+
+# ------------------------------------------------------------------------------
+class KeggPathway(GraphCytoscape):
     """
     Class for KeggPathways. Encapsulates a GraphCytoscape object in `graphelements`. Will query Kegg on creation.
 
@@ -1628,12 +1670,13 @@ class KeggPathway(object):
         database (str): Planarian database to which this KeggPathway will be mapped to.
     """
     def __init__(self, symbol, database):
+        super(KeggPathway, self).__init__()
         self.symbol = symbol
         self.database = database
         self.kegg_url = "http://togows.dbcls.jp/entry/pathway/%s/genes.json" % symbol
-        self.graphelements = self.connect_to_kegg()
+        self.add_graph(self.get_graph_from_kegg())
 
-    def connect_to_kegg(self):
+    def get_graph_from_kegg(self):
         """
         Connects to KEGG and extracts the elements of the pathway.
 
@@ -1656,12 +1699,6 @@ class KeggPathway(object):
                 return GraphCytoscape()
         else:
             return GraphCytoscape()
-
-    def is_empty(self):
-        """
-        Checks if the KeggPathway is empty
-        """
-        return self.graphelements.is_empty()
                 
 # ------------------------------------------------------------------------------
 class GeneOntology(object):
@@ -1783,26 +1820,6 @@ class GeneOntology(object):
                 contigs.append(contig)
         return contigs
 
-
-# ------------------------------------------------------------------------------
-class Pathway(object):
-    """
-    Class for pathways. They are basically GraphCytoscape objects with more attributes.
-
-    Attributes:
-        graph (:obj:`GraphCytoscape): Graphcytoscape object of the pathway.
-        score (float): Score of the pathway (computed as the mean score of each interaction).
-
-    Args:
-        graph (:obj:`GraphCytoscape): Graphcytoscape object of the pathway.
-     
-    """
-    def __init__(self, graph):
-        self.graph = graph
-        self.score = 0
-        for edge in self.graph.edges:
-            self.score += edge.parameters['int_prob']
-        self.score = self.score / len(self.graph.edges)
 
 # ------------------------------------------------------------------------------
 class Document(models.Model):

@@ -496,7 +496,13 @@ class ExpressionAbsolute(Model):
 
     @classmethod
     def get_mean_expression(cls, experiment, dataset, conditions, genes):
-        """Return mean gene expression for samples with expression > 0 for all genes.
+        """
+        Returns mean gene expression for samples with expression > 0 for all provided genes.
+        
+        Example:
+            For genes A and B, will get a value for each cell in experiment where 
+            both genes are expressed > 0. Each value will be the mean expression 
+            (A + B) / 2 for each sample.
 
         Args:
             experiment (str): Experiment in PlanExp.
@@ -508,8 +514,8 @@ class ExpressionAbsolute(Model):
         Returns:
            `dict`: Dictionary with mean expession for condition.
                 Key is sample name (`str`), value is 
-                mean expression (`float`) for each gene in `genes`. Only samples with expression for all
-                genes in `genes`.
+                mean expression (`float`) for each gene in `genes`. 
+                Only samples with expression for all genes in `genes`.
         """
 
         celldict = dict()
