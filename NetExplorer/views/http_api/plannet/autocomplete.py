@@ -1,9 +1,28 @@
 from ...helpers.common import *
 
 def autocomplete(request):
-    '''
-    Tries to autocomplete contig names
-    '''
+    """
+    Tries to autocomplete a gene/contig/domain/GO symbol.
+
+    Accepts:
+        * **GET**
+
+    Args:
+        s_string (str): Partial search term.
+        database (str): Database in which to search for s_string.
+
+    Response:
+        * JSON `str`: List of gene symbols in `database` matching `s_string`
+
+    Example:
+
+    .. code-block:: bash
+
+        curl -H "Accept: application/json" \
+            -H "Content-Type: application/json" \
+            -X GET "https:/compgen.bio.ub.edu/PlanNET/autocomplete?s_string=THOC&database=Human"
+
+    """
     s_string = request.GET['s_string']
     if not s_string:
         return None

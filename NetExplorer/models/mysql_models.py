@@ -177,6 +177,37 @@ class Experiment(models.Model):
         json_string = json.dumps(json_dict)
         return json_string
 
+
+    def is_one_sample(self, ctype=None, conditions=None):
+        '''
+        Checks if there is only one sample per condition in experiment.
+
+        Args:
+            ctype (`str`): ConditionType name.
+            conditions (`list` of `Condition`): List of conditions for Experiment.
+        
+        Returns:
+            bool: True if experiment has only one sample per condition. False otherwise.
+
+        Raises:
+            ValueError: If neither 'ctype' nor 'conditions' is provided.
+        '''
+        if ctype is not None:
+            conditions = Condition.objects.filter(
+                experiment__name=self.name, 
+                cond_type=ConditionType.objects.get(name=ctype))
+
+        if conditions is not None:
+            samples_in_condition = SampleCondition.objects.filter(experiment=self, condition=conditions[0]).count()
+        else:
+            raise ValueError("Can't determine if Experiment is one_sample without a 'ctype' or 'conditions'")
+
+        if samples_in_condition == 1:
+            return True
+        else:
+            return False
+
+
     def __str__(self):
        return self.name
 

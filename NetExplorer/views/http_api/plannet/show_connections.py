@@ -1,9 +1,21 @@
 from ...helpers.common import *
 
+
 def show_connections(request):
     """
-    View that handles an AJAX request and, given a list of identifiers, returns
-    all the interactions between those identifiers/nodes.
+    Returns connections for a given set of nodes ina  graph.
+    
+    Accepts:
+        * **GET + AJAX**
+
+    Args:
+        nodes (`str`): Node symbols separated by commas.
+        databases (`str`): Databases for nodes separated by commas (same order).
+
+    Response:
+        * **GET + AJAX**:
+           * **str**: serialized :obj:`GraphCytoscape`.
+
     """
     if request.is_ajax():
         nodes_including = request.POST['nodes'].split(",")

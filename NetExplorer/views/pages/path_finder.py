@@ -1,12 +1,41 @@
 from ..helpers.common import *
 
+
 def path_finder(request):
     """
     View for the Pathway Finder.
     Returns a list called "graphelements". This is a list of tuples, with the first element
     of the tuple being the JSON of the graph to be used by cytoscape.js, and the second element being
     the score assigned to the given pathway.
+    
+    Accepts:
+        * **GET**
+
+    Args:
+        start (str): Start node symbol.
+        end (str): End node symbol.
+        database (str): Database to search.
+        plen (int): Path length of the requested pathways.
+        page (int): Page number for paginator.
+
+    Response:
+        * **database** (`str`): Database searched.
+        * **snode** (`str`): Start node symbol
+        * **enode** (`str`): End node symbol
+        * **plen** (`int`): Path length of searched pathways.
+        * **databases** (`list` of `Dataset`): List of allowed Datasets for user.
+        * **numpath** (`int`): Number of results.
+        * **noresults** (bool): True if no results. False otherwise.
+        * **graphs_for_page** (`list` of `tuple`): Pathway results for a given page. 
+            First element of tuple is :obj:`GraphCytoscape`, second is score (`float`).
+    
+    Todo:
+        Change to use Pathway class.
+
+    Template:
+        * **NetExplorer/pathway_finder.html**
     """
+
     if 'start' in request.GET and 'end' in request.GET:
         # We have a search
         if not request.GET['database']:

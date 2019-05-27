@@ -8,6 +8,13 @@ from ....helpers.common import *
 def do_volcano_plot(expression):
     '''
     Creates a Volcano plot with a given comparison of conditions.
+
+    Args:
+        expression (:obj:`QuerySet` of :obj:`ExpressionRelative`): Relative 
+            expression between the two conditions, sorted by absolute fold change.
+    
+    Return:
+        :obj:`VolcanoPlot`: Plot with -log(p-value) as y-axis and log fold change as x-axis.
     '''
     theplot = VolcanoPlot()
     trace_name = "Volcano Plot"
@@ -47,17 +54,31 @@ def do_volcano_plot(expression):
 
 def experiment_dge_table(request):
     """
-    View from PlanExp that returns the HTML of a table comparing two conditions
+    Retrieves datasets for which an experiment has data.
+    
+    Accepts:
+        * **GET + AJAX**
+
+    Args:
+        experiment (`str`): Experiment name.
+        condition1 (`str`): Condition 1 name.
+        condition2 (`str`): Condition 2 name.
+        dataset (`str`): Dataset name.
+        
+    Response:
+        * **GET + AJAX**:
+           * **str**: JSON with DGE table and Volcano Plot.
+
     """
     if request.is_ajax():
         exp_name = request.GET['experiment']
-        c1_name = request.GET['condition1']
-        c2_name = request.GET['condition2']
+        first_condition_name = request.GET['condition1']
+        second_condition_name = request.GET['condition2']
         dataset_name = request.GET['dataset']
         experiment = Experiment.objects.get(name=exp_name)
         dataset = Dataset.objects.get(name=dataset_name)
-        condition1 = Condition.objects.get(name=c1_name, experiment=experiment)
-        condition2 = Condition.objects.get(name=c2_name, experiment=experiment)
+        condition1 = Condition.objects.get(name=first_condition_name, experiment=experiment)
+        condition2 = Condition.objects.get(name=second_condition_name, experiment=experiment)
         expression = ExpressionRelative.objects.filter(
             experiment=experiment, dataset=dataset, 
             condition1=condition1, condition2=condition2)

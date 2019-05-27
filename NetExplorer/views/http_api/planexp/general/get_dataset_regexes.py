@@ -2,10 +2,24 @@ from ....helpers.common import *
 
 
 def get_dataset_regexes(request):
-    '''
-    Returns a dictionary with the regex matching each 
-    Dataset identifier schema.
-    '''
+    """
+    Returns Dataset regexes.
+    
+    Accepts:
+        * **GET**
+
+    Response:
+        * **GET**:
+           * **str**: 
+
+           .. code-block:: javascript
+
+                {
+                    "html": str,
+                    "exp_type": str
+                }
+
+    """
     regexes = Dataset.objects.all().values('name', 'identifier_regex')
     prefix_default_length = 10 # Default length of contig identifier prefix
 

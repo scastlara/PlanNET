@@ -6,6 +6,15 @@ def upload_graph(request, json_text):
     This function will take the request with a JSON file and it will return
     a template with the graph loaded (it will also handle the errors).
     It will return a render object to be returned by net_explorer view.
+
+    Args:
+        json_text (`str`): JSON string specifying graph.
+    
+    Returns:
+        `HttpResponse`: HttpResponse. 
+            Resulting from the call to Django's render function.
+    Raises:
+        ValueError: If json_text is not a correct cytoscape.js graph in JSON. 
     """
     # JSON with graph uploaded
     graph_content = str()
@@ -42,9 +51,30 @@ def upload_graph(request, json_text):
 
 
 def net_explorer(request):
-    '''
-    This is the cytoscape graph-based search function.
-    '''
+    """
+    NetExplorer application view.
+
+    Accepts:
+        * **GET**: For visiting the page.
+        * **GET + AJAX**: For adding nodes to visualization.
+        * **POST**: For uploading a graph in JSON format.
+
+    Response:
+        * **GET**: 
+            * **experiments** (`list` of `oldExperiment`): List of Experiments available in PlanNET.
+            * **databases** (`list` of `Dataset`): List of datasets to which user has access to.
+        * **GET + AJAX**:
+            * **`str`**: JSON string resulting from :obj:`GraphCytoscape`'s `to_json()` method call.
+        * **POST**: 
+            * **upload_json** (`str`): Uploaded JSON with graph.
+            * **databases** (`list` of `Dataset`): List of datasets to which user has access to.
+            * **json_error** (`bool`): True if uploaded JSON is not correct. False otherwise.
+            * **experiments** (`list` of `oldExperiment`): List of Experiments available in PlanNET.
+            * **no_layout** (`int`): 1 if layout doesn't have to be computed. 0 otherwise.
+
+    Template:
+        * **NetExplorer/netexplorer.html**
+    """
     if request.method == "GET" and request.is_ajax():
         # CHECK IF FORM IS OK
         if (not "genesymbol" in request.GET or

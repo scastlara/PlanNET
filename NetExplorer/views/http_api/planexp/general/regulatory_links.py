@@ -2,14 +2,27 @@ from ....helpers.common import *
 
 def regulatory_links(request):
     """
-    View from PlanExp that returns the HTML of a table comparing two conditions
+    Returns a summary of a selected experiment.
+    
+    Accepts:
+        * **GET + AJAX**
+
+    Args:
+        experiment (`str`): Experiment name.
+        dataset (`str`): Dataset name.
+        group (`int`): Integer indicating group of regulatory links to retrieve (1 to 10).
+
+    Response:
+        * **GET + AJAX**:
+           * **str**: HTML with regulatory links table (template "NetExplorer/regulatory_links_table.html")
+
     """
     if request.is_ajax():
         exp_name = request.GET['experiment']
         dataset_name = request.GET['dataset']
+        group = request.GET.get('group')
         experiment = Experiment.objects.get(name=exp_name)
         dataset = Dataset.objects.get(name=dataset_name)
-        group = request.GET.get('group')
         response = dict()
 
         if group is None:

@@ -2,7 +2,16 @@ from ....helpers.common import *
 
 def get_possible_comparisons(exp_name):
     '''
-    Returns dictionary of possible conditions to compare in DGE table
+    Returns dictionary of possible conditions to compare in DGE table.
+
+    Args:
+        exp_name (str): Experiment name
+    
+    Returns:
+        `dict`: Dictionary with comparisons. 
+            Only those available for DGE in ExpressionRelative table. Key is 
+            condition name, value is `list` with conditions for which "key" has 
+            a comparison. 
     '''
     experiment = Experiment.objects.get(name=exp_name)
     exp_relative = ExpressionRelative.objects.filter(experiment=experiment).select_related("condition1", "condition2").values("condition1__name", "condition2__name").distinct()
@@ -20,7 +29,31 @@ def get_possible_comparisons(exp_name):
 
 def experiment_conditions(request):
     """
-    View from PlanExp that returns conditions for a given experiment
+    Gets list of conditions for a given experiment and its available comparisons 
+    for DGE.
+    
+    Accepts:
+        * **GET + AJAX**
+
+    Args:
+        experiment (`str`): Experiment name.
+        type (`str`): Condition type name.
+
+    Response:
+        * **GET + AJAX**:
+           * **str**: JSON with conditions and comparisons.
+
+           .. code-block:: javascript
+
+                {
+                    "conditions": ["c1", "c2", "c3"],
+                    "comparisons": 
+                        {
+                            "c1": ["c2"],
+                            "c2": ["c1", "c3"],
+                            "c3": ["c2"]
+                        }
+                }
     """
     if request.is_ajax():
         exp_name = request.GET['experiment']

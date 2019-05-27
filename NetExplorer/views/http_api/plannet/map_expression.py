@@ -3,14 +3,30 @@ from ...helpers.common import *
 
 def map_expression(request):
     """
-    View to handle a possible ajax request to map expression onto graph
+    View that maps expression to NetExplorer graph. Legacy. Should be updated to PlanExp.
+    
+    Accepts:
+        * **GET + AJAX**
+
+    Args:
+        nodes (`str`): Gene/contig symbols separated by commas.
+        databases (`str`): Databases of nodes separated by commas (same order as nodes).
+        sample (`str`): Sample name for which to map expression.
+        from_color (`str`): Hex value of first color of gradient.
+        to_color (`str`): Hex value of final color of gradient.
+        comp_type (`str`): "one-sample" or "two-sample" indicating if gradient 
+            should be linear or divergent, respectively.
+
+    Response:
+        * **GET**:
+           * **str**: JSON with colors for each node.
     """
     if request.is_ajax():
         nodes      = request.GET['nodes'].split(",")
         databases  = request.GET['databases'].split(",")
         sample     = request.GET['sample']
-        to_color   = request.GET['to_color']
         from_color = request.GET['from_color']
+        to_color   = request.GET['to_color']
         comp_type  = request.GET['type'] # Can be 'one-sample' or 'two-sample'
         # Check if experiment is in DB
         response = dict()
@@ -21,7 +37,7 @@ def map_expression(request):
             experiment = oldExperiment(request.GET['experiment'])
             experiment.color_gradient(from_color, to_color, comp_type)
             response['experiment'] = experiment.to_json()
-        except ExperimentNotFound as err:
+        except exceptions.ExperimentNotFound as err:
             logging.info(err)
             response['status'] = "no-expression"
             response = json.dumps(response)

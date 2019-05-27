@@ -2,9 +2,30 @@ from ...helpers.common import *
 
 
 def get_fasta(request):
-    '''
-    This function will serve FASTA files
-    '''
+    """
+    View that serves FASTA files
+    
+    Accepts:
+        * **GET**
+
+    Args:
+        genesymbol (`str`): Identifier of entity for which to download FASTA.
+        database (`str`): Database of genesymbol.
+        type (`str`): Type of sequence to download ("sequence" or "orf").
+
+    Response:
+        * **GET**:
+           * **HttpResponse**: Response with a file.
+    
+    Example:
+
+        .. code-block:: bash
+
+            curl -H "Content-Type: application/json" \\
+                 -X GET \\
+                 "https:/compgen.bio.ub.edu/PlanNET/get_fasta?genesymbol=SMESG000079934.1&database=Smesgene&type=sequence"
+                 
+    """
 
     genesymbol   = request.GET['genesymbol']
     typeseq      = request.GET['type']

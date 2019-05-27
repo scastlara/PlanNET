@@ -6,7 +6,14 @@ def sort_results(datasets, results):
         1- Dataset (Smesgene - Human - AllContigs by year)
         2- Gene Name.
         3- Contig/Gene symbol.
-    Also removes results from not allowed datasets
+    Also removes results from not allowed datasets.
+
+    Args:
+        datasets (`list` of :obj:`Dataset`): list of allowed Datasets.
+        results (:obj:`GraphCytoscape`): GraphCytoscape of search results to sort.
+    
+    Returns:
+        `list` of `tuple`: Lists of tuples. Each tuple has (`dataset`, `node name`, `node symbol`).
     """
     dataset_names = set([ dat.name for dat in datasets ])
     dataset_names.add("Smesgene")
@@ -78,8 +85,6 @@ def gene_search(request):
 
     Template:
         * **NetExplorer/gene_search.html**
-
-
     """
     response = dict()
     response['databases'] = Dataset.get_allowed_datasets(request.user)

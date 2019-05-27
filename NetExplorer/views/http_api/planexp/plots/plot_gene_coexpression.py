@@ -1,6 +1,25 @@
 from ....helpers.common import *
 
+
 def plot_gene_coexpression(request):
+    """
+    Plots gene co-expression.
+    
+    Accepts:
+        * **GET + AJAX**
+
+    Args:
+        experiment (`str`): Experiment name.
+        dataset (`str`): Dataset name.
+        gene1_name (`str`): Gene 1 symbol.
+        gene2_name (`str`): Gene 2 symbol.
+        ctype (`str`): :obj:`ConditionType` name.
+
+    Response:
+        * **GET + AJAX**:
+           * **str**: JSON with ScatterPlot.
+
+    """
     if request.is_ajax():
         exp_name = request.GET['experiment']
         dataset = request.GET['dataset']

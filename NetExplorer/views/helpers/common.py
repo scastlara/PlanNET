@@ -18,6 +18,7 @@ from statistics import stdev, mean
 from django.db.models import Sum
 from django.db.models import FloatField
 from django.db.models.functions import Cast
+from django.views.decorators.csrf import csrf_exempt
 import tempfile
 import textwrap
 import json
@@ -48,9 +49,9 @@ MAX_CHAR_LENGTH = 25000
 # -----------------------
 # ------------------------------------------------------------------------------
 def symbol_is_empty(symbol):
-    '''
+    """
     Checks if the input symbol from the forms is empty or not
-    '''
+    """
     if re.match(r"[a-zA-Z0-9_]", symbol):
         return False
     else:
@@ -58,11 +59,11 @@ def symbol_is_empty(symbol):
 
 # ------------------------------------------------------------------------------
 def get_shortest_paths(startnodes, endnodes, plen):
-    '''
+    """
     This function gets all the possible shortest paths between the specified nodes.
     Returns a json string with all the nodes and edges, the length of the paths and
     the total number of paths
-    '''
+    """
     graphelements = list()
     numpath = 0
     for snode in startnodes:
@@ -96,13 +97,13 @@ def disambiguate_gene(gene_name, dataset):
 
 
 def condition_sort(x):
-    '''
+    """
     Sort conditions by 
         - Single-vs-Interaction, 
         - Name.
         - Number (if any in name)
     Returns tuple (int, int, string)
-    '''
+    """
     if "-" in x.name:
         # Interaction condition
         regex = re.search(r'(\d+).+\-(.+)', x.name)

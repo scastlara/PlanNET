@@ -1,9 +1,18 @@
 from ....helpers.common import *
 
+
 def get_goea(request):
-    '''
-    This function will compute a Gene Ontology Enrichment Analysis
-    '''
+    """
+    Performs Gene Ontology Enrichment Analysis for a given comparison of conditions.
+    
+    Accepts:
+        * **GET**
+
+    Response:
+        * **GET**:
+           * **str**: JSON with html (template "NetExplorer/goea_plots.html") with GO plots and download button.
+
+    """
     response = dict()
 
     exp_name = request.GET['experiment']

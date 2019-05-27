@@ -2,7 +2,25 @@ from ....helpers.common import *
 
 def experiment_summary(request):
     """
-    View from PlanExp that returns information about a given experiment
+    Returns a summary of a selected experiment.
+    
+    Accepts:
+        * **GET + AJAX**
+
+    Args:
+        experiment (`str`): Experiment name.
+
+    Response:
+        * **GET + AJAX**:
+           * **str**: JSON with html for summary (template "NetExplorer/experiment_summary.html") and experiment type.
+
+           .. code-block:: javascript
+
+                {
+                    "html": str,
+                    "exp_type": str
+                }
+
     """
     if request.is_ajax():
         exp_name = request.GET['experiment']

@@ -1,8 +1,21 @@
 from ....helpers.common import *
 
+
 def cluster_markers(request):
     """
-    View from PlanExp that returns the HTML of a table with markers for each cluster
+    View that retrieves Cluster Markers for single-cell experiments.
+    
+    Accepts:
+        * **GET + AJAX**
+
+    Args:
+        experiment (`str`): Experiment name.
+        dataset (`str`): Dataset name for which to retrieve markers.
+        cluster (`str`): Cluster name for which to retrieve markers.
+
+    Response:
+        * **GET + AJAX**:
+           * **str**: HTML with table (template: "NetExplorer/markers_table.html")
     """
     if request.is_ajax():
         exp_name = request.GET['experiment']

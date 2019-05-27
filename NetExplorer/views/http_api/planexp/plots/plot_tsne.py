@@ -1,9 +1,34 @@
 from ....helpers.common import *
 
+
 def plot_tsne(request):
-    '''
-    Plots Tsne plot for Single-Cell experiment
-    '''
+    """
+    Plots t-SNE for single cell experiment.
+    
+    Accepts:
+        * **GET + AJAX**
+
+    Args:
+        experiment (`str`): Experiment name.
+        dataset (`str`): Dataset name.
+        gene_name (`str`): Gene symbol.
+        with_color (`bool`): True if gene was provided (and thus cells should be colored
+            according to expression). False otherwise.
+        gene_plot_type (`str`): "single" for one gene (or none). "multiple" for more than one gene. 
+
+    Response:
+        * **GET + AJAX**:
+           * **str**: JSON with ScatterPlot.
+        
+    Example:
+
+        .. code-block:: bash
+
+            curl -H "X-REQUESTED-WITH: XMLHttpRequest" \\
+                 -X GET \\
+                 "https://compgen.bio.ub.edu/PlanNET/plot_gene_expression?experiment=2018+Rajewsky+Cell+Atlas&dataset=Dresden&gene_name=dd_Smed_v6_740_0_1%2C+&plot_type=heatmap&ctype=Cluster&only=false"
+
+    """
     if request.is_ajax():
         exp_name = request.GET['experiment']
         dataset = request.GET['dataset']

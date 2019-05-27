@@ -1,10 +1,37 @@
 from ....helpers.common import *
 
 def map_expression_one(request):
-    '''
-    Gets a list of gene symbols, an experiment, a condition, and a color palette,
-    returning the necessary colors for each gene.
-    '''
+    """
+    Maps expression of genes in one condition for coloring the nodes in PlanExp graph.
+    
+    Accepts:
+        * **GET + AJAX**
+    
+    Args:
+        experiment (`str`): Experiment name.
+        dataset (`str`): Dataset name.
+        condition (`str`): Condition name.
+        symbols (`str`): Node symbols separated by commas.
+        profile (`str`): Color profile name.
+        reference (`str`): Indicates if color gradient should be generated in reference
+            to global expression range ("Experiment") or symbols expression range ("else").
+
+    Response:
+        * **GET**:
+           * **str**: JSON with color mappings.
+
+           .. code-block:: javascript
+
+                {
+                    'colormap': 
+                        {
+                            'gene1': '#fff',
+                            ...
+                        },
+                    'legend' : str
+                }
+
+    """
     if request.is_ajax():
         exp_name = request.POST['experiment']
         dataset = request.POST['dataset']

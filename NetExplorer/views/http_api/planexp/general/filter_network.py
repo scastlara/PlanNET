@@ -1,9 +1,26 @@
 from ....helpers.common import *
 
 def filter_network(request):
-    '''
-    Filters network in PlanExp according to the specified conditions.
-    '''
+    """
+    Filters network in PlanExp according to gene expression.
+    
+    Accepts:
+        * **GET + AJAX**
+
+    Args:
+        experiment (`str`): Experiment name.
+        dataset (`str`): Dataset name.
+        inclusive_flag (`str`): Indicates if only genes expressed in any condition ("inclusive") 
+            or all conditions ("else") should be shown.
+        conditions (`list`): Condition names.
+        min_exp (`float`): Minimum expression between nodes.
+        node_ids (`list`): List of node symbols.
+
+    Response:
+        * **GET + AJAX**:
+           * **str**: JSON with node symbols to be shown.
+
+    """
     if request.is_ajax():
         experiment = request.GET.get('experiment')
         dataset = request.GET.get('dataset')

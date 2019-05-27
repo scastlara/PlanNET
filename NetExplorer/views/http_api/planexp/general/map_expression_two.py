@@ -1,10 +1,36 @@
 from ....helpers.common import *
 
 def map_expression_two(request):
-    '''
-    Gets a list of gene symbols, an experiment, two conditions, and a color palette,
-    returning the colors for each gene according to the fold change.
-    '''
+    """
+    Maps expression of genes ina two-conditions comparison for coloring the nodes in PlanExp graph.
+    
+    Accepts:
+        * **GET + AJAX**
+    
+    Args:
+        experiment (`str`): Experiment name.
+        dataset (`str`): Dataset name.
+        condition1 (`str`): Condition 1 name.
+        condition2 (`str`): Condition 2 name.
+        symbols (`str`): Node symbols separated by commas.
+        profile (`str`): Color profile name.
+
+    Response:
+        * **GET**:
+           * **str**: JSON with color mappings.
+
+           .. code-block:: javascript
+
+                {
+                    'colormap': 
+                        {
+                            'gene1': '#fff',
+                            ...
+                        },
+                    'legend' : str
+                }
+
+    """
     exp_name = request.POST['experiment']
     dataset = request.POST['dataset']
     condition1 = request.POST['condition1']

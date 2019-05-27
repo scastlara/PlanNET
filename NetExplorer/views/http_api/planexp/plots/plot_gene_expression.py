@@ -1,19 +1,34 @@
 from ....helpers.common import *
 
-def is_one_sample(experiment, conditions):
-    '''
-    Checks if there is only one sample per condition in experiment.
-    '''
-    samples_in_condition = SampleCondition.objects.filter(experiment=experiment, condition=conditions[0]).count()
-    if samples_in_condition == 1:
-        return True
-    else:
-        return False
 
 
 def plot_gene_expression(request):
     """
-    View from PlanExp that returns data to plot gene expression
+    Plots gene co-expression.
+    
+    Accepts:
+        * **GET + AJAX**
+
+    Args:
+        experiment (`str`): Experiment name.
+        dataset (`str`): Dataset name.
+        gene_name (`str`): Gene symbol.
+        ctype (`str`): :obj:`ConditionType` name.
+        plot_type (`str`): Type of the plot (`violin`, `tsne`, `coexpression`, `bar`, `heatmap` or `line`).
+        only_toggle (`bool`): Show only expressed cells toggle (only for "violin").
+
+    Response:
+        * **GET + AJAX**:
+           * **str**: JSON with ScatterPlot.
+        
+    Example:
+
+        .. code-block:: bash
+
+            curl -H "X-REQUESTED-WITH: XMLHttpRequest" \\
+                 -X GET \\
+                 "https://compgen.bio.ub.edu/PlanNET/plot_gene_expression?experiment=2018+Rajewsky+Cell+Atlas&dataset=Dresden&gene_name=dd_Smed_v6_740_0_1%2C+&plot_type=heatmap&ctype=Cluster&only=false"
+
     """
     if request.is_ajax():
         exp_name = request.GET['experiment']
@@ -48,7 +63,7 @@ def plot_gene_expression(request):
             gene_symbol__in=gene_symbols
         ).values_list("gene_symbol", flat=True)
 
-        if plot_type == "violin" and is_one_sample(experiment, conditions):
+        if plot_type == "violin" and experiment.is_one_sample(conditions=conditions):
             plot_type = "bar"
 
         if len(genes_in_experiment) > 0:
@@ -73,4 +88,5 @@ def plot_gene_expression(request):
 
         return HttpResponse(json.dumps(response), content_type="application/json")
     else:
+        print("NOT AJAX")
         return render(request, 'NetExplorer/404.html')

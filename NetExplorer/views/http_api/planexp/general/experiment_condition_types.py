@@ -2,7 +2,17 @@ from ....helpers.common import *
 
 def experiment_condition_types(request):
     """
-    View from PlanExp that returns condition types for a given experiment
+    Gets Condition-ConditionType mappings for a given experiment.
+    
+    Accepts:
+        * **GET + AJAX**
+
+    Args:
+        experiment (`str`): Experiment name.
+
+    Response:
+        * **GET + AJAX**:
+           * **str**: JSON with list of ConditionType names.
     """
     if request.is_ajax():
         exp_name = request.GET['experiment']

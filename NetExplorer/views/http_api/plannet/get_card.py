@@ -1,8 +1,40 @@
 from ...helpers.common import *
 
+
 def get_card(request, symbol=None, database=None):
     """
-    Function that gets a gene id and a database and returns the HTML of the card.
+    Returns a card with information about a human gene, a planarian gene or a 
+    planarian contig.
+    
+    Accepts:
+        * **GET**
+        * **GET + AJAX**
+
+    Args:
+        symbol (`str`): Identifier of entity for which to generate card.
+        database (`str`): Database of symbol.
+
+    Response:
+        * **GET**:
+            * **node** (:obj:`Smesgene` or :obj:`Human` or :obj:`PlanarianContig`): Instance of card element.
+            * **transcripts** (`list` of :obj:`PlanarianContig`): List of contigs associated with gene (only for :obj:`PlanarianGene`) 
+            * **best_transcript** (:obj:`PlanarianContig`): Best planarian contig for gene (only for :obj:`PlanarianGene`)
+            * **json_graph** (str): Interaction graph of predicted interactions in JSON format (only for :obj:`PlanarianGene` or :obj:`PlanarianContig`). 
+            * **homologs** (`list` of `tuple`): Homologous :obj:`PlanarianContig` s for Human gene. First element is Database name, second is :obj:`PlanarianContig` object (only for :obj:`Human`).
+            * **domains** (str): PFAM domains in JSON format (only for :obj:`PlanarianContig`).
+
+        * **GET + AJAX**:
+            * **HttpResponse**: Response with a file.
+    
+    Example:
+
+        .. code-block:: bash
+
+            curl -H "X-REQUESTED-WITH: XMLHttpRequest" \\
+                 -H "Content-Type: application/json"   \\
+                 -X GET \\
+                 "https://compgen.bio.ub.edu/PlanNET/info_card?target=SMESG000005930.1&targetDB=Smesgene"
+                 
     """
     if request.method == 'GET' and request.is_ajax():
         symbol    = request.GET['target']
@@ -49,7 +81,6 @@ def get_card(request, symbol=None, database=None):
             graph.add_elements(nodes)
             graph.add_elements(edges)
     except Exception as err:
-        print(err)
         return render_to_response('NetExplorer/not_interactome.html')
     if database == "Human":
        response = {
