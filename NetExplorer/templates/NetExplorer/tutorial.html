@@ -452,6 +452,11 @@
                                 <li class="tutorial-li"><a href="#plot-controls">Plot controls</a></li>
                                 <li class="tutorial-li"><a href="#planexp-dge">Differential gene expression</a></li>
                                 <li class="tutorial-li"><a href="#planexp-gplot">Gene expression plot</a></li>
+                                <li class="tutorial-li"><a href="#planexp-coexpression">Gene co-expression</a></li>
+                                <li class="tutorial-li"><a href="#planexp-tutorial-tsne">t-SNE plot</a></li>
+                                <li class="tutorial-li"><a href="#planexp-tutorial-markers">Marker genes</a></li>
+                                <li class="tutorial-li"><a href="#planexp-tutorial-regulatory-interactions">Genes Regulatory Interactions</a></li>
+                                <li class="tutorial-li"><a href="#planexp-tutorial-network">Network</a></li>
                             </ol>
                         </div>
                     </div>
@@ -519,7 +524,8 @@
                     
                     
                     <br>
-                    <br>
+                    <hr>
+                    
                     <h4 id="planexp-dge">Differential Gene Expression</h4>
                     <img class="tutorial-subtitle-planexp" src="{% static 'Images/tutorial/underline-planexp.png' %}"/>
                     <br>
@@ -574,8 +580,10 @@
                         The nodes in the networks, which represent the Gene Ontology Terms, are colored depending on their significance in the performed Fisher test.
 
                     </p>
-
+                    
                     <br>
+                    <hr>
+                    
                     <h4 id="planexp-gplot">Gene Expression Plot</h4>
                     <img class="tutorial-subtitle-planexp" src="{% static 'Images/tutorial/underline-planexp.png' %}"/>
                     <br>
@@ -658,8 +666,9 @@
                         "Day - Cluster" was selected, a line chart for each Cluster will be shown.  
                     </p>
 
-
                     <br>
+                    <hr>
+                    
                     <h4 id="planexp-coexpression">Gene Co-expression</h4>
                     <img class="tutorial-subtitle-planexp" src="{% static 'Images/tutorial/underline-planexp.png' %}"/>
                     <img class="tutorial-img" src="{% static 'Images/tutorial/planexp-coexpression.png'%}" />
@@ -670,7 +679,206 @@
                         and color it by a particular condition. Use the plot trace legend on the right to hide or show the desired conditions, see <a href="#plot-controls">plot controls</a>. 
                     </p>
 
+                    <br>
+                    <hr>
+                    
+                    <h4 id="planexp-tutorial-tsne">t-SNE plot</h4>
+                    <img class="tutorial-subtitle-planexp" src="{% static 'Images/tutorial/underline-planexp.png' %}"/>
+                    <img class="tutorial-img" src="{% static 'Images/tutorial/planexp-tsne1.png'%}" />
+                    <br>
 
+                    <p>
+                        For single cell experiments, PlanExp allows users to create t-SNE plots. In them, cells are represented as points 
+                        in a 2D space, where similar cells with a similar expression profile will tend to appear together. Keep in mind that 
+                        the dimensionality reduction performed by t-SNE does not conserve the distance in the initial N-dimensional space. 
+                        For further information, see <a href="https://en.wikipedia.org/wiki/T-distributed_stochastic_neighbor_embedding" target="_blank">this page</a>.
+                    </p>
+
+                    <p>
+                        There are several options for plotting t-SNE visualizations for single cell experiments in PlanExp:
+                    </p>
+
+                    <img class="tutorial-img" src="{% static 'Images/tutorial/planexp-tsne2.png'%}" />
+
+                    <ol>
+                        <li>Coloring each cell by condition.</li>
+                        <li>Coloring each cell by gene expression:</li>
+                            <ul>
+                                <li>Coloring cells by the expression of one gene.</li>
+                                <li>Coloring cells by the mean expression of moltiple genes, and showing only those cells that express all of them.</li>
+                            </ul>
+                    </ol>
+
+                    <p>
+                        When plotting gene expression in the "Gene" tab, there will be two new options in a radio button (see image above). 
+                        Users will be able to color cells (points) depending on their expression of one gene, or multiple genes. When selecting the 
+                        second option "Colors by mean expression...", only those cells that express all the input genes will be shown. 
+                        For instance, in the example below, only those cells expressing both ("dd_Smed_v6_740_0_1" and "dd_Smed_v6_332_0_1") will appear in the plot, 
+                        and they are colored by the mean expression:
+                    </p>
+                    <pre>
+                        (expression <sub>dd_Smed_v6_740_0_1</sub> + expression <sub>dd_Smed_v6_332_0_1</sub>) / 2
+                    </pre>
+
+                    <img class="tutorial-img" src="{% static 'Images/tutorial/planexp-tsne3.png'%}" />
+
+                    <br>
+                    <hr>
+                    
+                    <h4 id="planexp-tutorial-markers">Marker genes</h4>
+                    <img class="tutorial-subtitle-planexp" src="{% static 'Images/tutorial/underline-planexp.png' %}"/>
+                    <img class="tutorial-img" src="{% static 'Images/tutorial/planexp-markers.png'%}" />
+                    <br>
+
+                    <p>
+                        Single cell experiments have a section, "Marker genes" in which genes that identify clusters of cells are listed as searchable tables.
+                        These were computed by <a href="https://satijalab.org/seurat/" target="_blank">Seurat</a>'s AUC classifier. 
+                        Select a cluster for which to retrieve markers, and then a table will appear. The AUC column is the Area Under the Curve in a 
+                        <a href="https://en.wikipedia.org/wiki/Receiver_operating_characteristic" target="_blank">receiver operating characteristic</a> curve 
+                        of the classifier built using the gene as a classifier of cells. A gene that, when expressed, identifies a cell as a member of a particular cluster with 100% accuracy 
+                        has an AUC of 1. The Average difference column indicates if the classifier is built on the expression (e.g.: if a gene is more expressed than a particular value, 
+                        classify this cell as a member of the cluster), or on its lack of expression (e.g.: if a genes is <i>less</i> expressed than a particular value, classify the cell as a member of the cluster).
+                    </p>
+
+                    <p>
+                        Each table can be downloaded by clicking on the <span class="tutorial-btn">CSV</span> button.
+                    </p>
+
+                    <br>
+                    <hr>
+                    <h4 id="planexp-tutorial-regulatory-interactions">Gene Regulatory Interactions</h4>
+                    <img class="tutorial-subtitle-planexp" src="{% static 'Images/tutorial/underline-planexp.png' %}"/>
+                    <img class="tutorial-img" src="{% static 'Images/tutorial/planexp-regulatory-interactions.png'%}" />
+                    <br>
+
+                    <p>
+                        We performed a prediction of gene regulatory interactions for single cell experiments. Regulatory interactions define 
+                        relationships of activation or inhibition between one gene (regulator) which activates or inhibits the expression of another gene (target). 
+                        These predictions were performed with the program <a href="https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0012776" target="_blank">GENIE3</a>.
+                    </p>
+
+                    <p>
+                        <a href="https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0012776" target="_blank">GENIE3</a> requires 
+                        users to define which genes are transcription factors (and thus, putative regulators of other genes). The selection of 
+                        planarian genes as regulators was performed by looking at their PFAM annotations or at their GO annotations. The Source column 
+                        of the generated table indicates if the regulator was decided to be a transcription factor by its PFAM domains or by its GO terms.
+                    </p>
+
+                    <p>
+                        The score is a measure of how confident <a href="https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0012776" target="_blank">GENIE3</a> 
+                        is of the prediction. However, this score does not have any statistical meaning.
+                    </p>
+
+                    <p>
+                        Because the large number of regulatory links predicted by <a href="https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0012776" target="_blank">GENIE3</a>, 
+                        we binned them in 10 categories, sorted by score. Users can select which group of regulatory interactions they want to visualize on the 
+                        table by using the dropdown menu on the top left.
+                    </p>
+
+                    <p>
+                        The button <span class="tutorial-btn">CSV</span> allows users to download the generated table, 
+                        while the <span class="tutorial-btn">Send to Network viewer</span> sends the whole table of regulatory links to the network viewer (see <a href="#planexp-tutorial-network">next section</a>).
+                    </p>
+
+
+                    <br>
+                    <hr>
+                    
+                    <h4 id="planexp-tutorial-network">Network</h4>
+                    <img class="tutorial-subtitle-planexp" src="{% static 'Images/tutorial/underline-planexp.png' %}"/>
+                    <img class="tutorial-img" src="{% static 'Images/tutorial/planexp-network1.png'%}" />
+                    <br>
+
+                    <p>
+                        PlanExp network viewer allows users to map expression data onto regulatory networks. These can be 
+                        either downloaded from PlanNET, retrieved from the <a href="#planexp-tutorial-regulatory-interactions">Regulatory Interactions</a> section, or 
+                        created from scratch by users by using PlanExp <a href="#planexp-tutorial-network-editor">Network Editor</a>. 
+                    </p>
+                    
+                    <br>
+                    <h3 id="planexp-tutorial-network-controls">1. Network controls</h3>
+                    <img class="tutorial-img" src="{% static 'Images/tutorial/planexp-network2.png'%}" />
+                    <p>
+                        The buttons above the Network viewer allow users to control the graph visualization in several ways. 
+                    </p>
+
+                    <ol>
+                        <li><span class="tutorial-btn">Center</span>: Centers the visualization on the genes in the network. </li>
+                        <li><span class="tutorial-btn">Layout Dropdown</span>: Select a different graph layout.</li>
+                        <li><span class="tutorial-btn">Edit</span>: Opens the <a href="#planexp-tutorial-network-editor">Network Editor</a>.</li>
+                        <li><span class="tutorial-btn">Import</span>: Imports JSON file with network (downloaded from PlanNET <a href="{% url 'net_explorer' %}" target="_blank">NetExplorer</a>, or from next button).</li>
+                        <li><span class="tutorial-btn">Export</span>: Exports graph to JSON for later use.</li>
+                        <li><span class="tutorial-btn">Save</span>: Saves a PNG image of the network.</li>
+                        <li><span class="tutorial-btn">Delete</span>: Deletes the whole network.</li>
+                    </ol>
+
+                    
+                    <br>
+                    <h3 id="planexp-tutorial-network-editor">2. Network Editor</h3>
+                    <img class="tutorial-img" src="{% static 'Images/tutorial/planexp-network-editor1.png'%}" />
+
+                    <p>
+                        The Network Editor allows for the creation of nodes (genes) and edges (interactions), as well as their deletion.
+
+                        To add genes write a gene name on the top left input form and click on <span class="tutorial-btn">Add +</span>. 
+                        Manually created nodes have a pink border color so that they can be easily spotted.
+                    </p>
+                    <p>
+                        To add interactions hover on one of the genes you want to create an interaction for, and a small red dot will appear (see image above). 
+                        Click on the red dot and drag to the other gene of the interaction. When you release the mouse button, an interaction will appear (violet edge in the image above).
+                    </p> 
+                    <p>
+                        For deleting genes or interactions, click on the corresponding <span class="tutorial-btn">ON</span> switch button 
+                        and then click on the gene or interaction that you want to remove.
+                    </p>
+
+                    <p>
+                        Once you are happy with the network, click on <span class="tutorial-btn">Save</span> and the network will 
+                        be sent to the main Network viewer.
+                    </p>
+
+
+                    <br>
+                    <h3 id="planexp-tutorial-network-color">3. Color genes on network</h3>
+                    <img class="tutorial-img" src="{% static 'Images/tutorial/planexp-network3.png'%}" />
+
+                    <p>
+                        On the right of the Network Viewer main section, we have the controls to color genes according to their expression.
+                        Genes can be colored depending on their expression in <span class="tutorial-btn">One Condition</span> or <span class="tutorial-btn">Two Conditions:</span> (see a.1 and a.2). 
+                    </p>
+
+                    <p>
+                        In the <span class="tutorial-btn">One Condition</span> tab, select the condition in the dropdown menu, the color profile, and the reference. 
+                        The Network reference option will color the most expressed gene in the network as the strongest color in the color profile, and all the others 
+                        according to their relation to that gene. The Experiment reference will color genes according to the gene with maximum expression in the experiment, 
+                        even if that gene is not in the network. Genes will be colored in a gradient that goes from white (if they are not expressed) to strong red, blue or green (if they are highly expressed).
+                    </p>
+
+                    <p>
+                        In the <span class="tutorial-btn">Two Conditions</span> tab, users will have to select two Conditions to compare them. 
+                        The color gradients will be divergent instead of linear. Genes will be colored by their log Fold change using the selected gradient.
+                    </p>
+
+                    <p>
+                        Independently of the option used, once the genes have been colored a color legend will appear on the left (b and c in image above). 
+                        Hovering on the legend will highlight the genes that are expressed in a particular range (c in image above).
+                    </p>
+
+                    <br>
+                    <h3 id="planexp-tutorial-network-color">4. Filter genes</h3>
+                    <img class="tutorial-img" src="{% static 'Images/tutorial/planexp-network4.png'%}" />
+
+                    <p>
+                        Genes in the network can be filtered out (make them hidden) by selecting one or several conditions on the 
+                        <span class="tutorial-btn">Select Conditions</span> dropdown menu (bottom right). Once the desired conditions 
+                        have been selected, one can choose to filter the network by clicking on the <span class="tutorial-btn">Filter Network</span> button. 
+                    </p>
+
+                    <p>
+                        The option <span class="tutorial-btn">Inclusive</span> will show all genes that are expressed in <b>at least 
+                        one</b> of the selected conditions. The option <span class="tutorial-btn">Exclusive</span> will show only 
+                        those genes expressed in <b>all</b> the selected conditions.
+                    </p>
                 </div>
             </div>
 
