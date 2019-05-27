@@ -38,11 +38,30 @@ PlanNET documentation
    modules/views/pages/*
 
 
+----------
+
 HTTP API
 ===================================
+
+
 Views that define functions for returning JSON or HTML through programmatic HTTP 
-requests. Used across the application in AJAX calls, and can also be used by `curl`, 
-`Perl` or any other program.
+requests. Used across the application in AJAX calls. Some can also be used by `curl`, 
+`Perl` or any other program:
+
+* :doc:`modules/views/http_api/plannet/get_card`
+* :doc:`modules/views/http_api/plannet/downloader`
+* :doc:`modules/views/http_api/plannet/get_fasta` 
+* :doc:`modules/views/http_api/planexp/plots/plot_gene_expression`
+
+Example:
+
+.. code-block:: bash
+
+    curl -H "Accept: application/json" \
+         -H "Content-Type: application/json" \
+         -X GET "https:/compgen.bio.ub.edu/PlanNET/get_fasta?genesymbol=SMESG000079934.1&database=Smesgene&type=sequence"
+
+----------
 
 .. toctree::
    :glob:

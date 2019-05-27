@@ -7,3 +7,6 @@ neo4j-*
 pruebas/
 NetExplorer/migrations
 docs/_build
+junk/
+.*
+backups/
