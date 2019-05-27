@@ -1,3 +1,5 @@
+[![Publication](https://img.shields.io/badge/Published-Bioinformatics-informational.svg)](https://doi.org/10.1093/bioinformatics/btx738)
+
 <a href="https://compgen.bio.ub.edu/PlanNET" target="_blank"><img src="project-logo.png"></a>
 
 # Description
