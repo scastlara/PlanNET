@@ -21,7 +21,11 @@ Bioinformatics, Volume 34, Issue 6, 15 March 2018, Pages 1016–1023, btx738
 * [Link to the published paper](https://academic.oup.com/bioinformatics/article/34/6/1016/4657068)
 
 # Version
-v.1.2
+v.1.3
+
+# Documentation
+
+* [Link to documentation](https://compgen.bio.ub.edu/documentation/PlanNET)
 
 
 # Copyright
