@@ -14,6 +14,7 @@
         <li><a class="planexp-toc-link" id="planexp-gene-expression-toc" href="#planexp-gene-expression">Gene Expression Plot</a></li>
         <li><a class="planexp-toc-link" id="planexp-gene-coexpression-toc" href="#planexp-gene-coexpression">Gene Co-expression</a></li>
         <li><a class="planexp-toc-link" id="planexp-tsne-toc" href="#planexp-tsne">t-SNE Plot</a></li>
+        <li><a class="planexp-toc-link" id="planexp-sample-counter-toc" href="#planexp-sample-counter">Sample Quantification</a></li>
         <li><a class="planexp-toc-link" id="planexp-markers-toc" href="#planexp-markers">Marker Genes</a></li>
         <li><a class="planexp-toc-link" id="planexp-links-toc" href="#planexp-links">Regulatory Interactions</a></li>
         <li><a class="planexp-toc-link" id="planexp-network-toc" href="#planexp-network">Network</a></li>
@@ -165,7 +166,7 @@
                 </blockquote>
 
                 <div class="input-group gene-expression-search-container">
-                    <label for="genesymbol">Gene Symbol/s:</label>
+                    <label for="genesymbol">Gene Symbol(s):</label>
                     <input type="text" id="gene-expression-search" class="form-control" name="genesymbol" placeholder="Enter Gene Symbols">
                 </div>
                 <br>
@@ -345,6 +346,49 @@
 
             </div> <!-- tSNE plot-->
 
+            <div id="planexp-sample-counter" class="planexp-card">
+                <h2 id="planexp-title">Sample Quantification</h2>
+                <hr class="planexp-rule">
+
+                <blockquote>
+                    Find how many samples (or cells) express <b>multiple</b> genes.
+                </blockquote>
+
+                <div class="input-group counter-search-container">
+                    <label for="genesymbol">Gene Symbols:</label>
+                    <input type="text" id="counter-search" class="form-control" name="genesymbol" placeholder="Enter Gene Symbols">
+                </div>
+                <br>
+
+                <h4>Select Condition Type:</h4>
+                <select id="counter-ctype" name="counter-ctype" class="selectpicker ctype-select" title="Select Condition Type">
+                </select>
+                <br><br>
+                <h4>Select Condition(s):</h4>
+                <select id="counter-conditions" name="counter-condition" class="selectpicker condition-select counter-condition-selects" title="Select Condition" multiple>
+                    <option value="" disabled selected>Select condition</option>
+                </select>
+
+                <br><br>
+                <span class="input-group-btn input-grp-withlabel">
+                    <button type="submit" value=" Send" class="btn btn-danger sample-counter-btn" id="submit">Count Samples</button>
+                </span>
+
+                <div id="counter-btns-container">
+
+                    <div id="counter-plot-genenotfound">
+                        <span class="glyphicon glyphicon-warning-sign"></span>
+                        Gene/Symbol not found
+                    </div>
+                    <div id="counter-plot-loading">
+                        <img class="planexp-loading-img" src="{% static 'Images/loading-planexp.gif' %}"/>
+                    </div>
+                    <div id="counter-btns">
+                    </div>
+                </div>
+
+
+            </div> <!-- Sample counter -->
 
 
             <div id="planexp-markers" class="planexp-card">

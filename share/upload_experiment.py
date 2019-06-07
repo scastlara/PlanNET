@@ -59,7 +59,7 @@ def get_options():
     )
     parser.add_argument(
         '-t','--tsne',
-        help='TSNE file', required=True
+        help='TSNE file', required=False
     )
     parser.add_argument(
         '-g', '--genes',
@@ -76,6 +76,10 @@ def get_options():
     parser.add_argument(
         '-d','--dataset',
         help='Dataset name', required=True
+    )
+    parser.add_argument(
+        '-ma','--markers',
+        help='Marker genes for clusters file.', required=False
     )
     parser.add_argument(
         '-u','--user',
@@ -201,15 +205,19 @@ def upload_expression_relative(opts, experiment, dataset):
     with open(opts.relative, "r") as rel_fh:
         next(rel_fh)
         for line in rel_fh:
-            line = line.strip()
-            cols = line.split("\t")
-            condition1_id = get_condition_id(experiment, cols[1])
-            condition2_id = get_condition_id(experiment, cols[2])
-            cond_type = get_condition_type(cols[3])
-            store_expression_relative(
-                experiment, condition1_id, 
-                condition2_id, cond_type, dataset, 
-                cols[5], cols[6], cols[7])
+            try:
+                line = line.strip()
+                cols = line.split("\t")
+                condition1_id = get_condition_id(experiment, cols[1])
+                condition2_id = get_condition_id(experiment, cols[2])
+                cond_type = get_condition_type(cols[3])
+                store_expression_relative(
+                    experiment, condition1_id, 
+                    condition2_id, cond_type, dataset, 
+                    cols[5], cols[6], cols[7])
+            except:
+                print(line)
+                exit(1)
 
 #--------------------------------------------------------------------------------
 def upload_tsne(opts, experiment, dataset):
@@ -254,19 +262,49 @@ def upload_genes(opts, experiment):
                 VALUES (%s, %s)
             """, (experiment, line))
 
+
 def upload_links(opts, experiment, dataset):
     '''
-    Uploadds predicted regulatory links for single cell experiment
+    Uploads predicted regulatory links for single cell experiment
     using GENIE3
     '''
     with open(opts.links, "r") as links_fh:
         next(links_fh) # skip header
         for line in links_fh:
             line = line.strip()
-            regulator, target, score, source = line.split(",")
-            print(experiment)
-            cursor.execute("""INSERT INTO NetExplorer_regulatorylinks (experiment_id, dataset_id, regulator, target, score, source) 
-            VALUES (%s, %s, %s, %s, %s, %s)""", (experiment, dataset, regulator, target, score, source))
+            regulator, target, score, source, group = line.split("\t")
+            cursor.execute("""INSERT INTO NetExplorer_regulatorylinks (experiment_id, dataset_id, regulator, target, score, source, `group`) 
+            VALUES (%s, %s, %s, %s, %s, %s, %s)""", (experiment, dataset, regulator, target, score, source, group))
+
+
+def upload_markers(opts, experiment, dataset):
+    '''
+    Uploads marker genes to database
+    experiment = models.ForeignKey(Experiment, on_delete=models.CASCADE)
+    dataset = models.ForeignKey(Dataset, on_delete=models.CASCADE)
+    condition = models.ForeignKey(Condition, on_delete=models.CASCADE)
+    gene_symbol = models.CharField(max_length=50)
+    auc = models.FloatField()
+    avg_diff = models.FloatField()
+
+    '''
+    with open(opts.markers, "r") as markers_fh:
+        next(markers_fh)
+        for line in markers_fh:
+            line = line.strip()
+            cols = line.split(",")
+            auc = cols[0]
+            diff = cols[1]
+            gene = cols[8]
+            cluster = cols[7]
+            condition = get_condition_id(experiment, cluster)
+            cursor.execute("""
+                INSERT INTO NetExplorer_clustermarkers (experiment_id, dataset_id, condition_id, gene_symbol, auc, avg_diff)
+                VALUES (%s, %s, %s, %s, %s, %s)
+            """, (experiment, dataset, condition, gene, auc, diff))
+
+
+
 
 # MAIN
 #--------------------------------------------------------------------------------
@@ -285,26 +323,34 @@ dataset = get_dataset(opts, cursor)
 
 if opts.conditions:
     sys.stderr.write("Uploading conditions\n")
-    upload_conditions(opts, experiment)
-    db.commit()
+    #upload_conditions(opts, experiment)
+    #db.commit()
 
 sys.stderr.write("Uploading Absolute expression\n")
-upload_expression_absolute(opts, experiment, dataset)
-db.commit()
+#upload_expression_absolute(opts, experiment, dataset)
+#db.commit()
 
 
 sys.stderr.write("Uploading relative expression\n")
 upload_expression_relative(opts, experiment, dataset)
 
-sys.stderr.write("Uploading cell plot positions (t-SNE)\n")
-upload_tsne(opts, experiment, dataset)
-
 sys.stderr.write("Uploading genes\n")
 upload_genes(opts, experiment)
+
+
+if opts.tsne:
+    sys.stderr.write("Uploading cell plot positions (t-SNE)\n")
+    upload_tsne(opts, experiment, dataset)
+
 
 if opts.links:
     sys.stderr.write("Uploading regulatory links\n")
     upload_links(opts, experiment, dataset)
+
+
+if opts.markers:
+    sys.stderr.write("Uploading marker genes\n")
+    upload_markers(opts, experiment, dataset)
 
 sys.stderr.write("Committing to database\n")
 db.commit()

@@ -576,6 +576,51 @@ class ExpressionAbsolute(Model):
                 celldict[ sample_names[cell['sample']] ] = cell['expmean']
         return celldict
 
+    @classmethod
+    def get_expressing_samples_in_conditions(cls, experiment, ctype, conditions, genes):
+        """
+        Returns dictionary with sample ids (from conditions) and the genes each one
+        of them express.
+
+        Args:
+            experiment (str): Experiment in PlanExp.
+            dataset (str): Dataset in PlanExp.
+            ctype (`ConditionType`): Condition type name.
+            conditions (`list` of `str`): Condition names from which to retrieve 
+                samples.
+            genes (`list` of `str`): List of gene symbols for which we want to know 
+                if samples in `conditions` express or not.
+        
+        Returns:
+            `dict` of `list`: Dictionary with sample ids as keys, and a list of 
+                gene symbols as values. Each sample will point to a list of genes that they
+                express.
+        """
+
+        sql = """
+            SELECT NetExplorer_expressionabsolute.sample_id, 
+                   gene_symbol, 
+                   NetExplorer_condition.name, 
+                   NetExplorer_samplecondition.condition_id 
+            FROM NetExplorer_expressionabsolute 
+            INNER JOIN NetExplorer_samplecondition ON `NetExplorer_samplecondition`.`sample_id` = `NetExplorer_expressionabsolute`.`sample_id` 
+            INNER JOIN NetExplorer_condition ON NetExplorer_condition.id = NetExplorer_samplecondition.condition_id 
+            WHERE NetExplorer_expressionabsolute.experiment_id=%s 
+            AND NetExplorer_condition.cond_type_id = %s 
+            AND gene_symbol IN (%s)
+            AND NetExplorer_condition.name IN (%s);
+        """ % (experiment.id, ctype.id, ', '.join([ "'%s'" % gene for gene in genes ]), ', '.join([ "'%s'" % condition for condition in conditions ]))
+        cursor = connection.cursor()
+        cursor.execute(sql)
+        data = cursor.fetchall()
+        genes_in_sample = defaultdict(list)
+        
+        for row in data:
+            genes_in_sample[row[0]].append(row[1])
+        return genes_in_sample
+        
+
+
 
 
 # ------------------------------------------------------------------------------
@@ -663,7 +708,6 @@ class ExpressionCondition(models.Model):
         return condition_expression
 
 
-
 # ------------------------------------------------------------------------------
 class CellPlotPosition(models.Model):
     """
@@ -739,6 +783,7 @@ class ExperimentGene(models.Model):
         name_str += self.gene_symbol
         return name_str
 
+
 # ------------------------------------------------------------------------------
 class RegulatoryLinks(models.Model):
     """
@@ -763,6 +808,7 @@ class RegulatoryLinks(models.Model):
     target = models.CharField(max_length=50)
     source = models.CharField(max_length=20)
     score = models.FloatField()
+
 
 # ------------------------------------------------------------------------------
 class ClusterMarkers(models.Model):

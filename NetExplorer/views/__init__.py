@@ -40,3 +40,4 @@ from .http_api.planexp.general.filter_network import *
 from .http_api.planexp.plots.plot_gene_expression import *
 from .http_api.planexp.plots.plot_gene_coexpression import *
 from .http_api.planexp.plots.plot_tsne import *
+from .http_api.planexp.plots.plot_sample_count import *

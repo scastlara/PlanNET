@@ -371,13 +371,31 @@ class PlotCreator(object):
         plot.compute_color_limits()
         return plot
 
+    def __create_upset(self, **kwargs):
+        genes_in_sample = ExpressionAbsolute.get_expressing_samples_in_conditions(
+            kwargs['experiment'], 
+            kwargs['ctype'], 
+            kwargs['conditions'], 
+            kwargs['genes']
+        )
+        condition_ids = Condition.objects.filter(
+            experiment=kwargs['experiment'],
+            name__in=kwargs['conditions']
+        ).values_list("id", flat=True)
+        samples_in_conditions = SampleCondition.objects.filter(
+                experiment=kwargs['experiment'], 
+                condition__in=condition_ids
+            ).values('sample')
+        plot = SampleCountPlot(genes_in_sample, kwargs['genes'], samples_in_conditions)
+        
+        return plot
 
     def create_plot(self, plot_name, **kwargs):
         """Method for creating plots.
 
         Args:
             plot_name (str): Name of the plot. 
-                Can be (`violin`, `tsne`, `coexpression`, `bar`, `heatmap` or `line`)
+                Can be (`violin`, `tsne`, `coexpression`, `bar`, `heatmap`, `line`, `upset`)
             experiment (str): Experiment in PlanExp.
             dataset (str): Dataset in PlanExp.
             conditions (`list` of `Condition`): Conditions (previously sorted) to use 
@@ -411,6 +429,8 @@ class PlotCreator(object):
             plot = self.__create_coexpression(**kwargs)
         elif plot_name == "tsne":
             plot = self.__create_tsne(**kwargs)
+        elif plot_name == "upset":
+            plot = self.__create_upset(**kwargs)
         else:
             raise ValueError("Incorrect plot_name: %s - Plot name must be 'violin', 'tsne', coexpression', 'bar', heatmap' or 'line'." % str(plot_name))
         
@@ -418,6 +438,111 @@ class PlotCreator(object):
 
 
 # ------------------------------------------------------------------------------
+
+class SampleCountPlot(object):
+    """
+    Plot with sample counts 
+    """
+    def __init__(self, genes_in_sample, genes, samples):
+        self.genes = genes
+        self.samples = samples
+        self.memberships = None
+        self.__invert_memberships(genes_in_sample)
+        self.__add_empty_set()
+
+    def __invert_memberships(self, genes_in_sample):
+        """
+        Inverts the dictionary of sample => gene memberships to 
+        gene_sets => samples
+
+        Args:
+            genes_in_sample (`dict`): Dictionary with genes that each sample 
+                expresses. Key is sample id, value is `list` of `str`.
+        
+        Returns:
+            `dict`: Dictionary with gene sets mapping to the samples that express
+                them. Key is tuple of gene names (`str`) and value is list of 
+                sample identifiers (`int`).
+        """
+        # Invert the dictionary to have ('gene set'): [samples]
+        samples_in_gene_set = defaultdict(list)
+        for sample, gene_list in genes_in_sample.items():
+            samples_in_gene_set[tuple(sorted(gene_list))].append(sample)
+        
+        samples_in_gene_set = { gene_set: len(samples) for gene_set, samples in samples_in_gene_set.items() }
+        self.memberships = samples_in_gene_set
+        self.__add_missing_gene_sets()
+        return self
+
+    def __add_missing_gene_sets(self):
+        """
+        Adds the missing combinations of genes to the memberships dictionary.
+        """
+        combinations = list()
+        for k in range(1, len(self.genes) + 1):
+            k_combinations = itertools.combinations(self.genes, k)
+            for k_combination in k_combinations:
+                combinations.append(tuple(sorted(list(k_combination))))
+        added_sets = set(self.memberships.keys())
+        all_sets = set(combinations)
+        missing_sets = all_sets.difference(added_sets)
+        for missing_set in missing_sets:
+            self.memberships[missing_set] = 0
+    
+    def __add_empty_set(self):
+        """
+        Adds empty set to memberships.
+        """
+        samples_in_memberships = self.__count_samples_in_memberships()
+        missing_samples = len(self.samples) - samples_in_memberships
+        self.memberships[()] = missing_samples
+
+    def __count_samples_in_memberships(self):
+        """
+        Counts the samples in all the gene sets in `memberships`
+        """
+        total_samples = 0
+        for sample_count in self.memberships.values():
+            total_samples += sample_count
+        return total_samples
+
+    def __format_membersips_for_plot(self):
+        """
+        Returns list in correct format for upsetplot.from_memberships() method
+        """
+        gene_sets = []
+        data_list = []
+        for gene_set in sorted(self.memberships.keys(), key= lambda x: (len(x), self.memberships[x])):
+            gene_sets.append(list(gene_set))
+            data_list.append(self.memberships[gene_set])
+        return gene_sets, data_list
+
+    def plot(self):
+        """
+        Creates Upset plot with sample counts in base64.
+        """
+        gene_sets, data_list = self.__format_membersips_for_plot()
+        figure = Figure()
+        plot_data = upsetplot.from_memberships(gene_sets, data=data_list)
+        theplot = upsetplot.plot(plot_data, figure)
+        figure_io  = BytesIO()
+        figure.savefig(figure_io, format="png")
+        return base64.b64encode(figure_io.getvalue()).strip().decode('utf-8')
+
+    def csv(self):
+        """
+        Returns plot data as a csv file in base64.
+        """
+        rows = []
+        for gene_set in sorted(self.memberships.keys(), key= lambda x: (len(x), self.memberships[x])):
+            if gene_set:
+                formatted_gene_set = ":".join(list(gene_set))
+            else:
+                formatted_gene_set = "None"
+            rows.append(",".join([formatted_gene_set, str(self.memberships[gene_set])]))
+        return base64.b64encode("\n".join(rows).encode("utf-8")).decode("utf-8")
+
+
 class GeneExpPlot(object):
     """
     Parent class for Plotly barplots and violins.

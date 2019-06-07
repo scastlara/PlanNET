@@ -22,6 +22,7 @@ from enum import Enum
 from NetExplorer.models import colors
 from django.db.models import Count, Sum
 from collections import defaultdict
+import itertools
 
 # GENE ONTOLOGY MODULES
 from goatools.go_enrichment import GOEnrichmentStudy
@@ -29,6 +30,12 @@ from goatools.obo_parser import GODag
 from goatools.godag_plot import plot_gos, plot_results, plot_goid2goobj
 import base64
 from django.db import connection
+
+# UPSET PLOT
+import upsetplot
+import matplotlib.pyplot as pyplot
+from matplotlib.figure import Figure
+from io import BytesIO
 
 
 GRAPH     = Graph("http://127.0.0.1:7474/db/data/")

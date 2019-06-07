@@ -434,9 +434,48 @@ var PlanExp = (function() {
 
     }
 
+    plotSampleCount = function(expName, dataset, geneName, ctype, conditions, plotDivId, loadingDiv) {
+        $("#" + loadingDiv).show();
+        $("#" + plotDivId).html("");
+        console.log(conditions);
+        $.ajax({
+            type: "GET",
+            url: window.ROOT + "/plot_sample_count",
+            data: {
+                'experiment' : expName,
+                'dataset'    : dataset,
+                'gene_name'  : geneName,
+                'ctype'      : ctype,
+                'conditions' : JSON.stringify(conditions),
+                'csrfmiddlewaretoken': '{{ csrf_token }}'
+            },
+            success: function(data) {
+                $("#" + loadingDiv).hide();
+                $("#" + plotDivId).html(
+                    '<a id="sample-count-plot-link" href="data:image/png;base64,' 
+                    + data.plot
+                    + '" download="sample_counts.png">'
+                    + '<div class="btn btn-default btn-sample-count"><span class="glyphicon glyphicon-picture"> </span> Download Image</div> </a>'
+                    + '<a id="sample-count-csv-link" href="data:text/plain;base64,'
+                    + data.csv
+                    + '" download="sample_counts.txt">'
+                    + '<div class="btn btn-default btn-sample-count"><span class="glyphicon glyphicon-floppy-disk"> </span>Download CSV</div></a>'
+                );
+
+
+            },
+            error: function(err) {
+                console.log(err);
+                $("#" + loadingDiv).hide();
+                $("#" + plotDivId).html("");
+            }
+        });
+    }
+
+
 
     showConditionTypes = function(selectDivClass, ctype) {
-        ctype = ctype.replace(/ /g, "_");
+        var ctype = ctype.replace(/ /g, "_");
         $("." + selectDivClass + " option").prop("selected", false);
         $("." + selectDivClass + " option").hide();
         $("." + selectDivClass + " " + "." + ctype).show();
@@ -869,6 +908,7 @@ var PlanExp = (function() {
         $("#tsne-plot-condition").html("");
         $('#planexp-links-toc').hide();
         $('#planexp-links').hide();
+        $("#planexp-sample-counter").hide();
 
         try {
             cy.nodes().remove();
@@ -910,6 +950,10 @@ var PlanExp = (function() {
         var ctype = $("#network-ctype").val();
         showConditionTypes("network-condition-selects", ctype);
 
+        // Change Sample counter
+        var ctype = $("#counter-ctype").val();
+        showConditionTypes("counter-condition-selects", ctype);
+
         // Get regulatory links if they exist
         // only if Single Cell
         if (currentExpType == expType['Single-Cell']) {
@@ -928,7 +972,8 @@ var PlanExp = (function() {
         $('#planexp-gene-expression-toc').css('display', 'inline-block');
         $("#planexp-gene-coexpression").show(250);
         $('#planexp-gene-coexpression-toc').css('display', 'inline-block');
-
+        $("#planexp-sample-counter").show(250);
+        $("#planexp-sample-counter-toc").show(250);
 
         $("#planexp-network").show(250, function(){
             // Initialize cytoscape now that the container div is visible
@@ -1163,8 +1208,7 @@ var PlanExp = (function() {
         var dataset  = $("#select-dataset").val();
         var geneName = $("#tsne-search").val();
         var ctype    = $("#tsne-ctype").val();
-        var genePlotType = $('input[name="planexp-tsne-search-type"]:checked').val()
-        console.log(genePlotType);
+        var genePlotType = $('input[name="planexp-tsne-search-type"]:checked').val();
         var activePanel = $("#planexp-tsne .tab-content .tab-pane.active");
         var withcolor = false;
         var plotDiv = "tsne-plot-condition";
@@ -1186,11 +1230,35 @@ var PlanExp = (function() {
     });
 
 
+    $(".sample-counter-btn").on("click", function(){
+        var expName  = $("#select-experiment").val();
+        var dataset  = $("#select-dataset").val();
+        var geneName = $("#counter-search").val();
+        var ctype    = $("#counter-ctype").val();
+        var conditions = $("#counter-conditions").val();
+        var plotDiv = "counter-btns";
+        var loadingDiv = "counter-plot-loading";
+
+        if (!geneName || !conditions) {
+            return;
+        }
+
+        plotSampleCount(expName, dataset, geneName, ctype, conditions, plotDiv, loadingDiv)
+
+    });
+
+
     // SCROLL BEHAVIOUR
     $(".planexp-toc-link").on("click", function(event){
         event.preventDefault();
         $.scrollTo($(this).attr("href"), 500);
 
+    });
+
+    // SAMPLE COUNTER CONDITIONS
+    $("#counter-ctype").on("change", function(){
+        var ctype = $("#counter-ctype").val();
+        showConditionTypes("counter-condition-selects", ctype);
     });
 
     // NETWORK CONDITIONS
@@ -1439,6 +1507,29 @@ var PlanExp = (function() {
             }
     });
     $("#tsne-search").autocomplete({
+        source: function (request, response) { 
+            autocompleteContig(extractLast( request.term ), response);
+        
+        },
+        minLength: 2,
+            focus: function() {
+                // prevent value inserted on focus
+                return false;
+            },
+            select: function( event, ui ) {
+                var terms = splitSearch( this.value );
+                // remove the current input
+                terms.pop();
+                // add the selected item
+                terms.push( ui.item.value );
+                // add placeholder to get the comma-and-space at the end
+                terms.push( "" );
+                this.value = terms.join( ", " );
+                return false;
+            }
+    });
+
+    $("#counter-search").autocomplete({
         source: function (request, response) { 
             autocompleteContig(extractLast( request.term ), response);
         
