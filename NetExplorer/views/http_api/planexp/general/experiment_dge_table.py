@@ -94,6 +94,7 @@ def experiment_dge_table(request):
             contig_list = [ exp.gene_symbol for exp in expression ]
             homologs = GraphCytoscape.get_homologs_bulk(contig_list, dataset_name)
             genes = GraphCytoscape.get_genes_bulk(contig_list, dataset_name)
+                
             for exp in expression:
                 if exp.gene_symbol in homologs:
                     exp.homolog = homologs[exp.gene_symbol]
@@ -106,7 +107,7 @@ def experiment_dge_table(request):
             try:
                 json.dumps(response)
             except Exception as err:
-                print(err)
+                logging.error("PlanExp experiment_dge_table error: {}".format(err))
         return HttpResponse(json.dumps(response), content_type="application/json")
     else:
         return render(request, 'NetExplorer/404.html')

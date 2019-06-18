@@ -21,8 +21,8 @@ class Node(object):
         super(Node, self).__init__()
         self.symbol     = symbol
         self.database   = database.capitalize()
-        self.neighbours = list()
-        self.domains    = list()
+        self.neighbours = []
+        self.domains    = []
         if self.database not in self.allowed_databases:
             raise exceptions.IncorrectDatabase(self.database)
 
@@ -47,7 +47,7 @@ class Node(object):
         results = results.data()
 
         if results:
-            annotated_domains = list()
+            annotated_domains = []
             for row in results:
                 domain = Domain(
                     accession   = row['accession'],
@@ -203,7 +203,7 @@ class Domain(object):
 
         results = GRAPH.run(query)
         results = results.data()
-        nodes = list()
+        nodes = []
         if results:
             for row in results:
                 nodes.append(PlanarianContig(row['symbol'], database, query=False))
@@ -256,7 +256,7 @@ class HasDomain(object):
                 }
 
         """
-        json_dict = dict()
+        json_dict = {}
         json_dict['accession']   = self.domain.accession
         json_dict['description'] = self.domain.description
         json_dict['identifier']  = self.domain.identifier
@@ -316,7 +316,7 @@ class PredInteraction(object):
         self.target        = target
         self.database      = database
         self.parameters    = parameters
-        if query is True and self.parameters is None:
+        if query and self.parameters is None:
             self.__query_interaction()
 
     def __query_interaction(self):
@@ -363,8 +363,8 @@ class PredInteraction(object):
                 }
 
         """
-        element         = dict()
-        element['data'] = dict()
+        element         = {}
+        element['data'] = {}
         element['data']['id']          = "-".join(sorted((self.source_symbol, self.target.symbol)))
         element['data']['source']      = self.source_symbol
         element['data']['target']      = self.target.symbol
@@ -402,7 +402,7 @@ class HumanNode(Node):
 
     def __init__(self, symbol, database, query=True):
         super(HumanNode, self).__init__(symbol, database)
-        if query is True:
+        if query:
             self.__query_node()
         self.summary = None
         self.summary_source = None
@@ -442,8 +442,8 @@ class HumanNode(Node):
                     }
 
         """
-        element                     = dict()
-        element['data']             = dict()
+        element                     = {}
+        element['data']             = {}
         element['data']['id']       = self.symbol
         element['data']['name']     = self.symbol
         element['data']['database'] = self.database
@@ -464,7 +464,7 @@ class HumanNode(Node):
         results = GRAPH.run(query)
         results = results.data()
         if results:
-            smesgenes = list()
+            smesgenes = []
             for row in results:
                 smesgene = PlanarianGene(
                     row['symbol'], 
@@ -491,7 +491,7 @@ class HumanNode(Node):
                 smesgenes.append(smesgene)
             return smesgenes
         else:
-            return list()
+            return []
 
 
     def get_summary(self):
@@ -520,7 +520,7 @@ class HumanNode(Node):
             `list`: :obj:`PlanarianContig` objects.
         """
         homologs = self.get_homologs(database)
-        planarian_contigs = list()
+        planarian_contigs = []
         for db, homologies in homologs.items():
             for homology in homologies:
                 planarian_contigs.append(homology.prednode)
@@ -544,7 +544,7 @@ class HumanNode(Node):
 
         """
         # Initialize homologs dictionary
-        homologs         = dict()
+        homologs         = {}
         database_to_look = set()
         query_to_use = neoquery.HOMOLOGS_QUERY
         if database == "ALL":
@@ -554,7 +554,7 @@ class HumanNode(Node):
             database_to_look = set([database])
             query_to_use = neoquery.HOMOLOGS_QUERY % (database, self.symbol)
         for db in database_to_look:
-            homologs[db] = list()
+            homologs[db] = []
 
         # Get the homologs
         results  = GRAPH.run(query_to_use)
@@ -616,7 +616,7 @@ class WildCard(object):
         query   = neoquery.SYMBOL_WILDCARD % (self.database, self.search)
         results = GRAPH.run(query)
         results = results.data()
-        list_of_nodes = list()
+        list_of_nodes = []
         if results:
             for row in results:
                 list_of_nodes.append(HumanNode(row['symbol'], "Human", query=False))
@@ -632,7 +632,7 @@ class WildCard(object):
         query = neoquery.NAME_WILDCARD % (self.database, self.search)
         results = GRAPH.run(query)
         results = results.data()
-        list_of_nodes = list()
+        list_of_nodes = []
         if results:
             for row in results:
                 list_of_nodes.append(PlanarianGene(row['symbol'], "Smesgene", name=row['name'], query=False))
@@ -690,14 +690,14 @@ class PlanarianContig(Node):
         self.gccont = None
         self.length = None
         self.orflength = None
-        self.gene_ontologies = list()
+        self.gene_ontologies = []
         self.name = name
         self.gene = gene
 
         if self.symbol.startswith("_"):
             self.symbol = "dd_Smed_v6" + self.symbol
 
-        if sequence is None and query is True:
+        if sequence is None and query:
             self.__query_node()
             self.get_gene_name()
 
@@ -744,7 +744,7 @@ class PlanarianContig(Node):
                 for res in results
             ]
         else:
-            return list()
+            return []
 
 
     def get_summary(self):
@@ -842,8 +842,8 @@ class PlanarianContig(Node):
                         } 
                         
         """
-        element                     = dict()
-        element['data']             = dict()
+        element                     = {}
+        element['data']             = {}
         element['data']['id']       = self.symbol
         element['data']['name']     = self.symbol
         element['data']['database'] = self.database
@@ -871,7 +871,7 @@ class PlanarianContig(Node):
         results = results.data()
         if results:
             for row in results:
-                parameters = dict()
+                parameters = {}
                 # Homology object
                 human_node = HumanNode(row['human'], "Human", query=False)
                 thomolog  = Homology(human = human_node)
@@ -921,13 +921,13 @@ class PlanarianContig(Node):
         results = GRAPH.run(query)
         results = results.data()
         if results:
-            paths = list()
+            paths = []
             for path in results:
                 nodes_in_path  = [ PlanarianContig(node, self.database, query=False) for node in path['symbols']]
-                relationships  = list()
+                relationships  = []
                 path_graph_obj = GraphCytoscape()
                 for idx, val in enumerate(path['int_prob']):
-                    parameters = dict()
+                    parameters = {}
                     parameters['int_prob']    = path['int_prob'][idx]
                     parameters['path_length'] = path['path_length'][idx]
                     relationships.append(
@@ -958,7 +958,7 @@ class PlanarianContig(Node):
         results = results.data()
         if results:
             for row in results:
-                parameters = dict()
+                parameters = {}
                 # Initialize parameters to pass to the PredInteraction object
                 parameters = {
                     'int_prob'    : round(float(row['int_prob']), 3),
@@ -1023,8 +1023,8 @@ class PlanarianContig(Node):
         """
         Returns a list of nodes and edges adjacent to the node.
         """
-        nodes = list()
-        edges = list()
+        nodes = []
+        edges = []
         added_elements = set()
         if not self.neighbours:
             self.get_neighbours()
@@ -1059,9 +1059,9 @@ class PlanarianContig(Node):
                         GeneOntology(accession=row['accession'], domain=row['domain'], name=row['name'], query=False)
                     )
             else:
-                self.gene_ontologies = list()
+                self.gene_ontologies = []
         else:
-            self.gene_ontologies = list()
+            self.gene_ontologies = []
 
     def __hash__(self):
         return hash((self.symbol, self.database, self.important))
@@ -1141,13 +1141,13 @@ class oldExperiment(object):
                     }
 
         """
-        json_dict = dict()
+        json_dict = {}
         json_dict['id']        = self.id
         json_dict['reference'] = self.reference
         json_dict['url']       = self.url
         json_dict['minexp']    = self.minexp
         json_dict['maxexp']    = self.maxexp
-        json_dict['gradient']  = dict()
+        json_dict['gradient']  = {}
         for tup in self.gradient:
             json_dict['gradient'][tup[0]] = tup[1]
         return json.dumps(json_dict)
@@ -1162,9 +1162,9 @@ class oldExperiment(object):
             comp_time (str): "one-sample" or "two-sample", indicating if gradient 
                 should be linear ("one-sample") or divergent "two-sample".
         """
-        bins         = list()
-        exp_to_color = list()
-        range_colors = list()
+        bins         = []
+        exp_to_color = []
+        range_colors = []
         s_color = Color(from_color)
         e_color = Color(to_color)
         if comp_type == "one-sample":
@@ -1349,8 +1349,8 @@ class GraphCytoscape(object):
             including (set): Set of `Node` instances that has to be kept. Only 
                 interactions where both nodes are in `including` will be kept.
         """
-        nodes_to_keep = list()
-        edges_to_keep = list()
+        nodes_to_keep = []
+        edges_to_keep = []
         for node in self.nodes:
             if node.symbol in including:
                 nodes_to_keep.append(node)
@@ -1381,14 +1381,14 @@ class GraphCytoscape(object):
         """
         node_list     = ",".join(map(lambda x: '"' + x + '"', [node.symbol for node in self.nodes ]))
         node_selector = "[" + node_list + "]"
-        expression    = dict()
+        expression    = {}
         for sample in samples:
             query = neoquery.EXPRESSION_QUERY_GRAPH % (node_selector, experiment.id, sample)
             results = GRAPH.run(query)
             results = results.data()
             for row in results:
                 if row['symbol'] not in expression:
-                    expression[row['symbol']] = dict()
+                    expression[row['symbol']] = {}
                 expression[row['symbol']][sample] = row['exp']
         return expression
 
@@ -1403,7 +1403,7 @@ class GraphCytoscape(object):
         results = results.data()
         if results:
             for row in results:
-                parameters = dict()
+                parameters = {}
                 parameters = {
                     'int_prob'    : round(float(row['int_prob']), 3),
                     'path_length' : round(float(row['path_length']), 3),
@@ -1434,7 +1434,7 @@ class GraphCytoscape(object):
             symbol = symbol.replace(" ", "")
             symbol = symbol.replace("'", "")
             symbol = symbol.replace('"', '')
-            node_objects = list()
+            node_objects = []
             try:
                 gene_search = GeneSearch(symbol, database)
 
@@ -1448,6 +1448,7 @@ class GraphCytoscape(object):
                     node_objects = gene_search.get_planarian_contigs()
                 self.add_elements(node_objects)
             except exceptions.NodeNotFound:
+                logging.info("Node not found: {} - {}".format(symbol, database))
                 continue
     
     @classmethod
@@ -1464,10 +1465,13 @@ class GraphCytoscape(object):
             `dict`: Dictionary with homology information. 
                 Key is planarian contig symbol, value is human gene symbol.
         """
-        query = neoquery.GET_HOMOLOGS_BULK % (database, symbols)
+        if database != "Smesgene":
+            query = neoquery.GET_HOMOLOGS_BULK % (database, symbols)
+        else:
+            query = neoquery.GET_HOMOLOGS_BULK_FROM_GENE % (PlanarianGene.preferred_database, symbols)
         results = GRAPH.run(query)
         results = results.data()
-        homologs = dict()
+        homologs = {}
         if results:
             for row in results:
                 homologs[row['planarian']] = row['human']
@@ -1494,10 +1498,10 @@ class GraphCytoscape(object):
         query = neoquery.GET_GENES_BULK % (database, symbols)
         results = GRAPH.run(query)
         results = results.data()
-        genes = dict()
+        genes = {}
         if results:
             for row in results:
-                genes[row['contig']] = dict()
+                genes[row['contig']] = {}
                 genes[row['contig']]['gene'] = row['gene']
                 genes[row['contig']]['name'] = row['name']
         return genes
@@ -1531,8 +1535,8 @@ class ExperimentList(object):
     """
     def __init__(self, user):
         self.experiments = set()
-        self.samples     = dict()
-        self.datasets    = dict()
+        self.samples     = {}
+        self.datasets    = {}
         query   = neoquery.ALL_EXPERIMENTS_QUERY
         # Add all the samples for each experiment
         results = GRAPH.run(query)
@@ -1728,10 +1732,10 @@ class GeneOntology(object):
         self.accession = accession
         self.domain = domain
         self.name = name
-        self.human_nodes = list()
-        if query is True:
+        self.human_nodes = []
+        if query:
             if GeneOntology.is_symbol_valid(self.accession):
-                if human is True:
+                if human:
                     self.get_human_genes()
                 else:
                     self.__query_go()
@@ -1799,7 +1803,7 @@ class GeneOntology(object):
         query = neoquery.GO_TO_CONTIG % (database, self.accession)
         results = GRAPH.run(query)
         results = results.data()
-        contigs = list()
+        contigs = []
         if results:
             for data in results:
                 contig = PlanarianContig(
@@ -1884,8 +1888,8 @@ class GeneSearch(object):
         if self.sterm_database is None:
             self.infer_symbol_database()
 
-        planarian_contigs = list()
-        source_nodes = list()
+        planarian_contigs = []
+        source_nodes = []
         if self.sterm_database == "Smesgene":
             source_nodes.append(PlanarianGene(self.sterm, self.sterm_database))
         elif self.sterm_database == "PFAM":
@@ -1924,8 +1928,7 @@ class GeneSearch(object):
         """
         if self.sterm_database is None:
             self.infer_symbol_database()
-        planarian_genes = list()
-        
+        planarian_genes = []
         if self.sterm_database == "Human":
             if "*" in self.sterm:
                 human_nodes = WildCard(self.sterm, self.sterm_database).get_human_genes()
@@ -1967,7 +1970,7 @@ class GeneSearch(object):
         if self.sterm_database is None:
             self.infer_symbol_database()
 
-        human_nodes = list()
+        human_nodes = []
         if self.sterm_database == "Human":
             if "*" in self.sterm:
                 human_nodes = WildCard(self.sterm, self.sterm_database).get_human_genes()
@@ -1984,7 +1987,7 @@ class GeneSearch(object):
         Returns:
             `list` of `Node`: List of `Node` of the type :obj:`PlanarianGene` or :obj:`PlanarianContig`.
         """
-        all_results = list()
+        all_results = []
 
         # Get Planarian Genes
         self.database = "Smesgene"
@@ -2049,7 +2052,7 @@ class PlanarianGene(Node):
         self.chromosome = chromosome
         self.homolog = homolog
 
-        if sequence is None and query is True:
+        if sequence is None and query:
             self.__query_node()
             self.get_homolog()
 
@@ -2149,7 +2152,7 @@ class PlanarianGene(Node):
             query = neoquery.SMESGENE_GET_CONTIGS_QUERY % (database, self.symbol)
         results = GRAPH.run(query)
         results = results.data()
-        prednodes = list()
+        prednodes = []
         if results:
             for contig in results:
                 if 'database' in contig:

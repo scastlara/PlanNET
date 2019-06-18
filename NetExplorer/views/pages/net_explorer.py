@@ -33,10 +33,10 @@ def upload_graph(request, json_text):
         try: # Check if JSON is a graph declaration
             json_graph[u'nodes']
         except KeyError:
-            logging.info("ERROR: JSON is not a graph declaration (no nodes) in upload_graph")
+            logging.error("ERROR: JSON is not a graph declaration (no nodes) in upload_graph")
             return render(request, 'NetExplorer/netexplorer.html', {'json_err': True,'databases': Dataset.get_allowed_datasets(request.user), 'experiments': all_experiments})
     except ValueError as err:
-        logging.info("ERROR: Not a valid JSON File %s in upload_graph\n" % (err))
+        logging.error("ERROR: Not a valid JSON File %s in upload_graph\n" % (err))
         return render(request, 'NetExplorer/netexplorer.html', {'json_err': True,'databases': Dataset.get_allowed_datasets(request.user)})
     
     # Check if homologs are defined... 
@@ -93,14 +93,11 @@ def net_explorer(request):
             # Clone the list of nodes to search for interactions
             nodes_to_search = list(graphobject.nodes)
             for node in nodes_to_search:
-                try:
-                    node.get_neighbours_shallow()
-                    node.important = True
-                    nodes, edges = node.get_graphelements()
-                    graphobject.add_elements(nodes)
-                    graphobject.add_elements(edges)
-                except (exceptions.NodeNotFound, exceptions.IncorrectDatabase) as err:
-                    continue
+                node.get_neighbours_shallow()
+                node.important = True
+                nodes, edges = node.get_graphelements()
+                graphobject.add_elements(nodes)
+                graphobject.add_elements(edges)
             if graphobject.is_empty():
                 return HttpResponse(status=404)
             else:

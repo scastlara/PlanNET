@@ -42,7 +42,7 @@ def cluster_markers(request):
             try:
                 response = render_to_string('NetExplorer/markers_table.html', { 'markers': markers, 'experiment': experiment, 'database': dataset })
             except Exception as err:
-                print(err)
+                logging.error("PlanExp cluster_markers error: {}".format(err))
                 response = None
         else:
             response = None

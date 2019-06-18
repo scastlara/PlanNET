@@ -358,3 +358,12 @@ GET_GENES_BULK = """
     WHERE n.symbol IN %s
     RETURN n.symbol AS contig, m.symbol AS gene, m.name as name
 """
+
+GET_HOMOLOGS_BULK_FROM_GENE = """
+    MATCH (n:Smesgene)-[r:HAS_TRANSCRIPT]->(t:%s)-[hom:HOMOLOG_OF]->(h:Human)
+    WHERE n.symbol IN %s
+    WITH n, h, t
+    ORDER BY t.length DESC
+    WITH n, collect(h) as humans
+    RETURN n.symbol AS planarian, humans[0].symbol AS human
+"""

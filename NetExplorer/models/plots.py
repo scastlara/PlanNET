@@ -34,7 +34,7 @@ class PlotCreator(object):
             :obj:`ViolinPlot`: Violin plot instance.
         """
         plot = ViolinPlot()
-        condition_list = list()
+        condition_list = []
 
         sample_expression, gene_conditions = ExpressionAbsolute.get_sample_expression(
             kwargs['experiment'],
@@ -96,7 +96,7 @@ class PlotCreator(object):
                 kwargs['conditions'], 
                 kwargs['genes']
             )
-            all_samples = list()
+            all_samples = []
             for condition in kwargs['conditions']:
                 samples = SampleCondition.objects.filter(
                     experiment=kwargs['experiment'], 
@@ -134,8 +134,8 @@ class PlotCreator(object):
         )
 
         conditions = [ condition.name for condition in kwargs['conditions'] ]
-        group_idxs = dict()
-        time_idxs = list()
+        group_idxs = {}
+        time_idxs = []
         if " - " in conditions[0]:
             # Interaction Factor. Multiple Subplots.
             for c_idx, condition in enumerate(conditions):
@@ -143,7 +143,7 @@ class PlotCreator(object):
                 if c1 not in set(time_idxs):
                     time_idxs.append(c1)
                 if c2 not in group_idxs:
-                    group_idxs[c2] = list()
+                    group_idxs[c2] = []
                 group_idxs[c2].append(c_idx)
         
         if not group_idxs:
@@ -330,8 +330,8 @@ class PlotCreator(object):
 
         cell_positions = { cell['sample__sample_name'] : (cell['x_position'], cell['y_position']) for cell in cell_positions }
         
-        sample_names = list()
-        sample_condition = dict()
+        sample_names = []
+        sample_condition = {}
         for condition in kwargs['conditions']:
             samples = SampleCondition.objects.filter(
                 experiment=kwargs['experiment'], 
@@ -464,7 +464,6 @@ class SampleCountPlot(object):
                 them. Key is tuple of gene names (`str`) and value is list of 
                 sample identifiers (`int`).
         """
-        # Invert the dictionary to have ('gene set'): [samples]
         samples_in_gene_set = defaultdict(list)
         for sample, gene_list in genes_in_sample.items():
             samples_in_gene_set[tuple(sorted(gene_list))].append(sample)
@@ -478,7 +477,7 @@ class SampleCountPlot(object):
         """
         Adds the missing combinations of genes to the memberships dictionary.
         """
-        combinations = list()
+        combinations = []
         for k in range(1, len(self.genes) + 1):
             k_combinations = itertools.combinations(self.genes, k)
             for k_combination in k_combinations:
@@ -557,11 +556,11 @@ class GeneExpPlot(object):
     """
 
     def __init__(self):
-        self.traces = list()
+        self.traces = []
         self.title = str()
         self.xlab = str()
         self.ylab = str()
-        self.trace_names = list()
+        self.trace_names = []
      
     def is_empty(self):
         """
@@ -604,10 +603,10 @@ class BarPlot(GeneExpPlot):
             str: JSON string with plot data for Plotly.js.
         """
 
-        theplot = dict()
-        theplot['data'] = list()
-        theplot['layout'] = dict()
-        data_list = list()
+        theplot = {}
+        theplot['data'] = []
+        theplot['layout'] = {}
+        data_list = []
 
         for trace in self.traces:
              trace_dict = { 'x': trace.x, 'y':trace.y, 'type': trace.type, 'name': trace.name }
@@ -644,7 +643,7 @@ class ViolinPlot(GeneExpPlot):
             jitter (`float`): How much to jitter the y-values. 
         """
 
-        newvalues = list()
+        newvalues = []
         for idx, value in enumerate(values):
             value = round(value, 3)
             if idx % 2 == 0:
@@ -660,10 +659,10 @@ class ViolinPlot(GeneExpPlot):
         Returns:
             str: JSON string with plot data for Plotly.js.
         """
-        theplot = dict()
-        theplot['data'] = list()
-        theplot['layout'] = dict()
-        data_list = list()
+        theplot = {}
+        theplot['data'] = []
+        theplot['layout'] = {}
+        data_list = []
 
         for trace in self.traces:
             trace_dict = { 
@@ -727,9 +726,9 @@ class HeatmapPlot(object):
     """
 
     def __init__(self):
-        self.x = list()
-        self.y = list()
-        self.z = list()
+        self.x = []
+        self.y = []
+        self.z = []
         self.type = "heatmap"
     
     def add_conditions(self, conditions):
@@ -782,8 +781,8 @@ class HeatmapPlot(object):
         Returns:
             str: JSON string with plot data for Plotly.js.
         """
-        theplot = dict()
-        theplot['data'] = list()
+        theplot = {}
+        theplot['data'] = []
 
         theplot['layout'] = {
             'margin': {
@@ -794,7 +793,7 @@ class HeatmapPlot(object):
                 'pad': 4
         }}
 
-        data_dict = dict()
+        data_dict = {}
         data_dict['x'] = self.x
         data_dict['y'] = self.y
         data_dict['z'] = self.z
@@ -822,8 +821,8 @@ class LinePlot(GeneExpPlot):
         Returns:
             str: JSON string with plot data for Plotly.js.
         """
-        theplot = dict()
-        theplot['data'] = list()
+        theplot = {}
+        theplot['data'] = []
 
         theplot['layout'] = {
             'margin': {
@@ -834,12 +833,12 @@ class LinePlot(GeneExpPlot):
                 'pad': 4
         }}
 
-        data_list = list()
+        data_list = []
         num_subplots = set()
         subplots = set()
-        annotations = list()
+        annotations = []
         i_colors = 0
-        added_genes = dict()
+        added_genes = {}
         max_expression = max([ max(trace.y) for trace in self.traces ])
 
         for trace in self.traces:
@@ -863,7 +862,7 @@ class LinePlot(GeneExpPlot):
                         i_colors = 0
                     added_genes[trace.name] = COLORS[i_colors]
                     i_colors += 1
-                trace_dict['line'] = dict()
+                trace_dict['line'] = {}
                 trace_dict['line']['color'] = added_genes[trace.name]
                 if trace.xaxis != "x1":
                     trace_dict['showlegend'] = False
@@ -902,9 +901,9 @@ class ScatterPlot(GeneExpPlot):
         Returns:
             str: JSON string with plot data for Plotly.js.
         """
-        theplot = dict()
-        theplot['data'] = list()
-        theplot['layout'] = dict()
+        theplot = {}
+        theplot['data'] = []
+        theplot['layout'] = {}
         
         if self.cmax is None:
             self.compute_color_limits()
@@ -923,11 +922,11 @@ class ScatterPlot(GeneExpPlot):
             theplot['data'].append(trace_dict)
             
         if self.xlab:
-            theplot['layout']['xaxis'] = dict()
+            theplot['layout']['xaxis'] = {}
             theplot['layout']['xaxis']['title'] = self.xlab
         
         if self.ylab:
-            theplot['layout']['yaxis'] = dict()
+            theplot['layout']['yaxis'] = {}
             theplot['layout']['yaxis']['title'] = self.ylab
         
         return theplot
@@ -960,12 +959,12 @@ class PlotlyTrace(object):
     def __init__(self, name):
         self.name = name
         self.order = int()
-        self.x = list()
-        self.y = list()
-        self.names = list()
+        self.x = []
+        self.y = []
+        self.names = []
         self.mode = 'markers'
         self.type = 'scattergl'
-        self.color = list()
+        self.color = []
         self.xaxis = None
         self.yaxis = None
         self.subplot_title = None
@@ -990,9 +989,9 @@ class VolcanoPlot(object):
         Plotly.newPlot('myDiv', data);
     """
     def __init__(self):
-        self.traces = dict()
-        self.limits = { 'x': list(), 'y': list()}
-        self.units = dict()
+        self.traces = {}
+        self.limits = { 'x': [], 'y': []}
+        self.units = {}
         self.cmin = 0
         self.cmax = None
     
@@ -1022,12 +1021,12 @@ class VolcanoPlot(object):
             raise ValueError("Axis should be 'x' or 'y'.")
 
     def plot(self):
-        theplot = dict()
-        theplot['data'] = list()
-        theplot['layout'] = dict()
+        theplot = {}
+        theplot['data'] = []
+        theplot['layout'] = {}
         for trace_name in sorted(self.traces.keys(), key=lambda n: self.traces[n].order):
             trace = self.traces[trace_name]
-            trace_data = dict()
+            trace_data = {}
             if str(trace_name).isdigit():
                 trace_data['name'] = 'Cluster ' + str(trace.name)
             else:
@@ -1041,7 +1040,7 @@ class VolcanoPlot(object):
             if trace.names:
                 trace_data['text'] = trace.names
             theplot['data'].append(trace_data)
-        theplot['layout'] = {'xaxis': dict(), 'yaxis': dict()}
+        theplot['layout'] = {'xaxis': {}, 'yaxis': {}}
         if self.units:
             for axis, units in self.units.items():
                 axis_name = axis + 'axis'

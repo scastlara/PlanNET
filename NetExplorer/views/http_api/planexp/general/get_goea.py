@@ -20,25 +20,23 @@ def get_goea(request):
     c2_name = request.GET['condition2']
     condition_focus = request.GET['condition_focus']
     dataset_name = request.GET['dataset']
-    pvalue_threshold = 0.001
     experiment = Experiment.objects.get(name=exp_name)
     dataset = Dataset.objects.get(name=dataset_name)
     condition1 = Condition.objects.get(name=c1_name, experiment=experiment)
     condition2 = Condition.objects.get(name=c2_name, experiment=experiment)
     expression = ExpressionRelative.objects.filter(
         experiment=experiment, dataset=dataset, 
-        condition1=condition1, condition2=condition2, pvalue__lte=pvalue_threshold)
+        condition1=condition1, condition2=condition2)
     if not expression.exists():
         # In case condition1 and condition2 are reversed in Database
         expression = ExpressionRelative.objects.filter(
             experiment=experiment, dataset=dataset, 
-            condition1=condition2, condition2=condition1, pvalue__lte=pvalue_threshold)
-
+            condition1=condition2, condition2=condition1)
+    
     if expression:
         if condition_focus == expression[0].condition1.name:
             # Must get Positive fold changes
             gene_set = list(expression.filter(fold_change__gte=0).values_list('gene_symbol', flat=True))
-
         else:
             # Must get Negative fold changes
             gene_set = list(expression.filter(fold_change__lte=0).values_list('gene_symbol', flat=True))
@@ -53,7 +51,7 @@ def get_goea(request):
         try:
             html_to_return = render_to_string('NetExplorer/goea_plots.html', { 'plots': plots, 'golist': go_list })
         except Exception as err:
-            print(err)
+            logging.error("PlanExp get_goea error: {}".format(err))
         
         response['html'] = html_to_return
 

@@ -48,7 +48,7 @@ class Dataset(models.Model):
             return False
 
     @classmethod
-    def get_allowed_datasets(cls, user):
+    def get_allowed_datasets(cls, user, skip_smesgene=True):
         """
         Classmethod that returns QuerySet of allowed datasets for a given user.
 
@@ -59,7 +59,10 @@ class Dataset(models.Model):
             `list` of `Dataset`: List of Dataset objects sorted by year 
                 to which `user` has permissions to.
         """
-        public_datasets = cls.objects.filter(public=True).order_by('-year')
+        public_datasets = cls.objects.filter(public=True)
+        if skip_smesgene:
+            public_datasets.exclude(name="Smesgene")
+        public_datasets.order_by('-year')
         if not user.is_authenticated:
             # Return only public datasets
             return public_datasets
@@ -170,7 +173,7 @@ class Experiment(models.Model):
         json_dict['conditions'] = dict()
         for cond in conditions:
             if cond.cond_type.name not in json_dict['conditions']:
-                json_dict['conditions'][cond.cond_type.name] = list()
+                json_dict['conditions'][cond.cond_type.name] = []
             json_dict['conditions'][cond.cond_type.name].append( 
                 (cond.name, cond.defines_cell_type, cond.cell_type, cond.description) 
             )
@@ -694,7 +697,7 @@ class ExpressionCondition(models.Model):
             if cid  in datadict:
                 for gene in genes:
                     if gene not in condition_expression:
-                        condition_expression[gene] = list()
+                        condition_expression[gene] = []
 
                     if gene in datadict[cid]:
                         condition_expression[gene].append(datadict[cid][gene] / samples_in_condition)
@@ -703,7 +706,7 @@ class ExpressionCondition(models.Model):
             else:
                 for gene in genes:
                     if gene not in condition_expression:
-                        condition_expression[gene] = list()
+                        condition_expression[gene] = []
                     condition_expression[gene].append(0)
         return condition_expression
 

@@ -23,7 +23,7 @@ def regulatory_links(request):
         group = request.GET.get('group')
         experiment = Experiment.objects.get(name=exp_name)
         dataset = Dataset.objects.get(name=dataset_name)
-        response = dict()
+        response = {}
 
         if group is None:
             group = 1

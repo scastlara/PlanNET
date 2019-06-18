@@ -33,7 +33,7 @@ def experiment_summary(request):
         condition_list = dict()
         for condition in conditions:
             if condition.cond_type.name not in condition_list:
-                condition_list[condition.cond_type.name] = list()
+                condition_list[condition.cond_type.name] = []
             condition_list[condition.cond_type.name].append(condition)
 
         response = dict()

@@ -81,6 +81,7 @@ def get_card(request, symbol=None, database=None):
             graph.add_elements(nodes)
             graph.add_elements(edges)
     except Exception as err:
+        logging.error("Can't find symbol {} - {} in get_card() {}".format(symbol, database, err))
         return render_to_response('NetExplorer/not_interactome.html')
     if database == "Human":
        response = {

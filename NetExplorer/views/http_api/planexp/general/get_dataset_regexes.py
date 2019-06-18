@@ -23,7 +23,7 @@ def get_dataset_regexes(request):
     regexes = Dataset.objects.all().values('name', 'identifier_regex')
     prefix_default_length = 10 # Default length of contig identifier prefix
 
-    results = list()
+    results = []
     for result in regexes:
         if result['name'] == "Dresden":
             results.append((result['identifier_regex'], result['name'], 13))

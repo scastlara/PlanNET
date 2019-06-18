@@ -44,7 +44,7 @@ def map_expression_two(request):
     condition1 = Condition.objects.get(name=condition1, experiment=experiment)
     condition2 = Condition.objects.get(name=condition2, experiment=experiment)
 
-    colormap = dict()
+    colormap = {}
     color_gradient = colors.ColorGenerator(10, -10, profile)
     units = "Log Fold Change"
     for symbol in symbols:
@@ -77,7 +77,7 @@ def map_expression_two(request):
         
         colormap[symbol] = color_gradient.map_color(expression)
 
-    response = dict()
+    response = {}
     response['colormap'] = colormap
     response['legend'] =  color_gradient.get_color_legend(units=units)
     response = json.dumps(response)

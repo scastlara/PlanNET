@@ -16,13 +16,13 @@ def get_possible_comparisons(exp_name):
     experiment = Experiment.objects.get(name=exp_name)
     exp_relative = ExpressionRelative.objects.filter(experiment=experiment).select_related("condition1", "condition2").values("condition1__name", "condition2__name").distinct()
     
-    possible_comparisons = dict()
+    possible_comparisons = {}
     for exp in exp_relative:
         if exp['condition1__name'] not in possible_comparisons:
-            possible_comparisons[exp['condition1__name']] = list()
+            possible_comparisons[exp['condition1__name']] = []
         possible_comparisons[exp['condition1__name']].append(exp['condition2__name'])
         if exp['condition2__name'] not in possible_comparisons:
-            possible_comparisons[exp['condition2__name']] = list()
+            possible_comparisons[exp['condition2__name']] = []
         possible_comparisons[exp['condition2__name']].append(exp['condition1__name'])
     return possible_comparisons
 
@@ -63,8 +63,8 @@ def experiment_conditions(request):
         else:
             conditions = Condition.objects.filter(experiment__name=exp_name)
         
-        response = dict()
-        response['conditions'] = dict()
+        response = {}
+        response['conditions'] = {}
         response['comparisons'] = get_possible_comparisons(exp_name)
 
         for cond in sorted(conditions, key=lambda x: condition_sort(x)):

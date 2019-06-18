@@ -59,7 +59,7 @@ def path_finder(request):
             end_nodes.nodes,
             plen
         )
-        response = dict()
+        response = {}
         response['database']  = database
         response['snode']     = request.GET['start']
         response['enode']     = request.GET['end']

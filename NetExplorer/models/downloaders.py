@@ -172,7 +172,7 @@ class DownloadHandler(object):
         if genes1:
             gene1 = genes1[0].symbol
 
-        ints = list()
+        ints = []
         if node.neighbours:
             for interaction in node.neighbours:
                 genes2 = interaction.target.get_genes()
@@ -290,7 +290,7 @@ class ServedFile(object):
         self.fformat = fformat
         self.header = header
         self.filename = tempfile.NamedTemporaryFile()
-        self.elements = list()
+        self.elements = []
         self.written = False
 
     def add_elements(self, elem):
@@ -339,7 +339,7 @@ class ServedFile(object):
                 in a request.
                     
         """
-        if self.written is False:
+        if not self.written:
             self.write(what)
         wrapper = FileWrapper(open(self.filename.name))
         response = HttpResponse(wrapper, content_type='text/plain')

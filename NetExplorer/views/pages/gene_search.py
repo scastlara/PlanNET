@@ -86,7 +86,7 @@ def gene_search(request):
     Template:
         * **NetExplorer/gene_search.html**
     """
-    response = dict()
+    response = {}
     response['databases'] = Dataset.get_allowed_datasets(request.user)
     response['valid_query'] = False
     if request.method == "GET" and "genesymbol" in request.GET:
@@ -95,7 +95,7 @@ def gene_search(request):
         database = None
         if "database" in request.GET and request.GET['database']:
             database = request.GET['database']
-        nodes = list()
+        nodes = []
         response['search_error'] = 0
         response['symbols'] = symbols
         response['database'] = database
@@ -111,11 +111,8 @@ def gene_search(request):
             # Valid search (symbols + database)
             response['valid_query'] = True
             nodes_graph = GraphCytoscape()
-            try:
-                nodes_graph.new_nodes(symbols, database)
-            except Exception as err:
-                print(err)
-                logging.info("Node not found.")
+            nodes_graph.new_nodes(symbols, database)
+
             if not nodes_graph:
                 response['search_error'] = 1
             else:

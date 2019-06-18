@@ -84,7 +84,7 @@ def plot_gene_expression(request):
             else:
                 response = None
         except Exception as err:
-            print(err)
+            logging.error("PlanExp plot_gene_expression error: {}".format(err))
 
         return HttpResponse(json.dumps(response), content_type="application/json")
     else:
