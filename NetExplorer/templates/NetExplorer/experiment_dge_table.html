@@ -5,7 +5,9 @@
         <thead>
             <tr>
                 <th>Symbol</th>
-                <th>Gene</th>
+                {% if database.name != "Smesgene" %}
+                    <th>Gene</th>
+                {% endif %}
                 <th>Homolog</th>
                 <th>Condition 1</th>
                 <th>Condition 2</th>
@@ -25,19 +27,21 @@
                             {{ exp.gene_symbol }}
                         </a>
                     </td>
-                    {% if exp.gene %}
-                        <td>
-                            <a class="card-trigger"
-                                title="Click to view info card"
-                                target="{{ exp.gene }}"
-                                targetDB="Smesgene">
-                                {{ exp.gene }} {% if exp.name %} ({{ exp.name }}) {% endif %}
-                            </a>
-                        </td>
-                    {% else %}
-                        <td>None</td>
+                    {% if database.name != "Smesgene" %}
+                
+                        {% if exp.gene %}
+                            <td>
+                                <a class="card-trigger"
+                                    title="Click to view info card"
+                                    target="{{ exp.gene }}"
+                                    targetDB="Smesgene">
+                                    {{ exp.gene }} {% if exp.name %} ({{ exp.name }}) {% endif %}
+                                </a>
+                            </td>
+                        {% else %}
+                            <td>None</td>
+                        {% endif %}
                     {% endif %}
-
                     {% if exp.homolog %}
                         <td>
                             <a class="card-trigger"
