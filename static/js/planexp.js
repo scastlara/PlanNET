@@ -808,9 +808,8 @@ var PlanExp = (function() {
         var data = dt.buttons.exportData().body;
         var toImport = { 'nodes': [], 'edges': [] };
         for (var row in data) {
-
-            toImport.nodes.push({ data: { id: data[row][0], name: data[row][0], colorNODE: "#404040" } });
-            toImport.nodes.push({ data: { id: data[row][3], name: data[row][3], colorNODE: "#404040" } });
+            toImport.nodes.push({ data: { id: data[row][0], name: data[row][0], homolog: data[row][2], colorNODE: "#404040" } });
+            toImport.nodes.push({ data: { id: data[row][3], name: data[row][3], homolog: data[row][5], colorNODE: "#404040" } });
             toImport.edges.push({ data: { 
                     source: data[row][0], 
                     target: data[row][3], 
@@ -872,6 +871,17 @@ var PlanExp = (function() {
             }
         });
     }
+
+
+    var changeLabels = function(cyobj) {
+        var newLabel = $("#change-labels input:checked").val();
+        if (newLabel == "human") {
+            cyobj.nodes().addClass('human-label');
+        } else {
+            cyobj.nodes().removeClass('human-label');
+        }
+    }
+
 
     //----------------------------------------------------
     /* BUTTONS AND EVENTS */
@@ -1377,7 +1387,6 @@ var PlanExp = (function() {
 
 
     });
-
 
 
     // NETWORK EDITOR

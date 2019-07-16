@@ -61,8 +61,8 @@ class Dataset(models.Model):
         """
         public_datasets = cls.objects.filter(public=True)
         if skip_smesgene:
-            public_datasets.exclude(name="Smesgene")
-        public_datasets.order_by('-year')
+            public_datasets = public_datasets.exclude(name="Smesgene")
+        public_datasets = public_datasets.order_by('-year')
         if not user.is_authenticated:
             # Return only public datasets
             return public_datasets

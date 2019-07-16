@@ -35,6 +35,9 @@ def autocomplete(request):
         database = request.GET['database']
         if database == "Pfam" or database == "Go":
             query = neoquery.AUTOCOMPLETE_ACCESSION % (database, s_string)
+        elif database == "Human":
+            s_string = s_string.upper()
+            query = neoquery.AUTOCOMPLETE_CONTIG % (database, s_string)
         else:
             query = neoquery.AUTOCOMPLETE_CONTIG % (database, s_string)
         

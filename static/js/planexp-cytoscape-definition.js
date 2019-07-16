@@ -9,7 +9,13 @@ $( document ).ready(function() {
     window.stylesheet = cytoscape.stylesheet()
     .selector('node')
         .css({
-            'content': 'data(name)',
+            'content': function(ele) {
+                if (ele.data("homolog") && ele.data("homolog") != "None") {
+                    return ele.data("name") + " (" + ele.data("homolog") + ")"; 
+                } else {
+                    return ele.data("name");
+                }
+            },
             'text-valign': 'bottom',
             'text-halign': 'center',
             'background-color': '#404040',
