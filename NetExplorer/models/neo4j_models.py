@@ -158,13 +158,20 @@ class Domain(object):
 
     pfam_regexp = r'PF\d{5}'
 
-    def __init__(self, accession, description=None, identifier=None, mlength=None):
-        if not re.match(Domain.pfam_regexp, accession):
+    def __init__(self, accession=None, description=None, identifier=None, mlength=None):
+        if accession is None and identifier is None:
+            raise ValueError("Pfam Domains should be initialzied with accession OR identifier.")
+
+        if accession and not re.match(Domain.pfam_regexp, accession):
             raise exceptions.NotPFAMAccession(accession)
-        self.accession   = accession
-        self.description = description
-        self.identifier  = identifier
-        self.mlength     = mlength
+        
+        if identifier and not accession:
+            self._get_domain_by_identifier(identifier)
+        else:
+            self.accession   = accession
+            self.description = description
+            self.identifier  = identifier
+            self.mlength     = mlength
 
     @classmethod
     def is_symbol_valid(cls, symbol):
@@ -211,7 +218,42 @@ class Domain(object):
         else:
             raise exceptions.NodeNotFound(self.accession, "Pfam-%s" % database)
 
-    
+    def get_planarian_genes(self, database):
+        query = neoquery.GET_GENES_FROMDOMAIN_QUERY % (database, self.accession)
+        results = GRAPH.run(query)
+        results = results.data()
+        planarian_genes = []
+        if results:
+            for row in results:
+                smesgene = PlanarianGene(
+                    row['symbol'], 
+                    'Smesgene', 
+                    name=row['name'], 
+                    start=row['start'], 
+                    end=row['end'], 
+                    strand=row['strand'], 
+                    sequence=row['sequence'],
+                    query=False
+                )
+                planarian_genes.append(smesgene)
+
+        return planarian_genes
+
+
+    def _get_domain_by_identifier(self, identifier):
+        """
+        Queries domain by identifier instead of accession. Fills all attributes.
+        """
+        query = neoquery.DOMAIN_IDENTIFIER_QUERY % (identifier.upper())
+        results = GRAPH.run(query)
+        results = results.data()
+        if results:
+            self.accession = results[0]['accession']
+            self.identifier = results[0]['identifier']
+            self.description = results[0]['description']
+            self.mlength = results[0]['mlength']
+
+
 # ------------------------------------------------------------------------------
 class HasDomain(object):
     """
@@ -1900,7 +1942,7 @@ class GeneSearch(object):
             if "*" in self.sterm:
                 source_nodes = WildCard(self.sterm, self.sterm_database).get_human_genes()
             else:
-                source_nodes = [ HumanNode(self.sterm.upper(), self.sterm_database) ]
+                source_nodes = self._get_human_or_pfam()
         else:
             # We already have the planarian contig by identifier,
             # no need to try to retrieve it from neo4j connections.
@@ -1933,7 +1975,7 @@ class GeneSearch(object):
             if "*" in self.sterm:
                 human_nodes = WildCard(self.sterm, self.sterm_database).get_human_genes()
             else:
-                human_nodes = [ HumanNode(self.sterm.upper(), self.sterm_database) ]
+                human_nodes = self._get_human_or_pfam()
             for hnode in human_nodes:
                 planarian_genes.extend(hnode.get_planarian_genes(PlanarianGene.preferred_database))
         elif self.sterm_database == "PFAM":
@@ -2006,6 +2048,21 @@ class GeneSearch(object):
         self.database = "ALL"
         return all_results
 
+    def _get_human_or_pfam(self):
+        """
+        Returns a list of HumanNodes or a PFAM nodes (or both) by searching 
+        by gene/domain symbol.
+
+        Returns:
+            `list` of `Node`: List of `Node` of type :obj:`HumanNode` and/or :obj:`Domain`.
+        """
+        matching_nodes = []
+        try:
+            matching_nodes.append(HumanNode(self.sterm.upper(), self.sterm_database))
+        except exceptions.NodeNotFound:
+            # Not a Human Node symbol, may be a PFAM domain symbol.
+            matching_nodes.append(Domain(identifier=self.sterm))
+        return matching_nodes
 
 class PlanarianGene(Node):
     """

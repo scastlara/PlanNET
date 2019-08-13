@@ -213,6 +213,15 @@ DOMAIN_QUERY = """
 """
 
 # ------------------------------------------------------------------------------
+DOMAIN_IDENTIFIER_QUERY = """
+    MATCH (dom:Pfam)
+    WHERE toUpper(dom.identifier) = '%s'
+    RETURN dom.accession   AS accession,
+           dom.description AS description,
+           dom.identifier  AS identifier,
+           dom.mlength     AS mlength
+"""
+# ------------------------------------------------------------------------------
 OFFSYMBOL_QUERY = """
     MATCH (n:OFF_SYMBOL)<-[r]-(m:%s)
     WHERE n.symbol = '%s'
@@ -290,6 +299,18 @@ GET_GENES_FROMHUMAN_QUERY = """
            r.nog_eval   AS nog_eval,
            r.blast_brh  AS blast_brh,
            r.pfam_brh   AS pfam_brh
+"""
+
+# ------------------------------------------------------------------------------
+GET_GENES_FROMDOMAIN_QUERY = """
+    MATCH (n:Pfam)<-[r:HAS_DOMAIN]-(m:%s)<-[s:HAS_TRANSCRIPT]-(l:Smesgene)
+    WHERE n.accession = "%s"
+    RETURN l.symbol     AS symbol,
+           l.name       AS name,
+           l.start      AS start,
+           l.end        AS end,
+           l.sequence   AS sequence,
+           l.strand     AS strand
 """
 
 SMESGENE_QUERY = """
