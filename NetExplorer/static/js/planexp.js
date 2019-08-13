@@ -284,6 +284,7 @@ var PlanExp = (function() {
         condition1 = condition1.replace(/ \(.+\)/, "");
         condition2 = condition2.replace(/ \(.+\)/, "");
 
+        $("#dge-loading").show();
         $.ajax({
             type: "GET",
             url: window.ROOT + "/experiment_dge_table",
@@ -298,6 +299,7 @@ var PlanExp = (function() {
                 if (jQuery.isEmptyObject(data)) {
                     targetDiv.hide();
                     $("#dge-table-notfound").show(250);
+
                 } else {
                     $("#dge-table-notfound").hide();
                     targetDiv.html(data.table);
@@ -305,6 +307,10 @@ var PlanExp = (function() {
                     targetDiv.show(250);
                     Plotly.newPlot("volcano-plot", data.volcano);
                 }
+                $("#dge-loading").hide();
+            },
+            error: function(data) {
+                $("#dge-loading").hide();
             }
         });
     }

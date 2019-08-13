@@ -111,7 +111,11 @@
                 </div>
                 <div id="planexp-dge-table">
                 </div>
-                
+
+                <div id="dge-loading">
+                    <img class="planexp-loading-img" src="{% static 'Images/loading-planexp.gif' %}"/>
+                </div>
+
                 <div id="plot-container">
                     <hr>
                     <h4>Volcano Plot</h4>
@@ -266,9 +270,11 @@
 
 
                 <blockquote>
-                    Visualize the cells in this experiment plotted in two dimensions, thanks to a <a href="https://en.wikipedia.org/wiki/T-distributed_stochastic_neighbor_embedding" target="_blank">T-distributed Stochastic Neighbor Embedding</a><div class="">
+                    Visualize the cells in this experiment plotted in two dimensions, thanks to a <a href="https://en.wikipedia.org/wiki/T-distributed_stochastic_neighbor_embedding" target="_blank">T-distributed Stochastic Neighbor Embedding</a>.<br>
                     Choose to color the cells by condition (clusters of cells, experimental conditions, etc.) or by the expression of a specific gene by
-                    using the different tabs.
+                    using the different tabs.<br>
+                    While cells with similar expression patterns will appear closer in the plot, the randomness associated with the dimentionality reduction method 
+                    might display cells in a different position from the original publication's plot.
                 </blockquote>
 
                 <h4>Color By:</h4>

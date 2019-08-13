@@ -2364,6 +2364,15 @@ kbd {
     margin-top: 175px;
 }
 
+#dge-loading {
+    display: none;
+    position: absolute;
+    z-index: 2;
+    left: calc(50% - 75px);
+    margin-top: 175px;
+}
+
+
 #tsne-plot-gene-loading {
     display: none;
     position: absolute;
