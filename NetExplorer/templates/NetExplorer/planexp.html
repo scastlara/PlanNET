@@ -12,11 +12,11 @@
         <li><a class="planexp-toc-link" id="planexp-summary-toc" href="#planexp-summary">Summary</a></li>
         <li><a class="planexp-toc-link" id="planexp-dge-table-container-toc" href="#planexp-dge-table-container">Differential Expression</a></li>
         <li><a class="planexp-toc-link" id="planexp-gene-expression-toc" href="#planexp-gene-expression">Gene Expression Plot</a></li>
-        <li><a class="planexp-toc-link" id="planexp-gene-coexpression-toc" href="#planexp-gene-coexpression">Gene Co-expression</a></li>
         <li><a class="planexp-toc-link" id="planexp-tsne-toc" href="#planexp-tsne">t-SNE Plot</a></li>
-        <li><a class="planexp-toc-link" id="planexp-sample-counter-toc" href="#planexp-sample-counter">Sample Quantification</a></li>
         <li><a class="planexp-toc-link" id="planexp-markers-toc" href="#planexp-markers">Marker Genes</a></li>
-        <li><a class="planexp-toc-link" id="planexp-links-toc" href="#planexp-links">Regulatory Interactions</a></li>
+        <li><a class="planexp-toc-link" id="planexp-gene-coexpression-toc" href="#planexp-gene-coexpression">Gene Co-expression Plot</a></li>
+        <li><a class="planexp-toc-link" id="planexp-sample-counter-toc" href="#planexp-sample-counter">Sample Quantification</a></li>
+        <li><a class="planexp-toc-link" id="planexp-links-toc" href="#planexp-links">Gene Co-expression network</a></li>
         <li><a class="planexp-toc-link" id="planexp-network-toc" href="#planexp-network">Network</a></li>
         <hr>
         <li id="back_home"><a href="{% url 'index' %}" ><span class="glyphicon glyphicon-triangle-left"></span>Go back Home</a></li>
@@ -314,7 +314,7 @@
                     <!-- Gene Symbol tab -->
                     <div id="tsne-gene-tab" class="tab-pane fade">
                         <div class="input-group gene-expression-search-container">
-                            <label for="genesymbol">Gene Symbol/s:</label>
+                            <label for="genesymbol">Gene Symbol(s):</label>
                             <input type="text" id="tsne-search" class="form-control" name="genesymbol" placeholder="Enter Gene Symbols">
                         </div>
 
@@ -429,44 +429,75 @@
             </div>
 
             <div id="planexp-links" class="planexp-card">
-                <h2 id="planexp-title">Gene Regulatory Interactions</h2>
+                <h2 id="planexp-title">Gene Co-Expression Network</h2>
                 <hr class="planexp-rule">
 
                 <blockquote>
-                    Predicted gene interactions for this experiment 
-                    using <a target="_blank" href="https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0012776">GENIE3 (Huynh-Thu, VA <i>et al</i>.)</a>.
-
+                    Predicted gene co-expression network for this experiment using the program <a href="https://github.com/tmoerman/arboreto/" target="_blank">GRNBoost</a> of the <a href="https://www.nature.com/articles/nmeth.4463" target="_blank"> SCENIC pipeline</a>.
+                    <br><br>
+                    Possible regulators were selected by Gene Ontology (those genes having a GO accession indicating that they are transcription factors).
+                    <br><br>
+                    Pairs of genes appearing in the network indicate that <b>when the expression of the "regulator" changes in a cell, the expression of the "target" is also affected</b>.
+                    <br><br>
+                    These relationships could be the result of different scenarios, for instance:
+                    <br><br>
+                    <ul>
+                        <li>The regulator gene is a transcription factor that may control the expression of the target gene.</li>
+                        <li>The regulator gene may be part of a signalling pathway involved in the control of the target gene expression.</li>
+                        <li>Expression of both genes may be controlled by the same transcription factors.</li>
+                        <li>Both genes are often co-expressed in the same cells.</li>
+                    </ul>
                     <br>
-                    Possible regulators were selected by Gene Ontology (those genes having a GO accession indicating that they are transcription factors), 
-                    or by PFAM domain annotations.
-
-                    <br>
-                    A random sample of up to 30 cells per cluster was selected for the gene network inference. 
-
+                    Search for genes or reactome pathway identifiers to get the related gene co-expression links.
 
                 </blockquote>
 
                 <br>
-                <select id="links-group" name="links-group" class="selectpicker" title="Select Top Links">
-                    <option value="1" selected>1-100</option>
-                    <option value="2">100-200</option>
-                    <option value="3">200-300</option>
-                    <option value="4">300-400</option>
-                    <option value="5">400-500</option>
-                    <option value="6">500-600</option>
-                    <option value="7">600-700</option>
-                    <option value="8">700-800</option>
-                    <option value="9">800-900</option>
-                    <option value="10">900-1000</option>
-                </select>
+                
+                <h4>Search Network by:</h4>
+                <!-- Condition-vs-GeneSymbol tab header -->
+                <ul id="link-tabs" class="nav nav-tabs">
+                    <li class="active" id="links-gene-symbol-li"><a data-toggle="tab" href="#links-gene-symbol-tab">Gene Symbol(s)</a></li>
+                    <li id="links-reactome-li"><a data-toggle="tab" href="#links-reactome-tab">Reactome ID</a></li>
+                </ul>
+
+                
+                  
+
+                <div class="tab-content">
+                    <!-- Gene symbol tab -->
+                    <div id="links-gene-symbol-tab" class="tab-pane fade in active">
+                        <div class="input-group links-gene-search-container">
+                            <label for="genesymbol">Gene Symbol(s):</label>
+                            <input type="text" id="links-gene-search" class="form-control" name="genesymbol" placeholder="Enter Gene Symbol(s)">
+                        </div>
+                    </div>
+
+                    <!-- Reactome Tab -->
+                    <div id="links-reactome-tab" class="tab-pane fade">
+                         <div class="input-group links-reactome-search-container">
+                            <label for="reactome">Reactome ID(s):</label>
+                            <input type="text" id="links-reactome-search" class="form-control" name="reactome" placeholder="Enter Reactome ID(s)">
+                        </div>
+                    </div>
+
+
+                <br><br>
+                <span class="input-group-btn input-grp-withlabel">
+                    <button type="submit" value=" Send" class="btn btn-danger" id="links-submit-btn">Get Network</button>
+                </span>
+
+
+            </div>
+
+
+
                 <br><br>
                 <div id="planexp-links-table-container">
                     
                 </div>
 
-
-
-            </div> <!-- Regulatory Links Table -->
+            </div> 
 
             
             <div id="dialog-confirm" title="Delete Graph?">
@@ -691,10 +722,7 @@
     <script src="{% static 'js/get-card.js' %}"></script>
     <script src="{% static 'js/planexp.js' %}"></script>
     <script src="{% static 'js/planexp-cytoscape-definition.js' %}"></script>
-
-    <script>
         
-    </script>
     {% endblock scripts%}
     
 

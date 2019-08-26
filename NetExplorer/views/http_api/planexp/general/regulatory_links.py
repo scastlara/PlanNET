@@ -20,14 +20,22 @@ def regulatory_links(request):
     if request.is_ajax():
         exp_name = request.GET['experiment']
         dataset_name = request.GET['dataset']
-        group = request.GET.get('group')
+        mode = request.GET.get('mode')
+        search_term = request.GET.get('search_term')
+
         experiment = Experiment.objects.get(name=exp_name)
         dataset = Dataset.objects.get(name=dataset_name)
         response = {}
 
-        if group is None:
-            group = 1
-        regulatory_links = RegulatoryLinks.objects.filter(experiment=experiment, dataset=dataset, group=group)
+
+
+        if mode == "gene":
+            # First disambiguate gene names
+            gene_symbols = list()
+            for gene_name in search_term.split(","):
+                gene_symbols.extend(disambiguate_gene(gene_name, dataset_name))
+            regulatory_links = RegulatoryLinks.objects.filter(experiment=experiment, dataset=dataset, regulator__in=gene_symbols) | RegulatoryLinks.objects.filter(experiment=experiment, dataset=dataset, target__in=gene_symbols)
+
         if regulatory_links:
             all_contigs = set()
             for link in regulatory_links:
@@ -50,6 +58,7 @@ def regulatory_links(request):
                     link.target_gene = genes[link.target]['gene']
                     link.target_name = genes[link.target]['name']
             response_to_render = { 'links' : regulatory_links, 'database': dataset }
+            print(response_to_render)
 
             response = render_to_string('NetExplorer/regulatory_links_table.html', response_to_render)
         else:

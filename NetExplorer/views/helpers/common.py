@@ -104,6 +104,15 @@ def condition_sort(x):
         - Number (if any in name)
     Returns tuple (int, int, string)
     """
+    regions = [
+        "Whole",
+        "Head",
+        "PrePhar",
+        "Pharynx",
+        "Trunk",
+        "Tail"
+    ]
+
     if "-" in x.name:
         # Interaction condition
         regex = re.search(r'(\d+).+\-(.+)', x.name)
@@ -125,4 +134,8 @@ def condition_sort(x):
             if regex:
                 return (0, str(regex.group(1)), int(regex.group(2)))
             else:
-                return (0, x.name, 0)
+                try:
+                    section_index = str(regions.index(x.name))
+                except ValueError:
+                    section_index = str(0)
+                return (0, section_index + x.name, 0)

@@ -1,22 +1,28 @@
 {% load staticfiles %} 
 
 {% if links %}
+
+    <div id="download-links-table" class="btn btn-default">Download Csv</div>
+    <div id="send-to-network" class="btn btn-default">Send to Network</div>
+    <br><br>
+
     <table id="planexp-links-table" class="table table-hover">
         <thead>
             <tr>
                 <th colspan="3" class="planexp-links-table-group">Regulator</th>
                 <th colspan="3" class="planexp-links-table-group">Target</th>
-                <th colspan="2" class="planexp-links-table-group">Interaction</th>
+                <th colspan="3" class="planexp-links-table-group">Relationship</th>
             </tr>
             <tr>
-                <th>Regulator id</th>
-                <th>Regulator gene</th>
-                <th class="planexp-links-table-limit">Regulator homolog</th>
-                <th>Target id</th>
-                <th>Target gene</th>
-                <th class="planexp-links-table-limit">Target homolog</th>
-                <th>Score</th>
-                <th>Source</th>
+                <th>Identifier</th>
+                <th>Gene</th>
+                <th class="planexp-links-table-limit">Homolog</th>
+                <th>Identifier</th>
+                <th>Gene</th>
+                <th class="planexp-links-table-limit">Homolog</th>
+                <th title="Relationship confidence (higher is better)">Score</th>
+                <th title="Relationship predicted for both scRNAseq experiments in PlanExp">Multiple Evidences</th>
+                <th title="Reactome pathways that both regulator and target are members of">Reactome</th>
             </tr>
         </thead>
         <tbody>
@@ -93,7 +99,14 @@
                     {% endif %}
                     
                     <td>{{ link.score|floatformat:3  }}</td>
-                    <td>{{ link.source }}</td>
+                    <td>
+                        {% if link.has_multiple_evidences == True %}
+                                <span class="text-success">{{ link.has_multiple_evidences}}</span>
+                            {% else %}
+                                <span class="text-danger">{{ link.has_multiple_evidences}}</span>
+                        {% endif %}
+                    </td>
+                    <td class="reactome-td">{{ link.formatted_reactome|safe }}</td>
                 </tr>
             {% endfor %}
         </tbody>
@@ -102,23 +115,31 @@
     </table>
 
     <script src="{% static 'js/root.js' %}"></script>
+
     <script>
+
+        $("#send-to-network").on("click", function(){
+            sendToNetwork($("#planexp-links-table").DataTable());
+        })
+
+        $("#download-links-table").on("click", function(){
+            downloadCSV($("#planexp-links-table").DataTable());
+        })
+
+
+
+    </script>
+
+    
+    <script>
+
         $(document).ready(function(){
             $("#planexp-links-table").DataTable({
-                "order": [[ 6, "desc" ]],
-                dom: 'Bfrtip',
-                buttons: [
-                    'csvHtml5',
-                    {
-                        text: 'Send to Network viewer',
-                        action: function ( e, dt, node, config ) {
-                            sendToNetwork(dt);
-                        }
-                    }
-                ]
+                "order": [[ 6, "desc" ]]
             });
         });
     </script>
+
 
 {% else %}
    

@@ -2744,3 +2744,8 @@ summary { display: list-item !important; }
 #tutorial-plot-controls-list li {
     margin-bottom: 5px;
 }
+
+.reactome-td {
+    width: 100%;
+    font-size: 10px;
+}

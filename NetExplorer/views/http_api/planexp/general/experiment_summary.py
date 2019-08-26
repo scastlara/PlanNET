@@ -30,8 +30,9 @@ def experiment_summary(request):
             experiment__name=exp_name, 
             cond_type__in=ConditionType.objects.filter(is_interaction=0)
         )
+        
         condition_list = dict()
-        for condition in conditions:
+        for condition in sorted(conditions, key=lambda x: condition_sort(x)):
             if condition.cond_type.name not in condition_list:
                 condition_list[condition.cond_type.name] = []
             condition_list[condition.cond_type.name].append(condition)

@@ -806,11 +806,28 @@ class RegulatoryLinks(models.Model):
     """
     experiment = models.ForeignKey(Experiment, on_delete=models.CASCADE)
     dataset = models.ForeignKey(Dataset, on_delete=models.CASCADE)
-    group = models.IntegerField(max_length=10, default=1)
     regulator = models.CharField(max_length=50)
     target = models.CharField(max_length=50)
-    source = models.CharField(max_length=20)
     score = models.FloatField()
+    reactome = models.TextField()
+    has_multiple_evidences = models.BooleanField()
+
+    #group = models.IntegerField(max_length=10, default=1)
+    #source = models.CharField(max_length=20)
+
+    @property
+    def formatted_reactome(self):
+        if not self.reactome or self.reactome == "NA":
+            return "N.A."
+        reactomes = self.reactome.split(";")
+        formatted_reactomes = []
+        for reactome in reactomes:
+            reactome_match = re.match(r"^(R-HSA-[0-9]+)-(.+)", reactome)
+            formatted_reactomes.append((reactome_match.group(2), reactome_match.group(1)))
+        formatted_reactomes = [ "<span class='reactome'><a href='https://reactome.org/content/detail/R-HSA-3858494' target='_blank' title='{}'>• {}</a></span>".format(r[1], r[0]) for r in formatted_reactomes ]
+        print(formatted_reactomes)
+        return ",<br>".join(formatted_reactomes)
+
 
 
 # ------------------------------------------------------------------------------

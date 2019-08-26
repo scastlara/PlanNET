@@ -726,10 +726,9 @@ var PlanExp = (function() {
      *   Returns:
      *     - Nothing, fills html of table.
      */
-    var getRegulatoryLinksTable = function(containerId, tocId, tableId) {
+    var getRegulatoryLinksTable = function(searchTerm, mode, tableId) {
         var expName  = $("#select-experiment").val();
         var dataset  = $("#select-dataset").val();
-        var group = $("#links-group").val();
         
         $.ajax({
             type: "GET",
@@ -737,18 +736,19 @@ var PlanExp = (function() {
             data: {
                 'experiment'    : expName,
                 'dataset'       : dataset,
-                'group'         : group,
+                'mode'          : mode,
+                'search_term'   : searchTerm,
                 'csrfmiddlewaretoken': csrftoken
             },
             success: function(data) {
                 // Change Exp type
                 if (data != "None") {
-                    $(containerId).show(250);
-                    $(tocId).show(250);
-                    $(tableId).html(data);
+                    $("#" + tableId).html(data);
+                    $(tableId).show(250);
+                    console.log(data);
                 } else {
-                    $(containerId).hide();
-                    $(tocId).hide();
+                    console.log("MEC");
+                    $(tableId).hide(250);
                 }
             },
             error: function(data) {
@@ -819,7 +819,7 @@ var PlanExp = (function() {
             toImport.edges.push({ data: { 
                     source: data[row][0], 
                     target: data[row][3], 
-                    colorEDGE: "blue", 
+                    colorEDGE: "#a5b8ff", 
                     type: "geneLink" 
                 }
             });
@@ -828,6 +828,14 @@ var PlanExp = (function() {
         toImport.nodes = [ ... new Set(toImport.nodes)];
         addJsonToCy(toImport, "cola");
 
+    }
+
+    window.downloadCSV = function(dt) {
+        var data = dt.buttons.exportData().body;
+        data = data.join("\n");
+        data = data.split("• ").join("")
+        var blob = new Blob([data], {type: "text/plain;charset=utf-8"});
+        saveAs(blob, "gene-coexpression-links.csv"); 
     }
 
 
@@ -973,7 +981,9 @@ var PlanExp = (function() {
         // Get regulatory links if they exist
         // only if Single Cell
         if (currentExpType == expType['Single-Cell']) {
-            getRegulatoryLinksTable('#planexp-links', '#planexp-links-toc', '#planexp-links-table-container');
+            $('#planexp-links').show(250);
+            $('#planexp-links-toc').show(250);
+           // getRegulatoryLinksTable('#planexp-links', '#planexp-links-toc', '#planexp-links-table-container');
         } else {
             $('#planexp-links-toc').hide();
             $('#planexp-links').hide();
@@ -1146,10 +1156,6 @@ var PlanExp = (function() {
     });
 
 
-    $("#links-group").on("change", function(){
-        getRegulatoryLinksTable('#planexp-links', '#planexp-links-toc', '#planexp-links-table-container');
-    })
-
     /**
      * Get Gene Expression Plot
      *   Summary:
@@ -1262,6 +1268,25 @@ var PlanExp = (function() {
         plotSampleCount(expName, dataset, geneName, ctype, conditions, plotDiv, loadingDiv)
 
     });
+
+
+    $("#links-submit-btn").on("click", function(){
+        var expName  = $("#select-experiment").val();
+        var dataset  = $("#select-dataset").val();
+        var geneName = $("#links-gene-search").val();
+        var reactomeId = $("#links-reactome-search").val();
+        var mode = $("#link-tabs li.active").attr("id"); 
+
+        if (mode == "links-gene-symbol-li") {
+            console.log(geneName);
+            getRegulatoryLinksTable(geneName, "gene", "planexp-links-table-container");
+        } else {
+            console.log(reactomeId);
+            getRegulatoryLinksTable(reactomeId, "reactome", "planexp-links-table-container");
+        }
+
+    })
+
 
 
     // SCROLL BEHAVIOUR
@@ -1521,6 +1546,31 @@ var PlanExp = (function() {
                 return false;
             }
     });
+
+    // AUTOCOMPLETE FOR LINKS GENE SYMBOL SEARCH
+    $("#links-gene-search").autocomplete({
+        source: function (request, response) { 
+            autocompleteContig(extractLast( request.term ), response);
+        
+        },
+        minLength: 2,
+            focus: function() {
+                // prevent value inserted on focus
+                return false;
+            },
+            select: function( event, ui ) {
+                var terms = splitSearch( this.value );
+                // remove the current input
+                terms.pop();
+                // add the selected item
+                terms.push( ui.item.value );
+                // add placeholder to get the comma-and-space at the end
+                terms.push( "" );
+                this.value = terms.join( ", " );
+                return false;
+            }
+    });
+
     $("#tsne-search").autocomplete({
         source: function (request, response) { 
             autocompleteContig(extractLast( request.term ), response);
