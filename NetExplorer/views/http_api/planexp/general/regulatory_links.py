@@ -31,10 +31,18 @@ def regulatory_links(request):
 
         if mode == "gene":
             # First disambiguate gene names
-            gene_symbols = list()
+            gene_symbols = []
             for gene_name in search_term.split(","):
                 gene_symbols.extend(disambiguate_gene(gene_name, dataset_name))
             regulatory_links = RegulatoryLinks.objects.filter(experiment=experiment, dataset=dataset, regulator__in=gene_symbols) | RegulatoryLinks.objects.filter(experiment=experiment, dataset=dataset, target__in=gene_symbols)
+        else:
+            print("REACTOME....")
+            search_term = [ x.upper() for x in search_term.split(",") ]
+            reactomes = Reactome.objects.filter(experiment=experiment, search_name__in=search_term) | Reactome.objects.filter(experiment=experiment, reactome_id__in=search_term )
+            reactomes = list(reactomes.values_list('id', flat=True))
+
+            regulatory_links = RegulatoryLinks.objects.filter(pk__in=ReactomeLinks.objects.filter(reactome__in=reactomes).values_list('regulatorylink'))
+            print(regulatory_links)
 
         if regulatory_links:
             all_contigs = set()

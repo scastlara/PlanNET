@@ -106,7 +106,20 @@
                                 <span class="text-danger">{{ link.has_multiple_evidences}}</span>
                         {% endif %}
                     </td>
-                    <td class="reactome-td">{{ link.formatted_reactome|safe }}</td>
+
+                    <td class="reactome-td">
+                        {% if link.formatted_reactome != "N.A." %}
+                        
+                            <details>
+                                <summary>Show pathways</summary>
+                                {{ link.formatted_reactome|safe }}
+                            </details>
+                        {% else %}
+                        N.A.
+                        {% endif %}
+                    </td>
+
+
                 </tr>
             {% endfor %}
         </tbody>
@@ -118,14 +131,15 @@
 
     <script>
 
-        $("#send-to-network").on("click", function(){
-            sendToNetwork($("#planexp-links-table").DataTable());
-        })
+        $(document).ready(function(){
+            $("#send-to-network").on("click", function(){
+                sendToNetwork(window.linksTable);
+            })
 
-        $("#download-links-table").on("click", function(){
-            downloadCSV($("#planexp-links-table").DataTable());
-        })
-
+            $("#download-links-table").on("click", function(){
+                downloadCSV(window.linksTable);
+            })
+        });
 
 
     </script>
@@ -137,7 +151,9 @@
             $("#planexp-links-table").DataTable({
                 "order": [[ 6, "desc" ]]
             });
+            window.linksTable = $("#planexp-links-table").DataTable();
         });
+
     </script>
 
 

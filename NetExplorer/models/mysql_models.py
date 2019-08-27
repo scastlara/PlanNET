@@ -830,6 +830,37 @@ class RegulatoryLinks(models.Model):
 
 
 
+
+# ------------------------------------------------------------------------------
+class Reactome(models.Model):
+    """
+    Class for reactome pathways
+
+    Attributes:
+        name: Name of the pathway.
+        search_name: Name of the pathway in upper case, for indexing purposes.
+        reactome_id: Reactome identifier code.
+        experiment: Experiment in which this reactome appears.
+    """
+    experiment = models.ForeignKey(Experiment, on_delete=models.CASCADE)
+    name = models.CharField(max_length=256)
+    search_name = models.CharField(max_length=256)
+    reactome_id = models.CharField(max_length=50)
+
+    def __str__(self):
+        name_str  = self.reactome_id + " - "
+        name_str += self.name + " - "
+        name_str += str(self.experiment)
+        return name_str
+
+
+# ------------------------------------------------------------------------------
+class ReactomeLinks(models.Model):
+    reactome = models.ForeignKey(Reactome, on_delete=models.CASCADE)
+    regulatorylink = models.ForeignKey(RegulatoryLinks, on_delete=models.CASCADE)
+
+
+
 # ------------------------------------------------------------------------------
 class ClusterMarkers(models.Model):
     """

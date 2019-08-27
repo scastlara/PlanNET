@@ -1571,6 +1571,29 @@ var PlanExp = (function() {
             }
     });
 
+
+    $("#links-reactome-search").autocomplete({
+        source: function (request, response) {
+            autocompleteReactome(extractLast(request.term), response);
+        },
+        minLength: 6,
+        focus: function() {
+            // prevent value inserted on focus
+            return false;
+        },
+        select: function( event, ui ) {
+            var terms = splitSearch( this.value );
+            // remove the current input
+            terms.pop();
+            // add the selected item
+            terms.push( ui.item.value );
+            // add placeholder to get the comma-and-space at the end
+            terms.push( "" );
+            this.value = terms.join( ", " );
+            return false;
+        }
+    });
+
     $("#tsne-search").autocomplete({
         source: function (request, response) { 
             autocompleteContig(extractLast( request.term ), response);

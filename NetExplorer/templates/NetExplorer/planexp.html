@@ -215,52 +215,7 @@
 
 
 
-            <!-- Gene Co-Expression-->
-            <div id="planexp-gene-coexpression" class="planexp-card">
-                <h2 id="planexp-title">Gene Co-expression</h2>
-                <hr class="planexp-rule">
-                
-                <blockquote>
-                    Make a scatter plot with the expression of two genes across the different samples in the experiment.
-                    <br>
-                    Color each point (sample) by the desired condition type.
-                </blockquote>
-
-
-                <div class="gene-expression-search-container">
-                    <label for="genesymbol-1">Gene Symbol 1:</label>
-                    <input type="text" id="gene-coexpression-1" class="form-control" name="genesymbol-1" placeholder="Enter Gene Symbol 1">
-                    <br><br>
-                    <label for="genesymbol-2">Gene Symbol 2:</label>
-                    <input type="text" id="gene-coexpression-2" class="form-control" name="genesymbol-2" placeholder="Enter Gene Symbol 2">
-                    <br><br>
-
-
-                    
-                    <label for="coexpression-ctype">Color by:</label><br>
-                    <div class="input-group">
-                        <select id="coexpression-ctype" name="coexpression-ctype" class="selectpicker ctype-select" title="Select Condition Type">
-                            <option value="Experimental" selected>Experimental</option>
-                        </select>
-
-                        <button id="plot-coexpression-btn" type="submit" value=" Send" class="btn btn-danger" id="submit">Plot co-expression</button>
-
-                    </div>
-                </div>
-
-
-                <div id="plot-container">
-                    <div id="coexpression-plot-genenotfound">
-                        <span class="glyphicon glyphicon-warning-sign"></span>
-                        Gene/Symbol not found
-                    </div>
-                    <div id="coexpression-plot-loading">
-                            <img class="planexp-loading-img" src="{% static 'Images/loading-planexp.gif' %}"/>
-                    </div>
-                    <div id="coexpression-plot">
-                    </div>
-                </div>
-            </div>
+            
 
 
             <!-- tSNE plot -->
@@ -344,13 +299,58 @@
                 </div>
                 <br>
 
-
-                
-
-                
-               
-
             </div> <!-- tSNE plot-->
+
+
+            <!-- Gene Co-Expression-->
+            <div id="planexp-gene-coexpression" class="planexp-card">
+                <h2 id="planexp-title">Gene Co-expression</h2>
+                <hr class="planexp-rule">
+                
+                <blockquote>
+                    Make a scatter plot with the expression of two genes across the different samples in the experiment.
+                    <br>
+                    Color each point (sample) by the desired condition type.
+                </blockquote>
+
+
+                <div class="gene-expression-search-container">
+                    <label for="genesymbol-1">Gene Symbol 1:</label>
+                    <input type="text" id="gene-coexpression-1" class="form-control" name="genesymbol-1" placeholder="Enter Gene Symbol 1">
+                    <br><br>
+                    <label for="genesymbol-2">Gene Symbol 2:</label>
+                    <input type="text" id="gene-coexpression-2" class="form-control" name="genesymbol-2" placeholder="Enter Gene Symbol 2">
+                    <br><br>
+
+
+                    
+                    <label for="coexpression-ctype">Color by:</label><br>
+                    <div class="input-group">
+                        <select id="coexpression-ctype" name="coexpression-ctype" class="selectpicker ctype-select" title="Select Condition Type">
+                            <option value="Experimental" selected>Experimental</option>
+                        </select>
+
+                        <button id="plot-coexpression-btn" type="submit" value=" Send" class="btn btn-danger" id="submit">Plot co-expression</button>
+
+                    </div>
+                </div>
+
+
+                <div id="plot-container">
+                    <div id="coexpression-plot-genenotfound">
+                        <span class="glyphicon glyphicon-warning-sign"></span>
+                        Gene/Symbol not found
+                    </div>
+                    <div id="coexpression-plot-loading">
+                            <img class="planexp-loading-img" src="{% static 'Images/loading-planexp.gif' %}"/>
+                    </div>
+                    <div id="coexpression-plot">
+                    </div>
+                </div>
+            </div>
+
+
+
 
             <div id="planexp-sample-counter" class="planexp-card">
                 <h2 id="planexp-title">Sample Quantification</h2>
@@ -435,7 +435,7 @@
                 <blockquote>
                     Predicted gene co-expression network for this experiment using the program <a href="https://github.com/tmoerman/arboreto/" target="_blank">GRNBoost</a> of the <a href="https://www.nature.com/articles/nmeth.4463" target="_blank"> SCENIC pipeline</a>.
                     <br><br>
-                    Possible regulators were selected by Gene Ontology (those genes having a GO accession indicating that they are transcription factors).
+                    Possible regulators were selected by Gene Ontology (those genes having a GO accession indicating that they may be transcription factors).
                     <br><br>
                     Pairs of genes appearing in the network indicate that <b>when the expression of the "regulator" changes in a cell, the expression of the "target" is also affected</b>.
                     <br><br>
@@ -476,8 +476,8 @@
                     <!-- Reactome Tab -->
                     <div id="links-reactome-tab" class="tab-pane fade">
                          <div class="input-group links-reactome-search-container">
-                            <label for="reactome">Reactome ID(s):</label>
-                            <input type="text" id="links-reactome-search" class="form-control" name="reactome" placeholder="Enter Reactome ID(s)">
+                            <label for="reactome">Reactome ID(s) or name(s):</label>
+                            <input type="text" id="links-reactome-search" class="form-control" name="reactome" placeholder="Enter Reactome ID(s) or name(s)">
                         </div>
                     </div>
 
@@ -516,7 +516,7 @@
                     <br>
                     Use the import option to use a network from <a href="{% url 'net_explorer' %}" target="_blank">PlanNET Net Explorer</a>. 
                     <br>
-                    Alternatively, if Gene Regulation Interactions have been predicted for this experiment, use the button "Send to Network viewer" located in the Regulatory Interactions section.
+                    Alternatively, if gene co-expression relationships have been predicted for this experiment, use the button "Send to Network viewer" located in the Gene Co-expression network section.
                     <br>
                     The network can be edited using our built in Network editor, so that known interactions can be added directly.
                 </blockquote>
