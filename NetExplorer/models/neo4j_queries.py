@@ -325,6 +325,19 @@ SMESGENE_QUERY = """
            n.strand as strand
 """
 
+
+SMESGENE_NAME_QUERY = """
+    MATCH (n:Smesgene)
+    WHERE n.name = "%s"
+    RETURN n.symbol as symbol,
+           n.name as name,
+           n.start as start,
+           n.end as end,
+           n.sequence as sequence,
+           n.chromosome as chromosome,
+           n.strand as strand
+"""
+
 SMESGENE_GET_CONTIGS_QUERY = """
     MATCH (n:Smesgene)-[r:HAS_TRANSCRIPT]->(m:%s)
     WHERE  n.symbol = "%s"

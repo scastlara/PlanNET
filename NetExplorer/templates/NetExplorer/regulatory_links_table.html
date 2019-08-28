@@ -129,32 +129,7 @@
 
     <script src="{% static 'js/root.js' %}"></script>
 
-    <script>
-
-        $(document).ready(function(){
-            $("#send-to-network").on("click", function(){
-                sendToNetwork(window.linksTable);
-            })
-
-            $("#download-links-table").on("click", function(){
-                downloadCSV(window.linksTable);
-            })
-        });
-
-
-    </script>
-
     
-    <script>
-
-        $(document).ready(function(){
-            $("#planexp-links-table").DataTable({
-                "order": [[ 6, "desc" ]]
-            });
-            window.linksTable = $("#planexp-links-table").DataTable();
-        });
-
-    </script>
 
 
 {% else %}

@@ -87,6 +87,9 @@ class Node(object):
             json_data   = json.dumps(all_domains)
             return json_data
 
+    def __str__(self):
+        return "{} - {}".format(self.symbol, self.database)
+
 # ------------------------------------------------------------------------------
 class Homology(object):
     """
@@ -252,6 +255,8 @@ class Domain(object):
             self.identifier = results[0]['identifier']
             self.description = results[0]['description']
             self.mlength = results[0]['mlength']
+        else:
+            raise exceptions.NodeNotFound(identifier, "Pfam")
 
 
 # ------------------------------------------------------------------------------
@@ -1472,6 +1477,7 @@ class GraphCytoscape(object):
             symbols (`list` of `str`): List of strings with gene/contig/pfam/go/kegg symbols.
             database (str): String with database.
         """
+        symbols = [ symbol for symbol in symbols if symbol.strip() ]
         for symbol in symbols:
             symbol = symbol.replace(" ", "")
             symbol = symbol.replace("'", "")
@@ -1479,7 +1485,6 @@ class GraphCytoscape(object):
             node_objects = []
             try:
                 gene_search = GeneSearch(symbol, database)
-
                 if database == "Human":
                     node_objects = gene_search.get_human_genes()
                 elif database == "Smesgene":
@@ -1943,6 +1948,11 @@ class GeneSearch(object):
                 source_nodes = WildCard(self.sterm, self.sterm_database).get_human_genes()
             else:
                 source_nodes = self._get_human_or_pfam()
+            try:
+                source_nodes.append(PlanarianGene.from_gene_name(self.sterm))
+            except exceptions.NodeNotFound:
+                pass
+
         else:
             # We already have the planarian contig by identifier,
             # no need to try to retrieve it from neo4j connections.
@@ -1978,6 +1988,12 @@ class GeneSearch(object):
                 human_nodes = self._get_human_or_pfam()
             for hnode in human_nodes:
                 planarian_genes.extend(hnode.get_planarian_genes(PlanarianGene.preferred_database))
+            
+            try:
+                planarian_genes.append(PlanarianGene.from_gene_name(self.sterm))
+            except exceptions.NodeNotFound:
+                pass
+            
         elif self.sterm_database == "PFAM":
             planarian_nodes = Domain(self.sterm).get_planarian_contigs(PlanarianGene.preferred_database)
             for contig in planarian_nodes:
@@ -2031,21 +2047,29 @@ class GeneSearch(object):
         """
         all_results = []
 
+        self.infer_symbol_database()
+
         # Get Planarian Genes
         self.database = "Smesgene"
         all_results.extend(self.get_planarian_genes())
 
-        # Get Planarian Contigs
-        datasets = Dataset.objects.all()
-        for dataset in datasets:
-            try:
-                self.database = dataset.name
-                contigs = self.get_planarian_contigs()
-                if contigs:
-                    all_results.extend(contigs)
-            except exceptions.NodeNotFound:
-                continue
-        self.database = "ALL"
+
+        if self.sterm_database not in set(["Human", "PFAM", "Smesgene", "GO"]):
+            # Get only from ONE database (the one the search term belongs to)
+            self.database = self.sterm_database
+            all_results.append(PlanarianContig(self.sterm, self.sterm_database))
+        else:
+            # Get from ALL databases.
+            datasets = Dataset.objects.all()
+            for dataset in datasets:
+                try:
+                    self.database = dataset.name
+                    contigs = self.get_planarian_contigs()
+                    if contigs:
+                        all_results.extend(contigs)
+                except exceptions.NodeNotFound:
+                    continue
+            self.database = "ALL"
         return all_results
 
     def _get_human_or_pfam(self):
@@ -2057,11 +2081,19 @@ class GeneSearch(object):
             `list` of `Node`: List of `Node` of type :obj:`HumanNode` and/or :obj:`Domain`.
         """
         matching_nodes = []
+
         try:
-            matching_nodes.append(HumanNode(self.sterm.upper(), self.sterm_database))
+            # Human Gene
+            human_gene = HumanNode(self.sterm.upper(), self.sterm_database)
+            matching_nodes.append(human_gene)
         except exceptions.NodeNotFound:
-            # Not a Human Node symbol, may be a PFAM domain symbol.
-            matching_nodes.append(Domain(identifier=self.sterm))
+            pass
+        
+        try:
+            domain = Domain(identifier=self.sterm)
+            matching_nodes.append(domain)
+        except exceptions.NodeNotFound:
+            pass
         return matching_nodes
 
 class PlanarianGene(Node):
@@ -2125,6 +2157,40 @@ class PlanarianGene(Node):
             bool: True if symbol is a valid gene identifier. False otherwise.
         """
         return re.match(cls.smesgene_regexp, symbol.upper())
+
+    @classmethod
+    def from_gene_name(cls, name):
+        """
+        Returns a PlanarianGene by looking for gene name instead of identifier.
+
+        Args:
+            name (str): Planarian gene name (e.g.: WNT1)
+        
+        Returns:
+            PlanarianGene object.
+
+        Raises:
+            NodeNotFound when planarian gene does not exist.
+        """
+        query = neoquery.SMESGENE_NAME_QUERY % (name.upper())
+        results = GRAPH.run(query)
+        results = results.data()
+        if results:
+            planarian_gene = cls(
+                symbol=results[0]['symbol'],
+                database="Smesgene",
+                name=results[0]['name'],
+                sequence=results[0]['sequence'],
+                chromosome=results[0]['chromosome'],
+                strand=results[0]['strand'],
+                start=results[0]['start'],
+                end=results[0]['end'],
+                query=False
+            )
+            return planarian_gene
+        else:
+            raise exceptions.NodeNotFound(name, "Smesgene")
+
 
     def __query_node(self):
         """

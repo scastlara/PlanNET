@@ -716,7 +716,6 @@ var PlanExp = (function() {
         });
     }
 
-
     /**
      * getRegulatoryLinksTable
      *   Summary:
@@ -743,12 +742,27 @@ var PlanExp = (function() {
             success: function(data) {
                 // Change Exp type
                 if (data != "None") {
-                    $("#" + tableId).html(data);
-                    $(tableId).show(250);
-                    console.log(data);
+                    $("#" + tableId).html(data).promise().done(function(){
+                        $("#planexp-links-table").DataTable().destroy();
+                        $("#planexp-links-table").DataTable({
+                            "order": [[ 6, "desc" ]]
+                        });
+                        window.linksTable = $("#planexp-links-table").DataTable();
+    
+                        $("#send-to-network").on("click", function(){
+                            sendToNetwork(window.linksTable);
+                        });
+            
+                        $("#download-links-table").on("click", function(){
+                            downloadCSV(window.linksTable);
+                        });
+                        $("#" + tableId).show(250);
+                    });
+                    
+                    
+                    
                 } else {
-                    console.log("MEC");
-                    $(tableId).hide(250);
+                    $("#" + tableId).hide(250);
                 }
             },
             error: function(data) {
@@ -800,6 +814,14 @@ var PlanExp = (function() {
     }
 
 
+    function stripHtml(html) {
+        var tmp = document.createElement("DIV");
+        tmp.innerHTML = html;
+        tmp.textContent = tmp.textContent.split("\n").join("");
+        tmp.textContent = tmp.textContent.replace("Show pathways", "");
+        return tmp.textContent.trim() || tmp.innerText.trim() || "";
+    }
+
     /**
      * sendToNetwork
      *   Summary:
@@ -811,19 +833,20 @@ var PlanExp = (function() {
      */
     window.sendToNetwork = function(dt) {
         $.scrollTo("#planexp-network", 500);
-        var data = dt.buttons.exportData().body;
         var toImport = { 'nodes': [], 'edges': [] };
-        for (var row in data) {
-            toImport.nodes.push({ data: { id: data[row][0], name: data[row][0], homolog: data[row][2], colorNODE: "#404040" } });
-            toImport.nodes.push({ data: { id: data[row][3], name: data[row][3], homolog: data[row][5], colorNODE: "#404040" } });
+        dt.rows().eq(0).each( function ( index ) {
+            var row = dt.row( index );
+            var data = row.data();
+            toImport.nodes.push({ data: { id: stripHtml(data[0]), name: stripHtml(data[0]), homolog: stripHtml(data[2]), colorNODE: "#404040" } });
+            toImport.nodes.push({ data: { id: stripHtml(data[3]), name: stripHtml(data[3]), homolog: stripHtml(data[5]), colorNODE: "#404040" } });
             toImport.edges.push({ data: { 
-                    source: data[row][0], 
-                    target: data[row][3], 
+                    source: stripHtml(data[0]), 
+                    target: stripHtml(data[3]), 
                     colorEDGE: "#a5b8ff", 
                     type: "geneLink" 
                 }
             });
-        }
+        });
 
         toImport.nodes = [ ... new Set(toImport.nodes)];
         addJsonToCy(toImport, "cola");
@@ -831,9 +854,11 @@ var PlanExp = (function() {
     }
 
     window.downloadCSV = function(dt) {
-        var data = dt.buttons.exportData().body;
+        var data = dt.data().toArray();
+        data = data.map( function(row) { return  row.map(stripHtml) });
         data = data.join("\n");
-        data = data.split("• ").join("")
+        data = data.split("• ").join("");
+        
         var blob = new Blob([data], {type: "text/plain;charset=utf-8"});
         saveAs(blob, "gene-coexpression-links.csv"); 
     }
