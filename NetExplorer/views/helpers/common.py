@@ -86,9 +86,11 @@ def disambiguate_gene(gene_name, dataset):
     gene_graph = GraphCytoscape()
     gene_symbols = list()
     try:
+        print(dataset)
         gene_graph.new_nodes([gene_name], dataset)
         gene_symbols = [ gene.symbol for gene in list(gene_graph.nodes) ]
     except Exception as err:
+        print("EXCEPTION")
         gene_symbols = [ gene_name ]
     if not gene_symbols:
         gene_symbols = [gene_name]

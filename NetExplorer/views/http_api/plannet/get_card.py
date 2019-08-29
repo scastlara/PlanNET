@@ -41,10 +41,10 @@ def get_card(request, symbol=None, database=None):
         database  = request.GET['targetDB']
         template  = ""
     try:
-        gsearch = GeneSearch(symbol, database)
+        
         if database == "Human":
             template = "NetExplorer/human_card.html"
-            card_node = gsearch.get_human_genes()[0]
+            card_node = HumanNode(symbol, database)
             homologs = card_node.get_homologs()
             card_node.get_summary()
             all_databases = Dataset.get_allowed_datasets(request.user)
@@ -56,7 +56,7 @@ def get_card(request, symbol=None, database=None):
                     sorted_homologs.append((db.name, list()))
         elif database == "Smesgene":
             template = "NetExplorer/smesgene_card.html"
-            card_node = gsearch.get_planarian_genes()[0]
+            card_node = PlanarianGene(symbol, database)
             contigs = card_node.get_planarian_contigs()
             best_contig = card_node.get_best_transcript()
             graph = GraphCytoscape()
@@ -71,6 +71,7 @@ def get_card(request, symbol=None, database=None):
                 graph.add_elements(edges)
         else:
             template = "NetExplorer/contig_card.html"
+            gsearch = GeneSearch(symbol, database)
             card_node = gsearch.get_planarian_contigs()[0]
             card_node.get_summary()
             card_node.get_neighbours()

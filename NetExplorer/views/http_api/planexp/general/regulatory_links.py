@@ -34,15 +34,14 @@ def regulatory_links(request):
             gene_symbols = []
             for gene_name in search_term.split(","):
                 gene_symbols.extend(disambiguate_gene(gene_name, dataset_name))
+            print(gene_symbols)
             regulatory_links = RegulatoryLinks.objects.filter(experiment=experiment, dataset=dataset, regulator__in=gene_symbols) | RegulatoryLinks.objects.filter(experiment=experiment, dataset=dataset, target__in=gene_symbols)
         else:
-            print("REACTOME....")
             search_term = [ x.upper() for x in search_term.split(",") ]
             reactomes = Reactome.objects.filter(experiment=experiment, search_name__in=search_term) | Reactome.objects.filter(experiment=experiment, reactome_id__in=search_term )
             reactomes = list(reactomes.values_list('id', flat=True))
 
             regulatory_links = RegulatoryLinks.objects.filter(pk__in=ReactomeLinks.objects.filter(reactome__in=reactomes).values_list('regulatorylink'))
-            print(regulatory_links)
 
         if regulatory_links:
             all_contigs = set()
@@ -66,8 +65,6 @@ def regulatory_links(request):
                     link.target_gene = genes[link.target]['gene']
                     link.target_name = genes[link.target]['name']
             response_to_render = { 'links' : regulatory_links, 'database': dataset }
-            print(response_to_render)
-
             response = render_to_string('NetExplorer/regulatory_links_table.html', response_to_render)
         else:
             response = None

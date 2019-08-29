@@ -8,6 +8,7 @@ urlpatterns = [
     url(r'^gene_search', views.gene_search, name="gene_search"),
     url(r'^net_explorer',  views.net_explorer,  name="net_explorer" ),
     url(r'^planexp',  views.planexp,  name="planexp" ),
+    url(r'^send_to_planexp',  views.planexp_send_data,  name="planexp_send_data" ),
     url(r'^gene_card/(?P<database>[0-9\w]+)/(?P<symbol>[0-9\w_\.\/\#\|\%]+)$', views.get_card, name = 'card_fullscreen'),
     url(r'^get_fasta',     views.get_fasta,       name="get_fasta"),
     url(r'^info_card',     views.get_card,        name="get_card"),
@@ -40,4 +41,5 @@ urlpatterns = [
     url(r'^cluster_markers', views.cluster_markers, name="cluster_markers"),
     url(r'^get_goea', views.get_goea, name="get_goea"),
     url(r'^filter_network', views.filter_network, name="filter_network"),
+
 ]

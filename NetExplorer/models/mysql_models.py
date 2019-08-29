@@ -825,7 +825,6 @@ class RegulatoryLinks(models.Model):
             reactome_match = re.match(r"^(R-HSA-[0-9]+)-(.+)", reactome)
             formatted_reactomes.append((reactome_match.group(2), reactome_match.group(1)))
         formatted_reactomes = [ "<span class='reactome'><a href='https://reactome.org/content/detail/R-HSA-3858494' target='_blank' title='{}'>• {}</a></span>".format(r[1], r[0]) for r in formatted_reactomes ]
-        print(formatted_reactomes)
         return ",<br>".join(formatted_reactomes)
 
 

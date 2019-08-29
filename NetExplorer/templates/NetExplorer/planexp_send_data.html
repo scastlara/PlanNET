@@ -1,0 +1,89 @@
+{% extends 'NetExplorer/base.html' %}
+{% load static %}
+{% load staticfiles %}
+
+{% block title %}- PlanExp - Send your Data{% endblock title %}
+
+
+{% block content %}
+
+<div class="panel panel-planexp">
+    <div class="panel-heading">
+        <div class="row row-eq-height">
+            <div class="col-sm-1 blast-icon-container">
+                <img class="blast-icon-inside" src="{% static 'Images/planexp-icon-transparent.png' %}"/>
+            </div>
+            <div class="col-sm-11 blast-title">
+                <h1>Send your data to PlanExp</h1>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel-body">
+
+        <div class="planexp-card">
+            <form>
+                <label for="mail-data">E-mail contact</label><br>
+                <input type="text" class="form-control" name="mail-data" id="mail-data" placeholder="E-mail to contact you">
+                <br>
+
+                <label for="title-data">Experiment title</label><br>
+                <input type="text" class="form-control" name="title-data" id="title-data" placeholder="Name of your experiment in the format: (Year Last-Author Descriptor) e.g.: 2015 Smith Time-course">
+                <br>
+
+                <label for="publication-data">Publication URL (if any)</label><br>
+                <input type="text" class="form-control" name="publication-data" id="publication-data" placeholder="Direct link to publication in journal or bioarxiv">
+                <br>
+
+                <label for="link-to-data">Data URL</label><br>
+                <input type="text" class="form-control" name="link-to-data" id="link-to-data" placeholder="Link to download data">
+                
+                <br>
+                <details>
+                    <summary>Data Instructions</summary>
+                    
+                    <br>
+                    We require at least two three files:
+
+                    <ul>
+                        <li>File with normalized expression data; rows: genes, columns: samples</li>
+                        <li>File with conditions; rows: conditions, columns: samples)</li>
+                        <li>File with differential gene expression. <a href="https://github.com/scastlara/PlanExp-protocols" target="_blank">example</a></li>
+                    </ul>
+                </details>
+                <br>
+
+                <label for="description-data">Description/Observations</label><br>
+                <textarea class="form-control" name="description-data" id="description-data" placeholder="Include all the information you can give, e.g.: normalization methods, units of expression values, p-value cut-offs, links to the protocol, questions and doubts etc. &#10;We will contact you if we need anything before uploading your data."></textarea>
+                <br>
+
+                <label for="description-data">Permissions</label><br>
+                <label class="radio-inline"><input type="radio" name="public-data" checked>Private</label>
+                <label class="radio-inline"><input type="radio" name="public-data">Public</label>
+
+                <br><br>
+                <details>
+                <summary>Note:</summary>
+
+                    <ul>
+                        <li>Even if you select the "Public" option, we will first upload the experiment as a private experiment and give you a link and a user to explore the data. </li>
+                        <li>If everything is correct, then we will make the experiment public. </li>
+                        <li>If you select the "Private" option, the data will not be made public unless you tell us.</li>
+                    </ul>
+                </detail>
+                <br>
+
+            </form>
+        </div>
+    </div>
+
+</div>
+
+{% endblock content %}
+
+
+
+{% block scripts %}
+
+
+{% endblock scripts %}

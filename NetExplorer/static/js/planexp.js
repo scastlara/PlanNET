@@ -745,7 +745,7 @@ var PlanExp = (function() {
                     $("#" + tableId).html(data).promise().done(function(){
                         $("#planexp-links-table").DataTable().destroy();
                         $("#planexp-links-table").DataTable({
-                            "order": [[ 6, "desc" ]]
+                            "order": [[ 7, "desc" ], [ 6, "desc" ]]
                         });
                         window.linksTable = $("#planexp-links-table").DataTable();
     

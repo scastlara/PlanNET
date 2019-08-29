@@ -1949,7 +1949,7 @@ class GeneSearch(object):
             else:
                 source_nodes = self._get_human_or_pfam()
             try:
-                source_nodes.append(PlanarianGene.from_gene_name(self.sterm))
+                source_nodes.extend(PlanarianGene.from_gene_name(self.sterm))
             except exceptions.NodeNotFound:
                 pass
 
@@ -1990,7 +1990,7 @@ class GeneSearch(object):
                 planarian_genes.extend(hnode.get_planarian_genes(PlanarianGene.preferred_database))
             
             try:
-                planarian_genes.append(PlanarianGene.from_gene_name(self.sterm))
+                planarian_genes.extend(PlanarianGene.from_gene_name(self.sterm))
             except exceptions.NodeNotFound:
                 pass
             
@@ -2175,19 +2175,22 @@ class PlanarianGene(Node):
         query = neoquery.SMESGENE_NAME_QUERY % (name.upper())
         results = GRAPH.run(query)
         results = results.data()
+        planarian_genes = []
         if results:
-            planarian_gene = cls(
-                symbol=results[0]['symbol'],
-                database="Smesgene",
-                name=results[0]['name'],
-                sequence=results[0]['sequence'],
-                chromosome=results[0]['chromosome'],
-                strand=results[0]['strand'],
-                start=results[0]['start'],
-                end=results[0]['end'],
-                query=False
-            )
-            return planarian_gene
+            for result in results:
+                planarian_gene = cls(
+                    symbol=result['symbol'],
+                    database="Smesgene",
+                    name=result['name'],
+                    sequence=result['sequence'],
+                    chromosome=result['chromosome'],
+                    strand=result['strand'],
+                    start=result['start'],
+                    end=result['end'],
+                    query=False
+                )
+                planarian_genes.append(planarian_gene)
+            return planarian_genes
         else:
             raise exceptions.NodeNotFound(name, "Smesgene")
 
@@ -2285,10 +2288,8 @@ class PlanarianGene(Node):
                 prednode.length = contig['length']
                 prednodes.append(prednode)
         else:
-            symbol_err = "Transcripts of %s" % self.symbol
             if database is None:
                 database = "All"
-            raise exceptions.NodeNotFound(symbol_err, database)
         return prednodes
 
     def __hash__(self):
