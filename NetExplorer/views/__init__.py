@@ -11,6 +11,8 @@ from .pages.net_explorer import *
 from .pages.logout import *
 from .pages.path_finder import *
 from .pages.planexp import *
+from .pages.planexp_send_data import *
+
 
 # GENERAL PLANNET HTTP API
 from .http_api.plannet.downloader import *

@@ -22,7 +22,31 @@
     <div class="panel-body">
 
         <div class="planexp-card">
-            <form>
+
+            {% if missing %}
+                <div class="panel panel-danger">
+                    <div class="panel-heading">Missing fields!</div>
+                    <div class="panel-body">
+                        <ul>
+                            {% for field in missing %}
+                                <li>{{ field }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            {% endif %}
+
+            {% if ok %}
+                <div class="panel panel-success">
+                    <div class="panel-heading">Data sent successfully!</div>
+                    <div class="panel-body">
+                        Your experiment <b>{{ title }}</b> has been sent. You will receive an email shortly.
+                    </div>
+                </div>
+            {% endif %}
+
+
+            <form method="POST">{% csrf_token %}
                 <label for="mail-data">E-mail contact</label><br>
                 <input type="text" class="form-control" name="mail-data" id="mail-data" placeholder="E-mail to contact you">
                 <br>
@@ -70,9 +94,11 @@
                         <li>If everything is correct, then we will make the experiment public. </li>
                         <li>If you select the "Private" option, the data will not be made public unless you tell us.</li>
                     </ul>
-                </detail>
+                </details>
+                <br>
                 <br>
 
+                <button type="submit" class="btn btn-danger">Submit</button>
             </form>
         </div>
     </div>

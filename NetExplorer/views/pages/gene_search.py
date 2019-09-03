@@ -1,6 +1,32 @@
 from ..helpers.common import *
 
-def sort_results(datasets, results):
+
+def results_order(result, results_length, search_symbols, dataset_order):
+
+    # Search symbols to uppercase
+    search_symbols = [ symbol.upper() for symbol in search_symbols ]
+
+    # Initialize key
+    key = [dataset_order.index(result.database), str(results_length), "z", "z", result.symbol]
+
+    # Check optional fields  
+    if hasattr(result, 'name') and result.name:
+        try:
+            key[1] = str(search_symbols.index(result.name))
+        except ValueError:
+            # Name is not in search terms, leave default (last) place.
+            pass
+        key[3] = result.name
+    
+    if hasattr(result, "homolog") and result.homolog:
+        try:
+            key[2] = str(search_symbols.index(result.homolog.human.symbol))
+        except ValueError:
+            pass
+    print(key)
+    return key
+
+def sort_results(datasets, results, search_symbols):
     """
     Sorts gene/node results by:
         1- Dataset (Smesgene - Human - AllContigs by year)
@@ -13,7 +39,7 @@ def sort_results(datasets, results):
         results (:obj:`GraphCytoscape`): GraphCytoscape of search results to sort.
     
     Returns:
-        `list` of `tuple`: Lists of tuples. Each tuple has (`dataset`, `node name`, `node symbol`).
+        `list` of `tuple`: Lists of tuples. Each tuple has (`dataset`, `name order`, `node name`, `node symbol`).
     """
     dataset_names = set([ dat.name for dat in datasets ])
     dataset_names.add("Smesgene")
@@ -22,12 +48,16 @@ def sort_results(datasets, results):
     dataset_order = [ dat.name for dat in datasets ]
     dataset_order.insert(0, 'Smesgene')
     dataset_order.insert(1, 'Human')
+
     # Remove results from not allowed datasets
     results = [ res for res in list(results.nodes) if res.database in dataset_names ]
+
+
+
     # Sort the thing
     sorted_results = sorted(
         results, 
-        key= lambda a: (dataset_order.index(a.database), a.name, a.symbol) if hasattr(a, 'name') and a.name else (dataset_order.index(a.database), "a", a.symbol)
+        key= lambda a: results_order(a, len(results), search_symbols, dataset_order)
     )
     return sorted_results
 
@@ -116,6 +146,6 @@ def gene_search(request):
             if not nodes_graph:
                 response['search_error'] = 1
             else:
-                response['res'] = sort_results(response['databases'], nodes_graph)
+                response['res'] = sort_results(response['databases'], nodes_graph, symbols)
                 response['summary'] = get_search_summary(response['databases'], response['res'])
     return render(request, 'NetExplorer/gene_search.html', response)
