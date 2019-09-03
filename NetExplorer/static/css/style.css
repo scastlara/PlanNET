@@ -2770,3 +2770,15 @@ summary { display: list-item !important; }
     border-style: solid;
     border-width: 2px;
 }
+
+#send-to-planexp-submit {
+    width: 100px;
+}
+
+#send-to-planexp-error1 {
+    display: none;
+}
+
+#send-to-planexp-error2 {
+    display: none;
+}

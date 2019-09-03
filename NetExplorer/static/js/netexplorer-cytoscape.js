@@ -189,7 +189,15 @@ $('#change-labels input').change(function() { changeLabels(cy) });
 
     $("#send-to-planexp-submit").on("click", function(){
         $("#graph-to-send").val(JSON.stringify(cy.json().elements));
-        $("#send-to-planexp-form").submit(); 
+        if (! $("#select-experiment").val() || ! $("#select-dataset").val()) {
+            $("#send-to-planexp-error1").show(250);
+            setTimeout(function(){$("#send-to-planexp-error1").hide(250); }, 3000);
+        } else if (! cy.nodes().length ) {
+            $("#send-to-planexp-error2").show(250);
+            setTimeout(function(){$("#send-to-planexp-error2").hide(250); }, 3000);
+        } else {
+            $("#send-to-planexp-form").submit(); 
+        }
     });
 
     $("#send-to-planexp-cancel").on("click", function(){
