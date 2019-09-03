@@ -102,6 +102,39 @@
             </div>
         </div>
 
+
+        <!-- SEND TO PLANEXP DIALOG DIV -->
+        <div id="send-to-planexp-dialog">
+            <h4>Send to PlanExp</h4>
+            <hr class="planexp-rule">
+
+            <form id="send-to-planexp-form" target="_blank" name="send-to-planexp-form" class= "form-inline" method="POST" action="{% url 'planexp' %}">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <select id="select-experiment" name="experiment" class="selectpicker" title="Select Experiment">
+                            <option value="" disabled selected>Select experiment</option>
+                            {% for exp in experiments_planexp %}
+                            <option value="{{ exp.name }}">{{ exp.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <select id="select-dataset" name="dataset" class="selectpicker" title="Select dataset">
+                            <option value="" disabled selected>Select dataset</option>
+                        </select>
+                    </div>
+                    <input type="hidden" id="graph-to-send" name="graph-to-send"></input>
+            </form>
+
+            <br><br>
+            <button id="send-to-planexp-cancel" class="btn btn-default">Cancel</button>
+            <button id="send-to-planexp-submit" class="btn btn-danger">Send</button>
+
+        </div>
+
+
+
         <!-- MAP EXPRESSION DIV -->
         <div id="map-expression-dialog">
             <div id="map-expression-dialog-header">
@@ -553,9 +586,15 @@
                     "><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></a>
                 </h3>
                 <button class="btn btn-default btn-netexplorer" id="map-expression-btn">Map Expression</button>
-                <hr>
+                <br><br>
+                <div class="btn btn-default btn-netexplorer" id="send-to-planexp-btn"> 
+
+                    <img class="send-to-planexp-btn-img" src="{% static 'Images/planexp-icon-transparent.png' %}"/> 
+                    Send to PlanExp
+                </div>
 
             </div>
+                <hr>
 
             <!-- Change labels
             <div id="change-labels-container">

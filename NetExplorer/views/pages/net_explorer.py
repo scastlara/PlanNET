@@ -117,5 +117,8 @@ def net_explorer(request):
         render_to_return = upload_graph(request, json_text)
         return render_to_return
     else:
-        return render(request, 'NetExplorer/netexplorer.html', { 'experiments': ExperimentList(request.user), 'databases': Dataset.get_allowed_datasets(request.user)} )
+
+        experiments_planexp = Experiment.get_allowed_experiments(request.user)
+        print(experiments_planexp)
+        return render(request, 'NetExplorer/netexplorer.html', { 'experiments': ExperimentList(request.user), 'experiments_planexp': experiments_planexp, 'databases': Dataset.get_allowed_datasets(request.user)} )
 

@@ -55,6 +55,10 @@
             </div>
         </div>
         <div class="panel-body">
+
+            
+
+
             <!-- Select experiment card -->
             <div id="select-experiment-div" class="planexp-card">
                 <div class="planexp-h1">Select Experiment and Database:<hr class="planexp-rule"></div>
@@ -723,6 +727,20 @@
     <script src="{% static 'js/planexp.js' %}"></script>
     <script src="{% static 'js/planexp-cytoscape-definition.js' %}"></script>
         
+
+    {% if experiment and dataset %}
+        <script>
+            window.autoExperiment = "{{ experiment }}";
+            window.autoDataset = "{{ dataset }}";
+        </script>
+        {% if graph %}
+            <script>
+                window.autoGraph = JSON.parse('{{ graph|safe }}');
+            </script>
+        {% endif %}
+        <script src="{% static 'js/planexp-auto-select.js' %}"></script>            
+    {% endif %}
+
     {% endblock scripts%}
     
 

@@ -1,9 +1,9 @@
 /* PlanExp */
 
-var PlanExp = (function() {
+$( document ).ready(function(){
 
-    var expType = Object.freeze({"Single-Cell":1, "RNA-Seq":2});
-    var currentExpType = false;
+    window.expType = Object.freeze({"Single-Cell":1, "RNA-Seq":2});
+    window.currentExpType = false;
     var csrftoken = getCookie('csrftoken');
 
     function getCookie(name) {
@@ -38,7 +38,7 @@ var PlanExp = (function() {
      */
     experimentSummary = function(expName, targetDiv) {
         
-        $.ajax({
+        return $.ajax({
             type: "GET",
             url: window.ROOT + "/experiment_summary",
             data: {
@@ -119,7 +119,7 @@ var PlanExp = (function() {
      */
     fillConditions = function(expName, conditionSelects) {
 
-        $.ajax({
+        return $.ajax({
             type: "GET",
             url: window.ROOT + "/experiment_conditions",
             data: {
@@ -185,7 +185,7 @@ var PlanExp = (function() {
      */
     fillCtypes = function(expName, ctypeSelects) {
         
-        $.ajax({
+        return $.ajax({
             type: "GET",
             url: window.ROOT + "/experiment_condition_types",
             data: {
@@ -206,6 +206,7 @@ var PlanExp = (function() {
 
                 $("#planexp-dge-ctype").children().remove("option[value='Technical']");
                 ctypeSelects.selectpicker('refresh');
+                console.log("SUCCESSS!")
             },
             error: function(data) {
                 console.log(data.responseText);
@@ -248,7 +249,7 @@ var PlanExp = (function() {
             //        "</option>";
         }
 
-        $.ajax({
+        return $.ajax({
             type: "GET",
             url: window.ROOT + "/experiment_dataset",
             data: {
@@ -513,6 +514,7 @@ var PlanExp = (function() {
             colorByCondition();
         }
         catch(err) {
+            console.log(err);
             displayError("Incorrect graph definition");
         }
     }
@@ -1727,4 +1729,4 @@ var PlanExp = (function() {
     $(".ui-autocomplete").css("z-index", "2147483647");
 
     
-})();
+});

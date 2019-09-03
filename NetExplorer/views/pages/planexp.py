@@ -16,4 +16,20 @@ def planexp(request):
 
     """
     experiments = Experiment.get_allowed_experiments(request.user)
-    return render(request, 'NetExplorer/planexp.html', { 'experiments': experiments })
+
+    experiment = request.POST.get("experiment")
+    dataset = request.POST.get("dataset")
+    graph = request.POST.get("graph-to-send")
+
+    if experiment and dataset:
+        # Entry point with everything selected.
+        response = {
+            'experiments': experiments,
+            'experiment': experiment,
+            'dataset': dataset,
+            'graph': graph
+        }
+        return render(request, 'NetExplorer/planexp.html', response)
+    else:
+        # Entry point without selecting anything.
+        return render(request, 'NetExplorer/planexp.html', { 'experiments': experiments })
