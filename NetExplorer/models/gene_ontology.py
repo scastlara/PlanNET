@@ -25,6 +25,8 @@ class GeneOntologyEnrichment(object):
             methods=['fdr_bh']
         )
         self.results = None
+        self.results_all = None
+        self.pvalue_cutoff = 0.05
     
     def get_enriched_gos(self, gene_symbols):
         """
@@ -40,10 +42,25 @@ class GeneOntologyEnrichment(object):
         try:
             gene_ids = [ genesymbol2id[symbol] for symbol in gene_symbols if symbol in genesymbol2id ]
             results = self.goe.run_study(gene_ids)
-            self.results = [ r for r in results if r.p_fdr_bh < 0.05 ]
+            self.results = [ r for r in results if r.p_fdr_bh < self.pvalue_cutoff ]
+            self.results_all = list(self.results)
+            self._keep_best_n()
             return self.results
         except Exception as err:
             return None
+
+    def _keep_best_n(self, n=20):
+        """
+        Filters results to keep best n GO for each domain.
+        """
+        best_for_domain = {"BP": [], "CC": [], "MF": []}
+        domain_counter  = {"BP": 0, "CC": 0, "MF": 0} 
+        for result in sorted(self.results, key=lambda x: x.p_fdr_bh):
+            if domain_counter[result.NS] < n:
+                domain_counter[result.NS] += 1
+                best_for_domain[result.NS].append(result)
+        self.results = best_for_domain["BP"] + best_for_domain["CC"] + best_for_domain["MF"]
+
 
 
     def get_plots(self):
@@ -82,9 +99,9 @@ class GeneOntologyEnrichment(object):
                 corresponds to a different GO term.
         """
         golist = []
-        if not self.results:
+        if not self.results_all:
             return None
-        golist = [ str(res.goterm) for res in self.results ]
+        golist = [ str(res.goterm) for res in self.results_all ]
         golist = [ row.replace("\t", ",") for row in golist ]
         golist = "\n".join(golist)
         return golist
