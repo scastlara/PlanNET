@@ -296,6 +296,7 @@ $( document ).ready(function(){
         condition2 = condition2.replace(/ \(.+\)/, "");
 
         $("#dge-loading").show();
+        targetDiv.hide();
         $.ajax({
             type: "GET",
             url: window.ROOT + "/experiment_dge_table",

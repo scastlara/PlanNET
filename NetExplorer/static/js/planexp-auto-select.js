@@ -39,7 +39,7 @@ $( document ).ready(function(){
         
         return new Promise((resolve, reject) => {
             console.log("Getting dataset");
-            console.log($("#planexp-dge-ctype").val());
+            //console.log($("#planexp-dge-ctype").val());
             // Empty DGE table + Gene Plot and Deselect Conditions
             $("#planexp-dge-table").html("");
             $('#planexp-dge-c1').selectpicker('val', '');
@@ -54,14 +54,6 @@ $( document ).ready(function(){
             $("#planexp-goea-condition").selectpicker("refresh");
             $("#goea-results").html("");
 
-            // Change DGE table ConditionType select
-            showConditionTypes("dge-table-condition-selects", $("#planexp-dge-ctype").val());
-            
-            // Change Network ConditionType select
-            showConditionTypes("network-condition-selects", $("#network-ctype").val());
-
-            // Change Sample counter
-            showConditionTypes("counter-condition-selects", $("#counter-ctype").val());
 
             // Get regulatory links if they exist
             // only if Single Cell
@@ -132,6 +124,19 @@ $( document ).ready(function(){
         });
     }
 
+    function showAllConditionTypes() {
+        return new Promise((resolve, reject) => {
+            // Change DGE table ConditionType select
+            showConditionTypes("dge-table-condition-selects", $("#planexp-dge-ctype").val());
+            
+            // Change Network ConditionType select
+            showConditionTypes("network-condition-selects", $("#network-ctype").val());
+
+            // Change Sample counter
+            showConditionTypes("counter-condition-selects", $("#counter-ctype").val());
+        })
+    }
+
 
     function autoSelectAll() {
         experimentSummary(window.autoExperiment, $("#planexp-summary"))
@@ -139,8 +144,9 @@ $( document ).ready(function(){
             .then(fillConditions(window.autoExperiment, $("select.condition-select")))
             .then(fillCtypes(window.autoExperiment, $("select.ctype-select")))
             .then(handleAutoSelectExperiment(window.autoExperiment))
-            .then(function(){ autoSelectDataset(window.autoDataset); })
+            .then(function(){ autoSelectDataset(window.autoDataset)})
             .then(function(){ autoAddCytoscape(window.autoGraph)})
+            .then(function(){ showAllConditionTypes()})
             
     }
 

@@ -30,7 +30,6 @@ def experiment_condition_types(request):
             'ctypes_dge': [ ctype.name for ctype in ctypes_dge ]
         }
 
-        print(json_response)
         return HttpResponse(json.dumps(json_response), content_type="application/json")
     else:
         return render(request, 'NetExplorer/404.html')
