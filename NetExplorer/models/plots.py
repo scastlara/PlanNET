@@ -44,6 +44,12 @@ class PlotCreator(object):
             only_expressed=kwargs['only_toggle']
         )
 
+        try:
+            units = ExpressionAbsolute.objects.filter(experiment=kwargs['experiment'], dataset=kwargs['dataset']).first().units
+            plot.yunits = units
+        except Exception:
+            pass
+
         if not kwargs['only_toggle']:
             for condition in kwargs['conditions']:
                 samples = SampleCondition.objects.filter(
@@ -105,6 +111,12 @@ class PlotCreator(object):
                 all_samples.extend([ condition.name + " - " + str(i) for i in range(len(list(samples))) ])
             plot.add_conditions(all_samples)
 
+        try:
+            units = ExpressionAbsolute.objects.filter(experiment=kwargs['experiment'], dataset=kwargs['dataset']).first().units
+            plot.zunits = units
+        except Exception:
+            pass
+
         for gene in kwargs['genes']:
             plot.add_gene(gene)
             plot.add_gene_expression(condition_expression[gene]) 
@@ -132,6 +144,12 @@ class PlotCreator(object):
             kwargs['ctype'],
             kwargs['genes']
         )
+
+        try:
+            units = ExpressionAbsolute.objects.filter(experiment=kwargs['experiment'], dataset=kwargs['dataset']).first().units
+            plot.yunits = units
+        except Exception:
+            pass
 
         conditions = [ condition.name for condition in kwargs['conditions'] ]
         group_idxs = {}
@@ -190,6 +208,12 @@ class PlotCreator(object):
             kwargs['genes']
         )
 
+        try:
+            units = ExpressionAbsolute.objects.filter(experiment=kwargs['experiment'], dataset=kwargs['dataset']).first().units
+            plot.yunits = units
+        except Exception:
+            pass
+
         for gene in kwargs['genes']:
             # Single Factor. Simple Line Chart.
             plot.traces.append(PlotlyTrace(name=gene))
@@ -220,9 +244,16 @@ class PlotCreator(object):
             kwargs['genes']
         )
         
+        try:
+            units = ExpressionAbsolute.objects.filter(experiment=kwargs['experiment'], dataset=kwargs['dataset']).first().units
+            plot.xunits = units
+            plot.yunits = units
+        except Exception:
+            pass
+        
         # Add first condition to done_condition
         done_condition = set()
-        plot.xlab = kwargs['genes'][0]
+        plot.xlab = kwargs['genes'][0] 
         plot.ylab = kwargs['genes'][1]
         for idx, condition in enumerate(gene_conditions[ kwargs['genes'][0] ]):
             if condition not in done_condition:
@@ -557,10 +588,12 @@ class GeneExpPlot(object):
 
     def __init__(self):
         self.traces = []
-        self.title = str()
-        self.xlab = str()
-        self.ylab = str()
+        self.title = ""
+        self.xlab = ""
+        self.ylab = ""
         self.trace_names = []
+        self.xunits = None
+        self.yunits = None
      
     def is_empty(self):
         """
@@ -619,6 +652,9 @@ class BarPlot(GeneExpPlot):
             theplot['layout']['title'] = self.title
         theplot['data'] = data_list
 
+        if self.yunits is not None:
+            theplot['layout']['yaxis'] = {}
+            theplot['layout']['yaxis']['title'] = self.yunits.lower()
         return theplot
 
 
@@ -677,6 +713,10 @@ class ViolinPlot(GeneExpPlot):
             theplot['layout']['violinmode'] = "group"
         
         theplot['data'] = data_list
+
+        if self.yunits is not None:
+            theplot['layout']['yaxis'] = {}
+            theplot['layout']['yaxis']['title'] = self.yunits.lower()
 
         return theplot
 
@@ -798,7 +838,10 @@ class HeatmapPlot(object):
         data_dict['y'] = self.y
         data_dict['z'] = self.z
         data_dict['type'] = "heatmap"
+        if self.zunits is not None:
+            data_dict['colorbar'] = { 'title': self.zunits.lower(), 'titleside':'top' }
         theplot['data'].append(data_dict)
+
         return theplot
 
 
@@ -846,6 +889,7 @@ class LinePlot(GeneExpPlot):
             if trace.xaxis is not None:
                 trace_dict['xaxis'] = trace.xaxis
                 trace_dict['yaxis'] = trace.yaxis
+                
                 num_subplots.add(trace.xaxis)
                 if trace.subplot_title not in subplots:
                     subplots.add(trace.subplot_title)
@@ -876,6 +920,10 @@ class LinePlot(GeneExpPlot):
             theplot['layout']['height'] = 300 * num_subplots
             theplot['layout']['annotations'] = annotations
         theplot['data'] = data_list
+        
+        if self.yunits is not None:
+            theplot['layout']['yaxis'] = {'title': self.yunits }
+        
         return theplot
 
 
@@ -910,8 +958,10 @@ class ScatterPlot(GeneExpPlot):
 
         for trace in self.traces:
             trace_dict = { 
-                'x': trace.x, 'y': trace.y, 
-                'type': trace.type, 'name': trace.name, 
+                'x': trace.x, 
+                'y': trace.y, 
+                'type': trace.type, 
+                'name': trace.name, 
                 'mode': 'markers' 
             }
             if trace.names:
@@ -924,10 +974,14 @@ class ScatterPlot(GeneExpPlot):
         if self.xlab:
             theplot['layout']['xaxis'] = {}
             theplot['layout']['xaxis']['title'] = self.xlab
+            if self.xunits is not None:
+                theplot['layout']['xaxis']['title'] +=  " (" + self.xunits.lower() + ")"
         
         if self.ylab:
             theplot['layout']['yaxis'] = {}
             theplot['layout']['yaxis']['title'] = self.ylab
+            if self.yunits is not None:
+                theplot['layout']['yaxis']['title'] +=  " (" + self.yunits.lower() + ")"
         
         return theplot
     

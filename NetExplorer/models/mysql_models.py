@@ -621,7 +621,7 @@ class ExpressionAbsolute(Model):
         for row in data:
             genes_in_sample[row[0]].append(row[1])
         return genes_in_sample
-        
+
 
 
 
