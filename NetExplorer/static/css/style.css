@@ -2782,3 +2782,11 @@ summary { display: list-item !important; }
 #send-to-planexp-error2 {
     display: none;
 }
+
+.planexp-upload-text {
+    float: right;
+}
+
+.select-planexp-form {
+    float:left;
+}

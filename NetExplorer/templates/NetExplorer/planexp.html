@@ -11,13 +11,13 @@
         <li><a class="planexp-toc-link" id="select-experiment-div-toc" href="#select-experiment-div">Select Experiment</a></li>
         <li><a class="planexp-toc-link" id="planexp-summary-toc" href="#planexp-summary">Summary</a></li>
         <li><a class="planexp-toc-link" id="planexp-dge-table-container-toc" href="#planexp-dge-table-container">Differential Expression</a></li>
+        <li><a class="planexp-toc-link" id="planexp-markers-toc" href="#planexp-markers">Marker Genes</a></li>
         <li><a class="planexp-toc-link" id="planexp-gene-expression-toc" href="#planexp-gene-expression">Gene Expression Plot</a></li>
         <li><a class="planexp-toc-link" id="planexp-tsne-toc" href="#planexp-tsne">t-SNE Plot</a></li>
-        <li><a class="planexp-toc-link" id="planexp-markers-toc" href="#planexp-markers">Marker Genes</a></li>
         <li><a class="planexp-toc-link" id="planexp-gene-coexpression-toc" href="#planexp-gene-coexpression">Gene Co-expression Plot</a></li>
-        <li><a class="planexp-toc-link" id="planexp-sample-counter-toc" href="#planexp-sample-counter">Sample Quantification</a></li>
-        <li><a class="planexp-toc-link" id="planexp-links-toc" href="#planexp-links">Gene Co-expression network</a></li>
-        <li><a class="planexp-toc-link" id="planexp-network-toc" href="#planexp-network">Network</a></li>
+        <li><a class="planexp-toc-link" id="planexp-sample-counter-toc" href="#planexp-sample-counter">Gene Co-expression Counts</a></li>
+        <li><a class="planexp-toc-link" id="planexp-links-toc" href="#planexp-links">Gene Co-expression Network</a></li>
+        <li><a class="planexp-toc-link" id="planexp-network-toc" href="#planexp-network">Network Viewer</a></li>
         <hr>
         <li id="back_home"><a href="{% url 'index' %}" ><span class="glyphicon glyphicon-triangle-left"></span>Go back Home</a></li>
     </ul>
@@ -62,7 +62,7 @@
             <!-- Select experiment card -->
             <div id="select-experiment-div" class="planexp-card">
                 <div class="planexp-h1">Select Experiment and Database:<hr class="planexp-rule"></div>
-                <form class= "form-inline" method="GET" action="#">
+                <form class= "select-planexp-form form-inline" method="GET" action="#">
                     {% csrf_token %}
                     <div class="form-group">
                         <select id="select-experiment" name="experiment" class="selectpicker" title="Select Experiment">
@@ -79,6 +79,16 @@
                         </select>
                     </div>
                 </form>
+
+
+                <div class="planexp-upload-text">
+                    <a href="{% url 'planexp_send_data' %}" style="color:#777">
+                        <div class="btn btn-default">
+                            <span class="glyphicon glyphicon-cloud-upload"></span> Upload your data
+                        </div>
+                    </a>
+                </div>
+                <div style="clear:both"></div>
             </div><!-- Select experiment card -->
             
             <!-- Summary card -->
@@ -160,6 +170,38 @@
 
                 </div>
             </div> <!-- Differential expression table -->
+
+
+            <div id="planexp-markers" class="planexp-card">
+                    <h2 id="planexp-title">Marker Genes</h2>
+                    <hr class="planexp-rule">
+
+                    <blockquote>
+                        Select a cluster and find genes that identify them.
+                        <br>
+                        The selection of markers was computed by building a classifier on genes, and then computing the <a href="https://en.wikipedia.org/wiki/Receiver_operating_characteristic#Area_under_the_curve" target="_blank">Area under the ROC curve (AUC)</a> 
+                        of the predictor. 
+                        <br>
+                        Genes with a high AUC (close to 1), are able to identify the cluster without any uncertainty.
+                        <br>
+                        A high average difference, means that the presence of that gene is a strong indication that a cell belongs to the cluster, but 
+                        a negative difference means that the abscense of expression is the indicator.
+
+                    </blockquote>
+
+                    <select id="markers-select" name="condition" class="selectpicker condition-select markers-condition-selects" title="Select Condition">
+                        <option value="" disabled selected>Select condition</option>
+                    </select>
+                    <br><br>
+                    
+                    <div id="markers-table-notfound">
+                        <span class="glyphicon glyphicon-warning-sign"></span>
+                        No markers for this cluster
+                     </div>
+
+                    <div id="planexp-markers-table-container">
+                    </div>
+            </div>
 
             <!-- Gene Expression Plot-->
             <div id="planexp-gene-expression" class="planexp-card">
@@ -308,7 +350,7 @@
 
             <!-- Gene Co-Expression-->
             <div id="planexp-gene-coexpression" class="planexp-card">
-                <h2 id="planexp-title">Gene Co-expression</h2>
+                <h2 id="planexp-title">Gene Co-expression Plot</h2>
                 <hr class="planexp-rule">
                 
                 <blockquote>
@@ -357,7 +399,7 @@
 
 
             <div id="planexp-sample-counter" class="planexp-card">
-                <h2 id="planexp-title">Sample Quantification</h2>
+                <h2 id="planexp-title">Gene Co-expression Counts</h2>
                 <hr class="planexp-rule">
 
                 <blockquote>
@@ -400,37 +442,6 @@
 
             </div> <!-- Sample counter -->
 
-
-            <div id="planexp-markers" class="planexp-card">
-                    <h2 id="planexp-title">Marker Genes</h2>
-                    <hr class="planexp-rule">
-
-                    <blockquote>
-                        Select a cluster and find genes that identify them.
-                        <br>
-                        The selection of markers was computed by building a classifier on genes, and then computing the <a href="https://en.wikipedia.org/wiki/Receiver_operating_characteristic#Area_under_the_curve" target="_blank">Area under the ROC curve (AUC)</a> 
-                        of the predictor. 
-                        <br>
-                        Genes with a high AUC (close to 1), are able to identify the cluster without any uncertainty.
-                        <br>
-                        A high average difference, means that the presence of that gene is a strong indication that a cell belongs to the cluster, but 
-                        a negative difference means that the abscense of expression is the indicator.
-
-                    </blockquote>
-
-                    <select id="markers-select" name="condition" class="selectpicker condition-select markers-condition-selects" title="Select Condition">
-                        <option value="" disabled selected>Select condition</option>
-                    </select>
-                    <br><br>
-                    
-                    <div id="markers-table-notfound">
-                        <span class="glyphicon glyphicon-warning-sign"></span>
-                        No markers for this cluster
-                     </div>
-
-                    <div id="planexp-markers-table-container">
-                    </div>
-            </div>
 
             <div id="planexp-links" class="planexp-card">
                 <h2 id="planexp-title">Gene Co-Expression Network</h2>
@@ -512,7 +523,7 @@
             </div>
 
             <div id="planexp-network" class="planexp-card">
-                <h2 id="planexp-title">Network</h2>
+                <h2 id="planexp-title">Network Viewer</h2>
                 <hr class="planexp-rule">
 
                 <blockquote>
