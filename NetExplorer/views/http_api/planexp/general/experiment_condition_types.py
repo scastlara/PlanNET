@@ -21,6 +21,16 @@ def experiment_condition_types(request):
         ctypes = list(ctypes)
         ctypes.sort(key= lambda i: (i.is_interaction, i.name))
 
-        return HttpResponse(json.dumps([ ctype.name for ctype in ctypes ]), content_type="application/json")
+        ctypes_dge = ConditionType.objects.filter(pk__in=ExpressionRelative.objects.filter(experiment=Experiment.objects.get(name=exp_name)).values('cond_type').distinct())
+        ctypes_dge = list(ctypes_dge)
+        ctypes_dge.sort(key= lambda i: (i.is_interaction, i.name))
+
+        json_response = {
+            'ctypes': [ ctype.name for ctype in ctypes ],
+            'ctypes_dge': [ ctype.name for ctype in ctypes_dge ]
+        }
+
+        print(json_response)
+        return HttpResponse(json.dumps(json_response), content_type="application/json")
     else:
         return render(request, 'NetExplorer/404.html')

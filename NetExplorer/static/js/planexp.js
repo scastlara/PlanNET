@@ -195,18 +195,28 @@ $( document ).ready(function(){
             success: function(data) {
                 ctypeSelects.html(""); // clean previous HTML
                 var first = true;
-                for (const ctype in data) {
-                    ctypeName = data[ctype];
+                var ctypes = data.ctypes;
+                for (const ctype in ctypes) {
+                    ctypeName = ctypes[ctype];
                     ctypeSelects.append(ctypeRow(ctypeName));
                     if (first) {
                         $('.condition-option[value="' + ctypeName + '"]').attr('selected', 'selected');
                         first = false;
                     }
                 }
-
-                $("#planexp-dge-ctype").children().remove("option[value='Technical']");
+                
+                var ctypesDge = data.ctypes_dge;
+                first = true;
+                $("#planexp-dge-ctype").html("");
+                for (const ctype in ctypesDge) {
+                    ctypeName = ctypesDge[ctype];
+                    $("#planexp-dge-ctype").append(ctypeRow(ctypeName));
+                    if (first) {
+                        $('.condition-option[value="' + ctypeName + '"]').attr('selected', 'selected');
+                        first = false;
+                    }
+                }
                 ctypeSelects.selectpicker('refresh');
-                console.log("SUCCESSS!")
             },
             error: function(data) {
                 console.log(data.responseText);
