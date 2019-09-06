@@ -741,7 +741,8 @@ $( document ).ready(function(){
     var getRegulatoryLinksTable = function(searchTerm, mode, tableId) {
         var expName  = $("#select-experiment").val();
         var dataset  = $("#select-dataset").val();
-        
+        $("#planexp-links-loading").show();
+
         $.ajax({
             type: "GET",
             url: window.ROOT + "/regulatory_links",
@@ -772,14 +773,16 @@ $( document ).ready(function(){
                         $("#" + tableId).show(250);
                     });
                     
-                    
+                    $("#planexp-links-loading").hide();
                     
                 } else {
                     $("#" + tableId).hide(250);
                 }
+                
             },
             error: function(data) {
                 console.log(data.responseText);
+                $("#planexp-links-loading").hide();
             }
         });
     }
@@ -945,38 +948,42 @@ $( document ).ready(function(){
      *     Performs all the actions necessary when that happens.
      */
     $("#select-experiment").on("change", function() { 
-        var expName = $(this).val();
-        experimentSummary(expName, $("#planexp-summary"));
-        getDatasets(expName, $("#select-dataset"));
-        fillConditions(expName, $("select.condition-select"));
-        fillCtypes(expName, $("select.ctype-select"));
 
-        // Hide and show on change 
-        $("#planexp-summary-toc").show();
-        $('#planexp-summary-toc').css('display', 'inline-block');
-        $("#planexp-dge-table-container").hide();
-        $("#planexp-dge-table-container-toc").hide();
-        $("#planexp-gene-expression").hide();
-        $("#planexp-gene-expression-toc").hide();
-        $("#planexp-gene-coexpression").hide();
-        $('#planexp-gene-coexpression-toc').hide();
-        $("#planexp-tsne").hide();
-        $("#planexp-tsne-toc").hide();
-        $("#planexp-markers").hide();
-        $("#planexp-markers-toc").hide();
-        $("#planexp-network").hide();
-        $("#planexp-network-toc").hide();
-        $("#tsne-plot-gene").html("");
-        $("#tsne-plot-condition").html("");
-        $('#planexp-links-toc').hide();
-        $('#planexp-links').hide();
-        $("#planexp-sample-counter").hide();
+        window.experimentPromise = new Promise((resolve, reject) => {
+            var expName = $(this).val();
+            experimentSummary(expName, $("#planexp-summary"));
+            getDatasets(expName, $("#select-dataset"));
+            fillConditions(expName, $("select.condition-select"));
+            var fillCtypesPromise = fillCtypes(expName, $("select.ctype-select"));
 
-        try {
-            cy.nodes().remove();
-        } catch {
-            // nothing to do
-        }
+            // Hide and show on change 
+            $("#planexp-summary-toc").show();
+            $('#planexp-summary-toc').css('display', 'inline-block');
+            $("#planexp-dge-table-container").hide();
+            $("#planexp-dge-table-container-toc").hide();
+            $("#planexp-gene-expression").hide();
+            $("#planexp-gene-expression-toc").hide();
+            $("#planexp-gene-coexpression").hide();
+            $('#planexp-gene-coexpression-toc').hide();
+            $("#planexp-tsne").hide();
+            $("#planexp-tsne-toc").hide();
+            $("#planexp-markers").hide();
+            $("#planexp-markers-toc").hide();
+            $("#planexp-network").hide();
+            $("#planexp-network-toc").hide();
+            $("#tsne-plot-gene").html("");
+            $("#tsne-plot-condition").html("");
+            $('#planexp-links-toc').hide();
+            $('#planexp-links').hide();
+            $("#planexp-sample-counter").hide();
+
+            try {
+                cy.nodes().remove();
+            } catch {
+                // nothing to do
+            }
+            fillCtypesPromise.then(resolve(1));
+        });
 
     });
 
@@ -1003,18 +1010,24 @@ $( document ).ready(function(){
         $("#planexp-goea-condition").html("");
         $("#planexp-goea-condition").selectpicker("refresh");
         $("#goea-results").html("");
+        $("#planexp-links-table-container").html("");
 
-        // Change DGE table ConditionType select
-        var ctype = $("#planexp-dge-ctype").val();
-        showConditionTypes("dge-table-condition-selects", ctype);
         
-        // Change Network ConditionType select
-        var ctype = $("#network-ctype").val();
-        showConditionTypes("network-condition-selects", ctype);
-
-        // Change Sample counter
-        var ctype = $("#counter-ctype").val();
-        showConditionTypes("counter-condition-selects", ctype);
+        // Change DGE table ConditionType select
+        // only when experiment is correctly selected
+        window.experimentPromise.then(function(){
+            var ctype = $("#planexp-dge-ctype").val();
+            showConditionTypes("dge-table-condition-selects", ctype);
+            
+            // Change Network ConditionType select
+            var ctype = $("#network-ctype").val();
+            showConditionTypes("network-condition-selects", ctype);
+    
+            // Change Sample counter
+            var ctype = $("#counter-ctype").val();
+            showConditionTypes("counter-condition-selects", ctype);
+        })
+       
 
         // Get regulatory links if they exist
         // only if Single Cell
@@ -1316,10 +1329,8 @@ $( document ).ready(function(){
         var mode = $("#link-tabs li.active").attr("id"); 
 
         if (mode == "links-gene-symbol-li") {
-            console.log(geneName);
             getRegulatoryLinksTable(geneName, "gene", "planexp-links-table-container");
         } else {
-            console.log(reactomeId);
             getRegulatoryLinksTable(reactomeId, "reactome", "planexp-links-table-container");
         }
 
