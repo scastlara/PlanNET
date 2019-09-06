@@ -850,7 +850,7 @@ $( document ).ready(function(){
     window.sendToNetwork = function(dt) {
         $.scrollTo("#planexp-network", 500);
         var toImport = { 'nodes': [], 'edges': [] };
-        dt.rows().eq(0).each( function ( index ) {
+        dt.rows({filter:"applied"}).eq(0).each( function ( index ) {
             var row = dt.row( index );
             var data = row.data();
             toImport.nodes.push({ data: { id: stripHtml(data[0]), name: stripHtml(data[0]), homolog: stripHtml(data[2]), colorNODE: "#404040" } });
