@@ -2790,3 +2790,15 @@ summary { display: list-item !important; }
 .select-planexp-form {
     float:left;
 }
+
+#planexp-links-loading {
+    display: none;
+    position: absolute;
+    z-index: 2;
+    left: calc(50% - 75px);
+    margin-top: 75px;
+}
+
+#planexp-links-table-container {
+    min-height: 250px;
+}
