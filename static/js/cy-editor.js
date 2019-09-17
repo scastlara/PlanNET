@@ -150,7 +150,6 @@ class CyEditor {
 
         this.cytoscape.on("click", "node", function() {
             var clickBehaviour = $("input[value=on]:checked", ".editor-switch").closest("form").attr("id");
-            alert(clickBehaviour);
             if (clickBehaviour == "editor-interaction-form") {
                 /*
                 // Check if there is a node already selected
@@ -163,7 +162,6 @@ class CyEditor {
                 }
                 */
             } else if (clickBehaviour == "editor-delete-node-form") {
-                alert("REMOVING");
                 this.remove();
             }
         });
@@ -172,7 +170,6 @@ class CyEditor {
         this.cytoscape.on("click", "edge", function() {
             var clickBehaviour = $("input[value=on]:checked", ".editor-switch").closest("form").attr("id");
             if (clickBehaviour == "editor-delete-interaction-form") {
-                alert("EDGE");
                 this.remove();
             }
         })

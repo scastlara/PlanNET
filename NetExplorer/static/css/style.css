@@ -2799,6 +2799,12 @@ summary { display: list-item !important; }
     margin-top: 75px;
 }
 
-#planexp-links-table-container {
-    min-height: 250px;
+
+#planexp-links-error {
+    display: none; 
+    margin: auto;
+    font-size: 18px;
+    padding: 8px;
+    width: 700px; 
+    background-color: #FDD4D4;
 }

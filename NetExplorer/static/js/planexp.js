@@ -208,14 +208,22 @@ $( document ).ready(function(){
                 var ctypesDge = data.ctypes_dge;
                 first = true;
                 $("#planexp-dge-ctype").html("");
-                for (const ctype in ctypesDge) {
-                    ctypeName = ctypesDge[ctype];
-                    $("#planexp-dge-ctype").append(ctypeRow(ctypeName));
-                    if (first) {
-                        $('.condition-option[value="' + ctypeName + '"]').attr('selected', 'selected');
-                        first = false;
+
+                if (ctypesDge.length > 0) {
+                    window.dgeAvailable = true;
+                    for (const ctype in ctypesDge) {
+                        ctypeName = ctypesDge[ctype];
+                        $("#planexp-dge-ctype").append(ctypeRow(ctypeName));
+                        if (first) {
+                            $('.condition-option[value="' + ctypeName + '"]').attr('selected', 'selected');
+                            first = false;
+                        }
                     }
+                } else {
+                    // Hide DGE section... no condition type with DGE
+                    window.dgeAvailable = false;
                 }
+                
                 ctypeSelects.selectpicker('refresh');
             },
             error: function(data) {
@@ -276,6 +284,56 @@ $( document ).ready(function(){
                 datasetSelect.show(250);
             }
         });
+    }
+
+
+    showNecessaryCards = function() {
+        if (currentExpType == expType['Single-Cell']) {
+            $('#planexp-links').show(250);
+            $('#planexp-links-toc').show(250);
+        } else {
+            $('#planexp-links-toc').hide();
+            $('#planexp-links').hide();
+        }
+
+        // Show the necessary cards
+        if (window.dgeAvailable) {
+            $("#planexp-dge-table-container").show(250);
+            $("#planexp-dge-table-container-toc").show(250);
+            $('#planexp-dge-table-container-toc').css('display', 'inline-block');
+        }
+
+        $("#planexp-gene-expression").show(250);
+        $("#planexp-gene-expression-toc").show(250);
+        $('#planexp-gene-expression-toc').css('display', 'inline-block');
+        $("#planexp-gene-coexpression").show(250);
+        $('#planexp-gene-coexpression-toc').css('display', 'inline-block');
+        $("#planexp-sample-counter").show(250);
+        $("#planexp-sample-counter-toc").show(250);
+
+        $("#planexp-network").show(250, function(){
+            // Initialize cytoscape now that the container div is visible
+            initCytoscape();
+        });
+        $("#planexp-network-toc").show(250);
+        if (currentExpType == expType['Single-Cell']) {
+            $("#planexp-tsne").show(250);
+            $("#planexp-tsne-toc").show(250);
+            $('#planexp-tsne-toc').css('display', 'inline-block');
+            $("#planexp-markers").show(250);
+            $("#planexp-markers-toc").show(250);
+            $('#planexp-markers-toc').css('display', 'inline-block');
+
+            // Add Sample to dropdown in GeneExpressionPlot
+
+            $("#gene-expression-ctype").append(ctypeRow("Samples"));
+            $("#gene-expression-ctype").selectpicker("refresh");
+
+        } else {
+            $("#gene-expression-expressed-container").hide();
+        };
+
+        $("#gene-expression-expressed").removeAttr("checked");
     }
 
 
@@ -360,7 +418,6 @@ $( document ).ready(function(){
                 if (data) {
                     $("#plot-genenotfound").hide();
                     var thePlot = document.getElementById(plotDivId);
-                    console.log(data);
                     Plotly.newPlot(thePlot, data.data, data.layout);
                     if (plotType == "heatmap") {
                         thePlot.on('plotly_afterplot', function(){
@@ -397,7 +454,6 @@ $( document ).ready(function(){
                 if (data) {
                     $("#coexpression-plot-genenotfound").hide();
                     var thePlot = document.getElementById(plotDivId);
-                    console.log(data);
                     Plotly.newPlot(thePlot, data.data, data.layout);
                 } else {
                     $("#coexpression-plot-genenotfound").show(250);
@@ -455,7 +511,7 @@ $( document ).ready(function(){
     plotSampleCount = function(expName, dataset, geneName, ctype, conditions, plotDivId, loadingDiv) {
         $("#" + loadingDiv).show();
         $("#" + plotDivId).html("");
-        console.log(conditions);
+        $("#counter-plot-genenotfound").hide(250);
         $.ajax({
             type: "GET",
             url: window.ROOT + "/plot_sample_count",
@@ -469,23 +525,30 @@ $( document ).ready(function(){
             },
             success: function(data) {
                 $("#" + loadingDiv).hide();
-                $("#" + plotDivId).html(
-                    '<a id="sample-count-plot-link" href="data:image/png;base64,' 
-                    + data.plot
-                    + '" download="sample_counts.png">'
-                    + '<div class="btn btn-default btn-sample-count"><span class="glyphicon glyphicon-picture"> </span> Download Image</div> </a>'
-                    + '<a id="sample-count-csv-link" href="data:text/plain;base64,'
-                    + data.csv
-                    + '" download="sample_counts.txt">'
-                    + '<div class="btn btn-default btn-sample-count"><span class="glyphicon glyphicon-floppy-disk"> </span>Download CSV</div></a>'
-                );
+                if (data) {
+                    $("#counter-plot-genenotfound").hide(250);
+                    $("#" + loadingDiv).hide();
+                    $("#" + plotDivId).html(
+                        '<a id="sample-count-plot-link" href="data:image/png;base64,' 
+                        + data.plot
+                        + '" download="sample_counts.png">'
+                        + '<div class="btn btn-default btn-sample-count"><span class="glyphicon glyphicon-picture"> </span> Download Image</div> </a>'
+                        + '<a id="sample-count-csv-link" href="data:text/plain;base64,'
+                        + data.csv
+                        + '" download="sample_counts.txt">'
+                        + '<div class="btn btn-default btn-sample-count"><span class="glyphicon glyphicon-floppy-disk"> </span>Download CSV</div></a>'
+                    );
 
+                } else {
+                    $("#counter-plot-genenotfound").show(250);
+                    
+                }
 
             },
             error: function(err) {
-                console.log(err);
                 $("#" + loadingDiv).hide();
                 $("#" + plotDivId).html("");
+                $("#counter-plot-genenotfound").show(250);
             }
         });
     }
@@ -497,7 +560,6 @@ $( document ).ready(function(){
         $("." + selectDivClass + " option").prop("selected", false);
         $("." + selectDivClass + " option").hide();
         $("." + selectDivClass + " " + "." + ctype).show();
-
         $("." + selectDivClass).selectpicker("refresh");
     }
 
@@ -773,12 +835,14 @@ $( document ).ready(function(){
                         $("#" + tableId).show(250);
                     });
                     
-                    $("#planexp-links-loading").hide();
+                    
                     
                 } else {
                     $("#" + tableId).hide(250);
+                    $("#planexp-links-error").show(250); 
+                    setTimeout(function(){$("#planexp-links-error").hide(250); }, 3000);
                 }
-                
+                $("#planexp-links-loading").hide();
             },
             error: function(data) {
                 console.log(data.responseText);
@@ -976,6 +1040,7 @@ $( document ).ready(function(){
             $('#planexp-links-toc').hide();
             $('#planexp-links').hide();
             $("#planexp-sample-counter").hide();
+            $("#planexp-sample-counter-toc").hide();
 
             try {
                 cy.nodes().remove();
@@ -1007,6 +1072,7 @@ $( document ).ready(function(){
         $("#tsne-plot-condition").html("");
         $("#volcano-plot").html("");
         $("#plot-genenotfound").hide();
+        $("#counter-plot-genenotfound").hide();  
         $("#planexp-goea-condition").html("");
         $("#planexp-goea-condition").selectpicker("refresh");
         $("#goea-results").html("");
@@ -1017,7 +1083,9 @@ $( document ).ready(function(){
         // only when experiment is correctly selected
         window.experimentPromise.then(function(){
             var ctype = $("#planexp-dge-ctype").val();
-            showConditionTypes("dge-table-condition-selects", ctype);
+            if (ctype) {
+                showConditionTypes("dge-table-condition-selects", ctype);
+            }
             
             // Change Network ConditionType select
             var ctype = $("#network-ctype").val();
@@ -1026,55 +1094,9 @@ $( document ).ready(function(){
             // Change Sample counter
             var ctype = $("#counter-ctype").val();
             showConditionTypes("counter-condition-selects", ctype);
+
+            showNecessaryCards();
         })
-       
-
-        // Get regulatory links if they exist
-        // only if Single Cell
-        if (currentExpType == expType['Single-Cell']) {
-            $('#planexp-links').show(250);
-            $('#planexp-links-toc').show(250);
-           // getRegulatoryLinksTable('#planexp-links', '#planexp-links-toc', '#planexp-links-table-container');
-        } else {
-            $('#planexp-links-toc').hide();
-            $('#planexp-links').hide();
-        }
-
-        // Show the necessary cards
-        $("#planexp-dge-table-container").show(250);
-        $("#planexp-gene-expression").show(250);
-        $("#planexp-dge-table-container-toc").show(250);
-        $('#planexp-dge-table-container-toc').css('display', 'inline-block');
-        $("#planexp-gene-expression-toc").show(250);
-        $('#planexp-gene-expression-toc').css('display', 'inline-block');
-        $("#planexp-gene-coexpression").show(250);
-        $('#planexp-gene-coexpression-toc').css('display', 'inline-block');
-        $("#planexp-sample-counter").show(250);
-        $("#planexp-sample-counter-toc").show(250);
-
-        $("#planexp-network").show(250, function(){
-            // Initialize cytoscape now that the container div is visible
-            initCytoscape();
-        });
-        $("#planexp-network-toc").show(250);
-        if (currentExpType == expType['Single-Cell']) {
-            $("#planexp-tsne").show(250);
-            $("#planexp-tsne-toc").show(250);
-            $('#planexp-tsne-toc').css('display', 'inline-block');
-            $("#planexp-markers").show(250);
-            $("#planexp-markers-toc").show(250);
-            $('#planexp-markers-toc').css('display', 'inline-block');
-
-            // Add Sample to dropdown in GeneExpressionPlot
-
-            $("#gene-expression-ctype").append(ctypeRow("Samples"));
-            $("#gene-expression-ctype").selectpicker("refresh");
-
-        } else {
-            $("#gene-expression-expressed-container").hide();
-        };
-
-        $("#gene-expression-expressed").removeAttr("checked");
         
     });
 
@@ -1313,6 +1335,8 @@ $( document ).ready(function(){
         var loadingDiv = "counter-plot-loading";
 
         if (!geneName || !conditions) {
+
+            $("#counter-plot-genenotfound").show(250);
             return;
         }
 
@@ -1435,7 +1459,6 @@ $( document ).ready(function(){
 
     // Markers table
     $("#markers-select").on("change", function(){
-        console.log($(this).val());
         var expName = $("#select-experiment").val();
         var dataset = $("#select-dataset").val();
         var cluster = $(this).val()

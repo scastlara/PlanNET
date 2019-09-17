@@ -118,6 +118,93 @@ $('#change-labels input').change(function() { changeLabels(cy) });
     });
 
 
+
+// --------------------------
+// SEND TO PLANEXP
+
+
+    /**
+     * getDatasets
+     *   Summary:
+     *     
+     *     
+     *   Arguments:
+     *    
+     *   Returns:
+     *    
+     */
+    getDatasets = function(expName, datasetSelect) {
+        datasetRow = function(datasetName) {
+            //<option data-content="<img class=" legend-db'="" src="/static/Images/legend-Adamidi.png">Adamidi' value='Adamidi'</option>
+
+
+            //<option data-content="<img class='legend-db' src='{% static 'Images/' %}legend-{{ db.name }}.png'>{{ db.name }}" value="{{ db.name }}">{{ db.name }}</option>
+            return "<option data-content='<img class=\"" +
+                    "legend-db\" src=\"" +
+                    window.ROOT + 
+                    "/static/Images/legend-" + 
+                    datasetName +
+                    ".png\">" +
+                    datasetName +
+                    "'" +
+                    " value='" +
+                    datasetName +
+                    "'" +
+                    "</option>"; 
+            //return "<option class='dataset-option' value='" + 
+            //        datasetName + 
+            //        "'>" + 
+            //        datasetName + 
+            //        "</option>";
+        }
+
+        return $.ajax({
+            type: "GET",
+            url: window.ROOT + "/experiment_dataset",
+            data: {
+                'experiment': expName,
+                'csrfmiddlewaretoken': '{{ csrf_token }}'
+            },
+            success: function(data) {
+                datasetSelect.html("");
+                for (const i in data) {
+                    datasetName = data[i].fields.name;
+                    datasetSelect.append(datasetRow(datasetName));
+                }
+                datasetSelect.selectpicker("refresh");
+                datasetSelect.show(250);
+            }
+        });
+    }
+
+
+    $("#send-to-planexp-btn").on("click", function(){
+        $("#send-to-planexp-dialog").show(250);
+    });
+
+    $("#select-experiment").on("change", function(){
+        getDatasets($(this).val(), $("#select-dataset"));
+    });
+
+
+    $("#send-to-planexp-submit").on("click", function(){
+        $("#graph-to-send").val(JSON.stringify(cy.json().elements));
+        if (! $("#select-experiment").val() || ! $("#select-dataset").val()) {
+            $("#send-to-planexp-error1").show(250);
+            setTimeout(function(){$("#send-to-planexp-error1").hide(250); }, 3000);
+        } else if (! cy.nodes().length ) {
+            $("#send-to-planexp-error2").show(250);
+            setTimeout(function(){$("#send-to-planexp-error2").hide(250); }, 3000);
+        } else {
+            $("#send-to-planexp-form").submit(); 
+        }
+    });
+
+    $("#send-to-planexp-cancel").on("click", function(){
+        $("#send-to-planexp-dialog").hide(250);
+    });
+        
+
 // --------------------------
 // MOUSEOVER ON NODES
     cy.on('mouseover', 'node', function (evt) {

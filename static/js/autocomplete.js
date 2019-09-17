@@ -67,3 +67,35 @@ var autocompleteContig = function(s_string, response) {
     
 
 };
+
+
+var autocompleteReactome = function(s_string, response) {
+    console.log("THERE WE GO.");
+    var makeQuery = function(s_string, database="ReactomeId") {
+        $.ajax({
+            type: "GET",
+            url: window.ROOT + "/autocomplete",
+            data: {
+                's_string'    : s_string,
+                'database'    : database,
+                'csrfmiddlewaretoken': '{{ csrf_token }}'
+            },
+            success: function(data) {
+                // Change Exp type
+                response(data);
+            },
+            error: function(data) {
+            }
+        
+        });
+
+    }
+    if (s_string.match("R-HSA-.+")) {
+        makeQuery(s_string, "ReactomeId");
+    } else {
+        makeQuery(s_string, "ReactomeName");
+    }
+    return;
+
+
+}
