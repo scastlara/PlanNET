@@ -60,12 +60,13 @@
                                     <span class="caret"></span>
                                 </a>
                                 <ul class="dropdown-menu">
-                                    <li><a href="{% url 'gene_search' %}">Gene Search</a></li>
-                                    <li><a href="{% url 'net_explorer' %}">Net Explorer</a></li>
-                                    <li><a href="/jbrowse/">Gene Browser</a></li>
-                                    <li><a href="{% url 'blast' %}">Blast</a></li>
-                                    <li><a href="{% url 'path_finder' %}">Pathway Finder</a></li>
-                                    <li><a href="{% url 'planexp' %}">PlanExp</a></li>
+                                    <li><a href="{% url 'gene_search' %}"><img class="tools-icon" src="{% static 'Images/genesearch-icon-transparent.png' %}">Gene Search</a></li>
+                                    <li><a href="{% url 'net_explorer' %}"><img class="tools-icon" src="{% static 'Images/netexplorer-icon-small.png' %}">Net Explorer</a></li>
+                                    <li><a href="/jbrowse/"><img class="tools-icon" src="{% static 'Images/genebrowser-icon-small.png' %}">Gene Browser</a></li>
+                                    <li><a href="{% url 'blast' %}"><img class="tools-icon" src="{% static 'Images/blast-icon-small.png' %}">Blast</a></li>
+                                    <li><a href="{% url 'path_finder' %}"><img class="tools-icon" src="{% static 'Images/pathwayfinder-icon-small.png' %}">Pathway Finder</a></li>
+                                    <li><a href="{% url 'planexp' %}"><img class="tools-icon" src="{% static 'Images/planexp-icon-transparent.png' %}">PlanExp</a></li>
+                                    <li><a href="{% url 'id_conversion' %}"><img class="tools-icon" src="{% static 'Images/id_converter.png' %}">ID Converter</a></li>
                                 </ul>
                             </li>
                             <li id="navbar-datasets"><a href="{% url 'datasets' %}">Datasets</a></li>
