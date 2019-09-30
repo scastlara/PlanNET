@@ -1,4 +1,7 @@
 from ..helpers.common import *
+import smtplib
+from email.mime.text import MIMEText
+
 
 def planexp_send_data(request):
     """
@@ -25,7 +28,7 @@ def planexp_send_data(request):
             missing = [ format_field(field) for field in missing ]
             return render(request, 'NetExplorer/planexp_send_data.html', { 'missing': missing })
         else:
-            send_data_email(data)
+            #send_data_email(data)
             return render(request, 'NetExplorer/planexp_send_data.html', { 'ok': True, 'title': data['title'] })
     else:
         return render(request, 'NetExplorer/planexp_send_data.html')
@@ -36,4 +39,16 @@ def format_field(field):
     return field
 
 def send_data_email(data):
-    pass
+    body = "User email: {}\nTitle: {}\nPublication: {}\nData Link: {}\nDescription: {}\n Permissions: {}".format(
+        data['user_email'], 
+        data['title'], 
+        data['publication'], 
+        data['data_link'],
+        data['description'], 
+        data['public_permissions']
+    )
+    msg = MIMEText(body)
+    msg.add_header("Subject", "PlanEXP submission data request")
+    s = smtplib.SMTP('localhost')
+    s.sendmail("compgen@ub.edu", ["compgen@ub.edu", "s.cast.lara@gmail.com"], msg.to_string())
+    s.quit()

@@ -1,0 +1,232 @@
+{% extends 'NetExplorer/base.html' %}
+{% load static %}
+
+{% block title %}
+     - ID conversion tool
+{% endblock title %}
+
+
+
+
+
+{% block content %}
+
+<!-- ERROR MESSAGE -->
+<div class="panel panel-danger error-msg">
+    <div class="panel-heading">
+        Error
+    </div>
+    <div class="panel-body">
+        {{ error_msg }}
+    </div>
+</div>
+
+
+<!-- ID CONVERSION FORM -->
+<div class="panel panel-conversion">
+    <div class="panel-heading">
+        <div class="row row-eq-height">
+            <div class="col-sm-1 conversion-icon-container">
+                <img class="blast-icon-inside" src="{% static 'Images/id_converter.png' %}"/>
+            </div>
+            <div class="col-sm-11 conversion-title">
+                <h1>ID Conversion Tool</h1>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel-body">
+
+        <blockquote>
+            Convert identifiers from any transcriptome database to any other database by looking for their shared genes or human homologs.
+
+            <i>
+                <p class="text-right">
+                    See also: 
+                    <a href="https://planosphere.stowers.org/search/rosetta-stone-transcript-mapper" target="_blank">
+                        Planosphere's Rosetta Stone Transcript Mapper
+                    </a>
+                </p>
+            </i>
+        </blockquote>
+
+        <form id="conversion-form" method="post" enctype="multipart/form-data" action="{% url 'id_conversion' %}">
+            {% csrf_token %}
+
+            <h2>Query</h2>
+            <label for="query-textarea"></label>
+            <textarea form="conversion-form" name="query-identifiers" class="form-control" id="query-textarea" rows="6" cols="12" placeholder="Paste your identifiers here"></textarea>
+            
+            <br><br>
+            <hr>
+            <h2>TO</h2>
+            <p>Database of the desired identifiers</p>
+            <select name="database-to" class="selectpicker" title="Select database">
+                <option data-content="<span class='badge badge-success gene-select'>Planarian Gene</span>">Gene</option>
+                <option data-content="<span class='badge badge-success human-select'>Human</span>" value="Human">Human</option>
+                <option data-divider="true"></option>
+                {% for db in databases %}
+                    <option data-content="<img class='legend-db' src='{% static 'Images/' %}legend-{{ db.name }}.png'>{{ db.name }}" value="{{ db.name }}">{{ db.name }}</option>
+                {% endfor %}
+            </select>
+
+            <br><br>
+            <hr>
+            <h2>BY</h2>
+            <p>Intermediate database</p>
+            <select name="database-by" class="selectpicker" title="Select database">
+                <option data-content="<span class='badge badge-success gene-select'>Planarian Gene</span>" selected>Gene</option>
+                <option data-content="<span class='badge badge-success human-select'>Human</span>">Human</option>
+            </select>
+
+            <button id="conversion-btn" type="submit" class="btn btn-conversion">
+                 Convert
+            </button>
+
+        </form>
+
+
+
+    </div>
+
+</div>
+
+<div class="results-div">
+    {% if results %}
+        <h2>Results</h2>
+        <br>
+            <table id="conversion-results">
+                <thead>
+                    <tr>
+                        <th>Input Symbol</th>
+                        <th>Intermediate element(s)</th>
+                        <th>Target Symbol(s)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for input_contig in results %}
+                    
+                        <tr>
+                            <td>
+                                <a class="card-trigger"
+                                    title="Click to view info card"
+                                    target="{{ input_contig.0.symbol }}"
+                                    targetDB="{{ input_contig.0.database }}">
+                                    {{ input_contig.0.symbol }}
+                                </a>
+                            
+                            </td>
+
+                            <td>
+                                {% for mapping_contig in input_contig.1 %}
+                                    {% if not forloop.first %}{% if forloop.last %} ,{% else %};{% endif %}{% endif %}
+                                    <a class="card-trigger"
+                                        title="Click to view info card"
+                                        target="{{ mapping_contig.symbol }}"
+                                        targetDB="{{ mapping_contig.database }}">
+                                        {{ mapping_contig.symbol }}
+                                    </a>
+                                {% endfor %}
+                            </td>
+
+
+                            <td>
+                            {% for mapping_contig in input_contig.2 %}
+                                {% if not forloop.first %}{% if forloop.last %} ,{% else %};{% endif %}{% endif %}
+                                <a class="card-trigger"
+                                    title="Click to view info card"
+                                    target="{{ mapping_contig.symbol }}"
+                                    targetDB="{{ mapping_contig.database }}">
+                                    {{ mapping_contig.symbol }}
+                                </a>
+                            {% endfor %}
+                            </td>
+                            
+
+
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <!-- HIDDEN CARD OVERLAY -->
+            <div id="button-container">
+                <div class="close-overlay" title="Close card">
+                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                </div>
+                <div class="full-screen-card" title="Open in new window">
+                    <span class="glyphicon glyphicon-new-window" aria-hidden="true"></span>
+                </div>
+            </div>
+            <div id="card-overlay" class="card-overlay">
+                <div class="card-title">
+
+                </div>
+           </div>
+
+    {% else %}
+        {% if noresults %}
+            <div class="panel panel-danger">
+                <div class="panel-heading">
+                    <h2>No results for your query.</h2>
+                </div>
+            </div>
+        {% endif %}
+    {% endif %}
+</div>
+
+{% endblock content %}
+
+
+
+<!-- ADDITIONAL SCRIPTS -->
+{% block scripts %}
+<script src="{% static 'js/get-card.js' %}"></script>
+<script src="{% static 'js/searchpanel.js' %}"></script>
+    {% if results %}
+        <script>
+            $(document).ready(function(){
+                $('#conversion-results').DataTable({
+                    dom: 'Bfrtip',
+                    buttons: [
+                        'csvHtml5'
+                    ]
+                });
+            });
+        </script>
+    {% endif %}
+{% if error_msg %}
+    <script>
+        $(".error-msg").show();
+    </script>
+{% endif %}
+
+
+
+<script>
+    $("#query-textarea").autocomplete({
+        source: function (request, response) { 
+            autocompleteContig(extractLast( request.term ), response);
+        
+        },
+        minLength: 2,
+        focus: function() {
+            // prevent value inserted on focus
+            return false;
+        },
+        select: function( event, ui ) {
+            var terms = splitSearch( this.value );
+            // remove the current input
+            terms.pop();
+            // add the selected item
+            terms.push( ui.item.value );
+            // add placeholder to get the comma-and-space at the end
+            terms.push( "" );
+            this.value = terms.join( ", " );
+            return false;
+        }
+    });
+
+</script>
+
+{% endblock scripts %}

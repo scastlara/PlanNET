@@ -289,6 +289,16 @@ h1, h2, h3, h4, h5, h6 {
     border-color: #e7ccf6 !important;
 }
 
+.panel-conversion {
+    border-style: solid !important;
+}
+
+.panel-conversion .panel-heading {
+    background-color: #9e806c !important;
+    border-color: #8a6e5a !important;
+    color: white;
+}
+
 .panel-planexp {
     border-style: solid !important;
 }
@@ -308,6 +318,11 @@ h1, h2, h3, h4, h5, h6 {
     color: white;
 }
 
+
+.btn-conversion {
+    background-color: #9e806c;
+    color: white;
+}
 
 /* GENE CARDS */
 /* ----------------------------- */
@@ -1524,8 +1539,14 @@ input[type="file"] {
 .blast-icon-container {
     vertical-align:middle;
 }
+
+
 .blast-title {
     vertical-align:middle;
+}
+
+.conversion-icon-container {
+    vertical-align: middle;
 }
 
 .row-eq-height {

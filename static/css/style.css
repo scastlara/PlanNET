@@ -289,6 +289,16 @@ h1, h2, h3, h4, h5, h6 {
     border-color: #e7ccf6 !important;
 }
 
+.panel-conversion {
+    border-style: solid !important;
+}
+
+.panel-conversion .panel-heading {
+    background-color: #9e806c !important;
+    border-color: #8a6e5a !important;
+    color: white;
+}
+
 .panel-planexp {
     border-style: solid !important;
 }
@@ -308,6 +318,11 @@ h1, h2, h3, h4, h5, h6 {
     color: white;
 }
 
+
+.btn-conversion {
+    background-color: #9e806c;
+    color: white;
+}
 
 /* GENE CARDS */
 /* ----------------------------- */
@@ -1524,8 +1539,14 @@ input[type="file"] {
 .blast-icon-container {
     vertical-align:middle;
 }
+
+
 .blast-title {
     vertical-align:middle;
+}
+
+.conversion-icon-container {
+    vertical-align: middle;
 }
 
 .row-eq-height {
@@ -2743,4 +2764,68 @@ summary { display: list-item !important; }
 
 #tutorial-plot-controls-list li {
     margin-bottom: 5px;
+}
+
+.reactome-td {
+    width: 100%;
+    font-size: 10px;
+}
+
+
+.send-to-planexp-btn-img {
+    width: 40px;
+}
+
+
+#send-to-planexp-dialog {
+    display: none;
+    margin-left: calc((75% - 700px)/2);
+    padding: 25px;
+    margin-top: 250px;
+    width: 700px;
+    height: 300px;
+    z-index: 1000000000;
+    position: fixed;
+    background-color: white;
+    border-color: #D4D4D4;
+    border-style: solid;
+    border-width: 2px;
+}
+
+#send-to-planexp-submit {
+    width: 100px;
+}
+
+#send-to-planexp-error1 {
+    display: none;
+}
+
+#send-to-planexp-error2 {
+    display: none;
+}
+
+.planexp-upload-text {
+    float: right;
+}
+
+.select-planexp-form {
+    float:left;
+}
+
+#planexp-links-loading {
+    display: none;
+    position: absolute;
+    z-index: 2;
+    left: calc(50% - 75px);
+    margin-top: 75px;
+}
+
+
+#planexp-links-error {
+    display: none; 
+    margin: auto;
+    font-size: 18px;
+    padding: 8px;
+    width: 700px; 
+    background-color: #FDD4D4;
 }

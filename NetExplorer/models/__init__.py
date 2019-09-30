@@ -6,3 +6,4 @@ from NetExplorer.models.mysql_models import *
 from NetExplorer.models.neo4j_models import *
 from NetExplorer.models.plots import *
 from NetExplorer.models.gene_ontology import *
+from NetExplorer.models.id_converter import *

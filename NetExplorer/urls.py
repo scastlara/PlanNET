@@ -17,6 +17,7 @@ urlpatterns = [
     url(r'^map_expression$', views.map_expression, name="map_expression"),
     url(r'^tutorial', views.tutorial,             name="tutorial"),
     url(r'^show_connections', views.show_connections, name="show_connections"),
+    url(r'^id_conversion', views.id_conversion, name="id_conversion"),
     url(r'^downloads', views.downloads, name="downloads"),
     url(r'^downloader', views.downloader, name="downloader"),
     url(r'^about', views.about, name="about"),
