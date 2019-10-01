@@ -15,7 +15,6 @@ def id_conversion(request):
             query_identifiers = [ query_identifier for query_identifier in query_identifiers if query_identifier ]
             id_converter = IDConverter(query_identifiers)
             results = id_converter.convert(to_database, by_database)
-            print(results)
             results = {
                 'databases': Dataset.get_allowed_datasets(request.user),
                 'results': results

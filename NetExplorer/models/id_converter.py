@@ -7,41 +7,32 @@ class IDConverter(object):
         self.symbols = symbols
     
     def convert(self, to_db, by_db="Gene"):
-        gene_list = self._initialize_gene_list(self.symbols, to_db)
-        intermediate_elements = self._get_intermediate_elements(gene_list, by_db)
+        intermediate_elements = self._get_intermediate_elements(to_db, by_db)
         results = self._get_results(intermediate_elements, to_db, by_db)
         print(results)
         return results
             
-    def _get_intermediate_elements(self, gene_list, by_db):
-        if by_db == "Gene":
-            intermediate_elements = self._by_gene(gene_list)
-        elif by_db == "Human":
-            intermediate_elements = self._by_human(gene_list)
+    def _get_intermediate_elements(self, to_db, by_db):
+        intermediate_elements = []
+        for symbol in self.symbols:
+            gene_search = GeneSearch(symbol, to_db)
+            if by_db == "Gene":
+                genes_for_symbol = gene_search.get_planarian_genes()
+            elif by_db == "Human":
+                genes_for_symbol = gene_search.get_human_genes()
+                print(genes_for_symbol)
+            input_node = self._return_input_node(gene_search)
+            intermediate_elements.append((input_node, genes_for_symbol))
         return intermediate_elements
 
-    def _initialize_gene_list(self, symbols, to_db):
-        gene_list = GraphCytoscape()
-        gene_list.new_nodes(self.symbols, to_db)
-        return gene_list
-
-    def _by_gene(self, gene_list):
-        intermediate_elements = []
-        for contig in gene_list.nodes:
-            genes_for_gene = contig.get_genes()
-            intermediate_elements.append((contig, genes_for_gene))
-        return intermediate_elements
-    
-    def _by_human(self, gene_list):
-        intermediate_elements = []
-        for contig in gene_list.nodes:
-            contig.get_homolog()
-            if contig.homolog:
-                human_homologs = [ contig.homolog.human ]
-            else:
-                human_homologs = []
-            intermediate_elements.append((contig, human_homologs))
-        return intermediate_elements
+    def _return_input_node(self, gene_search):
+        if gene_search.sterm_database == "Human":
+            node_obj = HumanNode(gene_search.sterm, gene_search.sterm_database, query=False)
+        elif gene_search.sterm_database == "Smesgene":
+            node_obj = PlanarianGene(gene_search.sterm, gene_search.sterm_database, query=False)
+        else:
+            node_obj = PlanarianContig(gene_search.sterm, gene_search.sterm_database, query=False)
+        return node_obj
 
     def _get_results(self, intermediate_elements, to_db, by_db):
         results = []

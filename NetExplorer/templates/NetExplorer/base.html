@@ -71,6 +71,16 @@
                             </li>
                             <li id="navbar-datasets"><a href="{% url 'datasets' %}">Datasets</a></li>
                             <li id="navbar-downloads"><a href="{% url 'downloads' %}">Downloads</a></li>
+                            <li class="dropdown">
+                                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Other Resources
+                                    <span class="caret"></span>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="http://smedgd.neuro.utah.edu/" target="_blank">SmedGD</a></li>
+                                    <li><a href="http://planmine.mpi-cbg.de/planmine/" target="_blank">PlanMine</a></li>
+                                    <li><a href="https://planosphere.stowers.org/" target="_blank">Planosphere</a></li>
+                                </ul>
+                            </li>
                             <li id="navbar-about"><a href="{% url 'about' %}">About</a></li>
                         </ul>
                         
@@ -91,7 +101,7 @@
                                 </form>
                             </li>
                             
-
+                            <li class="divider-vertical"></li>
                             {% if user.is_authenticated %}
                                 <li id="navbar-login"><a href="{% url 'account' %}"><span class="glyphicon glyphicon-user"></span> {{ user.username }}</a></li>
                                 <li id="navbar-logout"><a href="{% url 'logout' %}"><span class="glyphicon glyphicon-log-out"></span> Log out</a></li>

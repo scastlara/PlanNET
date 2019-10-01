@@ -2036,6 +2036,10 @@ class GeneSearch(object):
                 human_nodes = [ HumanNode(self.sterm.upper(), self.sterm_database) ]
         elif self.sterm_database == "GO":
             human_nodes = GeneOntology(self.sterm, human=True).human_nodes
+        elif self.sterm_database not in set(["PFAM", "Smesgene"]):
+            planarian_contig = PlanarianContig(self.sterm, self.sterm_database)
+            planarian_contig.get_homolog()
+            human_nodes = [ planarian_contig.homolog.human ]
         return human_nodes
 
     def quick_search(self):
