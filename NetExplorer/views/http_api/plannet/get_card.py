@@ -1,5 +1,7 @@
 from ...helpers.common import *
-
+from django.contrib.staticfiles.templatetags.staticfiles import static
+from django.core.files.storage import default_storage
+from django.contrib.staticfiles import finders
 
 def get_card(request, symbol=None, database=None):
     """
@@ -60,6 +62,9 @@ def get_card(request, symbol=None, database=None):
             contigs = card_node.get_planarian_contigs()
             best_contig = card_node.get_best_transcript()
             graph = GraphCytoscape()
+            card_node.get_transcription_factors()
+            has_logo = gene_has_logo(card_node.symbol)
+
             if best_contig:
                 best_contig.get_homolog()
                 best_contig.get_neighbours()
@@ -69,6 +74,7 @@ def get_card(request, symbol=None, database=None):
                 nodes, edges = best_contig.get_graphelements()
                 graph.add_elements(nodes)
                 graph.add_elements(edges)
+
         else:
             template = "NetExplorer/contig_card.html"
             gsearch = GeneSearch(symbol, database)
@@ -94,7 +100,8 @@ def get_card(request, symbol=None, database=None):
             'node': card_node,
             'transcripts': contigs,
             'best_transcript': best_contig,
-            'json_graph': graph.to_json()
+            'json_graph': graph.to_json(),
+            'has_logo': has_logo
         }
     else:
         response = {
@@ -109,3 +116,7 @@ def get_card(request, symbol=None, database=None):
         response['base_template'] = 'NetExplorer/base.html'
     
     return render(request, template, response)
+
+
+def gene_has_logo(symbol):
+    return finders.find('Images/promoter-images/' + symbol + '-promoter.png')

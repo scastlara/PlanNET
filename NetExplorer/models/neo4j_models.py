@@ -1542,7 +1542,10 @@ class GraphCytoscape(object):
                 'gene' or 'name', value is gene symbol or gene name respectively.
 
         """
-        query = neoquery.GET_GENES_BULK % (database, symbols)
+        if database != "Smesgene":
+            query = neoquery.GET_GENES_BULK % (database, symbols)
+        else:
+            query = neoquery.GET_GENES_BULK_FROM_GENES % (symbols)
         results = GRAPH.run(query)
         results = results.data()
         genes = {}
@@ -2114,6 +2117,7 @@ class PlanarianGene(Node):
         sequence (str): Nucleotide sequence of gene.
         homolog (:obj:`HumanNode`): Homologous gene.
         chromosome (str): Chromosome name where gene is located.
+        transcription_factors (list of :obj:`TfAnnotation`).
     
     Args:
         symbol (str): Gene symbol (SMESG...).
@@ -2144,6 +2148,7 @@ class PlanarianGene(Node):
         self.sequence = sequence
         self.chromosome = chromosome
         self.homolog = homolog
+        self.transcription_factors = []
 
         if sequence is None and query:
             self.__query_node()
@@ -2296,11 +2301,128 @@ class PlanarianGene(Node):
                 database = "All"
         return prednodes
 
+    def get_transcription_factors(self):
+        """
+        Gets transcription factors associated with any of its transcripts.
+        Fills attribute 'transcription_factors'.
+        """
+        
+        query = neoquery.GET_TRANSCRIPTION_FACTORS % (PlanarianGene.preferred_database, self.symbol)
+        results = GRAPH.run(query)
+        results = results.data()
+
+        if results:
+            for row in results:
+                transcript_symbol = row["transcript_symbol"]
+                tf_symbol = row["tf_symbol"]
+                tf_name = row["tf_name"]
+                tf_homer_url = row["tf_homer_url"]
+                tf_logo_url = row["tf_logo_url"]
+                tf_identifier = row["tf_identifier"]
+                tfr_score = row["tfr_score"]
+                tfr_strand = row["tfr_strand"]
+                tfr_sequence = row["tfr_sequence"]
+                tfr_offset = row["tfr_offset"]
+
+                transcript = PlanarianContig(transcript_symbol, PlanarianGene.preferred_database, query=False)
+                transcription_factor = TranscriptionFactor(
+                    symbol=tf_symbol,
+                    database="Tf",
+                    name=tf_name,
+                    homer_url=tf_homer_url,
+                    logo_url=tf_logo_url,
+                    identifier=tf_identifier,
+                    query=False
+                )
+                annotation = TfAnnotation(
+                    tf=transcription_factor,
+                    transcript=transcript,
+                    score=tfr_score,
+                    strand=tfr_strand,
+                    sequence=tfr_sequence,
+                    offset=tfr_offset
+                )
+                self.transcription_factors.append(annotation)
+            self._sort_transcription_factors()
+
+    def _sort_transcription_factors(self):
+        self.transcription_factors = sorted(
+            self.transcription_factors, 
+            key=lambda x: x.score,
+            reverse=True
+        )
+
+
     def __hash__(self):
         return hash((self.symbol))
 
     def __eq__(self, other):
         return self.symbol == other.symbol
+
+
+class TfAnnotation(object):
+    """
+    Class for Transcription factor annotation. It contains the information of a 
+    particular annotation in the genome for a transcription factor.
+
+    Attributes:
+        tf (:obj:`TranscriptionFactor`): Transcription factor to which annotation refers to.
+        transcript (:obj:`PlanatianContig`): Transcript from which TSS was computed.
+        score (float): Score as reported by HOMER.
+        sequence (str): Predicted binding sequence.
+        offset (int): Offset as reported by HOMER.
+    """
+    def __init__(self, tf, transcript, score, sequence, strand, offset):
+        self.tf = tf
+        self.transcript = transcript
+        self.score = round(float(score), 2)
+        self.sequence = sequence
+        self.strand = strand
+        self.offset = offset
+
+
+class TranscriptionFactor(Node):
+    """
+    Class for Transcription Factors in PlanNET
+
+    Attributes:
+        symbol (str): Full unique symbol of tf.
+        database (str): 'Tf'.
+        name (str): Tf short name.
+        homer_url (str): URL to Homer TF page.
+        logo_url (str): URL to Homer logo image.
+        identifier (int): Homer TF identifier (optional).
+    """
+
+    allowed_databases = set(["Tf"])
+    def __init__(self, symbol, database, 
+                 name=None, homer_url=None, logo_url=None, 
+                 identifier=None, query=True):
+        super(TranscriptionFactor, self).__init__(symbol, database)
+        self.name = name
+        self.homer_url = homer_url
+        self.logo_url = logo_url
+        self.identifier = identifier
+
+        if query:
+            self.__query_node()
+    
+    def __query_node(self):
+        query = neoquery.TF_QUERY % (self.symbol)
+        results = GRAPH.run(query)
+        results = results.data()
+        if results:
+            self.name = results[0]['name']
+            self.homer_url = results[0]['homer_url']
+            self.logo_url = results[0]['logo_url']
+            if "identifier" in results[0] and results[0]['identifier']:
+                self.identifier = results[0]['identifier']
+            else:
+                self.identifier = None
+        else:
+            raise exceptions.NodeNotFound(self.symbol, self.database)
+
+
 
 
 # To avoid import errors

@@ -6,153 +6,172 @@
 
 
 {% block content %}
-    <h2>About</h2>
-    <hr>
-    <p>
-        <strong>PlanNET</strong> is a web application that stores predicted <i>Schmidtea mediterranea</i> protein-protein interactions (ppi) projected over a Human ppi network.
-         Currently, PlanNET holds 273,203 human ppi, and 729,043 <i>Schmidtea mediterranea</i> interactions (predicted for 9 different transcriptomes).
-    </p>
+<div class="row">
 
-    <p>
-        PlanNET has been developed by the <a href="https://compgen.bio.ub.edu" target="_blank">Computational Genomics Lab</a>, at the University of Barcelona.
-    </p>
 
-    <br>
-    <br>
-    <h2>Citing PlanNET</h2>
-    <hr>
-    <blockquote>
-      <p>
-        <a href="https://academic.oup.com/bioinformatics/article/34/6/1016/4657068" target="_blank"><b>PlanNET</b>: homology-based predicted interactome for multiple planarian transcriptomes</a>
-        <br/>
-        S. Castillo-Lara, J.F. Abril<br />
-        <i>Bioinformatics</i>, Volume 34, Issue 6, 15 March 2018, Pages 1016–1023, <a href="https://doi.org/10.1093/bioinformatics/btx738" target="_blank">btx738</a><br />
-      </p>
-      <details>
-          <summary>BibTex</summary>
-          <pre>
-    @article{Castillo-Lara2018,
-      author = {Castillo-Lara, S and Abril, J F},
-      title = {"PlanNET: homology-based predicted interactome for multiple planarian transcriptomes"},
-      journal = {Bioinformatics},
-      volume = {34},
-      number = {6},
-      pages = {1016--1023},
-      year = {2018},
-      doi = {10.1093/bioinformatics/btx738},
-      URL = {http://dx.doi.org/10.1093/bioinformatics/btx738},
-      eprint = {/oup/backfile/content_public/journal/bioinformatics/34/6/10.1093_bioinformatics_btx738/2/btx738.pdf}
-    }
-        </pre>
-    </details>
-</blockquote>
+    <nav class="col-sm-2" id="myScrollspy">
+        <ul class="nav nav-pills nav-stacked" data-spy="affix" data-offset-top="420">
+            <li><a href="#about-plannet">About PlanNET</a></li>
+            <li><a href="#publications">Publications</a></li>
+            <li><a href="#predictor">PPI predictor</a></li>
+            <li><a href="#update-notes">Update Notes</a></li>
+            <hr>
+            <li id="back_home"><a href="{% url 'index' %}" ><span class="glyphicon glyphicon-triangle-left"></span>Go back Home</a></li>
+        </ul>
+    </nav>
 
-    <br>
-    <br>
-    <h2 id="predictor">About the PPI predictor</h2>
-    <hr>
-    <p>
-        PlanNET uses a <a href="https://en.wikipedia.org/wiki/Random_forest" target="_blank">Random Forest classifier</a> in order to predict protein-protein interactions for the planaria Schmidtea mediterranea, by using a reference human network. 
-        This predictor takes into account 19 features for each possible pair of interacting proteins, and then it assigns a score to each pair, ranging from 0 to 1. 
-    </p>
-    <p>
-        The prediction of interactions was evaluated using <a href="https://en.wikipedia.org/wiki/Out-of-bag_error" target="_blank">OOB values of performance</a>. 
-        The performance measures for the current version of PlanNET are:
-    </p>
-    <table id="performance-table" class="table table-hover">
-        <thead>
-            <tr>
-                <th data-toggle="tooltip" data-placement="top" title="Fraction of correct interactions among predicted interactions.">Precision</th>
-                <th data-toggle="tooltip" data-placement="top" title="Fraction of correct interactions predicted over total number of interactions.">Recall</th>
-                <th data-toggle="tooltip" data-placement="top" title="Proportion of non-interactions predicted as such.">Specificity</th>
-                <th data-toggle="tooltip" data-placement="top" title="Harmonic mean of precision and recall.">F-measure</th>
-                <th data-toggle="tooltip" data-placement="top" title="Proportion of correct predictions.">Accuracy</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>31.23 %</td>
-                <td>27.80 %</td>
-                <td>99.75 %</td>
-                <td>29.42 %</td>
-                <td>99.46 %</td>
-            </tr>
-        </tbody>
-    </table>
-
-    <div class="row">
-        <div class="about-img-container col-sm-6">
-            <figure>
-                <a href="{% static 'Images/roc_curve.png' %}" title="Full screen" alt="Roc curve of PlanNET classifier" target="_blank">
-                    <img class="about-img" src="{% static 'Images/roc_curve.png' %}">
-                </a>
-                <figcaption><b>ROC curve</b> of the random forest classifiers built using the OOB votes of the predictor.</figcaption>
-            </figure>
-        </div>
-        <div class="about-img-container col-sm-6"> 
-            <figure>
-                <a href="{% static 'Images/var_importance.png' %}" title="Full screen" alt="Variable importance of PlanNET classifier" target="_blank">
-                    <img class="about-img" src="{% static 'Images/var_importance.png' %}">
-                </a>
-                <figcaption><b>Variable importance</b> of the 19 features used for the classification expressed as the mean decrease in <a href="https://en.wikipedia.org/wiki/Gini_coefficient" target="_blank">Gini coefficient</a>.</figcaption>
-            </figure>
-        </div>
-    </div>
-
-    <br>
-
-    <blockquote>
+    <div class="col-sm-10">
+        <h2 id="about-plannet">About PlanNET</h2>
+        <hr>
         <p>
-            For more information refer to the <a href="https://academic.oup.com/bioinformatics/article/34/6/1016/4657068" target="_blank">published paper</a>.
+            <strong>PlanNET</strong> is a web application that stores predicted <i>Schmidtea mediterranea</i> protein-protein interactions (ppi) projected over a Human ppi network.
+            Currently, PlanNET holds 273,203 human ppi, and 729,043 <i>Schmidtea mediterranea</i> interactions (predicted for 9 different transcriptomes).
         </p>
+
+        <p>
+            PlanNET has been developed by the <a href="https://compgen.bio.ub.edu" target="_blank">Computational Genomics Lab</a>, at the University of Barcelona.
+        </p>
+
+        <br>
+        <br>
+        <h2 id="publications">Publications</h2>
+        <hr>
+        <blockquote>
+        <p>
+            <a href="https://academic.oup.com/bioinformatics/article/34/6/1016/4657068" target="_blank"><b>PlanNET</b>: homology-based predicted interactome for multiple planarian transcriptomes</a>
+            <br/>
+            S. Castillo-Lara, J.F. Abril<br />
+            <i>Bioinformatics</i>, Volume 34, Issue 6, 15 March 2018, Pages 1016–1023, <a href="https://doi.org/10.1093/bioinformatics/btx738" target="_blank">btx738</a><br />
+        </p>
+        <details>
+            <summary>BibTex</summary>
+            <pre>
+        @article{Castillo-Lara2018,
+        author = {Castillo-Lara, S and Abril, J F},
+        title = {"PlanNET: homology-based predicted interactome for multiple planarian transcriptomes"},
+        journal = {Bioinformatics},
+        volume = {34},
+        number = {6},
+        pages = {1016--1023},
+        year = {2018},
+        doi = {10.1093/bioinformatics/btx738},
+        URL = {http://dx.doi.org/10.1093/bioinformatics/btx738},
+        eprint = {/oup/backfile/content_public/journal/bioinformatics/34/6/10.1093_bioinformatics_btx738/2/btx738.pdf}
+        }
+            </pre>
+        </details>
     </blockquote>
 
+        <br>
+        <br>
+        <h2 id="predictor">PPI predictor</h2>
+        <hr>
+        <p>
+            PlanNET uses a <a href="https://en.wikipedia.org/wiki/Random_forest" target="_blank">Random Forest classifier</a> in order to predict protein-protein interactions for the planaria Schmidtea mediterranea, by using a reference human network. 
+            This predictor takes into account 19 features for each possible pair of interacting proteins, and then it assigns a score to each pair, ranging from 0 to 1. 
+        </p>
+        <p>
+            The prediction of interactions was evaluated using <a href="https://en.wikipedia.org/wiki/Out-of-bag_error" target="_blank">OOB values of performance</a>. 
+            The performance measures for the current version of PlanNET are:
+        </p>
+        <table id="performance-table" class="table table-hover">
+            <thead>
+                <tr>
+                    <th data-toggle="tooltip" data-placement="top" title="Fraction of correct interactions among predicted interactions.">Precision</th>
+                    <th data-toggle="tooltip" data-placement="top" title="Fraction of correct interactions predicted over total number of interactions.">Recall</th>
+                    <th data-toggle="tooltip" data-placement="top" title="Proportion of non-interactions predicted as such.">Specificity</th>
+                    <th data-toggle="tooltip" data-placement="top" title="Harmonic mean of precision and recall.">F-measure</th>
+                    <th data-toggle="tooltip" data-placement="top" title="Proportion of correct predictions.">Accuracy</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>31.23 %</td>
+                    <td>27.80 %</td>
+                    <td>99.75 %</td>
+                    <td>29.42 %</td>
+                    <td>99.46 %</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="row">
+            <div class="about-img-container col-sm-6">
+                <figure>
+                    <a href="{% static 'Images/roc_curve.png' %}" title="Full screen" alt="Roc curve of PlanNET classifier" target="_blank">
+                        <img class="about-img" src="{% static 'Images/roc_curve.png' %}">
+                    </a>
+                    <figcaption><b>ROC curve</b> of the random forest classifiers built using the OOB votes of the predictor.</figcaption>
+                </figure>
+            </div>
+            <div class="about-img-container col-sm-6"> 
+                <figure>
+                    <a href="{% static 'Images/var_importance.png' %}" title="Full screen" alt="Variable importance of PlanNET classifier" target="_blank">
+                        <img class="about-img" src="{% static 'Images/var_importance.png' %}">
+                    </a>
+                    <figcaption><b>Variable importance</b> of the 19 features used for the classification expressed as the mean decrease in <a href="https://en.wikipedia.org/wiki/Gini_coefficient" target="_blank">Gini coefficient</a>.</figcaption>
+                </figure>
+            </div>
+        </div>
+
+        <br>
+
+        <blockquote>
+            <p>
+                For more information refer to the <a href="https://academic.oup.com/bioinformatics/article/34/6/1016/4657068" target="_blank">published paper</a>.
+            </p>
+        </blockquote>
 
 
-    <br>
-    <br>
-    <h2 id="update-notes">Update Notes</h2>
-    <hr>
-    <h3>v1.3: May 8th 2019</h3>
-    <ul class="update-notes-ul">
-        <li><a href="{% url 'planexp' %}">PlanExp</a> is now publicly available.</li>
-    </ul>
-    
-    <br>
-    <br>
 
-    <h3>v1.2: January 23rd 2019</h3>
-    <ul class="update-notes-ul">
-        <li>Schmidtea mediterranea predicted genes (see: <a href="https://academic.oup.com/nar/article/47/D1/D812/5212006" target="_blank">A. Rozanski et al.</a>) as well as their associated transcripts have been included in PlanNET as SmesGene and Smest respectively.</li>
-        <li>Smest gene associated transcripts are now available in the <a href="{% url 'blast' %}">BLAST</a> application.</li>
-        <li>A new gene card for Smesgenes has been implemented, with information regarding the associated transcripts across different transcriptomes, the genomic location, gene ontologies and predicted protein-protein interactions.</li>
-        <li>New Quick Search on Navigation bar has been added, along with a search All Databases option for GeneSearch.</li>
-        <li>Ability to filter results on GeneSearch implemented.</li>
-        <li>Several genomic features (such as mapped transcripts over <a href="https://www.nature.com/articles/nature25473" target="_blank">the newly assembled S.med genome</a>) can now be visualized using our new <a href="https://compgen.bio.ub.edu/jbrowse" target="_blank">JBrowse plugin</a>.</li>
-        <li><a href="{% url 'planexp' %}">PlanExp</a>, a PlanNET plugin for exploring RNA-seq experiments is available for registered users to test.</li>
-        <li>Databases are now identified by node border color instead of shape.</li>
-        <li>Node shape in NetExplorer and PathwayFinder now refers to the technology used for sequencing, with triangles reserved for "legacy" technologies such as Sanger and 454, and circles for high-throughput RNA-seq.</li>
-        <li>General improvements to design and readability of the application.</li>
-    </ul>
+        <br>
+        <br>
+        <h2 id="update-notes">Update Notes</h2>
+        <hr>
+        <h3>v1.3: May 8th 2019</h3>
+        <ul class="update-notes-ul">
+            <li><a href="{% url 'planexp' %}">PlanExp</a> is now publicly available.</li>
+        </ul>
+        
+        <br>
+        <br>
 
-    <br>
-    <br>
+        <h3>v1.2: January 23rd 2019</h3>
+        <ul class="update-notes-ul">
+            <li>Schmidtea mediterranea predicted genes (see: <a href="https://academic.oup.com/nar/article/47/D1/D812/5212006" target="_blank">A. Rozanski et al.</a>) as well as their associated transcripts have been included in PlanNET as SmesGene and Smest respectively.</li>
+            <li>Smest gene associated transcripts are now available in the <a href="{% url 'blast' %}">BLAST</a> application.</li>
+            <li>A new gene card for Smesgenes has been implemented, with information regarding the associated transcripts across different transcriptomes, the genomic location, gene ontologies and predicted protein-protein interactions.</li>
+            <li>New Quick Search on Navigation bar has been added, along with a search All Databases option for GeneSearch.</li>
+            <li>Ability to filter results on GeneSearch implemented.</li>
+            <li>Several genomic features (such as mapped transcripts over <a href="https://www.nature.com/articles/nature25473" target="_blank">the newly assembled S.med genome</a>) can now be visualized using our new <a href="https://compgen.bio.ub.edu/jbrowse" target="_blank">JBrowse plugin</a>.</li>
+            <li><a href="{% url 'planexp' %}">PlanExp</a>, a PlanNET plugin for exploring RNA-seq experiments is available for registered users to test.</li>
+            <li>Databases are now identified by node border color instead of shape.</li>
+            <li>Node shape in NetExplorer and PathwayFinder now refers to the technology used for sequencing, with triangles reserved for "legacy" technologies such as Sanger and 454, and circles for high-throughput RNA-seq.</li>
+            <li>General improvements to design and readability of the application.</li>
+        </ul>
 
-    <h3>v1.1: August 7th 2018</h3>
-    PlanNET has been updated from version 1.0 (published version at <a href="https://academic.oup.com/bioinformatics/article/34/6/1016/4657068" target="_blank">Bioinformatics</a>) to version 1.1.
+        <br>
+        <br>
 
-    These are the most important changes:
+        <h3>v1.1: August 7th 2018</h3>
+        PlanNET has been updated from version 1.0 (published version at <a href="https://academic.oup.com/bioinformatics/article/34/6/1016/4657068" target="_blank">Bioinformatics</a>) to version 1.1.
 
-    <ul class="update-notes-ul">
-        <li>In order to look for homologous proteins for each planarian transcript, we prioritized BLAST instead of EggNOG alignments.</li>
-        <li>The RandomForest classifier was refined by filtering the training dataset further, removing interactions not annotated as physical from BioGRID.</li>
-        <li>We selected a score cut-off of 0.7 for interactions, instead of the previously used 0.6 cut-off. The Filter Interactions slider in NetExplorer was updated: now it only shows interactions with a score higher than 0.7 by default, but the user can still select other cut-off values</li>
-        <li>PlanNET now holds 1,360,991 Schmidtea mediterranea interactions (up from 510,996).</li>
-        <li>The Smed454 dataset and Newmark dataset were temporarily removed because of disk size limitations. These will be uploaded in due time.</li>
-        <li>A manually curated list of identifiers for planarian transcripts was uploaded to PlanNET. Now users can search for these identifiers, which follow the form: "Smed_XXX". If a particular transcripts has a manually curated identifier, the identifier will appear in pink both in Gene Search and in the corresponding Gene Card.</li>
-        <li>New Data Downloader allows users to download sequences and sequence annotations in bulk. Available at <a href="{% url 'downloads' %}" title="Downloads">downloads page</a>.</li>
-        <li>Many quality of life improvements to the overall design of the website, including a search bar in NetExplorer.</li>
-    </ul>
+        These are the most important changes:
+
+        <ul class="update-notes-ul">
+            <li>In order to look for homologous proteins for each planarian transcript, we prioritized BLAST instead of EggNOG alignments.</li>
+            <li>The RandomForest classifier was refined by filtering the training dataset further, removing interactions not annotated as physical from BioGRID.</li>
+            <li>We selected a score cut-off of 0.7 for interactions, instead of the previously used 0.6 cut-off. The Filter Interactions slider in NetExplorer was updated: now it only shows interactions with a score higher than 0.7 by default, but the user can still select other cut-off values</li>
+            <li>PlanNET now holds 1,360,991 Schmidtea mediterranea interactions (up from 510,996).</li>
+            <li>The Smed454 dataset and Newmark dataset were temporarily removed because of disk size limitations. These will be uploaded in due time.</li>
+            <li>A manually curated list of identifiers for planarian transcripts was uploaded to PlanNET. Now users can search for these identifiers, which follow the form: "Smed_XXX". If a particular transcripts has a manually curated identifier, the identifier will appear in pink both in Gene Search and in the corresponding Gene Card.</li>
+            <li>New Data Downloader allows users to download sequences and sequence annotations in bulk. Available at <a href="{% url 'downloads' %}" title="Downloads">downloads page</a>.</li>
+            <li>Many quality of life improvements to the overall design of the website, including a search bar in NetExplorer.</li>
+        </ul>
+    </div>
+
+</div>
+
 
 {% endblock content %}
 

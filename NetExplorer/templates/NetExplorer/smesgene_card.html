@@ -2,6 +2,7 @@
 
 {% block content %}
 {% load static %}
+{% load file_exists %}
 
 <html>
 
@@ -137,6 +138,76 @@
             </div>
         {% endif %}
 
+
+
+    <h2><span class="glyphicon glyphicon-tag"></span> Predicted Regulatory Elements</h2>
+    <hr class="h2-sep">
+    {% if has_logo %}
+        <div id="promoter-img-container">
+            <a href="{% static "Images/promoter-images/" %}/{{ node.symbol }}-promoter.png" target="_blank">
+                <img class="promoter-img" src="{% static "Images/promoter-images/" %}/{{ node.symbol }}-promoter.png">
+            </a>
+        </div>
+
+        <h3>Transcription factors:</h3><br>
+        {% if node.transcription_factors %}
+                <table id="tf-table" class="table table-hover tf-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Sequence</th>
+                            <th>Strand</th>
+                            <th>Score</th>
+                            <th>TSS from</th>
+                            <th>Logo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for tfr in node.transcription_factors %}
+                            <tr>
+                                <td><a href="{{ tfr.tf.homer_url }}" target="_blank">{{ tfr.tf.name }}</a></td>
+                                <td>{{ tfr.sequence }}</td>
+                                <td>{{ tfr.strand }}</td>
+                                <td>{{ tfr.score }}</td>
+                                <td>
+                                    <a
+                                        class="card-link"
+                                        current="{{ node.symbol|urlencode}}"
+                                        currentDB="{{ node.database }}"
+                                        target="{{ tfr.transcript.symbol }}"
+                                        targetDB="{{ best_transcript.database }}">
+                                        {{ tfr.transcript.symbol }}
+                                    </a>
+                                </td>
+                                <td>{% if tfr.tf.logo_url != "NA" %}
+                                        <img class="tf-logo" src="
+                                        {% static "Images/tf_logos" %}/motif{{ tfr.tf.identifier }}.logo.png
+                                        ">
+                                        
+                                    {% else %}
+                                        N.A.
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+                <div class="pull-right">
+                    <br>
+                    <i>Transcription factors from <a href="http://homer.ucsd.edu/homer/motif/HomerMotifDB/homerResults.html" target="_blank">HOMER motif library</a>.</i>
+                </div>
+                <br><br>
+
+        {% else %}
+            No transcription factors.
+        {% endif %}
+    {% else %}
+        No regulatory elements.
+    {% endif %}
+
+
     <div class="row row-eq-height interactions-title">
         <div class="col-sm-10">
             <h2><span class="glyphicon glyphicon-tag"></span> Interactions</h2>
@@ -163,6 +234,8 @@
     </a>
     <br>
     <hr>
+
+
 
 
     <div class="int-table-container">
@@ -326,6 +399,10 @@
 
                 $("#transcripts-table").DataTable({
                     "order": [[ 0, "desc" ]]
+                });
+
+                $("#tf-table").DataTable({
+                    "order": [[ 3, "desc" ]]
                 });
             });
     </script>

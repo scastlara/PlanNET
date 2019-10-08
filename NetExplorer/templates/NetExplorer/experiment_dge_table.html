@@ -25,6 +25,9 @@
                             target="{{ exp.gene_symbol }}"
                             targetDB="{{ database.name }}">
                             {{ exp.gene_symbol }}
+                            {% if database.name == "Smesgene" %}
+                                {% if exp.name %} ({{ exp.name }}) {% endif %}
+                            {% endif %}
                         </a>
                     </td>
                     {% if database.name != "Smesgene" %}

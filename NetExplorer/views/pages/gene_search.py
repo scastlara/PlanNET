@@ -23,7 +23,6 @@ def results_order(result, results_length, search_symbols, dataset_order):
             key[2] = str(search_symbols.index(result.homolog.human.symbol))
         except ValueError:
             pass
-    print(key)
     return key
 
 def sort_results(datasets, results, search_symbols):

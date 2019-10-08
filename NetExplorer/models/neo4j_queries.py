@@ -393,6 +393,12 @@ GET_GENES_BULK = """
     RETURN n.symbol AS contig, m.symbol AS gene, m.name as name
 """
 
+GET_GENES_BULK_FROM_GENES = """
+    MATCH (n:Smesgene)
+    WHERE n.symbol IN %s
+    RETURN n.symbol AS contig, n.symbol AS gene, n.name as name
+"""
+
 GET_HOMOLOGS_BULK_FROM_GENE = """
     MATCH (n:Smesgene)-[r:HAS_TRANSCRIPT]->(t:%s)-[hom:HOMOLOG_OF]->(h:Human)
     WHERE n.symbol IN %s
@@ -400,4 +406,29 @@ GET_HOMOLOGS_BULK_FROM_GENE = """
     ORDER BY t.length DESC
     WITH n, collect(h) as humans
     RETURN n.symbol AS planarian, humans[0].symbol AS human
+"""
+
+
+TF_QUERY  = """
+    MATCH (n:Tf)
+    WHERE n.symbol = "%s"
+    RETURN n.name as name,
+            n.homer_url as homer_url,
+            n.logo_url as logo_url,
+            n.identifier as identifier
+"""
+
+GET_TRANSCRIPTION_FACTORS = """
+    MATCH (g:Smesgene)-[tr:HAS_TRANSCRIPT]->(t:%s)-[tfr:HAS_TF]->(tf:Tf)
+    WHERE g.symbol = "%s"
+    RETURN t.symbol as transcript_symbol,
+           tf.symbol as tf_symbol,
+           tf.name as tf_name,
+           tf.identifier as tf_identifier,
+           tf.homer_url as tf_homer_url,
+           tf.logo_url as tf_logo_url,
+           tfr.score as tfr_score,
+           tfr.strand as tfr_strand,
+           tfr.sequence as tfr_sequence,
+           tfr.offset as tfr_offset
 """

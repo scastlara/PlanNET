@@ -94,13 +94,14 @@ def experiment_dge_table(request):
             contig_list = [ exp.gene_symbol for exp in expression ]
             homologs = GraphCytoscape.get_homologs_bulk(contig_list, dataset_name)
             genes = GraphCytoscape.get_genes_bulk(contig_list, dataset_name)
-                
+            print(genes)
             for exp in expression:
                 if exp.gene_symbol in homologs:
                     exp.homolog = homologs[exp.gene_symbol]
                 if exp.gene_symbol in genes:
                     exp.gene = genes[exp.gene_symbol]['gene']
                     exp.name = genes[exp.gene_symbol]['name']
+                    print("HOLA")
             response_to_render = { 'expressions' : expression, 'database': dataset }
             response['table'] = render_to_string('NetExplorer/experiment_dge_table.html', response_to_render)
             response['volcano'] = do_volcano_plot(expression).plot()

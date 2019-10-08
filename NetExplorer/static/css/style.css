@@ -2835,6 +2835,10 @@ summary { display: list-item !important; }
     width: 50px;
 }
 
+.tools-icon-a {
+    padding-left: 2px !important;
+}
+
 .navbar .divider-vertical {
     height: 50px;
     margin: 0 9px;
@@ -2851,4 +2855,22 @@ summary { display: list-item !important; }
     .navbar-collapse .nav > .divider-vertical {
         display: none;
      }
+}
+
+
+#tf-table {
+    font-size: 10px;
+}
+
+.tf-logo {
+    height: 30;
+}
+
+#promoter-img-container {
+    width: 100%;
+    text-align: center;
+}
+.promoter-img {
+    display: inline-block;
+    width: 100%;
 }
