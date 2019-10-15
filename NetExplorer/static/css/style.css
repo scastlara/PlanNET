@@ -2272,11 +2272,15 @@ kbd {
 
 .goea-plot {
     display: inline-block;
-    max-height: 500px;
+    max-height: 200px;
     width: auto;
     max-width: 100%;
     margin-top: 10px;
 
+}
+.go-stats-tbl {
+    font-size: 11;
+    width: 40% !important;
 }
 
 #plot-genenotfound { 

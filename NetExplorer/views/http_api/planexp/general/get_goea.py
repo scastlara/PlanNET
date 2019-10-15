@@ -44,12 +44,13 @@ def get_goea(request):
         gene_human_set = GraphCytoscape.get_homologs_bulk(gene_set, dataset_name).values()
         go_analysis = GeneOntologyEnrichment()
         go_analysis.get_enriched_gos(gene_human_set)
-
+        go_stats = go_analysis.get_stats(gene_set)
+        print(go_stats)
         plots = go_analysis.get_plots()
         go_list = go_analysis.get_go_list()
 
         try:
-            html_to_return = render_to_string('NetExplorer/goea_plots.html', { 'plots': plots, 'golist': go_list })
+            html_to_return = render_to_string('NetExplorer/goea_plots.html', { 'plots': plots, 'golist': go_list, 'stats': go_stats })
         except Exception as err:
             logging.error("PlanExp get_goea error: {}".format(err))
         

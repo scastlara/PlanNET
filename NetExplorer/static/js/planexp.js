@@ -1194,6 +1194,7 @@ $( document ).ready(function(){
         // Show loading and remove images
         $("#goea-loading").show();
         $(".goea-plot").remove();
+        $(".go-stats-tbl").html("");
         $.ajax({
             type: "GET",
             url: window.ROOT + "/get_goea",

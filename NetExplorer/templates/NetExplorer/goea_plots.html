@@ -1,10 +1,33 @@
 {% load staticfiles %} 
 
 <br><br>
+{% if stats %}
+    <table class="table go-stats-tbl table-hover">
+        <tr>
+            <td><b>Total Genes</b></td>
+            <td>{{ stats.input_genes }}</td>
+        </tr>
+        <tr>
+            <td><b>Genes with GO</b></td>
+            <td>{{ stats.genes_with_go }}</td>
+        </tr>
+        <tr>
+            <td><b>Total GO</b></td>
+            <td>{{ stats.num_of_go }}</td>
+        </tr>
+        <tr>
+            <td><b>Significant GO</b></td>
+            <td>{{ stats.num_of_sig_go }}</td>
+        </tr>
+    </table>
+{% endif %}
+
+<br><br>
 {% if plots %}
 
     <div class="btn btn-default" id="download-go-csv" data="{{ golist }}">Download CSV</div>
 
+    
     <ul class="nav nav-tabs" id="goea-domain">
             <li class="active"><a data-toggle="tab" href="#BP">Biological Process</a></li>
             <li><a data-toggle="tab" href="#MF">Molecular Function</a></li>

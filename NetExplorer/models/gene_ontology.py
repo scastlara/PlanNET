@@ -24,6 +24,7 @@ class GeneOntologyEnrichment(object):
             alpha=0.05, 
             methods=['fdr_bh']
         )
+        self.study_results = None
         self.results = None
         self.results_all = None
         self.pvalue_cutoff = 0.05
@@ -41,13 +42,29 @@ class GeneOntologyEnrichment(object):
         """
         try:
             gene_ids = [ genesymbol2id[symbol] for symbol in gene_symbols if symbol in genesymbol2id ]
-            results = self.goe.run_study(gene_ids)
-            self.results = [ r for r in results if r.p_fdr_bh < self.pvalue_cutoff ]
+            self.study_results = self.goe.run_study(gene_ids, alpha=self.pvalue_cutoff)
+            self.results = [ r for r in self.study_results if r.p_fdr_bh <= self.pvalue_cutoff ]
             self.results_all = list(self.results)
             self._keep_best_n()
             return self.results
         except Exception as err:
             return None
+
+    def get_stats(self, gene_set):
+        """
+        Returns some stats of GO analysis performed
+        """
+        stats = {'genes_with_go': 0, 'num_of_go': 0, 'input_genes': len(gene_set), 'num_of_sig_go': 0}
+        if not self.study_results:
+            return stats
+
+        genes_with_go, num_of_go = self.goe.get_item_cnt(self.study_results, "study_items")
+
+        stats['genes_with_go'] = len(genes_with_go)
+        stats['num_of_go'] = num_of_go
+        stats['input_genes'] = len(gene_set)
+        stats['num_of_sig_go'] = len(self.results_all)
+        return stats
 
     def _keep_best_n(self, n=20):
         """

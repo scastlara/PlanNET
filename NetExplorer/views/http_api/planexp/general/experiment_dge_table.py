@@ -51,6 +51,16 @@ def do_volcano_plot(expression):
     theplot.add_units('y', '-log2 ( pvalue ) ')
     return theplot
 
+def invert_expression_relative(expression):
+    expression = list(expression)
+    for exp in expression:
+        tmp = exp.condition1
+        exp.condition1 = exp.condition2
+        exp.condition2 = tmp
+        exp.fold_change = - exp.fold_change
+    return expression
+
+
 
 def experiment_dge_table(request):
     """
@@ -77,6 +87,7 @@ def experiment_dge_table(request):
         dataset_name = request.GET['dataset']
         experiment = Experiment.objects.get(name=exp_name)
         dataset = Dataset.objects.get(name=dataset_name)
+        have_to_invert = False
         condition1 = Condition.objects.get(name=first_condition_name, experiment=experiment)
         condition2 = Condition.objects.get(name=second_condition_name, experiment=experiment)
         expression = ExpressionRelative.objects.filter(
@@ -87,21 +98,25 @@ def experiment_dge_table(request):
             expression = ExpressionRelative.objects.filter(
                 experiment=experiment, dataset=dataset, 
                 condition1=condition2, condition2=condition1)
+            if expression.exists():
+                have_to_invert = True
 
         expression = expression.annotate(abs_fold_change=Func(F('fold_change'), function='ABS')).order_by('-abs_fold_change')
+
+        if have_to_invert:
+            expression = invert_expression_relative(expression)
+
         response = dict()
         if expression:
             contig_list = [ exp.gene_symbol for exp in expression ]
             homologs = GraphCytoscape.get_homologs_bulk(contig_list, dataset_name)
             genes = GraphCytoscape.get_genes_bulk(contig_list, dataset_name)
-            print(genes)
             for exp in expression:
                 if exp.gene_symbol in homologs:
                     exp.homolog = homologs[exp.gene_symbol]
                 if exp.gene_symbol in genes:
                     exp.gene = genes[exp.gene_symbol]['gene']
                     exp.name = genes[exp.gene_symbol]['name']
-                    print("HOLA")
             response_to_render = { 'expressions' : expression, 'database': dataset }
             response['table'] = render_to_string('NetExplorer/experiment_dge_table.html', response_to_render)
             response['volcano'] = do_volcano_plot(expression).plot()
