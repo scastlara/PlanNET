@@ -179,10 +179,12 @@
                                         {{ tfr.transcript.symbol }}
                                     </a>
                                 </td>
-                                <td>{% if tfr.tf.logo_url != "NA" %}
-                                        <img class="tf-logo" src="
-                                        {% static "Images/tf_logos" %}/motif{{ tfr.tf.identifier }}.logo.png
-                                        ">
+                                <td class="tf-logo-container">{% if tfr.tf.logo_url != "NA" %}
+                                        <a href="{% static "Images/tf_logos" %}/motif{{ tfr.tf.identifier }}.logo.png" target="_blank">
+                                            <img class="tf-logo" src="
+                                            {% static "Images/tf_logos" %}/motif{{ tfr.tf.identifier }}.logo.png
+                                            ">
+                                        </a>
                                         
                                     {% else %}
                                         N.A.

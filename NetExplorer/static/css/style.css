@@ -2874,3 +2874,7 @@ summary { display: list-item !important; }
     display: inline-block;
     width: 100%;
 }
+
+.tf-logo-container {
+    text-align: center;
+}

@@ -120,7 +120,7 @@ class DownloadHandler(object):
             gene = genes[0].symbol
 
         if node.domains:
-            domains = ";".join([ "%s:%s-%s"  % (str(dom.domain.accession), str(dom.s_start), str(dom.s_end)) for dom in node.domains ])
+            domains = ";".join([ "%s:%s-%s:%s"  % (str(dom.domain.accession), str(dom.s_start), str(dom.s_end), str(dom.domain.description)) for dom in node.domains ])
         else:
             domains = "NA"
         
