@@ -140,16 +140,18 @@
 
 
 
-    <h2><span class="glyphicon glyphicon-tag"></span> Predicted Regulatory Elements</h2>
-    <hr class="h2-sep">
-    {% if has_logo %}
+    {% if has_logo_proximal %}
+        <h2><span class="glyphicon glyphicon-tag"></span> Predicted Regulatory Elements</h2>
+        <hr class="h2-sep">
+
+        <h3>Proximal regulatory regions:</h3><br>
         <div id="promoter-img-container">
             <a href="{% static "Images/promoter-images/" %}/{{ node.symbol }}-promoter.png" target="_blank">
                 <img class="promoter-img" src="{% static "Images/promoter-images/" %}/{{ node.symbol }}-promoter.png">
             </a>
         </div>
 
-        <h3>Transcription factors:</h3><br>
+        
         {% if node.transcription_factors %}
                 <table id="tf-table" class="table table-hover tf-table">
                     <thead>
@@ -205,8 +207,6 @@
         {% else %}
             No transcription factors.
         {% endif %}
-    {% else %}
-        No regulatory elements.
     {% endif %}
 
 

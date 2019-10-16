@@ -2301,13 +2301,19 @@ class PlanarianGene(Node):
                 database = "All"
         return prednodes
 
-    def get_transcription_factors(self):
+    def get_transcription_factors(self, element_type="promoter"):
         """
         Gets transcription factors associated with any of its transcripts.
         Fills attribute 'transcription_factors'.
         """
         
-        query = neoquery.GET_TRANSCRIPTION_FACTORS % (PlanarianGene.preferred_database, self.symbol)
+        if element_type == "promoter" or element_type == "proximal":
+            query = neoquery.GET_TRANSCRIPTION_FACTORS_PROMOTER % (PlanarianGene.preferred_database, self.symbol)
+        elif element_type == "enhancer" or element_type == "distal":
+            query = neoquery.GET_TRANSCRIPTION_FACTORS_ENHANCER % (PlanarianGene.preferred_database, self.symbol)
+        else:
+            raise ValueError("element_type must be 'promoter' or 'enhancer'!")
+
         results = GRAPH.run(query)
         results = results.data()
 
@@ -2367,7 +2373,7 @@ class TfAnnotation(object):
 
     Attributes:
         tf (:obj:`TranscriptionFactor`): Transcription factor to which annotation refers to.
-        transcript (:obj:`PlanatianContig`): Transcript from which TSS was computed.
+        transcript (:obj:`PlanatianContig`): Transcript from which TSS was computed (if any).
         score (float): Score as reported by HOMER.
         sequence (str): Predicted binding sequence.
         offset (int): Offset as reported by HOMER.

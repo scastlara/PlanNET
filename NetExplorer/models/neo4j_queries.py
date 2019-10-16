@@ -418,11 +418,26 @@ TF_QUERY  = """
             n.identifier as identifier
 """
 
-GET_TRANSCRIPTION_FACTORS = """
+GET_TRANSCRIPTION_FACTORS_PROMOTER = """
     MATCH (g:Smesgene)-[tr:HAS_TRANSCRIPT]->(t:%s)-[tfr:HAS_TF]->(tf:Tf)
     WHERE g.symbol = "%s"
     RETURN t.symbol as transcript_symbol,
            tf.symbol as tf_symbol,
+           tf.name as tf_name,
+           tf.identifier as tf_identifier,
+           tf.homer_url as tf_homer_url,
+           tf.logo_url as tf_logo_url,
+           tfr.score as tfr_score,
+           tfr.strand as tfr_strand,
+           tfr.sequence as tfr_sequence,
+           tfr.offset as tfr_offset
+"""
+
+GET_TRANSCRIPTION_FACTORS_ENHANCER = """
+    MATCH (g:Smesgene)-[tfr:HAS_TF]->(tf:Tf)
+    WHERE g.symbol = "%s"
+    AND    tfr.element_type = "enhancer"
+    RETURN tf.symbol as tf_symbol,
            tf.name as tf_name,
            tf.identifier as tf_identifier,
            tf.homer_url as tf_homer_url,
