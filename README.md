@@ -12,13 +12,18 @@ To see the code used to predict the planarian networks, go to this [repository](
 
 > PlanNET was made using Django (https://www.djangoproject.com/), neo4j (https://neo4j.com/) and cytoscape js (http://js.cytoscape.org/).
 
-# Cite
-```
-S. Castillo-Lara, J.F. Abril
-PlanNET: homology-based predicted interactome for multiple planarian transcriptomes
-Bioinformatics, Volume 34, Issue 6, 15 March 2018, Pages 1016–1023, btx738
-```
-* [Link to the published paper](https://academic.oup.com/bioinformatics/article/34/6/1016/4657068)
+# Publications
+
+> S. Castillo-Lara, E. Pascual-Carreras, J.F. Abril<br>
+> [PlanExp: intuitive integration of complex RNA-seq datasets with planarian omics resources](https://doi.org/10.1093/bioinformatics/btz802)<br>
+> Bioinformatics, AOP 2019.<br>
+
+
+
+> S. Castillo-Lara and J.F. Abril<br>
+> [PlanNET: homology-based predicted interactome for multiple planarian transcriptomes](https://academic.oup.com/bioinformatics/article/34/6/1016/4657068)<br>
+> Bioinformatics, Volume 34, Issue 6, 15 March 2018, Pages 1016–1023, btx738<br>
+
 
 # Version
 v.1.3
