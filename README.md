@@ -16,7 +16,7 @@ To see the code used to predict the planarian networks, go to this [repository](
 
 > S. Castillo-Lara, E. Pascual-Carreras, J.F. Abril<br>
 > [PlanExp: intuitive integration of complex RNA-seq datasets with planarian omics resources](https://doi.org/10.1093/bioinformatics/btz802)<br>
-> Bioinformatics, AOP 2019.<br>
+> Bioinformatics, AOP 2019, doi:10.1093/bioinformatics/btz802.<br>
 
 
 
