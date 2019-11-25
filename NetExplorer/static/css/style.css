@@ -2862,7 +2862,11 @@ summary { display: list-item !important; }
 }
 
 
-#tf-table {
+#promoter-tf-table {
+    font-size: 10px;
+}
+
+#enhancer-tf-table {
     font-size: 10px;
 }
 
@@ -2870,15 +2874,45 @@ summary { display: list-item !important; }
     height: 30;
 }
 
-#promoter-img-container {
+#cre-img-container {
     width: 100%;
     text-align: center;
 }
-.promoter-img {
+.cre-img {
     display: inline-block;
     width: 100%;
 }
 
+
+
 .tf-logo-container {
-    text-align: center;
+    text-align: left;
+}
+
+
+.custom-nav-tab {
+    color: #23527c;
+    background-color: #eee;
+    border: 1px solid #ddd;
+    border-radius: 4px 4px 0 0;
+    padding: 10px 15px;
+    font-size: 16px;
+}
+
+.custom-nav-tab:hover {
+    cursor: pointer;
+}
+
+.custom-nav-tab.active {
+    background-color:#fff;
+    color: #555;
+}
+
+.custom-tab-pane {
+    display: none;
+    padding: 10px 15px;
+}
+
+.custom-tab-pane.active {
+    display: block;
 }
