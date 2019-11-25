@@ -62,13 +62,11 @@ def get_card(request, symbol=None, database=None):
             contigs = card_node.get_planarian_contigs()
             best_contig = card_node.get_best_transcript()
             graph = GraphCytoscape()
-            card_node.get_transcription_factors("promoter")
-            #card_node.get_transcription_factors("enhancer")
+            card_node.get_tf_motifs("promoter")
+            card_node.get_tf_motifs("enhancer")
             has_logo_proximal = gene_has_logo("promoter", card_node.symbol)
-            #has_logo_enhancer = gene_has_logo("enhancer", card_node.symbol)
-            has_logo_enhancer = False
-
-            print(has_logo_proximal)
+            has_logo_enhancer = gene_has_logo("enhancer", card_node.symbol)
+           
             if best_contig:
                 best_contig.get_homolog()
                 best_contig.get_neighbours()
@@ -125,4 +123,4 @@ def get_card(request, symbol=None, database=None):
 
 def gene_has_logo(re_type, symbol):
     print('Images/{}-images/{}-promoter.png'.format(re_type, symbol))
-    return finders.find('Images/{}-images/{}-promoter.png'.format(re_type, symbol))
+    return finders.find('Images/{}-images/{}-{}.png'.format(re_type, symbol, re_type))
