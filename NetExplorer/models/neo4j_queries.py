@@ -438,3 +438,15 @@ GET_MOTIFS = """
            tr.score as motif_score,
            tr.sequence as motif_sequence
 """
+
+
+ALL_MOTIFS_QUERY = """
+    MATCH (motif:Tf_motif)
+    RETURN 
+           motif.symbol as motif_symbol,
+           motif.short_name as motif_name,
+           motif.info_url as motif_url,
+           motif.motif_num as motif_num,
+           motif.tf_name as tf_name,
+           motif.domain as domain
+"""

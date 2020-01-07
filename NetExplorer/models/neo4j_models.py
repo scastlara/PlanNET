@@ -2351,7 +2351,6 @@ class PlanarianGene(Node):
                     self.promoter_motifs.append(annotation)
                 elif element_type == "enhancer":
                     self.enhancer_motifs.append(annotation)
-                    print(self.enhancer_motifs)
                 else:
                     raise ValueError("element_type must be 'promoter' or 'enhancer'!")
     
@@ -2430,6 +2429,41 @@ class TfMotif(Node):
         if query:
             self.__query_node()
     
+    @property
+    def source(self):
+        try:
+            tf, source, program = self.symbol.split("/")
+        except Exception as err:
+            print(err)
+            source = ""
+        return source
+
+    @classmethod
+    def get_all_from_database(cls):
+        query = neoquery.ALL_MOTIFS_QUERY
+        results = GRAPH.run(query)
+        results = results.data()
+        all_motifs = []
+        if results:
+            for row in results:
+                symbol = row['motif_symbol']
+                name = row['motif_name']
+                url = row['motif_url']
+                number = row['motif_num']
+                tf_name = row['tf_name']
+                domain = row['domain']
+                all_motifs.append(cls(
+                    symbol=symbol,
+                    database="Tf_motif",
+                    name=name,
+                    url=url,
+                    number=number,
+                    tf_name=tf_name,
+                    domain=domain,
+                    query=False
+                ))
+        return all_motifs
+
     def __query_node(self):
         query = neoquery.MOTIF_QUERY % (self.symbol)
         results = GRAPH.run(query)

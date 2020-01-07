@@ -1,0 +1,126 @@
+{% extends 'NetExplorer/base.html' %}
+{% load static %}
+
+{% block title %}
+     - TF Tools
+{% endblock title %}
+
+
+
+{% block content %}
+
+
+<ul class="nav nav-tabs">
+    <li class="custom-nav-tab active" data-id="tf-search">TF search</li>
+    <li class="custom-nav-tab" data-id="tf-enrichment">TF enrichment</li>
+</ul>
+
+<div class="tab-content">
+    <div class="custom-tab-pane active" id="tf-search">
+        <blockquote>
+            Search genes that have specific transcription factor binding sites in their 
+            predicted cis-regulatory regions.
+        </blockquote>
+
+        <div id="tf-select-container">
+            <select id="tf-select" data-size="10" title="Choose transcription factor" class="form-control selectpicker" data-live-search="true">
+            
+                {% for tf in transcription_factors %}
+                    <option class="tf-select" data-id="{{ tf.symbol }}">
+                        {{ tf.name }} | {{ tf.source }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div id="tf-info" class="panel panel-default">
+            <div class="panel-heading">
+                Transcription Factor Information
+            </div>
+
+            <div class="panel-body">
+                <div class="row">
+
+                    <div class="col-sm-8">
+                        <ul>
+                            <li><b>Name</b>: <span id="tf-name"></span></li>
+                            <li><b>Domain</b>: <span id="tf-domain"></span></li>
+                            <li><b>Source</b>: <span id="tf-source"></span></li>
+                            <li><a id="tf-url" href="" target="_blank">More information</a></li>
+
+                        </ul>
+                    </div>
+                    <div class="col-sm-4">
+                        <a href="{% static "Images/logo_img" %}/" id="logo-img-href" target="_blank">
+                            <img class="tf-logo" id="logo-img" src="{% static "Images/logo_img" %}/">
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div> 
+
+
+    </div>
+    <div class="custom-tab-pane" id="tf-enrichment">
+        <blockquote>
+            Find which transcription factor binding sites are enriched in the regulatory elements of a list of
+            genes.
+        </blockquote>
+
+        <label for="query-textarea"></label>
+            <textarea name="tf-enrichment-genes" class="form-control" id="query-textarea" rows="6" cols="12" placeholder="Paste your gene identifiers here"></textarea>
+       
+
+    </div>
+ </div>
+
+{% if search_mode %}
+    searching
+{% endif %}
+
+
+{% endblock content %}
+
+
+{% block scripts %}
+
+<script>
+    $(document).ready(function(){
+        $(".custom-nav-tab").on("click", function(){
+            $(".custom-tab-pane").removeClass("active");
+            $(".custom-nav-tab").removeClass("active");
+            $("#" + $(this).attr("data-id")).addClass("active");
+            $(this).addClass("active");
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function(){
+        window.tf_info = {{ tf_motifs_info|safe }};
+    });
+</script>
+
+
+<script>
+    $("#tf-select").on("change", function(){
+       var selected = $(this).find(':selected').attr('data-id');
+       var info = window.tf_info[selected];
+       
+       $("#tf-name").html(info.name);
+       $("#tf-domain").html(info.domain);
+       $("#tf-source").html(info.source);
+       $("#tf-url").attr("href", info.url);
+
+
+       var logo_url = $("#logo-img-href").attr("href").split("/").slice(0,-1).join("/");
+       logo_url += "/logo_" + info.number + ".svg.png";
+       $("#logo-img-href").attr("href", logo_url);
+       $("#logo-img").attr("src", logo_url);
+       $("#tf-info").show(250); 
+    });
+</script>
+
+
+
+{% endblock scripts %}

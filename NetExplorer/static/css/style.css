@@ -2916,3 +2916,12 @@ summary { display: list-item !important; }
 .custom-tab-pane.active {
     display: block;
 }
+
+#tf-select-container {
+    max-width: 500px;
+}
+
+#tf-info {
+    margin-top: 15px;
+    display: none;
+}
