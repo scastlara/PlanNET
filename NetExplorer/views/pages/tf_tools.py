@@ -13,6 +13,13 @@ def create_tf_dict(tfs):
         tf_info[tf.symbol]['source'] = tf.source
     return tf_info
 
+def convert_cre_type(cre_type):
+    if cre_type == "Enhancers":
+        return "enhancer"
+    elif cre_type == "Proximal regulatory regions":
+        return "promoter"
+    else:
+        return "any"
 
 def tf_tools(request):
     """
@@ -32,12 +39,23 @@ def tf_tools(request):
     if request.is_ajax():
         if request.GET.get("mode") == "search":
             motif_symbol = request.GET.get("tf_symbol")
+
+            cre_type = request.GET.get("cre_type")
+            cre_type = convert_cre_type(cre_type)
             tf_motif = TfMotif(symbol=motif_symbol, database="Tf_motif")
-            genes = tf_motif.get_planarian_genes()
+
+            genes = tf_motif.get_planarian_genes(cre_type)
             genes.sort(key= lambda x: (x.name if x.name else "ZZZ", x.symbol))
             genelist = [ "{},{}".format(gene.symbol, gene.name) for gene in genes ]
             genelist = "\n".join(genelist)
-            return render(request, "NetExplorer/tf_search_results.html", { 'res': genes, 'symbol': motif_symbol, 'genelist': genelist })
+            numgenes = str(len(genes))
+            response = {
+                'res': genes, 
+                'symbol': motif_symbol, 
+                'genelist': genelist ,
+                'numgenes': numgenes
+            }
+            return render(request, "NetExplorer/tf_search_results.html", response)
         else:
             print("enrichment")
             pass

@@ -458,3 +458,13 @@ GET_GENES_FROMTF_QUERY = """
         g.symbol as symbol,
         g.name as name
 """
+
+
+GET_GENES_FROMTF_TYPE_QUERY = """
+    MATCH (g:Smesgene)-[r:HAS_CRE]->(cre:Cre)-[tr:HAS_MOTIF]->(motif:Tf_motif)
+    WHERE motif.symbol = "%s"
+    AND cre.cre_type = "%s"
+    RETURN DISTINCT
+        g.symbol as symbol,
+        g.name as name
+"""

@@ -2969,3 +2969,8 @@ summary { display: list-item !important; }
     color: #777777 !important;
     text-decoration: none !important;
 }
+
+#search-tf-genes-type-container {
+    display: none;
+    width: 300px;
+}

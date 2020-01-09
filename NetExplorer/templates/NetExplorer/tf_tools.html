@@ -88,6 +88,15 @@
                 </div> 
 
                 <br>
+
+                <div id="search-tf-genes-type-container">
+                    <h4>Type of regulatory region:</h4>
+                    <select id="search-tf-genes-type" data-size="10" title="Choose cis-regulatory region" class="form-control selectpicker">
+                        <option selected>Any</option>
+                        <option>Proximal regulatory regions</option>
+                        <option>Enhancers</option>
+                    </select>
+                </div>
                 <div class="btn btn-default" id="search-tf-genes">Search genes</div>
             </div>
             <div class="custom-tab-pane" id="tf-enrichment">
@@ -160,6 +169,7 @@
        $("#logo-img").attr("src", logo_url);
        $("#tf-info").show(250); 
        $("#search-tf-genes").show(250);
+       $("#search-tf-genes-type-container").show(250);
     });
 </script>
 
@@ -185,12 +195,14 @@
 
     $("#search-tf-genes").on("click", function(){
         var tf_symbol = $("#tf-select").find(":selected").attr("data-id");
+        var cre_type = $("#search-tf-genes-type").find(":selected").text();
         $.ajax({
             type: "GET",
             url: window.ROOT + "/tf_tools",
             data: {
                 'tf_symbol'    : tf_symbol,
                 'mode'         : "search",
+                'cre_type'     : cre_type,
                 'csrfmiddlewaretoken': csrftoken
             },
             success: function(data) {
