@@ -25,9 +25,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.35"
-     inkscape:cx="-395.86909"
-     inkscape:cy="905.34264"
+     inkscape:zoom="0.9899495"
+     inkscape:cx="309.56637"
+     inkscape:cy="602.9644"
      inkscape:document-units="mm"
      inkscape:current-layer="g969"
      showgrid="false"
@@ -39,14 +39,19 @@
      showguides="true"
      inkscape:guide-bbox="true">
     <sodipodi:guide
-       position="79.091516,199.66593"
+       position="90.871639,158.7581"
        orientation="1,0"
        id="guide9314"
        inkscape:locked="false" />
     <sodipodi:guide
-       position="100.16369,188.23215"
+       position="106.21131,183.50744"
        orientation="0,1"
        id="guide9321"
+       inkscape:locked="false" />
+    <sodipodi:guide
+       position="69.358629,231.51042"
+       orientation="0,1"
+       id="guide9355"
        inkscape:locked="false" />
   </sodipodi:namedview>
   <metadata
@@ -67,20 +72,45 @@
      id="layer1">
     <g
        id="g969">
+      <path
+         style="fill:none;stroke:#f5f5f5;stroke-width:5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         d="M 125.48809,65.489581 H 90.871639 c 0,0 -33.943414,0.216855 -33.889903,48.256819 0.05053,45.36331 33.889903,43.02443 33.889903,43.02443 h 27.434901"
+         id="path9312"
+         inkscape:connector-curvature="0"
+         sodipodi:nodetypes="ccscc"
+         inkscape:export-filename="/home/scastillo/code/PlanNET/NetExplorer/static/Images/tf_tools.png"
+         inkscape:export-xdpi="36.119999"
+         inkscape:export-ydpi="36.119999" />
       <rect
-         style="opacity:1;fill:#5b6c5d;fill-opacity:1;stroke:none;stroke-width:0.08819444;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+         style="opacity:1;fill:#f5f5f5;fill-opacity:1;stroke:none;stroke-width:0.08819444;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+         id="rect9353"
+         width="36.883194"
+         height="6.4144683"
+         x="143.99907"
+         y="62.19701"
+         inkscape:export-filename="/home/scastillo/code/PlanNET/NetExplorer/static/Images/tf_tools.png"
+         inkscape:export-xdpi="36.119999"
+         inkscape:export-ydpi="36.119999" />
+      <rect
+         style="opacity:1;fill:#f50000;fill-opacity:0;stroke:none;stroke-width:0.08819444;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
          id="rect9332"
          width="36.883194"
          height="6.4144683"
          x="143.99907"
-         y="58.264881" />
+         y="58.264881"
+         inkscape:export-filename="/home/scastillo/code/PlanNET/NetExplorer/static/Images/tf_tools.png"
+         inkscape:export-xdpi="36.119999"
+         inkscape:export-ydpi="36.119999" />
       <rect
          y="153.57297"
          x="158.05969"
          height="6.4144683"
          width="36.883194"
          id="rect9189"
-         style="opacity:1;fill:#5b6c5d;fill-opacity:1;stroke:none;stroke-width:0.08819444;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+         style="opacity:1;fill:#f5f5f5;fill-opacity:1;stroke:none;stroke-width:0.08819444;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+         inkscape:export-filename="/home/scastillo/code/PlanNET/NetExplorer/static/Images/tf_tools.png"
+         inkscape:export-xdpi="36.119999"
+         inkscape:export-ydpi="36.119999" />
       <rect
          y="-169.23363"
          x="8.8824406"
@@ -173,13 +203,6 @@
          id="rect815-60"
          style="fill:#fa5556;fill-opacity:1;stroke:#d9d9d9;stroke-width:0.25;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
       <rect
-         y="50.285416"
-         x="125.34645"
-         height="23.245535"
-         width="23.245535"
-         id="rect815-3-6"
-         style="fill:#23527c;fill-opacity:1;stroke:none;stroke-width:0.25;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
-      <rect
          y="-99.497025"
          x="55.373524"
          height="23.245535"
@@ -206,7 +229,10 @@
          height="23.075304"
          width="66.164589"
          id="rect815-35-8"
-         style="fill:#23527c;fill-opacity:1;stroke:none;stroke-width:0.42022994;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+         style="fill:#cccccf;fill-opacity:0.94117647;stroke:none;stroke-width:0.42022994;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         inkscape:export-filename="/home/scastillo/code/PlanNET/NetExplorer/static/Images/tf_tools.png"
+         inkscape:export-xdpi="36.119999"
+         inkscape:export-ydpi="36.119999" />
       <rect
          y="-76.251495"
          x="55.373531"
@@ -237,28 +263,41 @@
          id="path1000"
          inkscape:connector-curvature="0" />
       <path
-         style="opacity:1;fill:#ef6f6c;fill-opacity:1;stroke:none;stroke-width:2.52538133;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+         style="opacity:1;fill:#c95c81;fill-opacity:1;stroke:none;stroke-width:2.52538133;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
          d="m 163.92189,133.97872 c 0.075,-0.12862 0.52662,-0.86528 1.00358,-1.63702 0.47696,-0.77175 0.99707,-1.64371 1.1558,-1.93771 0.15873,-0.29399 0.3293,-0.5646 0.37904,-0.60135 0.0923,-0.0682 0.82248,-1.26277 1.33259,-2.18019 0.15589,-0.28036 0.24867,-0.56601 0.20618,-0.63476 -0.0475,-0.0769 -9.57041,-0.12502 -24.725,-0.12502 h -24.64773 v -3.0736 -3.0736 h 24.72244 c 14.6868,0 24.72243,-0.0492 24.72243,-0.1211 0,-0.0666 -0.93557,-1.66676 -2.07903,-3.5559 -1.14347,-1.88913 -2.05131,-3.46252 -2.01742,-3.49641 0.0339,-0.0339 2.63822,1.2126 5.7874,2.76999 3.14918,1.55739 7.85168,3.88174 10.45,5.16522 l 4.72421,2.33361 -1.31653,0.64893 c -3.34687,1.64969 -6.41872,3.17368 -6.66192,3.30508 -0.147,0.0794 -2.49229,1.23968 -5.21175,2.57836 -2.71947,1.33868 -5.59566,2.75693 -6.39154,3.15165 -0.79588,0.39473 -1.47452,0.71768 -1.5081,0.71768 -0.0336,0 2.7e-4,-0.10523 0.0754,-0.23386 z"
          id="path9286"
-         inkscape:connector-curvature="0" />
+         inkscape:connector-curvature="0"
+         inkscape:export-filename="/home/scastillo/code/PlanNET/NetExplorer/static/Images/tf_tools.png"
+         inkscape:export-xdpi="36.119999"
+         inkscape:export-ydpi="36.119999" />
       <rect
-         style="opacity:1;fill:#ef6f6c;fill-opacity:1;stroke:none;stroke-width:5;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+         style="opacity:1;fill:#c95c81;fill-opacity:1;stroke:none;stroke-width:5;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
          id="rect9288"
          width="6.6669769"
-         height="22.337286"
+         height="24.475437"
          x="118.62637"
-         y="120.71547" />
+         y="120.71547"
+         inkscape:export-filename="/home/scastillo/code/PlanNET/NetExplorer/static/Images/tf_tools.png"
+         inkscape:export-xdpi="36.119999"
+         inkscape:export-ydpi="36.119999" />
+      <rect
+         y="53.781475"
+         x="124.5905"
+         height="23.245535"
+         width="23.245535"
+         id="rect815-3-6"
+         style="fill:#cccccf;fill-opacity:0.94117647;stroke:none;stroke-width:0.25;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         inkscape:export-filename="/home/scastillo/code/PlanNET/NetExplorer/static/Images/tf_tools.png"
+         inkscape:export-xdpi="36.119999"
+         inkscape:export-ydpi="36.119999" />
       <path
-         style="opacity:1;fill:#ef6f6c;fill-opacity:1;stroke:none;stroke-width:12.8614645;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-         d="m 148.59198,73.530952 c -3.93244,0.634678 -10.41516,0.0503 -15.52955,-1.399897 -3.9591,-1.122615 -7.23469,0.187452 -10.44743,4.178438 -2.2294,2.769449 -2.47994,3.494528 -3.15897,9.142478 -0.64856,5.390275 -0.56261,6.595119 0.70443,9.931985 3.05985,8.058384 9.52798,13.571674 17.77843,15.153924 5.67751,1.08884 11.06685,-0.13989 16.10146,-3.67101 5.25764,-3.68756 8.23085,-8.558375 9.45914,-15.496287 0.8802,-4.971858 0.84209,-5.919933 -0.3798,-9.437174 -2.26184,-6.510929 -7.49482,-9.537542 -14.52771,-8.402457 z"
+         style="opacity:1;fill:#c95c81;fill-opacity:1;stroke:none;stroke-width:12.8614645;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+         d="m 143.99907,76.850192 c -3.93244,0.634678 -10.41516,0.0503 -15.52955,-1.399897 -3.9591,-1.122615 -7.23469,0.187452 -10.44743,4.178438 -2.2294,2.769449 -2.47994,3.494528 -3.15897,9.142478 -0.64856,5.390275 -0.56261,6.595119 0.70443,9.931985 3.05985,8.058424 9.52798,13.571744 17.77843,15.153994 5.67751,1.08884 11.06685,-0.13989 16.10146,-3.67102 5.25764,-3.68758 8.23085,-8.55843 9.45914,-15.496347 0.8802,-4.971858 0.84209,-5.919933 -0.3798,-9.437174 -2.26184,-6.510929 -7.49482,-9.537542 -14.52771,-8.402457 z"
          id="path9310"
-         inkscape:connector-curvature="0" />
-      <path
-         style="fill:none;stroke:#5b6c5d;stroke-width:5;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
-         d="M 125.48809,60.764882 H 78.997023 c 0,0 -39.360083,-0.03699 -39.309525,48.002978 0.05053,48.00914 39.404018,48.00297 39.404018,48.00297 h 39.215024"
-         id="path9312"
          inkscape:connector-curvature="0"
-         sodipodi:nodetypes="ccscc" />
+         inkscape:export-filename="/home/scastillo/code/PlanNET/NetExplorer/static/Images/tf_tools.png"
+         inkscape:export-xdpi="36.119999"
+         inkscape:export-ydpi="36.119999" />
     </g>
   </g>
 </svg>

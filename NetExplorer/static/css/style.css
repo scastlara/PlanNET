@@ -2957,3 +2957,15 @@ summary { display: list-item !important; }
     background-color:#fff;
     color: #555;
 }
+
+
+.btn-other-tools {
+    text-align: left !important;
+    width: 150px;
+    padding-left: 2px !important;
+}
+
+.btn-other-tools a {
+    color: #777777 !important;
+    text-decoration: none !important;
+}
