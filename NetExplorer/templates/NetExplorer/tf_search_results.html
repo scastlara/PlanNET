@@ -1,0 +1,39 @@
+{% load static %}
+
+<div class="panel panel-default">
+
+    <div class="panel-heading">
+        Genes with <b>{{ symbol }}</b> motif
+    </div>
+
+    <div class="panel-body">
+    <!-- Small searchpanel for each gene in results -->
+    {% for node in res %}
+    <div id="{{ node.symbol }}"
+        class="panel panel-genesearch small-searchpanel card-trigger"
+        title="Click to view info card"
+        target="{{ node.symbol }}"
+        targetDB="{{ node.database }}">
+        <div class="panel-heading">
+            <div class="symbol-small-searchpanel">
+                {{ node.symbol }}
+                {% if node.name %}
+                    - <span class="bg-official-small"><b>{{ node.name }}</b></span>
+                {% endif %}
+            </div>
+            <div class="database-small-searchpanel">
+                <img class='legend-db' src="{% static 'Images/' %}legend-{{ node.database }}.png"/>
+                {% if node.database == "Smesgene" %}
+                    Planarian Gene
+                {% else %}
+                    {{ node.database }}
+                {% endif %}
+            </div>
+        </div>
+        
+    </div>
+    {% endfor %}
+
+
+
+</div>
