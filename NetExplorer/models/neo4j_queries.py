@@ -454,7 +454,7 @@ ALL_MOTIFS_QUERY = """
 GET_GENES_FROMTF_QUERY = """
     MATCH (g:Smesgene)-[r:HAS_CRE]->(cre:Cre)-[tr:HAS_MOTIF]->(motif:Tf_motif)
     WHERE motif.symbol = "%s"
-    RETURN 
+    RETURN DISTINCT
         g.symbol as symbol,
         g.name as name
 """

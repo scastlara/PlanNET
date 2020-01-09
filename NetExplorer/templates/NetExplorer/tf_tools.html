@@ -122,6 +122,7 @@
 {% block scripts %}
 <script src="{% static 'js/get-card.js' %}"></script>
 <script src="{% static 'js/searchpanel.js' %}"></script>
+<script src="{% static 'js/FileSaver.js' %}"></script>
 
 <script>
     $(document).ready(function(){
@@ -203,6 +204,15 @@
                 console.log(data.responseText);
             }
         });
+    });
+</script>
+
+
+<script>
+$('body').on('click', "#download-tf-genes-csv", function() {
+        var data = $(this).attr("data");
+        var blob = new Blob([data], {type: "text/plain;charset=utf-8"});
+        saveAs(blob, "tf-genes.csv"); 
     });
 </script>
 

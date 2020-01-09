@@ -2480,7 +2480,6 @@ class TfMotif(Node):
 
     def get_planarian_genes(self):
         query = neoquery.GET_GENES_FROMTF_QUERY % (self.symbol)
-        print(query)
         results = GRAPH.run(query)
         results = results.data()
         genes = []

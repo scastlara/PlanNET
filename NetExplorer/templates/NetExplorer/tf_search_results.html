@@ -8,6 +8,10 @@
 
     <div class="panel-body">
     <!-- Small searchpanel for each gene in results -->
+
+    <div class="btn btn-default" id="download-tf-genes-csv" data="{{ genelist }}">Download CSV</div>
+
+
     {% for node in res %}
     <div id="{{ node.symbol }}"
         class="panel panel-genesearch small-searchpanel card-trigger"

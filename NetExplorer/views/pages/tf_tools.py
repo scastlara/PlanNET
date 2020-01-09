@@ -35,7 +35,9 @@ def tf_tools(request):
             tf_motif = TfMotif(symbol=motif_symbol, database="Tf_motif")
             genes = tf_motif.get_planarian_genes()
             genes.sort(key= lambda x: (x.name if x.name else "ZZZ", x.symbol))
-            return render(request, "NetExplorer/tf_search_results.html", { 'res': genes, 'symbol': motif_symbol })
+            genelist = [ "{},{}".format(gene.symbol, gene.name) for gene in genes ]
+            genelist = "\n".join(genelist)
+            return render(request, "NetExplorer/tf_search_results.html", { 'res': genes, 'symbol': motif_symbol, 'genelist': genelist })
         else:
             print("enrichment")
             pass
