@@ -146,12 +146,12 @@
         <h2><span class="glyphicon glyphicon-tag"></span> Predicted Regulatory Elements</h2>
         <hr class="h2-sep">
 
-        <ul class="nav nav-tabs">
+        <ul class="nav nav-tabs gene-card-tabs">
             <li class="custom-nav-tab active" data-id="proximal">Proximal C.R.E.</li>
             <li class="custom-nav-tab" data-id="enhancers">Enhancers</li>
         </ul>
 
-        <div class="tab-content">
+        <div class="tab-content gene-card-tab-content">
             <div class="custom-tab-pane active" id="proximal">
                 {% if has_logo_proximal %}
                     <div id="cre-img-container">
@@ -473,9 +473,9 @@
 
     <script>
         $(document).ready(function(){
-            $(".custom-nav-tab").on("click", function(){
-                $(".custom-tab-pane").removeClass("active");
-                $(".custom-nav-tab").removeClass("active");
+            $(".gene-card-tabs .custom-nav-tab").on("click", function(){
+                $(".gene-card-tab-content .custom-tab-pane").removeClass("active");
+                $(".gene-card-tabs .custom-nav-tab").removeClass("active");
                 $("#" + $(this).attr("data-id")).addClass("active");
                 $(this).addClass("active");
 

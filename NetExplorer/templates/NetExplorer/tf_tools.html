@@ -8,71 +8,108 @@
 
 
 {% block content %}
+<!-- This will be filled by the JS code in base.html with an onclick
+    event triggered by small-searchpanel -->
+<div id="button-container">
+    <div class="close-overlay" style="display: none;" title="Close card">
+        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+    </div>
+    <div class="full-screen-card" title="Open in new window">
+        <span class="glyphicon glyphicon-new-window" aria-hidden="true"></span>
+    </div>
+</div>
+<div id="card-overlay" class="card-overlay">
+    <div class="card-title">
+    </div>
+</div>
 
-
-<ul class="nav nav-tabs">
-    <li class="custom-nav-tab active" data-id="tf-search">TF search</li>
-    <li class="custom-nav-tab" data-id="tf-enrichment">TF enrichment</li>
-</ul>
-
-<div class="tab-content">
-    <div class="custom-tab-pane active" id="tf-search">
-        <blockquote>
-            Search genes that have specific transcription factor binding sites in their 
-            predicted cis-regulatory regions.
-        </blockquote>
-
-        <div id="tf-select-container">
-            <select id="tf-select" data-size="10" title="Choose transcription factor" class="form-control selectpicker" data-live-search="true">
-            
-                {% for tf in transcription_factors %}
-                    <option class="tf-select" data-id="{{ tf.symbol }}">
-                        {{ tf.name }} | {{ tf.source }}
-                    </option>
-                {% endfor %}
-            </select>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <div class="row row-eq-height">
+            <div class="col-sm-1 conversion-icon-container">
+                <img class="blast-icon-inside" src="{% static 'Images/tf_tools.png' %}"/>
+            </div>
+            <div class="col-sm-11 conversion-title">
+                <h1>TF Tools</h1>
+            </div>
         </div>
+    </div>
 
-        <div id="tf-info" class="panel panel-default">
-            <div class="panel-heading">
-                Transcription Factor Information
-            </div>
+    <div class="panel-body">
 
-            <div class="panel-body">
-                <div class="row">
 
-                    <div class="col-sm-8">
-                        <ul>
-                            <li><b>Name</b>: <span id="tf-name"></span></li>
-                            <li><b>Domain</b>: <span id="tf-domain"></span></li>
-                            <li><b>Source</b>: <span id="tf-source"></span></li>
-                            <li><a id="tf-url" href="" target="_blank">More information</a></li>
+        <ul class="nav nav-tabs">
+            <li class="custom-nav-tab tf-tab active" data-id="tf-search">TF Motif search</li>
+            <li class="custom-nav-tab tf-tab" data-id="tf-enrichment">TF Motif enrichment</li>
+        </ul>
 
-                        </ul>
-                    </div>
-                    <div class="col-sm-4">
-                        <a href="{% static "Images/logo_img" %}/" id="logo-img-href" target="_blank">
-                            <img class="tf-logo" id="logo-img" src="{% static "Images/logo_img" %}/">
-                        </a>
-                    </div>
+        <div class="tab-content">
+            <div class="custom-tab-pane active" id="tf-search">
+                <blockquote>
+                    Search genes that have specific transcription factor binding sites in their 
+                    predicted cis-regulatory regions.
+                </blockquote>
+
+                <div id="tf-select-container">
+                    <select id="tf-select" data-size="10" title="Choose transcription factor" class="form-control selectpicker" data-live-search="true">
+                    
+                        {% for tf in transcription_factors %}
+                            <option class="tf-select" data-id="{{ tf.symbol }}">
+                                {{ tf.name }} | {{ tf.source }}
+                            </option>
+                        {% endfor %}
+                    </select>
                 </div>
+
+                <div id="tf-info" class="panel panel-default">
+                    <div class="panel-heading">
+                        Transcription Factor Information
+                    </div>
+
+                    <div class="panel-body">
+                        <div class="row">
+
+                            <div class="col-sm-8">
+                                <ul>
+                                    <li><b>Name</b>: <span id="tf-name"></span></li>
+                                    <li><b>Domain</b>: <span id="tf-domain"></span></li>
+                                    <li><b>Source</b>: <span id="tf-source"></span></li>
+                                    <li><a id="tf-url" href="" target="_blank">More information</a></li>
+
+                                </ul>
+                            </div>
+                            <div class="col-sm-4">
+                                <a href="{% static "Images/logo_img" %}/" id="logo-img-href" target="_blank">
+                                    <img class="tf-logo" id="logo-img" src="{% static "Images/logo_img" %}/">
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div> 
+
+                <br>
+                <div class="btn btn-default" id="search-tf-genes">Search genes</div>
             </div>
-        </div> 
+            <div class="custom-tab-pane" id="tf-enrichment">
+                <blockquote>
+                    Find which transcription factor binding sites are enriched in the regulatory elements of a list of
+                    genes.
+                </blockquote>
 
+                <label for="query-textarea"></label>
+                    <textarea name="tf-enrichment-genes" class="form-control" id="query-textarea" rows="6" cols="12" placeholder="Paste your gene identifiers here"></textarea>
+            
 
+            </div>
+        </div>
     </div>
-    <div class="custom-tab-pane" id="tf-enrichment">
-        <blockquote>
-            Find which transcription factor binding sites are enriched in the regulatory elements of a list of
-            genes.
-        </blockquote>
 
-        <label for="query-textarea"></label>
-            <textarea name="tf-enrichment-genes" class="form-control" id="query-textarea" rows="6" cols="12" placeholder="Paste your gene identifiers here"></textarea>
-       
+</div>
 
-    </div>
- </div>
+
+<div id="tf-results">
+    theresults
+</div>
 
 {% if search_mode %}
     searching
@@ -83,6 +120,8 @@
 
 
 {% block scripts %}
+<script src="{% static 'js/get-card.js' %}"></script>
+<script src="{% static 'js/searchpanel.js' %}"></script>
 
 <script>
     $(document).ready(function(){
@@ -91,6 +130,7 @@
             $(".custom-nav-tab").removeClass("active");
             $("#" + $(this).attr("data-id")).addClass("active");
             $(this).addClass("active");
+            $("#tf-results").hide();
         });
     });
 </script>
@@ -118,6 +158,51 @@
        $("#logo-img-href").attr("href", logo_url);
        $("#logo-img").attr("src", logo_url);
        $("#tf-info").show(250); 
+       $("#search-tf-genes").show(250);
+    });
+</script>
+
+<script>
+
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie != '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    var csrftoken = getCookie('csrftoken');
+
+    $("#search-tf-genes").on("click", function(){
+        var tf_symbol = $("#tf-select").find(":selected").attr("data-id");
+        $.ajax({
+            type: "GET",
+            url: window.ROOT + "/tf_tools",
+            data: {
+                'tf_symbol'    : tf_symbol,
+                'mode'         : "search",
+                'csrfmiddlewaretoken': csrftoken
+            },
+            success: function(data) {
+                $("#tf-results").html(data);
+                $("#tf-results").show(250);
+
+
+            },
+
+            error: function(data) {
+                console.log(data.responseText);
+            }
+        });
     });
 </script>
 

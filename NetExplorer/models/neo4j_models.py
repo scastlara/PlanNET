@@ -2478,6 +2478,22 @@ class TfMotif(Node):
         else:
             raise exceptions.NodeNotFound(self.symbol, self.database)
 
+    def get_planarian_genes(self):
+        query = neoquery.GET_GENES_FROMTF_QUERY % (self.symbol)
+        print(query)
+        results = GRAPH.run(query)
+        results = results.data()
+        genes = []
+        if results:
+            for row in results:
+                gene = PlanarianGene(
+                    symbol = row["symbol"],
+                    database="Smesgene",
+                    name=row["name"],
+                    query=False
+                )
+                genes.append(gene)
+        return genes
 
 
 

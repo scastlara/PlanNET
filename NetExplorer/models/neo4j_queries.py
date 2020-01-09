@@ -450,3 +450,11 @@ ALL_MOTIFS_QUERY = """
            motif.tf_name as tf_name,
            motif.domain as domain
 """
+
+GET_GENES_FROMTF_QUERY = """
+    MATCH (g:Smesgene)-[r:HAS_CRE]->(cre:Cre)-[tr:HAS_MOTIF]->(motif:Tf_motif)
+    WHERE motif.symbol = "%s"
+    RETURN 
+        g.symbol as symbol,
+        g.name as name
+"""

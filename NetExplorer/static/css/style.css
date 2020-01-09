@@ -2925,3 +2925,35 @@ summary { display: list-item !important; }
     margin-top: 15px;
     display: none;
 }
+
+#search-tf-genes {
+    display: none;
+    max-width: 200px;
+}
+
+#tf-results {
+    display: none;
+}
+
+#tf-results .small-searchpanel {
+    height: auto;
+}
+
+
+.custom-nav-tab-tf-tab {
+    color: #23527c;
+    background-color: #eee;
+    border: 1px solid #ddd;
+    border-radius: 4px 4px 0 0;
+    padding: 10px 15px;
+    font-size: 16px;
+}
+
+.custom-nav-tab-tf-tab:hover {
+    cursor: pointer;
+}
+
+.custom-nav-tab-tf-tab.active {
+    background-color:#fff;
+    color: #555;
+}
