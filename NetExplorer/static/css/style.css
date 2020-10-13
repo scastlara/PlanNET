@@ -2929,6 +2929,9 @@ summary { display: list-item !important; }
 #search-tf-genes {
     display: none;
     max-width: 200px;
+    background-color:#c95c81;
+    color: white;
+    margin-top: 5px;
 }
 
 #tf-results {
@@ -2974,3 +2977,5 @@ summary { display: list-item !important; }
     display: none;
     width: 300px;
 }
+
+
