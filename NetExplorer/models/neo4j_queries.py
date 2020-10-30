@@ -409,41 +409,62 @@ GET_HOMOLOGS_BULK_FROM_GENE = """
 """
 
 
-TF_QUERY  = """
-    MATCH (n:Tf)
+MOTIF_QUERY  = """
+    MATCH (n:Tf_motif)
     WHERE n.symbol = "%s"
-    RETURN n.name as name,
-            n.homer_url as homer_url,
-            n.logo_url as logo_url,
-            n.identifier as identifier
+    RETURN n.symbol as symbol,
+           n.short_name as name,
+           n.url as url,
+           n.motif_num as number,
+           n.tf_name as tf_name,
+           n.domain as domain
+
 """
 
-GET_TRANSCRIPTION_FACTORS_PROMOTER = """
-    MATCH (g:Smesgene)-[tr:HAS_TRANSCRIPT]->(t:%s)-[tfr:HAS_TF]->(tf:Tf)
+GET_MOTIFS = """
+    MATCH (g:Smesgene)-[r:HAS_CRE]->(cre:Cre)-[tr:HAS_MOTIF]->(motif:Tf_motif)
     WHERE g.symbol = "%s"
-    RETURN t.symbol as transcript_symbol,
-           tf.symbol as tf_symbol,
-           tf.name as tf_name,
-           tf.identifier as tf_identifier,
-           tf.homer_url as tf_homer_url,
-           tf.logo_url as tf_logo_url,
-           tfr.score as tfr_score,
-           tfr.strand as tfr_strand,
-           tfr.sequence as tfr_sequence,
-           tfr.offset as tfr_offset
+    AND cre.cre_type = "%s"
+    RETURN 
+           motif.symbol as motif_symbol,
+           motif.short_name as motif_name,
+           motif.info_url as motif_url,
+           motif.motif_num as motif_num,
+           motif.tf_name as tf_name,
+           motif.domain as domain,
+           tr.start as motif_start,
+           tr.end as motif_end,
+           tr.chromosome as motif_chromosome,
+           tr.score as motif_score,
+           tr.sequence as motif_sequence
 """
 
-GET_TRANSCRIPTION_FACTORS_ENHANCER = """
-    MATCH (g:Smesgene)-[tfr:HAS_TF]->(tf:Tf)
-    WHERE g.symbol = "%s"
-    AND    tfr.element_type = "enhancer"
-    RETURN tf.symbol as tf_symbol,
-           tf.name as tf_name,
-           tf.identifier as tf_identifier,
-           tf.homer_url as tf_homer_url,
-           tf.logo_url as tf_logo_url,
-           tfr.score as tfr_score,
-           tfr.strand as tfr_strand,
-           tfr.sequence as tfr_sequence,
-           tfr.offset as tfr_offset
+
+ALL_MOTIFS_QUERY = """
+    MATCH (motif:Tf_motif)
+    RETURN 
+           motif.symbol as motif_symbol,
+           motif.short_name as motif_name,
+           motif.info_url as motif_url,
+           motif.motif_num as motif_num,
+           motif.tf_name as tf_name,
+           motif.domain as domain
+"""
+
+GET_GENES_FROMTF_QUERY = """
+    MATCH (g:Smesgene)-[r:HAS_CRE]->(cre:Cre)-[tr:HAS_MOTIF]->(motif:Tf_motif)
+    WHERE motif.symbol = "%s"
+    RETURN DISTINCT
+        g.symbol as symbol,
+        g.name as name
+"""
+
+
+GET_GENES_FROMTF_TYPE_QUERY = """
+    MATCH (g:Smesgene)-[r:HAS_CRE]->(cre:Cre)-[tr:HAS_MOTIF]->(motif:Tf_motif)
+    WHERE motif.symbol = "%s"
+    AND cre.cre_type = "%s"
+    RETURN DISTINCT
+        g.symbol as symbol,
+        g.name as name
 """

@@ -2148,7 +2148,8 @@ class PlanarianGene(Node):
         self.sequence = sequence
         self.chromosome = chromosome
         self.homolog = homolog
-        self.transcription_factors = []
+        self.promoter_motifs = []
+        self.enhancer_motifs = []
 
         if sequence is None and query:
             self.__query_node()
@@ -2301,63 +2302,74 @@ class PlanarianGene(Node):
                 database = "All"
         return prednodes
 
-    def get_transcription_factors(self, element_type="promoter"):
+    def get_tf_motifs(self, element_type="promoter"):
         """
         Gets transcription factors associated with any of its transcripts.
         Fills attribute 'transcription_factors'.
         """
         
-        if element_type == "promoter" or element_type == "proximal":
-            query = neoquery.GET_TRANSCRIPTION_FACTORS_PROMOTER % (PlanarianGene.preferred_database, self.symbol)
-        elif element_type == "enhancer" or element_type == "distal":
-            query = neoquery.GET_TRANSCRIPTION_FACTORS_ENHANCER % (PlanarianGene.preferred_database, self.symbol)
-        else:
-            raise ValueError("element_type must be 'promoter' or 'enhancer'!")
 
+        query = neoquery.GET_MOTIFS % (self.symbol, element_type)
         results = GRAPH.run(query)
         results = results.data()
 
         if results:
             for row in results:
-                transcript_symbol = row["transcript_symbol"]
-                tf_symbol = row["tf_symbol"]
-                tf_name = row["tf_name"]
-                tf_homer_url = row["tf_homer_url"]
-                tf_logo_url = row["tf_logo_url"]
-                tf_identifier = row["tf_identifier"]
-                tfr_score = row["tfr_score"]
-                tfr_strand = row["tfr_strand"]
-                tfr_sequence = row["tfr_sequence"]
-                tfr_offset = row["tfr_offset"]
-
-                transcript = PlanarianContig(transcript_symbol, PlanarianGene.preferred_database, query=False)
-                transcription_factor = TranscriptionFactor(
-                    symbol=tf_symbol,
-                    database="Tf",
-                    name=tf_name,
-                    homer_url=tf_homer_url,
-                    logo_url=tf_logo_url,
-                    identifier=tf_identifier,
+                motif_symbol = row['motif_symbol']
+                motif_name = row['motif_name']
+                motif_url = row['motif_url']
+                motif_num = row['motif_num']
+                tf_name = row['tf_name']
+                domain = row['domain']
+                motif_start = row['motif_start']
+                motif_end = row['motif_end']
+                motif_chromosome = row['motif_chromosome']
+                motif_score = row['motif_score']
+                motif_sequence = row['motif_sequence']
+                
+                motif = TfMotif(
+                    symbol = motif_symbol,
+                    database = "Tf_motif",
+                    name=motif_name,
+                    url=motif_url,
+                    number=motif_num,
+                    tf_name=tf_name,
+                    domain=domain,
                     query=False
                 )
-                annotation = TfAnnotation(
-                    tf=transcription_factor,
-                    transcript=transcript,
-                    score=tfr_score,
-                    strand=tfr_strand,
-                    sequence=tfr_sequence,
-                    offset=tfr_offset
+                annotation = MotifAnnotation(
+                    motif=motif,
+                    start=motif_start,
+                    end=motif_end,
+                    chromosome=motif_chromosome,
+                    score=motif_score,
+                    sequence=motif_sequence,
+                    distance=self.distance_to_motif(motif_start, motif_end)
                 )
-                self.transcription_factors.append(annotation)
-            self._sort_transcription_factors()
 
-    def _sort_transcription_factors(self):
-        self.transcription_factors = sorted(
-            self.transcription_factors, 
-            key=lambda x: x.score,
-            reverse=True
-        )
-
+                if element_type == "promoter":
+                    self.promoter_motifs.append(annotation)
+                elif element_type == "enhancer":
+                    self.enhancer_motifs.append(annotation)
+                else:
+                    raise ValueError("element_type must be 'promoter' or 'enhancer'!")
+    
+    def distance_to_motif(self, motif_start, motif_end):
+        
+        if self.strand == "1":
+            seq_tss = self.start + 5000
+        else:
+            seq_tss = self.end - 5000
+            
+        if int(motif_end) < int(seq_tss):
+            distance = int(motif_end) - int(seq_tss) + 1
+        else:
+            distance = int(motif_start) - int(seq_tss) + 1
+        
+        if self.strand == "1":
+            return distance
+        else:
+            return -distance
 
     def __hash__(self):
         return hash((self.symbol))
@@ -2366,7 +2378,7 @@ class PlanarianGene(Node):
         return self.symbol == other.symbol
 
 
-class TfAnnotation(object):
+class MotifAnnotation(object):
     """
     Class for Transcription factor annotation. It contains the information of a 
     particular annotation in the genome for a transcription factor.
@@ -2378,16 +2390,17 @@ class TfAnnotation(object):
         sequence (str): Predicted binding sequence.
         offset (int): Offset as reported by HOMER.
     """
-    def __init__(self, tf, transcript, score, sequence, strand, offset):
-        self.tf = tf
-        self.transcript = transcript
+    def __init__(self, motif, start, end, chromosome, score, sequence, distance):
+        self.motif = motif
+        self.start = start
+        self.end = end
+        self.chromosome = chromosome
         self.score = round(float(score), 2)
         self.sequence = sequence
-        self.strand = strand
-        self.offset = offset
+        self.distance = distance
 
 
-class TranscriptionFactor(Node):
+class TfMotif(Node):
     """
     Class for Transcription Factors in PlanNET
 
@@ -2400,34 +2413,90 @@ class TranscriptionFactor(Node):
         identifier (int): Homer TF identifier (optional).
     """
 
-    allowed_databases = set(["Tf"])
+    allowed_databases = set(["Tf_motif"])
     def __init__(self, symbol, database, 
-                 name=None, homer_url=None, logo_url=None, 
-                 identifier=None, query=True):
-        super(TranscriptionFactor, self).__init__(symbol, database)
+                 name=None, url=None, tf_name=None, 
+                 domain=None, number=None, query=True):
+        super(TfMotif, self).__init__(symbol, database)
+        self.symbol = symbol
         self.name = name
-        self.homer_url = homer_url
-        self.logo_url = logo_url
-        self.identifier = identifier
+        self.url = url
+        self.number = number
+        self.tf_name = tf_name
+        self.domain = domain
+
 
         if query:
             self.__query_node()
     
+    @property
+    def source(self):
+        try:
+            tf, source, program = self.symbol.split("/")
+        except Exception as err:
+            print(err)
+            source = ""
+        return source
+
+    @classmethod
+    def get_all_from_database(cls):
+        query = neoquery.ALL_MOTIFS_QUERY
+        results = GRAPH.run(query)
+        results = results.data()
+        all_motifs = []
+        if results:
+            for row in results:
+                symbol = row['motif_symbol']
+                name = row['motif_name']
+                url = row['motif_url']
+                number = row['motif_num']
+                tf_name = row['tf_name']
+                domain = row['domain']
+                all_motifs.append(cls(
+                    symbol=symbol,
+                    database="Tf_motif",
+                    name=name,
+                    url=url,
+                    number=number,
+                    tf_name=tf_name,
+                    domain=domain,
+                    query=False
+                ))
+        return all_motifs
+
     def __query_node(self):
-        query = neoquery.TF_QUERY % (self.symbol)
+        query = neoquery.MOTIF_QUERY % (self.symbol)
         results = GRAPH.run(query)
         results = results.data()
         if results:
+            self.symbol = results[0]['symbol']
             self.name = results[0]['name']
-            self.homer_url = results[0]['homer_url']
-            self.logo_url = results[0]['logo_url']
-            if "identifier" in results[0] and results[0]['identifier']:
-                self.identifier = results[0]['identifier']
-            else:
-                self.identifier = None
+            self.url = results[0]['url']
+            self.number = results[0]['number']
+            self.tf_name = results[0]['tf_name']
+            self.domain = results[0]['domain']
         else:
             raise exceptions.NodeNotFound(self.symbol, self.database)
 
+    def get_planarian_genes(self, cre_type="any"):
+        if cre_type == "any":
+            query = neoquery.GET_GENES_FROMTF_QUERY % (self.symbol)
+        else:
+            query = neoquery.GET_GENES_FROMTF_TYPE_QUERY % (self.symbol, cre_type)
+
+        results = GRAPH.run(query)
+        results = results.data()
+        genes = []
+        if results:
+            for row in results:
+                gene = PlanarianGene(
+                    symbol = row["symbol"],
+                    database="Smesgene",
+                    name=row["name"],
+                    query=False
+                )
+                genes.append(gene)
+        return genes
 
 
 

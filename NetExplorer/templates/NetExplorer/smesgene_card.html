@@ -138,76 +138,133 @@
             </div>
         {% endif %}
 
+    
+
+                            
 
 
-    {% if has_logo_proximal %}
         <h2><span class="glyphicon glyphicon-tag"></span> Predicted Regulatory Elements</h2>
         <hr class="h2-sep">
 
-        <h3>Proximal regulatory regions:</h3><br>
-        <div id="promoter-img-container">
-            <a href="{% static "Images/promoter-images/" %}/{{ node.symbol }}-promoter.png" target="_blank">
-                <img class="promoter-img" src="{% static "Images/promoter-images/" %}/{{ node.symbol }}-promoter.png">
-            </a>
+        <ul class="nav nav-tabs gene-card-tabs">
+            <li class="custom-nav-tab active" data-id="proximal">Proximal C.R.E.</li>
+            <li class="custom-nav-tab" data-id="enhancers">Enhancers</li>
+        </ul>
+
+        <div class="tab-content gene-card-tab-content">
+            <div class="custom-tab-pane active" id="proximal">
+                {% if has_logo_proximal %}
+                    <div id="cre-img-container">
+                        <a href="{% static "Images/promoter-images/" %}/{{ node.symbol }}-promoter.png" target="_blank">
+                            <img class="cre-img promoter-img" src="{% static "Images/promoter-images/" %}/{{ node.symbol }}-promoter.png">
+                        </a>
+                    </div>
+
+                    {% if node.promoter_motifs %}
+                        <table id="promoter-tf-table" class="table table-hover tf-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Distance to TSS</th>
+                                    <th>Sequence</th>
+                                    <th>Score</th>
+                                    <th>Logo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for tfr in node.promoter_motifs %}
+                                    <tr>
+                                        <td><a href="{{ tfr.motif.url }}" target="_blank">{{ tfr.motif.name }}</a></td>
+                                        <td>{{ tfr.distance }}</td>
+                                        <td>{{ tfr.sequence }}</td>
+                                        <td>{{ tfr.score }}</td>
+                                        <td class="tf-logo-container">
+                                            <a href="{% static "Images/logo_img" %}/logo_{{ tfr.motif.number }}.svg.png" target="_blank">
+                                                <img class="tf-logo" src="
+                                                {% static "Images/logo_img" %}/logo_{{ tfr.motif.number }}.svg.png
+                                                ">
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+
+                            </tbody>
+
+                        </table>
+                        <div class="pull-right">
+                            <br>
+                            <i>Motifs from <a href="http://homer.ucsd.edu/homer/motif/HomerMotifDB/homerResults.html" target="_blank">HOMER motif library</a>.</i>
+                        </div>
+                        <br><br>
+
+                    {% else %}
+                        No TF binding motifs.
+                    {% endif %}
+                {% else %}
+                    No <b>proximal</b> cis-regulatory elements.
+                {% endif %}
+            </div>
+            <div class="custom-tab-pane" id="enhancers">
+                 {% if has_logo_enhancer %}
+                    <div id="cre-img-container">
+                        <a href="{% static "Images/enhancer-images/" %}/{{ node.symbol }}-enhancer.png" target="_blank">
+                            <img class="cre-img enhancer-img" src="{% static "Images/enhancer-images/" %}/{{ node.symbol }}-enhancer.png">
+                        </a>
+                    </div>
+
+                    {% if node.enhancer_motifs %}
+                        <table id="enhancer-tf-table" class="table table-hover tf-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Distance to TSS</th>
+                                    <th>Sequence</th>
+                                    <th>Score</th>
+                                    <th>Logo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for tfr in node.enhancer_motifs %}
+                                    <tr>
+                                        <td><a href="{{ tfr.motif.url }}" target="_blank">{{ tfr.motif.name }}</a></td>
+                                        <td>{{ tfr.distance }}</td>
+                                        <td>{{ tfr.sequence }}</td>
+                                        <td>{{ tfr.score }}</td>
+                                        <td class="tf-logo-container">
+                                            <a href="{% static "Images/logo_img" %}/logo_{{ tfr.motif.number }}.svg.png" target="_blank">
+                                                <img class="tf-logo" src="
+                                                {% static "Images/logo_img" %}/logo_{{ tfr.motif.number }}.svg.png
+                                                ">
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+
+                            </tbody>
+
+                        </table>
+                        <div class="pull-right">
+                            <br>
+                            <i>Motifs from <a href="http://homer.ucsd.edu/homer/motif/HomerMotifDB/homerResults.html" target="_blank">HOMER motif library</a>.</i>
+                        </div>
+                        <br><br>
+
+                    {% else %}
+                        No TF binding motifs.
+                    {% endif %}
+                {% else %}
+                    No <b>enhancers</b>.
+                {% endif %}
+            
+            
+            </div>
         </div>
 
+       
         
-        {% if node.transcription_factors %}
-                <table id="tf-table" class="table table-hover tf-table">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Sequence</th>
-                            <th>Strand</th>
-                            <th>Score</th>
-                            <th>TSS from</th>
-                            <th>Logo</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for tfr in node.transcription_factors %}
-                            <tr>
-                                <td><a href="{{ tfr.tf.homer_url }}" target="_blank">{{ tfr.tf.name }}</a></td>
-                                <td>{{ tfr.sequence }}</td>
-                                <td>{{ tfr.strand }}</td>
-                                <td>{{ tfr.score }}</td>
-                                <td>
-                                    <a
-                                        class="card-link"
-                                        current="{{ node.symbol|urlencode}}"
-                                        currentDB="{{ node.database }}"
-                                        target="{{ tfr.transcript.symbol }}"
-                                        targetDB="{{ best_transcript.database }}">
-                                        {{ tfr.transcript.symbol }}
-                                    </a>
-                                </td>
-                                <td class="tf-logo-container">{% if tfr.tf.logo_url != "NA" %}
-                                        <a href="{% static "Images/tf_logos" %}/motif{{ tfr.tf.identifier }}.logo.png" target="_blank">
-                                            <img class="tf-logo" src="
-                                            {% static "Images/tf_logos" %}/motif{{ tfr.tf.identifier }}.logo.png
-                                            ">
-                                        </a>
-                                        
-                                    {% else %}
-                                        N.A.
-                                    {% endif %}
-                                </td>
-                            </tr>
-                        {% endfor %}
 
-                    </tbody>
-
-                </table>
-                <div class="pull-right">
-                    <br>
-                    <i>Transcription factors from <a href="http://homer.ucsd.edu/homer/motif/HomerMotifDB/homerResults.html" target="_blank">HOMER motif library</a>.</i>
-                </div>
-                <br><br>
-
-        {% else %}
-            No transcription factors.
-        {% endif %}
-    {% endif %}
+        
+        
 
 
     <div class="row row-eq-height interactions-title">
@@ -403,10 +460,28 @@
                     "order": [[ 0, "desc" ]]
                 });
 
-                $("#tf-table").DataTable({
+                $("#promoter-tf-table").DataTable({
+                    "order": [[ 3, "desc" ]]
+                });
+
+                $("#enhancer-tf-table").DataTable({
                     "order": [[ 3, "desc" ]]
                 });
             });
+    </script>
+
+
+    <script>
+        $(document).ready(function(){
+            $(".gene-card-tabs .custom-nav-tab").on("click", function(){
+                $(".gene-card-tab-content .custom-tab-pane").removeClass("active");
+                $(".gene-card-tabs .custom-nav-tab").removeClass("active");
+                $("#" + $(this).attr("data-id")).addClass("active");
+                $(this).addClass("active");
+
+
+            });
+        });
     </script>
     {% endblock scripts %}
 

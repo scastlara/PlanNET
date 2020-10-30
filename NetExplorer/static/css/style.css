@@ -2862,7 +2862,11 @@ summary { display: list-item !important; }
 }
 
 
-#tf-table {
+#promoter-tf-table {
+    font-size: 10px;
+}
+
+#enhancer-tf-table {
     font-size: 10px;
 }
 
@@ -2870,15 +2874,108 @@ summary { display: list-item !important; }
     height: 30;
 }
 
-#promoter-img-container {
+#cre-img-container {
     width: 100%;
     text-align: center;
 }
-.promoter-img {
+.cre-img {
     display: inline-block;
     width: 100%;
 }
 
+
+
 .tf-logo-container {
-    text-align: center;
+    text-align: left;
 }
+
+
+.custom-nav-tab {
+    color: #23527c;
+    background-color: #eee;
+    border: 1px solid #ddd;
+    border-radius: 4px 4px 0 0;
+    padding: 10px 15px;
+    font-size: 16px;
+}
+
+.custom-nav-tab:hover {
+    cursor: pointer;
+}
+
+.custom-nav-tab.active {
+    background-color:#fff;
+    color: #555;
+}
+
+.custom-tab-pane {
+    display: none;
+    padding: 10px 15px;
+}
+
+.custom-tab-pane.active {
+    display: block;
+}
+
+#tf-select-container {
+    max-width: 500px;
+}
+
+#tf-info {
+    margin-top: 15px;
+    display: none;
+}
+
+#search-tf-genes {
+    display: none;
+    max-width: 200px;
+    background-color:#c95c81;
+    color: white;
+    margin-top: 5px;
+}
+
+#tf-results {
+    display: none;
+}
+
+#tf-results .small-searchpanel {
+    height: auto;
+}
+
+
+.custom-nav-tab-tf-tab {
+    color: #23527c;
+    background-color: #eee;
+    border: 1px solid #ddd;
+    border-radius: 4px 4px 0 0;
+    padding: 10px 15px;
+    font-size: 16px;
+}
+
+.custom-nav-tab-tf-tab:hover {
+    cursor: pointer;
+}
+
+.custom-nav-tab-tf-tab.active {
+    background-color:#fff;
+    color: #555;
+}
+
+
+.btn-other-tools {
+    text-align: left !important;
+    width: 150px;
+    padding-left: 2px !important;
+}
+
+.btn-other-tools a {
+    color: #777777 !important;
+    text-decoration: none !important;
+}
+
+#search-tf-genes-type-container {
+    display: none;
+    width: 300px;
+}
+
+

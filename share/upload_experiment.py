@@ -214,8 +214,10 @@ def upload_expression_relative(opts, experiment, dataset):
                 store_expression_relative(
                     experiment, condition1_id, 
                     condition2_id, cond_type, dataset, 
-                    cols[5], cols[6], cols[7])
-            except:
+                    cols[5], cols[6], cols[7]
+                )
+            except Exception as err:
+                print(err)
                 print(line)
                 exit(1)
 
@@ -272,9 +274,13 @@ def upload_links(opts, experiment, dataset):
         next(links_fh) # skip header
         for line in links_fh:
             line = line.strip()
-            regulator, target, score, source, group = line.split("\t")
-            cursor.execute("""INSERT INTO NetExplorer_regulatorylinks (experiment_id, dataset_id, regulator, target, score, source, `group`) 
-            VALUES (%s, %s, %s, %s, %s, %s, %s)""", (experiment, dataset, regulator, target, score, source, group))
+            experiment_name, regulator, target, score, reactome, has_multiple_evidences = line.split("\t")
+            if has_multiple_evidences == "True":
+                has_multiple_evidences = 1
+            else:
+                has_multiple_evidences = 0
+            cursor.execute("""INSERT INTO NetExplorer_regulatorylinks (experiment_id, dataset_id, regulator, target, score, reactome, has_multiple_evidences) 
+            VALUES (%s, %s, %s, %s, %s, %s, %s)""", (experiment, dataset, regulator, target, score, reactome, has_multiple_evidences))
 
 
 def upload_markers(opts, experiment, dataset):
@@ -335,22 +341,23 @@ sys.stderr.write("Uploading relative expression\n")
 upload_expression_relative(opts, experiment, dataset)
 
 sys.stderr.write("Uploading genes\n")
-upload_genes(opts, experiment)
+#upload_genes(opts, experiment)
 
 
 if opts.tsne:
     sys.stderr.write("Uploading cell plot positions (t-SNE)\n")
-    upload_tsne(opts, experiment, dataset)
+    #upload_tsne(opts, experiment, dataset)
 
 
 if opts.links:
     sys.stderr.write("Uploading regulatory links\n")
-    upload_links(opts, experiment, dataset)
+    #upload_links(opts, experiment, dataset)
+    db.commit()
 
 
 if opts.markers:
     sys.stderr.write("Uploading marker genes\n")
-    upload_markers(opts, experiment, dataset)
+    #upload_markers(opts, experiment, dataset)
 
 sys.stderr.write("Committing to database\n")
 db.commit()
